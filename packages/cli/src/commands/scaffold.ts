@@ -16,12 +16,13 @@ import * as p from '@clack/prompts'
 import pc from 'picocolors'
 import type { Command } from 'commander'
 import type { ScaffolderCategory } from '@tinkerise/shared'
-import { detectPackageManager, executeScaffolder, isCI } from '@tinkerise/core'
+import { detectPackageManager, executeScaffolder, isCI, tinkeriseSummaryCard } from '@tinkerise/core'
 import type { PackageManager } from '@tinkerise/core'
 import { showBanner } from '../utils/banner.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
 import { promptProjectName } from '../prompts/project-name.js'
+import { selectViteTemplate, resolveViteTemplate, selectT3Components } from '../prompts/variant-select.js'
 import {
   buildPreselectedOptions,
   ensureNonInteractive,
@@ -40,6 +41,8 @@ export interface ScaffoldOptions {
   /** Commander.js: --no-install sets install=false */
   install?: boolean
   packageManager?: string
+  /** Vite template name (bypasses template prompt) */
+  template?: string
 }
 
 /**
@@ -98,7 +101,10 @@ function buildUserFlags(
 }
 
 /**
- * Execute the scaffolding pipeline and show success message.
+ * Execute the scaffolding pipeline with variant selection and summary card.
+ *
+ * Handles framework-specific variant prompts (Vite template, T3 components)
+ * before delegating to executeScaffolder, then shows the enhanced summary card.
  */
 async function executePipeline(
   framework: string,
@@ -110,16 +116,42 @@ async function executePipeline(
 ): Promise<void> {
   const userFlags = buildUserFlags(options, cmd, cliOptions, pm)
 
+  // Framework-specific variant handling
+  let extraArgs: string[] = []
+
+  if (framework === 'vite') {
+    // Vite: template selection + TypeScript merging
+    const base = await selectViteTemplate(cliOptions.template)
+    const resolved = resolveViteTemplate(base, !!cliOptions.typescript)
+    extraArgs = ['--template', resolved]
+    // Remove typescript from userFlags -- handled via template suffix
+    delete userFlags['typescript']
+  }
+
+  if (framework === 't3') {
+    // T3: component selection -> pass as individual flags
+    const components = await selectT3Components()
+    for (const comp of components) {
+      extraArgs.push(`--${comp}`)
+    }
+    // Must pass --CI when any flags are present to suppress T3's own prompts (Pitfall 5)
+    if (extraArgs.length > 0 || Object.keys(userFlags).length > 0) {
+      extraArgs.push('--CI')
+    }
+  }
+
   await executeScaffolder({
     scaffolderName: framework,
     projectName: name,
     userFlags,
+    extraArgs,
   })
 
-  // Success one-liner per user decision
-  p.log.success(
-    `${pc.green('Created')} ${pc.bold(name)}. ${pc.dim(`cd ${name} && ${pm} run dev`)}`,
-  )
+  // Enhanced summary card instead of simple one-liner
+  const activeFlags = Object.entries(userFlags)
+    .filter(([, v]) => v === true)
+    .map(([k]) => k)
+  tinkeriseSummaryCard(framework, name, activeFlags)
 }
 
 /**

@@ -19,10 +19,14 @@ const {
   mockPromptProjectName,
   mockDetectPackageManager,
   mockExecuteScaffolder,
+  mockTinkeriseSummaryCard,
   mockIsCI,
   mockEnsureNonInteractive,
   mockBuildPreselectedOptions,
   mockMergePromptAndFlags,
+  mockSelectViteTemplate,
+  mockResolveViteTemplate,
+  mockSelectT3Components,
   mockLogSuccess,
   mockLogWarn,
   mockLogError,
@@ -33,10 +37,14 @@ const {
   mockPromptProjectName: vi.fn(),
   mockDetectPackageManager: vi.fn(),
   mockExecuteScaffolder: vi.fn(),
+  mockTinkeriseSummaryCard: vi.fn(),
   mockIsCI: { value: false },
   mockEnsureNonInteractive: vi.fn(),
   mockBuildPreselectedOptions: vi.fn(),
   mockMergePromptAndFlags: vi.fn(),
+  mockSelectViteTemplate: vi.fn(),
+  mockResolveViteTemplate: vi.fn(),
+  mockSelectT3Components: vi.fn(),
   mockLogSuccess: vi.fn(),
   mockLogWarn: vi.fn(),
   mockLogError: vi.fn(),
@@ -61,7 +69,14 @@ vi.mock('../../src/prompts/project-name.js', () => ({
 vi.mock('@tinkerise/core', () => ({
   detectPackageManager: mockDetectPackageManager,
   executeScaffolder: mockExecuteScaffolder,
+  tinkeriseSummaryCard: mockTinkeriseSummaryCard,
   get isCI() { return mockIsCI.value },
+}))
+
+vi.mock('../../src/prompts/variant-select.js', () => ({
+  selectViteTemplate: mockSelectViteTemplate,
+  resolveViteTemplate: mockResolveViteTemplate,
+  selectT3Components: mockSelectT3Components,
 }))
 
 vi.mock('../../src/utils/interactive.js', () => ({
@@ -138,11 +153,12 @@ describe('runInteractiveFlow', () => {
     const cmd = createMockCommand()
     await runInteractiveFlow(cmd, {})
 
-    expect(mockExecuteScaffolder).toHaveBeenCalledWith({
-      scaffolderName: 'next',
-      projectName: 'my-app',
-      userFlags: expect.any(Object),
-    })
+    expect(mockExecuteScaffolder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scaffolderName: 'next',
+        projectName: 'my-app',
+      }),
+    )
   })
 
   it('calls ensureNonInteractive in CI', async () => {
@@ -232,11 +248,12 @@ describe('runDirectExecution', () => {
 
     expect(mockRunPromptFlow).not.toHaveBeenCalled()
     expect(mockPromptProjectName).not.toHaveBeenCalled()
-    expect(mockExecuteScaffolder).toHaveBeenCalledWith({
-      scaffolderName: 'next',
-      projectName: 'my-app',
-      userFlags: expect.any(Object),
-    })
+    expect(mockExecuteScaffolder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        scaffolderName: 'next',
+        projectName: 'my-app',
+      }),
+    )
   })
 
   it('prompts for project name when name not provided', async () => {

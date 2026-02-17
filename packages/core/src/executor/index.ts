@@ -23,6 +23,8 @@ export interface ExecuteOptions {
   userFlags: Record<string, string | boolean>
   /** Args after -- to pass through to upstream tool */
   passthroughArgs?: string[]
+  /** Framework-specific args (Vite template, T3 components) */
+  extraArgs?: string[]
   /** Working directory */
   cwd?: string
 }
@@ -54,7 +56,7 @@ export class ScaffolderExitError extends Error {
  * Execute the full detect-map-execute pipeline.
  */
 export async function executeScaffolder(options: ExecuteOptions): Promise<void> {
-  const { scaffolderName, projectName, userFlags, passthroughArgs = [], cwd } = options
+  const { scaffolderName, projectName, userFlags, passthroughArgs = [], extraArgs = [], cwd } = options
 
   // 1. Resolve scaffolder from registry
   const entry = getScaffolder(scaffolderName)
@@ -87,7 +89,9 @@ export async function executeScaffolder(options: ExecuteOptions): Promise<void> 
   }
 
   // 6. Build final command args based on integration strategy (REG-04)
-  const commandArgs = buildCommandArgs(entry, projectName, nativeArgs, passthroughArgs)
+  // Merge nativeArgs with extraArgs (framework-specific like Vite template, T3 components)
+  const allNativeArgs = [...nativeArgs, ...extraArgs]
+  const commandArgs = buildCommandArgs(entry, projectName, allNativeArgs, passthroughArgs)
 
   tinkeriseLog(`Running ${entry.command} ${commandArgs.join(' ')}`)
   tinkeriseBlankLine()
@@ -101,11 +105,8 @@ export async function executeScaffolder(options: ExecuteOptions): Promise<void> 
     throw new ScaffolderExitError(scaffolderName, result.exitCode)
   }
 
-  // 8. Summary
-  const activeFlags = Object.entries(userFlags)
-    .filter(([, v]) => v === true)
-    .map(([k]) => k)
-  tinkeriseSummary(entry.name, projectName, activeFlags)
+  // Note: Summary output is handled by the CLI layer (tinkeriseSummaryCard)
+  // for the enhanced post-scaffold experience.
 }
 
 /**

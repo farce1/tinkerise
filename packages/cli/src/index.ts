@@ -33,6 +33,7 @@ program
   .option('--no-git', 'Skip git initialization')
   .option('--no-install', 'Skip dependency installation')
   .option('--package-manager <pm>', 'Package manager to use (npm, pnpm, yarn, bun)')
+  .option('--template <template>', 'Template to use (for Vite)')
 
 // Default action with optional positional arguments
 program
