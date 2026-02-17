@@ -1,0 +1,89 @@
+name: Upstream Flag Drift Detection
+
+on:
+  schedule:
+    # Every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  check-drift:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Check all tools even if one fails
+      matrix:
+        tool:
+          - name: create-next-app
+            cmd: npx create-next-app@latest --help
+            snapshot: create-next-app.txt
+          - name: create-vite
+            cmd: npx create-vite@latest --help
+            snapshot: create-vite.txt
+          - name: create-astro
+            cmd: npx create-astro@latest --help
+            snapshot: create-astro.txt
+          - name: create-t3-app
+            cmd: npx create-t3-app@latest --help
+            snapshot: create-t3-app.txt
+          - name: create-react-router
+            cmd: npx create-react-router@latest --help
+            snapshot: create-react-router.txt
+          - name: tanstack-cli
+            cmd: npx @tanstack/cli create --help
+            snapshot: tanstack-cli.txt
+          - name: create-turbo
+            cmd: npx create-turbo@latest --help
+            snapshot: create-turbo.txt
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Capture help output
+        run: ${{ matrix.tool.cmd }} > current-help.txt 2>&1 || true
+
+      - name: Check for drift
+        id: drift
+        run: |
+          SNAPSHOT=".github/snapshots/${{ matrix.tool.snapshot }}"
+          if [ -f "$SNAPSHOT" ]; then
+            if diff -u "$SNAPSHOT" current-help.txt > drift-diff.txt 2>&1; then
+              echo "status=unchanged" >> "$GITHUB_OUTPUT"
+              echo "No drift detected for ${{ matrix.tool.name }}"
+            else
+              echo "status=changed" >> "$GITHUB_OUTPUT"
+              echo "Flag drift detected for ${{ matrix.tool.name }}!"
+              echo ""
+              cat drift-diff.txt
+            fi
+          else
+            echo "status=new" >> "$GITHUB_OUTPUT"
+            echo "No snapshot exists for ${{ matrix.tool.name }}"
+          fi
+
+      - name: Emit warning on drift
+        if: steps.drift.outputs.status == 'changed'
+        run: |
+          echo "::warning title=Flag Drift Detected::${{ matrix.tool.name }} help output has changed. Review flag mappings in packages/core/src/registry/scaffolders/web.ts"
+
+      - name: Upload help output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: help-${{ matrix.tool.name }}
+          path: current-help.txt
+          retention-days: 30
+
+      - name: Upload diff
+        if: steps.drift.outputs.status == 'changed'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-${{ matrix.tool.name }}
+          path: drift-diff.txt
+          retention-days: 30

@@ -1,0 +1,41 @@
+npm warn exec The following package was not found and will be installed: create-next-app@16.1.6
+Usage: create-next-app [directory] [options]
+
+Options:
+  -v, --version                            Output the current version of create-next-app.
+  --ts, --typescript                       Initialize as a TypeScript project. (default)
+  --js, --javascript                       Initialize as a JavaScript project.
+  --tailwind                               Initialize with Tailwind CSS config. (default)
+  --react-compiler                         Initialize with React Compiler enabled.
+  --eslint                                 Initialize with ESLint config.
+  --biome                                  Initialize with Biome config.
+  --app                                    Initialize as an App Router project.
+  --src-dir                                Initialize inside a 'src/' directory.
+  --turbopack                              Enable Turbopack as the bundler.
+  --webpack                                Enable Webpack as the bundler.
+  --rspack                                 Enable Rspack as the bundler
+  --import-alias <prefix/*>                Specify import alias to use (default "@/*").
+  --api                                    Initialize a headless API using the App Router.
+  --empty                                  Initialize an empty project.
+  --use-npm                                Explicitly tell the CLI to bootstrap the application using npm.
+  --use-pnpm                               Explicitly tell the CLI to bootstrap the application using pnpm.
+  --use-yarn                               Explicitly tell the CLI to bootstrap the application using Yarn.
+  --use-bun                                Explicitly tell the CLI to bootstrap the application using Bun.
+  --reset, --reset-preferences             Reset the preferences saved for create-next-app.
+  --skip-install                           Explicitly tell the CLI to skip installing packages.
+  --yes                                    Use saved preferences or defaults for unprovided options.
+  -e, --example <example-name|github-url>  
+  
+    An example to bootstrap the app with. You can use an example name
+    from the official Next.js repo or a public GitHub URL. The URL can use
+    any branch and/or subdirectory.
+  
+  --example-path <path-to-example>         
+  
+    In a rare case, your GitHub URL might contain a branch name with
+    a slash (e.g. bug/fix-1) and the path to the example (e.g. foo/bar).
+    In this case, you must specify the path to the example separately:
+    --example-path foo/bar
+  
+  --disable-git                            Skip initializing a git repository.
+  -h, --help                               Display this help message.

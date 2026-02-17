@@ -1,0 +1,27 @@
+npm warn exec The following package was not found and will be installed: create-turbo@2.8.9
+Usage: create-turbo <project-directory> [options]
+
+Create a new Turborepo
+
+Options:
+  -m, --package-manager <package-manager>  Specify the package manager to use (choices: "npm", "yarn", "pnpm", "bun")
+  --skip-install                           Do not run a package manager install after creating the project (default: false)
+  --skip-transforms                        Do not run any code transformation after creating the project (default: false)
+  --turbo-version <version>                Use a specific version of turbo (default: latest)
+  -e, --example <name>|<github-url>        
+    An example to bootstrap the app with. You can use an example name
+    from the official Turborepo repo or a GitHub URL. The URL can use
+    any branch and/or subdirectory
+  
+  -p, --example-path <path-to-example>     
+    In a rare case, your GitHub URL might contain a branch name with
+    a slash (e.g. bug/fix-1) and the path to the example (e.g. foo/bar).
+    In this case, you must specify the path to the example separately:
+    --example-path foo/bar
+  
+  --no-git                                 Skip initializing a git repository
+  -v, --version                            Output the current version
+  -h, --help                               Display help for command
+
+Commands:
+  telemetry [action]                       Manage telemetry settings

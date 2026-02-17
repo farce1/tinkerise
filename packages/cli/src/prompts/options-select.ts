@@ -14,6 +14,15 @@ export const FRAMEWORK_OPTIONS: Record<string, Array<{ value: string; label: str
     { value: 'tailwind', label: 'Tailwind CSS' },
     { value: 'eslint', label: 'ESLint' },
   ],
+  astro: [
+    { value: 'tailwind', label: 'Tailwind CSS' },
+  ],
+  t3: [
+    { value: 'tailwind', label: 'Tailwind CSS' },
+  ],
+  tanstack: [
+    { value: 'tailwind', label: 'Tailwind CSS' },
+  ],
 }
 
 /**

@@ -7,7 +7,7 @@
  */
 
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
-import { nextjs } from './scaffolders/web.js'
+import { astro, nextjs, remix, t3, tanstack, turbo, vite } from './scaffolders/web.js'
 
 /** Private registry store */
 const registry = new Map<string, ScaffolderEntry>()
@@ -26,7 +26,7 @@ function register(...entries: ScaffolderEntry[]): void {
 }
 
 // Register all built-in scaffolders
-register(nextjs)
+register(nextjs, vite, astro, t3, remix, tanstack, turbo)
 
 /**
  * Look up a scaffolder by name.

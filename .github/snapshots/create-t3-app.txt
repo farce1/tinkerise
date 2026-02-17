@@ -1,0 +1,54 @@
+npm warn exec The following package was not found and will be installed: create-t3-app@7.40.0
+   ___ ___ ___   __ _____ ___   _____ ____    __   ___ ___
+  / __| _ \ __| /  \_   _| __| |_   _|__ /   /  \ | _ \ _ \
+ | (__|   / _| / /\ \| | | _|    | |  |_ \  / /\ \|  _/  _/
+  \___|_|_\___|_/‾‾\_\_| |___|   |_| |___/ /_/‾‾\_\_| |_|
+
+
+Usage: create-t3-app [options] [dir]
+
+A CLI for creating web applications with the t3 stack
+
+Arguments:
+  dir                      The name of the application, as well as the name of
+                           the directory to create
+
+Options:
+  --noGit                  Explicitly tell the CLI to not initialize a new git
+                           repo in the project (default: false)
+  --noInstall              Explicitly tell the CLI to not run the package
+                           manager's install command (default: false)
+  -y, --default            Bypass the CLI and use all default options to
+                           bootstrap a new t3-app (default: false)
+  --CI                     Boolean value if we're running in CI (default:
+                           false)
+  --tailwind [boolean]     Experimental: Boolean value if we should install
+                           Tailwind CSS. Must be used in conjunction with
+                           `--CI`.
+  --nextAuth [boolean]     Experimental: Boolean value if we should install
+                           NextAuth.js. Must be used in conjunction with
+                           `--CI`.
+  --betterAuth [boolean]   Experimental: Boolean value if we should install
+                           BetterAuth. Must be used in conjunction with `--CI`.
+  --prisma [boolean]       Experimental: Boolean value if we should install
+                           Prisma. Must be used in conjunction with `--CI`.
+  --drizzle [boolean]      Experimental: Boolean value if we should install
+                           Drizzle. Must be used in conjunction with `--CI`.
+  --trpc [boolean]         Experimental: Boolean value if we should install
+                           tRPC. Must be used in conjunction with `--CI`.
+  -i, --import-alias       Explicitly tell the CLI to use a custom import alias
+  --dbProvider [provider]  Choose a database provider to use. Possible values:
+                           mysql, postgres, sqlite, planetscale (default:
+                           "sqlite")
+  --appRouter [boolean]    Explicitly tell the CLI to use the new Next.js app
+                           router
+  --eslint [boolean]       Experimental: Boolean value if we should install
+                           eslint and prettier. Must be used in conjunction
+                           with `--CI`.
+  --biome [boolean]        Experimental: Boolean value if we should install
+                           biome. Must be used in conjunction with `--CI`.
+  -v, --version            Display the version number
+  -h, --help               display help for command
+
+ The t3 stack was inspired by @t3dotgg and has been used to build awesome fullstack applications like https://ping.gg 
+

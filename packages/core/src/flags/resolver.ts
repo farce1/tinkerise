@@ -54,10 +54,13 @@ export function resolveFlags(options: ResolveFlagsOptions): ResolveFlagsResult {
 
     if (userValue === false && flagDef.nativeDisable) {
       // User explicitly disabled (e.g., --no-typescript)
-      args.push(flagDef.nativeDisable)
+      if (flagDef.nativeDisable) args.push(...flagDef.nativeDisable.split(/\s+/))
     }
     else if (userValue === true) {
-      args.push(flagDef.native)
+      // Split on whitespace to handle multi-word native flags
+      // e.g., '--add tailwindcss' -> ['--add', 'tailwindcss']
+      // Empty string sentinel (silent/no-op flags) produces no args
+      if (flagDef.native) args.push(...flagDef.native.split(/\s+/))
     }
     else if (typeof userValue === 'string' && flagDef.valueMap) {
       // Value flag with mapping (e.g., --package-manager pnpm)
@@ -68,12 +71,12 @@ export function resolveFlags(options: ResolveFlagsOptions): ResolveFlagsResult {
           args.push(`${flagDef.native}${mapped}`)
         }
         else {
-          args.push(flagDef.native, mapped)
+          args.push(...flagDef.native.split(/\s+/), mapped)
         }
       }
     }
     else if (typeof userValue === 'string') {
-      args.push(flagDef.native, userValue)
+      args.push(...flagDef.native.split(/\s+/), userValue)
     }
   }
 

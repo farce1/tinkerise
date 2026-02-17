@@ -1,0 +1,29 @@
+npm warn exec The following package was not found and will be installed: @tanstack/cli@0.59.3
+Usage: tanstack create [options] [project-name]
+
+Create a new TanStack Start application
+
+Arguments:
+  project-name                                     name of the project
+
+Options:
+  --framework <type>                               project framework (React, Solid) (default: "React")
+  --starter [url]                                  initialize this project from a starter URL (default: false)
+  --no-install                                     skip installing dependencies
+  --package-manager <npm|yarn|pnpm|bun|deno>       Explicitly tell the CLI to use this package manager
+  --dev-watch <path>                               Watch a framework directory for changes and auto-rebuild
+  --router-only                                    Deprecated: compatibility flag from create-tsrouter-app
+  --template <type>                                Deprecated: compatibility flag from create-tsrouter-app
+  --deployment <cloudflare|netlify|nitro|railway>  Explicitly tell the CLI to use this deployment adapter
+  --toolchain <biome|eslint>                       Explicitly tell the CLI to use this toolchain
+  --no-toolchain                                   skip toolchain selection
+  --interactive                                    interactive mode (default: false)
+  --add-ons [...add-ons]                           pick from a list of available add-ons (comma separated list)
+  --list-add-ons                                   list all available add-ons (default: false)
+  --addon-details <addon-id>                       show detailed information about a specific add-on
+  --no-git                                         do not create a git repository
+  --target-dir <path>                              the target directory for the application root
+  --ui                                             Launch the UI for project creation
+  --add-on-config <config>                         JSON string with add-on configuration options
+  -f, --force                                      force project creation even if the target directory is not empty (default: false)
+  -h, --help                                       display help for command

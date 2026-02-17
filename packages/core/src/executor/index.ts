@@ -123,10 +123,12 @@ export function buildCommandArgs(
 
   switch (entry.integration.type) {
     case 'delegate':
-      args.push(entry.integration.command, projectName, ...nativeArgs)
+      // Split on spaces to handle multi-word commands
+      // e.g., '@tanstack/cli create' -> ['@tanstack/cli', 'create']
+      args.push(...entry.integration.command.split(/\s+/), projectName, ...nativeArgs)
       break
     case 'wrap':
-      args.push(entry.integration.command, projectName, ...nativeArgs)
+      args.push(...entry.integration.command.split(/\s+/), projectName, ...nativeArgs)
       break
     case 'template':
       args.push(projectName, ...nativeArgs)
