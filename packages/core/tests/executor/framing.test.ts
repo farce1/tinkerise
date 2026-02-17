@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary } from '../../src/executor/framing'
+import { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary, tinkeriseSummaryCard } from '../../src/executor/framing'
 
 describe('tinkeriseLog()', () => {
   let logSpy: ReturnType<typeof vi.spyOn>
@@ -59,5 +59,46 @@ describe('tinkeriseBlankLine()', () => {
     tinkeriseBlankLine()
     expect(logSpy).toHaveBeenCalledWith()
     logSpy.mockRestore()
+  })
+})
+
+describe('tinkeriseSummaryCard()', () => {
+  let logSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(() => {
+    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    logSpy.mockRestore()
+  })
+
+  it('includes project name and display name from metadata', () => {
+    tinkeriseSummaryCard('next', 'my-app', [])
+    const allOutput = logSpy.mock.calls.map(c => String(c[0] ?? '')).join('\n')
+    expect(allOutput).toContain('my-app')
+    expect(allOutput).toContain('Next.js')
+  })
+
+  it('includes flags when provided', () => {
+    tinkeriseSummaryCard('next', 'my-app', ['typescript', 'tailwind'])
+    const allOutput = logSpy.mock.calls.map(c => String(c[0] ?? '')).join('\n')
+    expect(allOutput).toContain('typescript')
+    expect(allOutput).toContain('tailwind')
+  })
+
+  it('includes suggestions from metadata', () => {
+    tinkeriseSummaryCard('next', 'my-app', [])
+    const allOutput = logSpy.mock.calls.map(c => String(c[0] ?? '')).join('\n')
+    expect(allOutput).toContain('tinkerise add')
+    expect(allOutput).toContain('Next steps')
+  })
+
+  it('uses raw scaffolder name when metadata is not found', () => {
+    tinkeriseSummaryCard('unknown-tool', 'my-project', [])
+    const allOutput = logSpy.mock.calls.map(c => String(c[0] ?? '')).join('\n')
+    expect(allOutput).toContain('unknown-tool')
+    expect(allOutput).toContain('my-project')
+    expect(allOutput).toContain('Next steps')
   })
 })

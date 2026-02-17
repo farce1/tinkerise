@@ -6,6 +6,7 @@
  */
 
 import pc from 'picocolors'
+import { getScaffolderMetadata } from '../registry/metadata.js'
 
 /**
  * Print a tinkerise orchestration message with dimmed [tinkerise] prefix.
@@ -29,4 +30,34 @@ export function tinkeriseSummary(scaffolderName: string, projectName: string, fl
  */
 export function tinkeriseBlankLine(): void {
   console.log()
+}
+
+/**
+ * Show an enhanced post-scaffold summary card.
+ * Per locked decision: what was created, flags used, next steps with suggestions.
+ */
+export function tinkeriseSummaryCard(
+  scaffolderName: string,
+  projectName: string,
+  flags: string[],
+): void {
+  const metadata = getScaffolderMetadata(scaffolderName)
+  const displayName = metadata?.displayName ?? scaffolderName
+
+  tinkeriseBlankLine()
+  tinkeriseLog(`Created ${pc.bold(projectName)} using ${pc.bold(displayName)}`)
+
+  if (flags.length > 0) {
+    tinkeriseLog(`Options: ${flags.join(', ')}`)
+  }
+
+  tinkeriseLog('')
+  tinkeriseLog('Next steps:')
+  tinkeriseLog(`  cd ${projectName}`)
+
+  if (metadata?.suggestions) {
+    for (const suggestion of metadata.suggestions) {
+      tinkeriseLog(`  ${suggestion}`)
+    }
+  }
 }

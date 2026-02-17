@@ -53,6 +53,7 @@ export {
   tinkeriseBlankLine,
   tinkeriseLog,
   tinkeriseSummary,
+  tinkeriseSummaryCard,
 } from './executor/index.js'
 export type { ExecuteOptions } from './executor/index.js'
 

@@ -144,4 +144,4 @@ export function buildCommandArgs(
 }
 
 // Re-export framing utilities for use by CLI layer
-export { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary } from './framing.js'
+export { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary, tinkeriseSummaryCard } from './framing.js'
