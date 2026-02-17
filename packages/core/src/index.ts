@@ -41,3 +41,17 @@ export {
 export type { PrereqResult } from './prerequisites/index.js'
 export { detectPlatform, getInstallInstructions } from './prerequisites/index.js'
 export type { Platform } from './prerequisites/index.js'
+
+/**
+ * Executor — the end-to-end detect-map-execute pipeline.
+ */
+export {
+  buildCommandArgs,
+  executeScaffolder,
+  ScaffolderExitError,
+  ScaffolderNotFoundError,
+  tinkeriseBlankLine,
+  tinkeriseLog,
+  tinkeriseSummary,
+} from './executor/index.js'
+export type { ExecuteOptions } from './executor/index.js'
