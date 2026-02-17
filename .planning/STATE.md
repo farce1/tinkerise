@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 5 complete -- ready for Phase 6
+**Current focus:** Phase 6 in progress -- Core Enhancements & Add Command
 
 ## Current Position
 
-Phase: 5 of 10 (Enhancement Module System) -- COMPLETE
-Plan: 5 of 5 in current phase (all complete)
-Status: Phase 05 complete -- full enhancement module system with executor pipeline, summary card, session context
-Last activity: 2026-02-17 -- Plan 05-05 complete (runEnhancements, showEnhancementSummary, SessionContext, public API)
+Phase: 6 of 10 (Core Enhancements & Add Command) -- IN PROGRESS
+Plan: 1 of 4 in current phase (1 complete)
+Status: Plan 06-01 complete -- shared module helpers and ESLint flat config enhancement
+Last activity: 2026-02-17 -- Plan 06-01 complete (_utils.ts helpers, eslintModule, 10 unit tests)
 
-Progress: [██████░░░░] 66%
+Progress: [██████░░░░] 68%
 
 ## Performance Metrics
 
@@ -115,5 +115,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 05-05-PLAN.md (Phase 05 complete)
-Resume file: .planning/phases/05-enhancement-module-system/05-05-SUMMARY.md
+Stopped at: Phase 6 context gathered
+Resume file: .planning/phases/06-core-enhancements-add-command/06-CONTEXT.md
