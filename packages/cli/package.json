@@ -18,6 +18,7 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint .",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^22",
+    "execa": "^9.6.1",
     "tsup": "^8.4"
   }
 }
