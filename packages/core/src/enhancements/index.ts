@@ -27,3 +27,11 @@ export { defineEnhancement } from './define.js'
 // Version map (created in Task 2)
 export { dependencyVersionMap } from './version-map.js'
 export type { DependencyName } from './version-map.js'
+
+// Framework detection (05-02)
+export { detectFramework, FRAMEWORK_RULES } from './framework-detect.js'
+export type { FrameworkRule, FrameworkDetectResult } from './framework-detect.js'
+
+// Project context builder (05-02)
+export { buildProjectContext } from './context.js'
+export type { BuildContextOptions } from './context.js'
