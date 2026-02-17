@@ -48,10 +48,11 @@ describe('tinkerise CLI', () => {
   })
 
   describe('list command', () => {
-    it('runs the list command', async () => {
+    it('runs the list command and shows scaffolders', async () => {
       const { stdout, exitCode } = await execaNode(CLI_PATH, ['list'])
       expect(exitCode).toBe(0)
-      expect(stdout).toContain('Coming soon')
+      expect(stdout).toContain('Web')
+      expect(stdout).toContain('Next.js')
     })
   })
 })

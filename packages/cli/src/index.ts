@@ -12,6 +12,7 @@
 import { createRequire } from 'node:module'
 import { Command } from 'commander'
 import { runInteractiveFlow, runCategoryFlow, runDirectExecution } from './commands/scaffold.js'
+import { listScaffolders } from './commands/list.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -53,13 +54,28 @@ program
     }
   })
 
-// List command stub
+// List command — shows all scaffolders grouped by category
 program
   .command('list')
   .summary('Show available scaffolders')
-  .description('Show all available scaffolders and enhancements grouped by category.')
-  .action(() => {
-    console.log('Coming soon.')
+  .description('Show all available scaffolders grouped by category. Pass a category name for details.')
+  .argument('[category]', 'Filter by category (web, backend, mobile)')
+  .action(async (category?: string) => {
+    await listScaffolders(category)
+  })
+
+// Monorepo command — routes to turbo scaffolder (WEB-07)
+program
+  .command('monorepo')
+  .summary('Create a Turborepo monorepo')
+  .description('Scaffold a new Turborepo monorepo project.')
+  .argument('<name>', 'Project name')
+  .option('--no-install', 'Skip dependency installation')
+  .option('--package-manager <pm>', 'Package manager (npm, pnpm, yarn, bun)')
+  .action(async (name: string, options) => {
+    // Merge options same as scaffold command
+    if (options.ts) options.typescript = true
+    await runDirectExecution('web', 'turbo', name, program, options)
   })
 
 program.addHelpText('after', `
@@ -67,7 +83,9 @@ Examples:
   $ tinkerise                            Interactive guided flow
   $ tinkerise web                        Select from web frameworks
   $ tinkerise web next my-app            Create a Next.js project
-  $ tinkerise web next my-app --ts       Create with TypeScript
-  $ tinkerise list                       Show available scaffolders`)
+  $ tinkerise web vite my-app --ts       Create with TypeScript
+  $ tinkerise monorepo my-repo           Create a Turborepo monorepo
+  $ tinkerise list                       Show available scaffolders
+  $ tinkerise list web                   Show web scaffolders with details`)
 
 program.parse()
