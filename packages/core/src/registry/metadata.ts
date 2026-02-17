@@ -87,6 +87,30 @@ export const SCAFFOLDER_METADATA: Record<string, ScaffolderMetadata> = {
       'Run `tinkerise doctor` to verify Python setup',
     ],
   },
+  go: {
+    displayName: 'Go',
+    description: 'Go HTTP service with framework choice (Chi, Gin, Fiber, Echo)',
+    suggestions: [
+      'Run `tinkerise add docker` to add Docker support',
+      'Run `tinkerise doctor` to verify Go setup',
+    ],
+  },
+  rust: {
+    displayName: 'Rust (Axum)',
+    description: 'Rust web service with Axum framework',
+    suggestions: [
+      'Run `tinkerise add docker` to add Docker support',
+      'Run `tinkerise doctor` to verify Rust setup',
+    ],
+  },
+  express: {
+    displayName: 'Express',
+    description: 'TypeScript Express.js API with structured CRUD template',
+    suggestions: [
+      'Run `tinkerise add eslint` to add linting',
+      'Run `tinkerise add docker` to add Docker support',
+    ],
+  },
 }
 
 /**
