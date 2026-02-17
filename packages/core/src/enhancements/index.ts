@@ -47,3 +47,10 @@ export {
   parseJsonConfig,
 } from './conflict.js'
 export type { ConflictAction } from './conflict.js'
+
+// Executor (05-05)
+export { runEnhancements } from './executor.js'
+export type { EnhancementExecutorOptions, ExecutionSummary } from './executor.js'
+
+// Summary card (05-05)
+export { showEnhancementSummary } from './summary.js'

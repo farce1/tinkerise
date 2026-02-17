@@ -78,3 +78,32 @@ export { ciName, isCI } from './ci/index.js'
  */
 export { getScaffolderMetadata, SCAFFOLDER_METADATA } from './registry/metadata.js'
 export type { ScaffolderMetadata } from './registry/metadata.js'
+
+/**
+ * Enhancements — module system for post-scaffold tooling setup.
+ */
+export {
+  buildProjectContext,
+  CyclicDependencyError,
+  defineEnhancement,
+  dependencyVersionMap,
+  detectFramework,
+  formatColoredDiff,
+  mergeConfigs,
+  runEnhancements,
+  showEnhancementSummary,
+  showFileDiff,
+  topologicalSort,
+} from './enhancements/index.js'
+export type {
+  BuildContextOptions,
+  ConflictAction,
+  DependencyName,
+  DetectionResult,
+  EnhancementExecutorOptions,
+  EnhancementModule,
+  ExecutionSummary,
+  FrameworkId,
+  InstallResult,
+  ProjectContext,
+} from './enhancements/index.js'
