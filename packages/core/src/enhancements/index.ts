@@ -38,3 +38,12 @@ export type { BuildContextOptions } from './context.js'
 
 // Dependency graph (05-03)
 export { topologicalSort, CyclicDependencyError } from './graph.js'
+
+// Conflict resolution (05-04)
+export {
+  formatColoredDiff,
+  showFileDiff,
+  mergeConfigs,
+  parseJsonConfig,
+} from './conflict.js'
+export type { ConflictAction } from './conflict.js'
