@@ -10,3 +10,12 @@ import { VERSION } from '@tinkerise/shared'
 export function getVersion(): string {
   return VERSION
 }
+
+/**
+ * Registry — scaffolder lookup and resolution.
+ */
+export {
+  getAllScaffolders,
+  getScaffolder,
+  getScaffoldersByCategory,
+} from './registry/index.js'
