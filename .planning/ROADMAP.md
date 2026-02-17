@@ -85,14 +85,14 @@ Plans:
   3. All 7 web scaffolders (Next.js, Vite, Astro, T3, Remix, TanStack Start, Turbo) produce working projects
   4. `tinkerise list` shows all available scaffolders grouped by category
   5. Unified flags (--typescript, --tailwind, --eslint, --no-git, --no-install, --package-manager) work across all web scaffolders
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 04-01: Next.js and Vite scaffolder registry entries + E2E tests
-- [ ] 04-02: Astro, T3, and Remix scaffolder registry entries + E2E tests
-- [ ] 04-03: TanStack Start and Turborepo scaffolder entries + E2E tests
-- [ ] 04-04: Unified flag mapping across all web scaffolders
-- [ ] 04-05: `tinkerise list` command and weekly upstream smoke tests
+- [ ] 04-01-PLAN.md — All 7 scaffolder registry entries with flag mappings and unit tests (Wave 1)
+- [ ] 04-02-PLAN.md — Variant selection prompts, scaffolder metadata, and summary card (Wave 1)
+- [ ] 04-03-PLAN.md — tinkerise list command, monorepo routing, variant wiring (Wave 2)
+- [ ] 04-04-PLAN.md — E2E scaffold tests for all 7 frameworks (Wave 3)
+- [ ] 04-05-PLAN.md — Weekly upstream drift detection workflow and snapshots (Wave 1)
 
 ### Phase 5: Enhancement Module System
 **Goal**: The enhancement architecture is in place -- modules can declare dependencies, receive project context, detect existing config, and execute in topologically sorted order
