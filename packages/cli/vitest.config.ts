@@ -5,6 +5,8 @@ export default defineConfig({
     name: '@tinkerise/cli',
     include: [
       'tests/unit/**/*.test.ts',
+      'tests/utils/**/*.test.ts',
+      'tests/commands/**/*.test.ts',
       'tests/prompts/**/*.test.ts',
       'tests/integration/**/*.test.ts',
     ],
