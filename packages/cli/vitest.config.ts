@@ -9,6 +9,7 @@ export default defineConfig({
       'tests/commands/**/*.test.ts',
       'tests/prompts/**/*.test.ts',
       'tests/integration/**/*.test.ts',
+      'tests/e2e/**/*.test.ts',
     ],
   },
 })
