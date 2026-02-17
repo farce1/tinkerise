@@ -21,3 +21,23 @@ export interface TinkeriseConfig {
  * Supported scaffolder categories.
  */
 export type ScaffolderCategory = 'web' | 'backend' | 'mobile' | 'utility'
+
+/**
+ * Registry — schemas, types, and helpers for the scaffolder registry.
+ */
+export {
+  defineScaffolder,
+  FlagMappingSchema,
+  IntegrationStrategySchema,
+  PrerequisiteSchema,
+  ScaffolderEntrySchema,
+  VersionedFlagMapSchema,
+} from './registry/index.js'
+
+export type {
+  FlagMapping,
+  IntegrationStrategy,
+  Prerequisite,
+  ScaffolderEntry,
+  VersionedFlagMap,
+} from './registry/index.js'
