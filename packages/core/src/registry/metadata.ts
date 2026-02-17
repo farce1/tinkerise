@@ -71,6 +71,22 @@ export const SCAFFOLDER_METADATA: Record<string, ScaffolderMetadata> = {
       'Run `tinkerise add ci` to add GitHub Actions CI',
     ],
   },
+  fastapi: {
+    displayName: 'FastAPI',
+    description: 'Modern Python API framework with automatic docs',
+    suggestions: [
+      'Run `tinkerise add docker` to add Docker support',
+      'Run `tinkerise doctor` to verify Python setup',
+    ],
+  },
+  django: {
+    displayName: 'Django',
+    description: 'Full-featured Python web framework with admin and ORM',
+    suggestions: [
+      'Run `tinkerise add docker` to add Docker support',
+      'Run `tinkerise doctor` to verify Python setup',
+    ],
+  },
 }
 
 /**
