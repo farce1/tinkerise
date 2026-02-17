@@ -1,0 +1,25 @@
+{
+  "name": "@tinkerise/core",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tinkerise/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.4",
+    "@types/node": "^22"
+  }
+}
