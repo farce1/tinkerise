@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 4: Web Framework Scaffolders
+**Current focus:** Phase 5: Enhancement Module System
 
 ## Current Position
 
-Phase: 4 of 10 (Web Framework Scaffolders)
-Plan: 5 of 5 in current phase
-Status: Phase 04 complete -- all 5 plans executed
-Last activity: 2026-02-17 -- Plan 04-04 complete (E2E scaffold tests for all 7 web frameworks)
+Phase: 5 of 10 (Enhancement Module System)
+Plan: 1 of 5 in current phase
+Status: Plan 05-01 complete -- enhancement module type system, Zod schemas, defineEnhancement, version map
+Last activity: 2026-02-17 -- Plan 05-01 complete (enhancement module types, schemas, defineEnhancement, version map)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: ~4 min/plan
-- Total execution time: ~67 minutes
+- Total execution time: ~73 minutes
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [█████░░░░░] 50%
 | 2 | 3/3 | ~13 min | ~4 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 5/5 | ~15 min | ~3 min |
+| 5 | 1/5 | ~6 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01, 04-02, 04-05, 04-03, 04-04
+- Last 5 plans: 04-02, 04-05, 04-03, 04-04, 05-01
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -45,6 +46,7 @@ Progress: [█████░░░░░] 50%
 | Phase 04 P05 | 3min | 1 task | 8 files |
 | Phase 04 P03 | 7min | 3 tasks | 10 files |
 | Phase 04 P04 | 2min | 1 task | 2 files |
+| Phase 05 P01 | 6min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -84,6 +86,9 @@ Recent decisions affecting current work:
 - [Phase 04]: extraArgs merged with nativeArgs in executor for framework-specific computed args
 - [Phase 04]: E2E tests gated behind TINKERISE_E2E=true env var (skipped in normal CI runs)
 - [Phase 04]: import.meta.dirname for ESM-compatible path resolution in test files
+- [Phase 05]: Direct TypeScript interfaces over z.infer<> for enhancement types (z.function() inferred types too generic)
+- [Phase 05]: Zod added as direct dependency to @tinkerise/core (was only in @tinkerise/shared)
+- [Phase 05]: dependencyVersionMap as const satisfies Record<string, string> (create-t3-app pattern)
 
 ### Pending Todos
 
@@ -98,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-04-PLAN.md (E2E scaffold tests for all 7 web frameworks)
-Resume file: .planning/phases/04-web-framework-scaffolders/04-04-SUMMARY.md
+Stopped at: Completed 05-01-PLAN.md
+Resume file: .planning/phases/05-enhancement-module-system/05-01-SUMMARY.md
