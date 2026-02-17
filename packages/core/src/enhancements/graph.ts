@@ -88,8 +88,9 @@ export function topologicalSort(
 
   // If not all modules were sorted, a cycle exists
   if (sorted.length !== modules.length) {
+    const sortedIds = new Set(sorted.map((m) => m.id))
     const cycleIds = modules
-      .filter((m) => !sorted.some((s) => s.id === m.id))
+      .filter((m) => !sortedIds.has(m.id))
       .map((m) => m.id)
     throw new CyclicDependencyError(cycleIds)
   }
