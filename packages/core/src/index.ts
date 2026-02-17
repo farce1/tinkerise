@@ -71,3 +71,9 @@ export type { DetectResult, PackageManager } from './pm/index.js'
  * CI Detection — environment detection for non-interactive mode.
  */
 export { ciName, isCI } from './ci/index.js'
+
+/**
+ * Metadata — scaffolder display names, descriptions, and suggestions.
+ */
+export { getScaffolderMetadata, SCAFFOLDER_METADATA } from './registry/metadata.js'
+export type { ScaffolderMetadata } from './registry/metadata.js'
