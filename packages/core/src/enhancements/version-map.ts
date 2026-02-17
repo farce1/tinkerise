@@ -18,6 +18,9 @@ export const dependencyVersionMap = {
   'eslint-plugin-svelte': '^3.5.0',
   'eslint-plugin-astro': '^1.4.0',
 
+  // ESLint globals
+  'globals': '^17.3.0',
+
   // Formatting
   'prettier': '^3.5.3',
   'prettier-plugin-tailwindcss': '^0.6.11',

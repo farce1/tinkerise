@@ -148,6 +148,7 @@ describe('dependencyVersionMap', () => {
     'eslint-plugin-vue',
     'eslint-plugin-svelte',
     'eslint-plugin-astro',
+    'globals',
     'prettier',
     'prettier-plugin-tailwindcss',
     'husky',
