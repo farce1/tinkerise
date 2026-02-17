@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 ## Current Position
 
-Phase: 4 of 10 (Web Framework Scaffolders) -- COMPLETE
-Plan: 5 of 5 in current phase
-Status: Phase 04 complete, ready for Phase 05
-Last activity: 2026-02-17 -- Plan 04-05 complete (upstream drift detection workflow, 7 scaffolder snapshots)
+Phase: 4 of 10 (Web Framework Scaffolders)
+Plan: 4 of 5 in current phase
+Status: Plan 04-03 complete, 04-04 remaining
+Last activity: 2026-02-17 -- Plan 04-03 complete (CLI wiring, list/monorepo commands, per-scaffolder help)
 
 Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
+- Total plans completed: 16
 - Average duration: ~4 min/plan
-- Total execution time: ~58 minutes
+- Total execution time: ~65 minutes
 
 **By Phase:**
 
@@ -33,7 +33,7 @@ Progress: [█████░░░░░] 50%
 | 4 | 5/5 | ~15 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03, 04-01, 04-02, 04-03, 04-05
+- Last 5 plans: 03-03, 04-01, 04-02, 04-05, 04-03
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -43,6 +43,7 @@ Progress: [█████░░░░░] 50%
 | Phase 04 P01 | 3min | 2 tasks | 7 files |
 | Phase 04 P02 | 3min | 2 tasks | 9 files |
 | Phase 04 P05 | 3min | 1 task | 8 files |
+| Phase 04 P03 | 7min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Shared nodePrerequisite() helper for DRY prerequisite definitions
 - [Phase 04]: Snapshots include npm warn lines for consistency with CI capture
 - [Phase 04]: permissions: contents: read on drift detection workflow for security hardening
+- [Phase 04]: Early process.argv interception for per-scaffolder --help (Commander handles --help before action)
+- [Phase 04]: CLI layer owns post-scaffold summary card (executor just runs tool, no summary output)
+- [Phase 04]: extraArgs merged with nativeArgs in executor for framework-specific computed args
 
 ### Pending Todos
 
@@ -91,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-02-PLAN.md (variant selection, metadata, summary card)
-Resume file: .planning/phases/04-web-framework-scaffolders/04-02-SUMMARY.md
+Stopped at: Completed 04-03-PLAN.md (CLI wiring, list/monorepo, per-scaffolder help)
+Resume file: .planning/phases/04-web-framework-scaffolders/04-03-SUMMARY.md
