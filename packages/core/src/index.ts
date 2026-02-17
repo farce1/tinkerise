@@ -83,16 +83,24 @@ export type { ScaffolderMetadata } from './registry/metadata.js'
  * Enhancements — module system for post-scaffold tooling setup.
  */
 export {
+  allEnhancementModules,
   buildProjectContext,
+  ciModule,
   CyclicDependencyError,
   defineEnhancement,
   dependencyVersionMap,
   detectFramework,
+  ENHANCEMENT_NEXT_STEPS,
+  enhancementRegistry,
+  eslintModule,
   formatColoredDiff,
+  huskyModule,
   mergeConfigs,
+  prettierModule,
   runEnhancements,
   showEnhancementSummary,
   showFileDiff,
+  showPerEnhancementSummary,
   topologicalSort,
 } from './enhancements/index.js'
 export type {
@@ -102,6 +110,7 @@ export type {
   DetectionResult,
   EnhancementExecutorOptions,
   EnhancementModule,
+  EnhancementNextSteps,
   ExecutionSummary,
   FrameworkId,
   InstallResult,

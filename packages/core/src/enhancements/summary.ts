@@ -8,6 +8,7 @@
 import pc from 'picocolors'
 import { tinkeriseBlankLine, tinkeriseLog } from '../executor/framing.js'
 import type { ExecutionSummary } from './executor.js'
+import type { InstallResult } from './types.js'
 
 /**
  * Display a styled enhancement summary card.
@@ -42,4 +43,52 @@ export function showEnhancementSummary(summary: ExecutionSummary): void {
   }
 
   tinkeriseBlankLine()
+}
+
+/** Info for a per-enhancement summary card */
+export interface EnhancementNextSteps {
+  moduleId: string
+  moduleName: string
+  result: InstallResult
+  nextSteps: string[]
+}
+
+/**
+ * Display a detailed per-enhancement summary card.
+ *
+ * Shows: module name, files created/modified, packages installed, next steps.
+ * Called once per successfully installed module.
+ */
+export function showPerEnhancementSummary(info: EnhancementNextSteps): void {
+  tinkeriseBlankLine()
+  tinkeriseLog(pc.bold(info.moduleName))
+
+  if (info.result.filesModified.length > 0) {
+    tinkeriseLog(`  ${pc.dim('Files:')} ${info.result.filesModified.join(', ')}`)
+  }
+
+  if (info.result.packagesAdded.length > 0) {
+    tinkeriseLog(`  ${pc.dim('Packages:')} ${info.result.packagesAdded.join(', ')}`)
+  }
+
+  if (info.result.warnings.length > 0) {
+    for (const w of info.result.warnings) {
+      tinkeriseLog(`  ${pc.yellow('!')} ${w}`)
+    }
+  }
+
+  if (info.nextSteps.length > 0) {
+    tinkeriseLog(`  ${pc.dim('Next:')}`)
+    for (const step of info.nextSteps) {
+      tinkeriseLog(`    ${pc.cyan('>')} ${step}`)
+    }
+  }
+}
+
+/** Per-module suggested next steps */
+export const ENHANCEMENT_NEXT_STEPS: Record<string, string[]> = {
+  eslint: ['Run "npm run lint" to check your code'],
+  prettier: ['Run "npm run format" to format your code'],
+  husky: ['Make a commit to test the pre-commit hook'],
+  ci: ['Push to GitHub to trigger the CI workflow'],
 }

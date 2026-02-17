@@ -52,5 +52,16 @@ export type { ConflictAction } from './conflict.js'
 export { runEnhancements } from './executor.js'
 export type { EnhancementExecutorOptions, ExecutionSummary } from './executor.js'
 
-// Summary card (05-05)
-export { showEnhancementSummary } from './summary.js'
+// Summary card (05-05, extended 06-03)
+export { showEnhancementSummary, showPerEnhancementSummary, ENHANCEMENT_NEXT_STEPS } from './summary.js'
+export type { EnhancementNextSteps } from './summary.js'
+
+// Enhancement modules (06-03)
+export {
+  allEnhancementModules,
+  ciModule,
+  enhancementRegistry,
+  eslintModule,
+  huskyModule,
+  prettierModule,
+} from './modules/index.js'
