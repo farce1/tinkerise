@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Project Foundation** - Monorepo structure, build pipeline, CI infrastructure, and CLI skeleton (completed 2026-02-17)
 - [ ] **Phase 2: Scaffolder Registry & Execution** - Declarative registry, detect-map-execute pipeline, and process execution
 - [ ] **Phase 3: Interactive UX & Package Manager Detection** - Prompt flows, non-interactive mode, CI detection, and PM detection
-- [ ] **Phase 4: Web Framework Scaffolders** - All 7 web scaffolders with unified flag mapping
+- [x] **Phase 4: Web Framework Scaffolders** - All 7 web scaffolders with unified flag mapping (completed 2026-02-17)
 - [ ] **Phase 5: Enhancement Module System** - Enhancement architecture, dependency graph resolution, and framework adaptation
 - [ ] **Phase 6: Core Enhancements & Add Command** - ESLint, Prettier, husky, GitHub Actions CI, and `tinkerise add`
 - [ ] **Phase 7: Backend & Mobile Scaffolders** - Backend (FastAPI, Django, Go, Rust, Express), mobile (Flutter, React Native), and `tinkerise doctor`
@@ -104,13 +104,14 @@ Plans:
   3. Running an enhancement twice on the same project produces the same result (idempotent)
   4. When an enhancement already exists, user is offered skip/merge/replace options
   5. Module dependency graph is topologically sorted -- a module that depends on another always runs after it
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 05-01: Enhancement module interface and project context
-- [ ] 05-02: Dependency graph and topological sort
-- [ ] 05-03: Idempotency detection and conflict resolution (skip/merge/replace)
-- [ ] 05-04: Framework-aware adaptation and centralized version map
+- [ ] 05-01-PLAN.md — Enhancement module types, Zod schemas, defineEnhancement helper, and dependency version map (Wave 1)
+- [ ] 05-02-PLAN.md — Framework detection and project context builder (Wave 1)
+- [ ] 05-03-PLAN.md — Topological sort with Kahn's algorithm and cycle detection (Wave 2, TDD)
+- [ ] 05-04-PLAN.md — Conflict detection, diff display, and config merging (Wave 2)
+- [ ] 05-05-PLAN.md — Enhancement executor pipeline, summary card, session context, and public API (Wave 3)
 
 ### Phase 6: Core Enhancements & Add Command
 **Goal**: Users can add ESLint, Prettier, husky, and GitHub Actions CI to any scaffolded project via `tinkerise add`
@@ -218,7 +219,7 @@ Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with P
 | 1. Project Foundation | 4/4 | Complete | 2026-02-17 |
 | 2. Scaffolder Registry & Execution | 0/3 | Not started | - |
 | 3. Interactive UX & Package Manager Detection | 0/3 | Not started | - |
-| 4. Web Framework Scaffolders | 0/5 | Not started | - |
+| 4. Web Framework Scaffolders | 0/5 | Complete    | 2026-02-17 |
 | 5. Enhancement Module System | 0/4 | Not started | - |
 | 6. Core Enhancements & Add Command | 0/6 | Not started | - |
 | 7. Backend & Mobile Scaffolders | 0/5 | Not started | - |
