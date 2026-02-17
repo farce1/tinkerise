@@ -13,6 +13,7 @@ import { createRequire } from 'node:module'
 import { Command } from 'commander'
 import { runInteractiveFlow, runCategoryFlow, runDirectExecution } from './commands/scaffold.js'
 import { listScaffolders } from './commands/list.js'
+import { buildScaffolderHelpText } from './commands/help.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -88,5 +89,22 @@ Examples:
   $ tinkerise monorepo my-repo           Create a Turborepo monorepo
   $ tinkerise list                       Show available scaffolders
   $ tinkerise list web                   Show web scaffolders with details`)
+
+// Per-scaffolder help interception (before Commander processes --help)
+// Detects: tinkerise web <framework> --help | -h
+// Shows unified-only flags per locked decision, then exits.
+const VALID_CATEGORIES = ['web', 'backend', 'mobile']
+const userArgs = process.argv.slice(2)
+const helpIdx = userArgs.findIndex(a => a === '--help' || a === '-h')
+if (helpIdx >= 0 && userArgs.length >= 2) {
+  const [cat, fw] = userArgs.filter(a => a !== '--help' && a !== '-h')
+  if (cat && fw && VALID_CATEGORIES.includes(cat)) {
+    const helpText = buildScaffolderHelpText(fw)
+    if (helpText) {
+      console.log(helpText)
+      process.exit(0)
+    }
+  }
+}
 
 program.parse()
