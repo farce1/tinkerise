@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 6 in progress -- Core Enhancements & Add Command
+**Current focus:** Phase 6 complete -- ready for Phase 7
 
 ## Current Position
 
-Phase: 6 of 10 (Core Enhancements & Add Command) -- IN PROGRESS
+Phase: 6 of 10 (Core Enhancements & Add Command) -- COMPLETE
 Plan: 4 of 4 in current phase (all complete)
-Status: Phase 06 all plans complete -- awaiting verification
-Last activity: 2026-02-17 -- Plan 06-04 complete (tinkerise add, enhancement picker, tk alias)
+Status: Phase 06 complete -- ESLint, Prettier, Husky, CI modules + tinkerise add command + tk alias
+Last activity: 2026-02-17 -- Phase 06 complete (4 enhancement modules, add command, tk alias, 72 new tests)
 
 Progress: [███████░░░] 74%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 26
 - Average duration: ~4 min/plan
-- Total execution time: ~88 minutes
+- Total execution time: ~102 minutes
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [███████░░░] 74%
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 5/5 | ~15 min | ~3 min |
 | 5 | 5/5 | ~21 min | ~4 min |
+| 6 | 4/4 | ~14 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01, 05-02, 05-03, 05-04, 05-05
+- Last 5 plans: 06-01, 06-02, 06-03, 06-04
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -51,6 +52,10 @@ Progress: [███████░░░] 74%
 | Phase 05 P03 | 3min | 3 tasks | 3 files |
 | Phase 05 P04 | 6min | 2 tasks | 6 files |
 | Phase 05 P05 | 4min | 2 tasks | 6 files |
+| Phase 06 P01 | 4min | 2 tasks | 5 files |
+| Phase 06 P02 | 3min | 2 tasks | 4 files |
+| Phase 06 P03 | 3min | 2 tasks | 7 files |
+| Phase 06 P04 | 4min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -101,6 +106,15 @@ Recent decisions affecting current work:
 - [Phase 05]: picocolors for diff coloring (already a project dependency, zero added weight)
 - [Phase 05]: Non-null assertion for strict-mode index-based array access in executor loop
 - [Phase 05]: Callback-based conflict/dependency resolution (onConflict, onDependencyApproval) decouples executor from UI
+- [Phase 06]: FRAMEWORK_ESLINT_MAP as static config object mapping framework IDs to packages/imports/spreads
+- [Phase 06]: ESLint config filename: .js for type:module, .mjs otherwise
+- [Phase 06]: Prettier: no config file when no Tailwind (pure defaults per locked decision)
+- [Phase 06]: Husky: .git check before install with clear error message
+- [Phase 06]: lint-staged: separate glob patterns for ESLint (code files) vs Prettier (code + data files)
+- [Phase 06]: PM_CI_MAP static config for all 4 package managers (npm/pnpm/yarn/bun)
+- [Phase 06]: Bun CI omits setup-node entirely, uses oven-sh/setup-bun@v2
+- [Phase 06]: basename(process.argv[1]) for tk alias detection
+- [Phase 06]: ExecutionSummary.results as Map<string, InstallResult> for per-module detail
 
 ### Pending Todos
 
@@ -115,5 +129,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Phase 6 context gathered
-Resume file: .planning/phases/06-core-enhancements-add-command/06-CONTEXT.md
+Stopped at: Phase 6 complete -- ready for Phase 7
+Resume file: N/A (phase complete)

@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Interactive UX & Package Manager Detection** - Prompt flows, non-interactive mode, CI detection, and PM detection
 - [x] **Phase 4: Web Framework Scaffolders** - All 7 web scaffolders with unified flag mapping (completed 2026-02-17)
 - [ ] **Phase 5: Enhancement Module System** - Enhancement architecture, dependency graph resolution, and framework adaptation
-- [ ] **Phase 6: Core Enhancements & Add Command** - ESLint, Prettier, husky, GitHub Actions CI, and `tinkerise add`
+- [x] **Phase 6: Core Enhancements & Add Command** - ESLint, Prettier, husky, GitHub Actions CI, and `tinkerise add` (completed 2026-02-17)
 - [ ] **Phase 7: Backend & Mobile Scaffolders** - Backend (FastAPI, Django, Go, Rust, Express), mobile (Flutter, React Native), and `tinkerise doctor`
 - [ ] **Phase 8: Configuration & Presets** - Config management (global/project/CLI merge), preset save/use/distribute
 - [ ] **Phase 9: Additional Enhancements & Utility Templates** - Docker, env, commitlint, testing, renovate, editorconfig + MCP/CLI/lib templates
@@ -126,10 +126,10 @@ Plans:
 **Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 06-01-PLAN.md -- Shared module helpers, ESLint flat config enhancement module, and unit tests (Wave 1)
-- [ ] 06-02-PLAN.md -- Prettier enhancement module and Husky + lint-staged enhancement module (Wave 2)
-- [ ] 06-03-PLAN.md -- GitHub Actions CI module, module registry barrel, per-enhancement summary (Wave 2)
-- [ ] 06-04-PLAN.md -- `tinkerise add` command, interactive picker, `tk` alias, integration tests (Wave 3)
+- [x] 06-01-PLAN.md -- Shared module helpers, ESLint flat config enhancement module, and unit tests (Wave 1)
+- [x] 06-02-PLAN.md -- Prettier enhancement module and Husky + lint-staged enhancement module (Wave 2)
+- [x] 06-03-PLAN.md -- GitHub Actions CI module, module registry barrel, per-enhancement summary (Wave 2)
+- [x] 06-04-PLAN.md -- `tinkerise add` command, interactive picker, `tk` alias, integration tests (Wave 3)
 
 ### Phase 7: Backend & Mobile Scaffolders
 **Goal**: Users can scaffold backend and mobile projects through tinkerise, and `tinkerise doctor` validates that the required ecosystem tools are installed
@@ -219,7 +219,7 @@ Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with P
 | 3. Interactive UX & Package Manager Detection | 0/3 | Not started | - |
 | 4. Web Framework Scaffolders | 0/5 | Complete    | 2026-02-17 |
 | 5. Enhancement Module System | 0/4 | Not started | - |
-| 6. Core Enhancements & Add Command | 0/6 | Not started | - |
+| 6. Core Enhancements & Add Command | 4/4 | Complete | 2026-02-17 |
 | 7. Backend & Mobile Scaffolders | 0/5 | Not started | - |
 | 8. Configuration & Presets | 0/5 | Not started | - |
 | 9. Additional Enhancements & Utility Templates | 0/5 | Not started | - |
