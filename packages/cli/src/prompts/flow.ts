@@ -9,7 +9,7 @@
 import * as p from '@clack/prompts'
 import type { ScaffolderCategory } from '@tinkerise/shared'
 import { selectFramework } from './framework-select.js'
-import { selectFrameworkOptions } from './options-select.js'
+import { FRAMEWORK_OPTIONS, selectFrameworkOptions } from './options-select.js'
 import { promptProjectName } from './project-name.js'
 
 export interface PromptFlowOptions {
@@ -19,6 +19,8 @@ export interface PromptFlowOptions {
   name?: string
   /** Pre-selected options from flags (skips or pre-fills options prompt) */
   preselectedOptions?: string[]
+  /** When true and preselectedOptions covers all framework options, skip multiselect entirely */
+  allOptionsResolved?: boolean
   /** Filter to a specific category */
   filterCategory?: ScaffolderCategory
 }
@@ -45,8 +47,20 @@ export async function runPromptFlow(opts: PromptFlowOptions): Promise<PromptFlow
         opts.framework
           ? Promise.resolve(opts.framework)
           : selectFramework(opts.filterCategory),
-      options: ({ results }) =>
-        selectFrameworkOptions(results.framework!, opts.preselectedOptions),
+      options: ({ results }) => {
+        const fw = results.framework!
+        const pre = opts.preselectedOptions ?? []
+
+        // If allOptionsResolved and preselected covers all framework options, skip multiselect
+        if (opts.allOptionsResolved && pre.length > 0) {
+          const available = FRAMEWORK_OPTIONS[fw]
+          if (!available || available.every(o => pre.includes(o.value))) {
+            return Promise.resolve(pre)
+          }
+        }
+
+        return selectFrameworkOptions(fw, opts.preselectedOptions)
+      },
       name: ({ results }) =>
         opts.name
           ? Promise.resolve(opts.name)

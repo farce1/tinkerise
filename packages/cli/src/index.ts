@@ -38,18 +38,18 @@ program
   .argument('[category]', 'Project category (web, backend, mobile)')
   .argument('[framework]', 'Framework name')
   .argument('[name]', 'Project name')
-  .action(async (category: string | undefined, framework: string | undefined, name: string | undefined, options) => {
+  .action(async (category: string | undefined, framework: string | undefined, name: string | undefined, options, command) => {
     // Merge --ts alias into --typescript
     if (options.ts) {
       options.typescript = true
     }
 
     if (!category) {
-      await runInteractiveFlow(options)
+      await runInteractiveFlow(command, options)
     } else if (!framework) {
-      await runCategoryFlow(category, options)
+      await runCategoryFlow(category, command, options)
     } else {
-      await runDirectExecution(category, framework, name, options)
+      await runDirectExecution(category, framework, name, command, options)
     }
   })
 
