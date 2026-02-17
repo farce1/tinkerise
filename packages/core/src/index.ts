@@ -19,3 +19,25 @@ export {
   getScaffolder,
   getScaffoldersByCategory,
 } from './registry/index.js'
+
+/**
+ * Flags — unified-to-native flag mapping and validation.
+ */
+export {
+  FlagNotApplicableError,
+  resolveFlags,
+  validateFlagApplicability,
+} from './flags/index.js'
+export type { ResolveFlagsOptions, ResolveFlagsResult } from './flags/index.js'
+
+/**
+ * Prerequisites — tool existence and version validation.
+ */
+export {
+  checkPrerequisite,
+  checkPrerequisites,
+  PrerequisiteError,
+} from './prerequisites/index.js'
+export type { PrereqResult } from './prerequisites/index.js'
+export { detectPlatform, getInstallInstructions } from './prerequisites/index.js'
+export type { Platform } from './prerequisites/index.js'
