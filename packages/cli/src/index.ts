@@ -10,18 +10,24 @@
  */
 
 import { createRequire } from 'node:module'
+import { basename } from 'node:path'
 import { Command } from 'commander'
 import { runInteractiveFlow, runCategoryFlow, runDirectExecution } from './commands/scaffold.js'
 import { listScaffolders } from './commands/list.js'
 import { buildScaffolderHelpText } from './commands/help.js'
+import { runAddCommand } from './commands/add.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
 
+// Detect invocation name: 'tk' vs 'tinkerise'
+const invokedAs = basename(process.argv[1] ?? 'tinkerise')
+const programName = invokedAs === 'tk' ? 'tk' : 'tinkerise'
+
 const program = new Command()
 
 program
-  .name('tinkerise')
+  .name(programName)
   .description('Scaffold any project with any stack')
   .version(version, '-v, --version')
 
@@ -80,15 +86,27 @@ program
     await runDirectExecution('web', 'turbo', name, program, options)
   })
 
+// Add command — apply enhancements to existing projects
+program
+  .command('add')
+  .summary('Add enhancements to your project')
+  .description('Add ESLint, Prettier, husky, GitHub Actions CI, and more to your project. Run without arguments for an interactive picker.')
+  .argument('[enhancements...]', 'Enhancement names (eslint, prettier, husky, ci)')
+  .option('--verbose', 'Show detailed output from package installation')
+  .action(async (enhancements: string[], options) => {
+    await runAddCommand(enhancements, options)
+  })
+
 program.addHelpText('after', `
 Examples:
-  $ tinkerise                            Interactive guided flow
-  $ tinkerise web                        Select from web frameworks
-  $ tinkerise web next my-app            Create a Next.js project
-  $ tinkerise web vite my-app --ts       Create with TypeScript
-  $ tinkerise monorepo my-repo           Create a Turborepo monorepo
-  $ tinkerise list                       Show available scaffolders
-  $ tinkerise list web                   Show web scaffolders with details`)
+  $ ${programName}                            Interactive guided flow
+  $ ${programName} web                        Select from web frameworks
+  $ ${programName} web next my-app            Create a Next.js project
+  $ ${programName} web vite my-app --ts       Create with TypeScript
+  $ ${programName} monorepo my-repo           Create a Turborepo monorepo
+  $ ${programName} list                       Show available scaffolders
+  $ ${programName} list web                   Show web scaffolders with details
+  $ ${programName} add eslint prettier        Add ESLint and Prettier`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h

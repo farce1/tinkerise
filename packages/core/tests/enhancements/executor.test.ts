@@ -215,6 +215,18 @@ describe('runEnhancements()', () => {
     expect(result.skipped).toEqual(['prettier'])
   })
 
+  it('populates results map for successfully installed modules', async () => {
+    const installResult = { success: true, filesModified: ['eslint.config.js'], packagesAdded: ['eslint@^9.0.0'], warnings: [] }
+    const mod = mockModule({
+      id: 'eslint',
+      install: async () => installResult,
+    })
+    const result = await runEnhancements(makeOpts([mod]))
+
+    expect(result.results).toBeInstanceOf(Map)
+    expect(result.results.get('eslint')).toEqual(installResult)
+  })
+
   it('marks all modules as failed on cyclic dependency', async () => {
     const a = mockModule({ id: 'a', dependsOn: ['b'] })
     const b = mockModule({ id: 'b', dependsOn: ['a'] })

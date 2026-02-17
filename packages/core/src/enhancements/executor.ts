@@ -45,6 +45,8 @@ export interface ExecutionSummary {
   failed: Array<{ id: string; error: string }>
   /** Modules that did not run due to an earlier failure */
   notRun: string[]
+  /** Per-module install results (only for successfully installed modules) */
+  results: Map<string, import('./types.js').InstallResult>
 }
 
 /**
@@ -78,6 +80,7 @@ export async function runEnhancements(
     skipped: [],
     failed: [],
     notRun: [],
+    results: new Map(),
   }
 
   // 1. Topological sort
@@ -184,6 +187,7 @@ export async function runEnhancements(
       // f. Check result
       if (result.success) {
         summary.installed.push(mod.id)
+        summary.results.set(mod.id, result)
         tinkeriseLog(`Done: ${mod.name} \u2714`)
       } else {
         summary.failed.push({
