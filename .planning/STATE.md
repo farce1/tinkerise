@@ -72,6 +72,8 @@ Recent decisions affecting current work:
 - [Phase 04]: Multi-word native flags split on whitespace in resolver (Astro --add tailwindcss)
 - [Phase 04]: Empty string native: '' sentinel for silent flag accept (always-TS scaffolders)
 - [Phase 04]: Multi-word integration commands split in buildCommandArgs (TanStack @tanstack/cli create)
+- [Phase 04]: Separated metadata map from Zod registry schema for display vs execution concerns
+- [Phase 04]: Used 'in' operator for type-safe optional hint access on const tuples
 - [Phase 04]: Shared nodePrerequisite() helper for DRY prerequisite definitions
 - [Phase 04]: Snapshots include npm warn lines for consistency with CI capture
 - [Phase 04]: permissions: contents: read on drift detection workflow for security hardening
@@ -89,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 04-05-PLAN.md (Phase 04 complete)
-Resume file: .planning/phases/04-web-framework-scaffolders/04-05-SUMMARY.md
+Stopped at: Completed 04-02-PLAN.md (variant selection, metadata, summary card)
+Resume file: .planning/phases/04-web-framework-scaffolders/04-02-SUMMARY.md
