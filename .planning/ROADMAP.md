@@ -123,15 +123,13 @@ Plans:
   3. `tinkerise add husky` sets up husky + lint-staged for pre-commit linting
   4. `tinkerise add ci` generates a GitHub Actions workflow that lints, type-checks, tests, and builds
   5. `tk` works as a short alias for `tinkerise` across all commands
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 06-01: `tinkerise add` command and enhancement selection UX
-- [ ] 06-02: ESLint flat config enhancement module
-- [ ] 06-03: Prettier enhancement module
-- [ ] 06-04: Husky + lint-staged enhancement module
-- [ ] 06-05: GitHub Actions CI enhancement module
-- [ ] 06-06: `tk` short alias bin entry
+- [ ] 06-01-PLAN.md -- Shared module helpers, ESLint flat config enhancement module, and unit tests (Wave 1)
+- [ ] 06-02-PLAN.md -- Prettier enhancement module and Husky + lint-staged enhancement module (Wave 2)
+- [ ] 06-03-PLAN.md -- GitHub Actions CI module, module registry barrel, per-enhancement summary (Wave 2)
+- [ ] 06-04-PLAN.md -- `tinkerise add` command, interactive picker, `tk` alias, integration tests (Wave 3)
 
 ### Phase 7: Backend & Mobile Scaffolders
 **Goal**: Users can scaffold backend and mobile projects through tinkerise, and `tinkerise doctor` validates that the required ecosystem tools are installed
