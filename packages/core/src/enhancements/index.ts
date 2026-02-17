@@ -35,3 +35,6 @@ export type { FrameworkRule, FrameworkDetectResult } from './framework-detect.js
 // Project context builder (05-02)
 export { buildProjectContext } from './context.js'
 export type { BuildContextOptions } from './context.js'
+
+// Dependency graph (05-03)
+export { topologicalSort, CyclicDependencyError } from './graph.js'
