@@ -1,22 +1,23 @@
 {
   "name": "@tinkerise/cli",
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "bin": {
     "tinkerise": "./dist/index.js",
     "tk": "./dist/index.js"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -26,7 +27,7 @@
     "picocolors": "^1.1"
   },
   "devDependencies": {
-    "tsup": "^8.4",
-    "@types/node": "^22"
+    "@types/node": "^22",
+    "tsup": "^8.4"
   }
 }

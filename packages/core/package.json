@@ -1,11 +1,11 @@
 {
   "name": "@tinkerise/core",
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -13,13 +13,14 @@
   ],
   "scripts": {
     "build": "tsup",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@tinkerise/shared": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.4",
-    "@types/node": "^22"
+    "@types/node": "^22",
+    "tsup": "^8.4"
   }
 }
