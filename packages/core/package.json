@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@tinkerise/shared": "workspace:*",
+    "ci-info": "^4.4.0",
     "execa": "^9.6.1",
     "picocolors": "^1.1.1",
     "semver": "^7.7.4",

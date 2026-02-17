@@ -55,3 +55,19 @@ export {
   tinkeriseSummary,
 } from './executor/index.js'
 export type { ExecuteOptions } from './executor/index.js'
+
+/**
+ * Package Manager Detection — lockfile, packageManager field, flag override.
+ */
+export {
+  detectFromLockfile,
+  detectFromPackageJson,
+  detectPackageManager,
+  verifyPmBinary,
+} from './pm/index.js'
+export type { DetectResult, PackageManager } from './pm/index.js'
+
+/**
+ * CI Detection — environment detection for non-interactive mode.
+ */
+export { ciName, isCI } from './ci/index.js'
