@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@tinkerise/cli": "0.0.0",
+    "@tinkerise/core": "0.0.0",
+    "@tinkerise/shared": "0.0.0",
+    "tinkerise": "0.0.0"
+  },
+  "changesets": []
+}

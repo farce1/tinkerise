@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@latest/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "tinkerise/tinkerise" }],
+  "commit": false,
+  "fixed": [["@tinkerise/cli", "@tinkerise/core", "@tinkerise/shared", "tinkerise"]],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}
