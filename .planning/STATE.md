@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 10 complete -- Distribution & Release Automation done. All 10 phases complete.
+**Current focus:** Gap closure phases 11-12 after milestone audit
 
 ## Current Position
 
-Phase: 10 of 10 (Distribution & Release Automation) -- COMPLETE
-Plan: 3 of 3 in current phase (10-01 through 10-03 complete)
-Status: All plans complete -- npm publishing, update command, changesets, release pipeline, Homebrew templates
-Last activity: 2026-02-18 -- Plan 10-03 complete (Changesets and release pipeline)
+Phase: 11 of 12 (Cross-Phase Integration Wiring) -- IN PROGRESS
+Plan: 1 of 2 in current phase
+Status: Plan 11-01 complete (config-to-scaffold + preset-to-scaffold wiring). Plan 11-02 next.
+Last activity: 2026-02-18 -- Completed 11-01 (config/preset scaffold integration)
 
-Progress: [██████████] 100%
+Progress: [███████████░] 88%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 41
+- Total plans completed: 42
 - Average duration: ~4 min/plan
-- Total execution time: ~151 minutes
+- Total execution time: ~157 minutes
 
 **By Phase:**
 
@@ -40,7 +40,7 @@ Progress: [██████████] 100%
 | 10 | 3/3 | ~10 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 09-04, 09-05, 10-01, 10-02, 10-03
+- Last 5 plans: 09-05, 10-01, 10-02, 10-03, 11-01
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -77,6 +77,7 @@ Progress: [██████████] 100%
 | Phase 10 P01 | 3min | 2 tasks | 6 files |
 | Phase 10 P02 | 4min | 2 tasks | 5 files |
 | Phase 10 P03 | 3min | 2 tasks | 6 files |
+| Phase 11 P01 | 6min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -192,6 +193,11 @@ Recent decisions affecting current work:
 - [Phase 10]: ci:version runs bun update after changeset version (workspace:* workaround)
 - [Phase 10]: Beta pre-release mode active for initial development releases
 - [Phase 10]: HOMEBREW_TAP_TOKEN separate PAT for cross-repo workflow_dispatch
+- [Phase 11]: Config PM only applies when detectPackageManager returns source 'default' (lockfile always wins)
+- [Phase 11]: Config typescript is a pre-selection layer in buildUserFlags (CLI flags override)
+- [Phase 11]: Preset framework ignored in category flow when preset category differs from user category
+- [Phase 11]: resolveConfigAndPreset helper for single config+preset resolution per entry mode
+- [Phase 11]: Verbose flag controls config-override messaging (Overriding config X -> Y)
 
 ### Pending Todos
 
@@ -206,5 +212,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 10 complete -- all 10 phases done. Project roadmap complete.
-Resume file: .planning/phases/10-distribution-release-automation/10-03-SUMMARY.md
+Stopped at: Completed 11-01-PLAN.md (config/preset scaffold integration). Next: 11-02-PLAN.md.
+Resume file: .planning/phases/11-cross-phase-integration-wiring/11-01-SUMMARY.md
