@@ -1,5 +1,5 @@
 /**
- * Config module — global config, preset CRUD, npm preset discovery.
+ * Config module — global config read/write operations.
  */
 
 export {
@@ -10,16 +10,3 @@ export {
   saveGlobalConfig,
   setGlobalConfigValue,
 } from './global.js'
-
-export {
-  deletePreset,
-  getPresetsDir,
-  listPresets,
-  loadPreset,
-  savePreset,
-} from './preset.js'
-
-export {
-  discoverNpmPresets,
-  loadNpmPreset,
-} from './discovery.js'

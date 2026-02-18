@@ -118,7 +118,7 @@ export type {
 } from './enhancements/index.js'
 
 /**
- * Config — global config, preset CRUD, npm preset discovery.
+ * Config — global config read/write operations.
  */
 export {
   getConfigDir,
@@ -127,17 +127,4 @@ export {
   loadGlobalConfig,
   saveGlobalConfig,
   setGlobalConfigValue,
-} from './config/index.js'
-
-export {
-  deletePreset,
-  getPresetsDir,
-  listPresets,
-  loadPreset,
-  savePreset,
-} from './config/index.js'
-
-export {
-  discoverNpmPresets,
-  loadNpmPreset,
 } from './config/index.js'
