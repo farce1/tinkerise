@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 ## Current Position
 
-Phase: 11 of 12 (Cross-Phase Integration Wiring) -- IN PROGRESS
-Plan: 1 of 2 in current phase
-Status: Plan 11-01 complete (config-to-scaffold + preset-to-scaffold wiring). Plan 11-02 next.
-Last activity: 2026-02-18 -- Completed 11-01 (config/preset scaffold integration)
+Phase: 11 of 12 (Cross-Phase Integration Wiring) -- COMPLETE
+Plan: 2 of 2 in current phase (all done)
+Status: Phase 11 complete. All integration gaps closed. Phase 12 next.
+Last activity: 2026-02-18 -- Completed 11-02 (session persistence + list enhancements)
 
-Progress: [███████████░] 88%
+Progress: [████████████] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 42
+- Total plans completed: 43
 - Average duration: ~4 min/plan
-- Total execution time: ~157 minutes
+- Total execution time: ~161 minutes
 
 **By Phase:**
 
@@ -38,9 +38,10 @@ Progress: [███████████░] 88%
 | 9 | 5/5 | ~22 min | ~4 min |
 
 | 10 | 3/3 | ~10 min | ~3 min |
+| 11 | 2/2 | ~10 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 09-05, 10-01, 10-02, 10-03, 11-01
+- Last 5 plans: 10-01, 10-02, 10-03, 11-01, 11-02
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -78,6 +79,7 @@ Progress: [███████████░] 88%
 | Phase 10 P02 | 4min | 2 tasks | 5 files |
 | Phase 10 P03 | 3min | 2 tasks | 6 files |
 | Phase 11 P01 | 6min | 2 tasks | 5 files |
+| Phase 11 P02 | 4min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -198,6 +200,11 @@ Recent decisions affecting current work:
 - [Phase 11]: Preset framework ignored in category flow when preset category differs from user category
 - [Phase 11]: resolveConfigAndPreset helper for single config+preset resolution per entry mode
 - [Phase 11]: Verbose flag controls config-override messaging (Overriding config X -> Y)
+- [Phase 11]: Session file written to scaffolded project directory (not parent cwd) per research Pitfall 3
+- [Phase 11]: In-memory session takes priority over file-based per research Pitfall 4
+- [Phase 11]: getSessionContext made async for file-based fallback support
+- [Phase 11]: addToGitignore duplicated locally in session.ts to avoid cross-package dependency
+- [Phase 11]: Enhancements section in list uses green checkmark for all modules (no prereq checks needed)
 
 ### Pending Todos
 
@@ -212,5 +219,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11-01-PLAN.md (config/preset scaffold integration). Next: 11-02-PLAN.md.
-Resume file: .planning/phases/11-cross-phase-integration-wiring/11-01-SUMMARY.md
+Stopped at: Completed 11-02-PLAN.md (session persistence + list enhancements). Phase 11 complete. Next: Phase 12.
+Resume file: .planning/phases/11-cross-phase-integration-wiring/11-02-SUMMARY.md
