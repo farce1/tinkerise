@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 8 of 10 (Configuration & Presets)
-Plan: 3 of 5 in current phase (08-01, 08-02, 08-03 complete)
-Status: Config types, project config loading, merge chain, resolver, preset CRUD, npm discovery complete
-Last activity: 2026-02-18 -- Plan 08-02 complete (project config + merge chain + resolver, 27 tests)
+Plan: 4 of 5 in current phase (08-01, 08-02, 08-03, 08-04 complete)
+Status: Config types, project config, merge chain, resolver, preset CRUD, npm discovery, config CLI command complete
+Last activity: 2026-02-18 -- Plan 08-04 complete (config get/set/list/init CLI command, 16 tests)
 
 Progress: [████████░░] 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 31
+- Total plans completed: 32
 - Average duration: ~4 min/plan
-- Total execution time: ~111 minutes
+- Total execution time: ~114 minutes
 
 **By Phase:**
 
@@ -35,7 +35,7 @@ Progress: [████████░░] 85%
 | 6 | 4/4 | ~14 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-02, 07-03, 08-01, 08-03
+- Last 5 plans: 07-03, 08-01, 08-02, 08-03, 08-04
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -62,6 +62,7 @@ Progress: [████████░░] 85%
 | Phase 08 P01 | 4min | 2 tasks | 11 files |
 | Phase 08 P02 | 5min | 2 tasks | 8 files |
 | Phase 08 P03 | 3min | 2 tasks | 6 files |
+| Phase 08 P04 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,9 @@ Recent decisions affecting current work:
 - [Phase 08]: Preset files stored as {name}.json in presets/ subdirectory of config dir
 - [Phase 08]: loadPreset returns null on any error (same graceful pattern as loadGlobalConfig)
 - [Phase 08]: import.meta.resolve for npm preset package resolution (throws on missing, caught gracefully)
+- [Phase 08]: Commander .command() chaining for config subcommands (list, get, set, init)
+- [Phase 08]: String-to-boolean coercion for typescript config key (CLI args are always strings)
+- [Phase 08]: generateProjectConfig omits undefined keys for clean TS output
 
 ### Pending Todos
 
@@ -157,5 +161,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-02-PLAN.md (08-01, 08-02, 08-03 all complete)
-Resume file: .planning/phases/08-configuration-presets/08-04-PLAN.md
+Stopped at: Completed 08-04-PLAN.md (08-01 through 08-04 complete)
+Resume file: .planning/phases/08-configuration-presets/08-05-PLAN.md
