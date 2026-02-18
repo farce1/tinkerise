@@ -16,7 +16,8 @@ import * as p from '@clack/prompts'
 import pc from 'picocolors'
 import type { Command } from 'commander'
 import type { ScaffolderCategory } from '@tinkerise/shared'
-import { detectPackageManager, executeScaffolder, isCI, tinkeriseSummaryCard } from '@tinkerise/core'
+import type { TinkeriseUserConfig, PresetData } from '@tinkerise/shared'
+import { detectPackageManager, executeScaffolder, isCI, tinkeriseSummaryCard, resolveConfig, loadPreset } from '@tinkerise/core'
 import type { PackageManager } from '@tinkerise/core'
 import { showBanner } from '../utils/banner.js'
 import { runPromptFlow } from '../prompts/flow.js'
@@ -43,16 +44,25 @@ export interface ScaffoldOptions {
   packageManager?: string
   /** Vite template name (bypasses template prompt) */
   template?: string
+  /** Apply a saved preset */
+  preset?: string
+  /** Show detailed output (config override messages) */
+  verbose?: boolean
 }
 
 /**
  * Resolve the package manager — detect, warn if missing, prompt if needed.
+ *
+ * Config packageManager applies only when detectPackageManager returns 'default'
+ * (no lockfile found, no CLI flag provided). Lockfile always wins over config.
  *
  * @returns The resolved package manager name
  */
 async function resolvePackageManager(
   cwd: string,
   flagValue?: string,
+  config?: Partial<TinkeriseUserConfig>,
+  verbose?: boolean,
 ): Promise<PackageManager> {
   const pmResult = await detectPackageManager(cwd, flagValue)
 
@@ -64,9 +74,20 @@ async function resolvePackageManager(
     return promptPackageManager()
   }
 
+  // Config only applies when no lockfile and no CLI flag
+  if (pmResult.source === 'default' && config?.packageManager) {
+    p.log.info(pc.dim(`Using ${config.packageManager} (from config)`))
+    return config.packageManager
+  }
+
   if (pmResult.source === 'default') {
     // No lockfile or packageManager field found — prompt user to choose
     return promptPackageManager()
+  }
+
+  // Flag override message (verbose only)
+  if (verbose && flagValue && config?.packageManager && flagValue !== config.packageManager) {
+    p.log.info(pc.dim(`Overriding config (${config.packageManager} -> ${flagValue})`))
   }
 
   // Source is 'flag', 'lockfile', or 'packageManager-field' — use detected PM
@@ -77,15 +98,22 @@ async function resolvePackageManager(
  * Build userFlags record from prompt/preselected options, CLI Command, and PM.
  *
  * Uses mergePromptAndFlags for --no-git/--no-install detection, then layers
- * on explicit boolean option flags and the resolved package manager.
+ * on explicit boolean option flags, config typescript pre-selection, and
+ * the resolved package manager.
  */
 function buildUserFlags(
   promptOptions: string[],
   cmd: Command,
   cliOptions: ScaffoldOptions,
   pm: PackageManager,
+  config?: Partial<TinkeriseUserConfig>,
 ): Record<string, string | boolean> {
   const flags = mergePromptAndFlags(promptOptions, cmd)
+
+  // Config typescript pre-selection: applies when CLI --typescript not explicitly set
+  if (config?.typescript === true && !cliOptions.typescript) {
+    flags['typescript'] = true
+  }
 
   // Override with explicit CLI flags if provided
   if (cliOptions.typescript) flags['typescript'] = true
@@ -101,6 +129,50 @@ function buildUserFlags(
 }
 
 /**
+ * Resolve config and preset data for the current scaffold invocation.
+ *
+ * Calls resolveConfig() with the optional preset name, and separately loads
+ * the full PresetData if a preset is specified (for scaffold-specific fields
+ * like framework, flags, and category that live outside the config layer).
+ */
+async function resolveConfigAndPreset(
+  options: ScaffoldOptions,
+): Promise<{ config: Partial<TinkeriseUserConfig>; preset: PresetData | null }> {
+  const config = await resolveConfig({
+    projectDir: process.cwd(),
+    presetName: options.preset,
+  })
+
+  const preset = options.preset ? await loadPreset(options.preset) : null
+
+  return { config, preset }
+}
+
+/**
+ * Merge preset scaffold flags into preselected options array.
+ *
+ * Preset flags like { typescript: true, tailwind: true } become
+ * preselected option values. CLI-provided preselected options take priority
+ * (they're already in the array from buildPreselectedOptions).
+ */
+function mergePresetFlags(
+  preset: PresetData | null,
+  cliPreselected: string[],
+): string[] {
+  if (!preset?.scaffold.flags) return cliPreselected
+
+  const presetOptions: string[] = []
+  for (const [key, value] of Object.entries(preset.scaffold.flags)) {
+    if (value === true) {
+      presetOptions.push(key)
+    }
+  }
+
+  // CLI preselected win (deduplicate)
+  return [...new Set([...presetOptions, ...cliPreselected])]
+}
+
+/**
  * Execute the scaffolding pipeline with variant selection and summary card.
  *
  * Handles framework-specific variant prompts (Vite template, T3 components)
@@ -113,8 +185,9 @@ async function executePipeline(
   cmd: Command,
   cliOptions: ScaffoldOptions,
   pm: PackageManager,
+  config?: Partial<TinkeriseUserConfig>,
 ): Promise<void> {
-  const userFlags = buildUserFlags(options, cmd, cliOptions, pm)
+  const userFlags = buildUserFlags(options, cmd, cliOptions, pm, config)
 
   // Framework-specific variant handling
   let extraArgs: string[] = []
@@ -173,11 +246,16 @@ export async function runInteractiveFlow(
 
   showBanner()
 
-  const preselected = buildPreselectedOptions(cmd)
-  const answers = await runPromptFlow({ preselectedOptions: preselected })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager)
+  const { config, preset } = await resolveConfigAndPreset(options)
 
-  await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm)
+  const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
+  const answers = await runPromptFlow({
+    framework: preset?.scaffold.framework,
+    preselectedOptions: preselected,
+  })
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+
+  await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
 
 /**
@@ -205,14 +283,25 @@ export async function runCategoryFlow(
 
   showBanner()
 
-  const preselected = buildPreselectedOptions(cmd)
+  const { config, preset } = await resolveConfigAndPreset(options)
+
+  const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
+
+  // Preset framework pre-fill: only use if preset category matches user-provided category.
+  // If categories don't match, ignore preset framework (Pitfall 2 from research).
+  const presetFramework =
+    preset?.scaffold.framework && preset.scaffold.category === category
+      ? preset.scaffold.framework
+      : undefined
+
   const answers = await runPromptFlow({
     filterCategory: category as ScaffolderCategory,
+    framework: presetFramework,
     preselectedOptions: preselected,
   })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
 
-  await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm)
+  await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
 
 /**
@@ -234,12 +323,14 @@ export async function runDirectExecution(
     ensureNonInteractive(cmd, category, framework, name)
   }
 
-  const projectName = name ?? await promptProjectName(framework)
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager)
+  const { config, preset } = await resolveConfigAndPreset(options)
 
-  const preselected = buildPreselectedOptions(cmd)
+  const projectName = name ?? await promptProjectName(framework)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+
+  const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
 
   // If we have preselected options, use them directly; otherwise use empty array
   // (direct execution skips the options multiselect)
-  await executePipeline(framework, projectName, preselected, cmd, options, pm)
+  await executePipeline(framework, projectName, preselected, cmd, options, pm, config)
 }

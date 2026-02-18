@@ -52,6 +52,8 @@ program
   .option('--no-install', 'Skip dependency installation')
   .option('--package-manager <pm>', 'Package manager to use (npm, pnpm, yarn, bun)')
   .option('--template <template>', 'Template to use (for Vite)')
+  .option('--preset <name>', 'Apply a saved preset')
+  .option('--verbose', 'Show detailed output')
 
 // Default action with optional positional arguments
 program
@@ -153,6 +155,7 @@ Examples:
   $ ${programName} preset use my-stack        Apply a saved preset
   $ ${programName} preset list                Show available presets
   $ ${programName} preset delete my-stack     Remove a preset
+  $ ${programName} web next my-app --preset my-stack  Apply preset to scaffold
   $ ${programName} mcp my-server              Scaffold an MCP server
   $ ${programName} cli my-tool                Scaffold a CLI tool
   $ ${programName} lib my-lib                 Scaffold an npm library

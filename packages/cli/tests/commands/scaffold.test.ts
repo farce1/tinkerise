@@ -30,6 +30,9 @@ const {
   mockLogSuccess,
   mockLogWarn,
   mockLogError,
+  mockLogInfo,
+  mockResolveConfig,
+  mockLoadPreset,
 } = vi.hoisted(() => ({
   mockShowBanner: vi.fn(),
   mockRunPromptFlow: vi.fn(),
@@ -48,6 +51,9 @@ const {
   mockLogSuccess: vi.fn(),
   mockLogWarn: vi.fn(),
   mockLogError: vi.fn(),
+  mockLogInfo: vi.fn(),
+  mockResolveConfig: vi.fn(),
+  mockLoadPreset: vi.fn(),
 }))
 
 vi.mock('../../src/utils/banner.js', () => ({
@@ -70,6 +76,8 @@ vi.mock('@tinkerise/core', () => ({
   detectPackageManager: mockDetectPackageManager,
   executeScaffolder: mockExecuteScaffolder,
   tinkeriseSummaryCard: mockTinkeriseSummaryCard,
+  resolveConfig: mockResolveConfig,
+  loadPreset: mockLoadPreset,
   get isCI() { return mockIsCI.value },
 }))
 
@@ -90,6 +98,7 @@ vi.mock('@clack/prompts', () => ({
     success: mockLogSuccess,
     warn: mockLogWarn,
     error: mockLogError,
+    info: mockLogInfo,
   },
 }))
 
@@ -123,6 +132,8 @@ describe('runInteractiveFlow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
     mockRunPromptFlow.mockResolvedValue({
       framework: 'next',
       options: ['typescript'],
@@ -176,6 +187,8 @@ describe('runCategoryFlow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
     exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
       throw new Error('process.exit called')
     })
@@ -228,6 +241,8 @@ describe('runDirectExecution', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
     mockDetectPackageManager.mockResolvedValue({
       pm: 'npm',
       source: 'lockfile',
@@ -295,6 +310,8 @@ describe('PM detection integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
     mockExecuteScaffolder.mockResolvedValue(undefined)
     mockBuildPreselectedOptions.mockReturnValue([])
     mockMergePromptAndFlags.mockReturnValue({})

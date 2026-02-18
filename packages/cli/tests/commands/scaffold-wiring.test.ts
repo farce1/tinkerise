@@ -29,6 +29,8 @@ const {
   mockSelectViteTemplate,
   mockResolveViteTemplate,
   mockSelectT3Components,
+  mockResolveConfig,
+  mockLoadPreset,
 } = vi.hoisted(() => ({
   mockShowBanner: vi.fn(),
   mockRunPromptFlow: vi.fn(),
@@ -44,6 +46,8 @@ const {
   mockSelectViteTemplate: vi.fn(),
   mockResolveViteTemplate: vi.fn(),
   mockSelectT3Components: vi.fn(),
+  mockResolveConfig: vi.fn(),
+  mockLoadPreset: vi.fn(),
 }))
 
 vi.mock('../../src/utils/banner.js', () => ({
@@ -66,6 +70,8 @@ vi.mock('@tinkerise/core', () => ({
   detectPackageManager: mockDetectPackageManager,
   executeScaffolder: mockExecuteScaffolder,
   tinkeriseSummaryCard: mockTinkeriseSummaryCard,
+  resolveConfig: mockResolveConfig,
+  loadPreset: mockLoadPreset,
   get isCI() { return mockIsCI.value },
 }))
 
@@ -86,6 +92,7 @@ vi.mock('@clack/prompts', () => ({
     success: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
+    info: vi.fn(),
   },
 }))
 
@@ -115,6 +122,8 @@ describe('variant prompt wiring', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
     mockDetectPackageManager.mockResolvedValue({ pm: 'npm', source: 'lockfile' })
     mockExecuteScaffolder.mockResolvedValue(undefined)
     mockBuildPreselectedOptions.mockReturnValue([])
