@@ -141,14 +141,12 @@ Plans:
   3. `tinkerise mobile flutter my-app` scaffolds a Flutter application
   4. `tinkerise mobile rn my-app` scaffolds a React Native (Expo) application
   5. `tinkerise doctor` reports status for all required tools (Node, Python, Go, Rust, Flutter, Dart) with remediation instructions
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 07-01: FastAPI and Django scaffolder entries + prerequisite checks
-- [ ] 07-02: Go and Rust (Axum) scaffolder entries + prerequisite checks
-- [ ] 07-03: Express scaffolder entry
-- [ ] 07-04: Flutter and React Native (Expo) scaffolder entries
-- [ ] 07-05: `tinkerise doctor` command with per-framework reporting
+- [ ] 07-01-PLAN.md -- All 5 backend scaffolder entries with Python, Go, and Rust prerequisite helpers (Wave 1)
+- [ ] 07-02-PLAN.md -- Flutter and React Native (Expo) scaffolder entries with mobile prerequisite helpers (Wave 1)
+- [ ] 07-03-PLAN.md -- `tinkerise doctor` command with table-formatted system health report (Wave 2)
 
 ### Phase 8: Configuration & Presets
 **Goal**: Users can persist preferences in config files and save/share project configurations as reusable presets
@@ -220,7 +218,7 @@ Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with P
 | 4. Web Framework Scaffolders | 0/5 | Complete    | 2026-02-17 |
 | 5. Enhancement Module System | 0/4 | Not started | - |
 | 6. Core Enhancements & Add Command | 4/4 | Complete | 2026-02-17 |
-| 7. Backend & Mobile Scaffolders | 0/5 | Not started | - |
+| 7. Backend & Mobile Scaffolders | 0/3 | Not started | - |
 | 8. Configuration & Presets | 0/5 | Not started | - |
 | 9. Additional Enhancements & Utility Templates | 0/5 | Not started | - |
 | 10. Distribution & Release Automation | 0/4 | Not started | - |

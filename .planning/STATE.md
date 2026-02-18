@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 6 complete -- ready for Phase 7
+**Current focus:** Phase 7 in progress -- Backend & Mobile Scaffolders
 
 ## Current Position
 
-Phase: 6 of 10 (Core Enhancements & Add Command) -- COMPLETE
-Plan: 4 of 4 in current phase (all complete)
-Status: Phase 06 complete -- ESLint, Prettier, Husky, CI modules + tinkerise add command + tk alias
-Last activity: 2026-02-17 -- Phase 06 complete (4 enhancement modules, add command, tk alias, 72 new tests)
+Phase: 7 of 10 (Backend & Mobile Scaffolders)
+Plan: 1 of 3 in current phase (07-01 complete)
+Status: Plan 07-01 complete -- 5 backend scaffolder entries with ecosystem prerequisite helpers
+Last activity: 2026-02-18 -- Plan 07-01 complete (FastAPI, Django, Go, Rust, Express scaffolders, 44 tests)
 
-Progress: [███████░░░] 74%
+Progress: [████████░░] 77%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: ~4 min/plan
-- Total execution time: ~102 minutes
+- Total execution time: ~104 minutes
 
 **By Phase:**
 
@@ -35,7 +35,7 @@ Progress: [███████░░░] 74%
 | 6 | 4/4 | ~14 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01, 06-02, 06-03, 06-04
+- Last 5 plans: 06-02, 06-03, 06-04, 07-01
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -56,6 +56,7 @@ Progress: [███████░░░] 74%
 | Phase 06 P02 | 3min | 2 tasks | 4 files |
 | Phase 06 P03 | 3min | 2 tasks | 7 files |
 | Phase 06 P04 | 4min | 3 tasks | 6 files |
+| Phase 07 P01 | 2min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,11 @@ Recent decisions affecting current work:
 - [Phase 06]: Bun CI omits setup-node entirely, uses oven-sh/setup-bun@v2
 - [Phase 06]: basename(process.argv[1]) for tk alias detection
 - [Phase 06]: ExecutionSummary.results as Map<string, InstallResult> for per-module detail
+- [Phase 07]: python3 command (not python) for macOS Monterey+ compatibility
+- [Phase 07]: Go versionFlag 'version' not '--version' (go uses subcommand)
+- [Phase 07]: Two-level prerequisites ordered runtime-first (tool install depends on runtime)
+- [Phase 07]: Express uses npx (Node.js ecosystem); other backends use native CLIs
+- [Phase 07]: Rust no-git flag maps to --init (cargo-generate convention)
 
 ### Pending Todos
 
@@ -128,6 +134,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Phase 6 complete -- ready for Phase 7
-Resume file: N/A (phase complete)
+Last session: 2026-02-18
+Stopped at: Completed 07-01-PLAN.md
+Resume file: .planning/phases/07-backend-mobile-scaffolders/07-02-PLAN.md
