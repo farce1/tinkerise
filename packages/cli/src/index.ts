@@ -16,6 +16,7 @@ import { runInteractiveFlow, runCategoryFlow, runDirectExecution } from './comma
 import { listScaffolders } from './commands/list.js'
 import { buildScaffolderHelpText } from './commands/help.js'
 import { runAddCommand } from './commands/add.js'
+import { runDoctor } from './commands/doctor.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -97,6 +98,15 @@ program
     await runAddCommand(enhancements, options)
   })
 
+// Doctor command — check system for required tools and versions
+program
+  .command('doctor')
+  .summary('Check system for required tools and versions')
+  .description('Check system for required tools and versions across all supported ecosystems.')
+  .action(async () => {
+    await runDoctor()
+  })
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -106,7 +116,8 @@ Examples:
   $ ${programName} monorepo my-repo           Create a Turborepo monorepo
   $ ${programName} list                       Show available scaffolders
   $ ${programName} list web                   Show web scaffolders with details
-  $ ${programName} add eslint prettier        Add ESLint and Prettier`)
+  $ ${programName} add eslint prettier        Add ESLint and Prettier
+  $ ${programName} doctor                     Check system tools`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
