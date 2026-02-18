@@ -177,14 +177,14 @@ Plans:
   3. `tinkerise mcp` scaffolds an MCP server template
   4. `tinkerise cli` scaffolds a Node.js CLI tool template
   5. `tinkerise lib` scaffolds an npm package/library template
-**Plans**: TBD
+**Plans**: 5 plans in 2 waves
 
 Plans:
-- [ ] 09-01: Docker and env enhancement modules
-- [ ] 09-02: Commitlint and testing enhancement modules
-- [ ] 09-03: Renovate and EditorConfig enhancement modules
-- [ ] 09-04: MCP server template scaffolder
-- [ ] 09-05: CLI tool and npm library template scaffolders
+- [ ] 09-01-PLAN.md — Docker and env enhancement modules (Wave 1)
+- [ ] 09-02-PLAN.md — Commitlint and testing enhancement modules (Wave 1)
+- [ ] 09-03-PLAN.md — Renovate, EditorConfig enhancement modules, and module registry update (Wave 1)
+- [ ] 09-04-PLAN.md — MCP server template scaffolder with shared template infrastructure (Wave 1)
+- [ ] 09-05-PLAN.md — CLI tool and npm library template scaffolders (Wave 2)
 
 ### Phase 10: Distribution & Release Automation
 **Goal**: tinkerise is published and installable via npm and Homebrew with automated release pipeline and self-update capability
