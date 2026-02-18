@@ -53,8 +53,8 @@ describe('getScaffoldersByCategory()', () => {
   })
 
   it('returns empty array for category with no scaffolders', () => {
-    const mobile = getScaffoldersByCategory('mobile')
-    expect(mobile).toEqual([])
+    const utility = getScaffoldersByCategory('utility')
+    expect(utility).toEqual([])
   })
 })
 

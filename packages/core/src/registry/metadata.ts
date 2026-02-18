@@ -111,6 +111,22 @@ export const SCAFFOLDER_METADATA: Record<string, ScaffolderMetadata> = {
       'Run `tinkerise add docker` to add Docker support',
     ],
   },
+  flutter: {
+    displayName: 'Flutter',
+    description: 'Cross-platform mobile app with Dart',
+    suggestions: [
+      'Run `tinkerise doctor` to verify Flutter SDK setup',
+      'Use `--platforms android,ios` to target specific platforms',
+    ],
+  },
+  rn: {
+    displayName: 'React Native (Expo)',
+    description: 'React Native app with Expo managed workflow',
+    suggestions: [
+      'Run `tinkerise add eslint` to add linting',
+      'Run `tinkerise add prettier` to add code formatting',
+    ],
+  },
 }
 
 /**
