@@ -38,7 +38,7 @@ export async function runAddCommand(
   enhancementNames: string[],
   options: AddOptions,
 ): Promise<void> {
-  const session = getSessionContext()
+  const session = await getSessionContext()
 
   // 1. Build project context
   const ctx = await buildProjectContext({

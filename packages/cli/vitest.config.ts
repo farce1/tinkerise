@@ -8,6 +8,7 @@ export default defineConfig({
       'tests/utils/**/*.test.ts',
       'tests/commands/**/*.test.ts',
       'tests/prompts/**/*.test.ts',
+      'tests/context/**/*.test.ts',
       'tests/integration/**/*.test.ts',
       'tests/e2e/**/*.test.ts',
     ],

@@ -19,6 +19,7 @@ import type { ScaffolderCategory } from '@tinkerise/shared'
 import type { TinkeriseUserConfig, PresetData } from '@tinkerise/shared'
 import { detectPackageManager, executeScaffolder, isCI, tinkeriseSummaryCard, resolveConfig, loadPreset } from '@tinkerise/core'
 import type { PackageManager } from '@tinkerise/core'
+import { join } from 'node:path'
 import { showBanner } from '../utils/banner.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
@@ -29,6 +30,7 @@ import {
   ensureNonInteractive,
   mergePromptAndFlags,
 } from '../utils/interactive.js'
+import { setSessionContext, writeSessionFile } from '../context/session.js'
 
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
@@ -219,6 +221,11 @@ async function executePipeline(
     userFlags,
     extraArgs,
   })
+
+  // Persist session context for cross-process reuse (tinkerise add)
+  const absProjectPath = join(process.cwd(), name)
+  setSessionContext({ framework, packageManager: pm, projectDir: absProjectPath })
+  await writeSessionFile(absProjectPath, { framework, packageManager: pm })
 
   // Enhanced summary card instead of simple one-liner
   const activeFlags = Object.entries(userFlags)
