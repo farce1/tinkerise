@@ -17,6 +17,7 @@ import { listScaffolders } from './commands/list.js'
 import { buildScaffolderHelpText } from './commands/help.js'
 import { runAddCommand } from './commands/add.js'
 import { runDoctor } from './commands/doctor.js'
+import { registerConfigCommand } from './commands/config.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -107,6 +108,9 @@ program
     await runDoctor()
   })
 
+// Config command — manage tinkerise configuration
+registerConfigCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -117,7 +121,10 @@ Examples:
   $ ${programName} list                       Show available scaffolders
   $ ${programName} list web                   Show web scaffolders with details
   $ ${programName} add eslint prettier        Add ESLint and Prettier
-  $ ${programName} doctor                     Check system tools`)
+  $ ${programName} doctor                     Check system tools
+  $ ${programName} config list                Show configuration
+  $ ${programName} config set packageManager pnpm  Set default PM
+  $ ${programName} config init                Interactive config setup`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
