@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 9 of 10 (Additional Enhancements & Utility Templates)
-Plan: 2 of 5 in current phase (09-02 complete)
-Status: Commitlint and Testing enhancement modules done -- 2 of 5 plans complete
-Last activity: 2026-02-18 -- Plan 09-02 complete (commitlint + testing enhancement modules, 22 new tests)
+Plan: 2 of 5 in current phase (09-01 and 09-02 complete)
+Status: Docker, Env, Commitlint, and Testing enhancement modules done -- 2 of 5 plans complete
+Last activity: 2026-02-18 -- Plan 09-01 complete (Docker + Env enhancement modules, 29 new tests)
 
 Progress: [█████████░] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: ~4 min/plan
-- Total execution time: ~122 minutes
+- Total execution time: ~126 minutes
 
 **By Phase:**
 
@@ -37,7 +37,7 @@ Progress: [█████████░] 92%
 | 8 | 5/5 | ~20 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-02, 08-03, 08-04, 08-05, 09-02
+- Last 5 plans: 08-03, 08-04, 08-05, 09-01, 09-02
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -66,6 +66,7 @@ Progress: [█████████░] 92%
 | Phase 08 P03 | 3min | 2 tasks | 6 files |
 | Phase 08 P04 | 3min | 2 tasks | 3 files |
 | Phase 08 P05 | 5min | 2 tasks | 5 files |
+| Phase 09 P01 | 4min | 2 tasks | 6 files |
 | Phase 09 P02 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
@@ -154,6 +155,10 @@ Recent decisions affecting current work:
 - [Phase 08]: preset save prompts for framework/category when flags not provided (interactive fallback)
 - [Phase 08]: preset use applies directly without confirmation (per user decision)
 - [Phase 08]: preset use falls back to npm lookup (tinkerise-preset-<name>) when local not found
+- [Phase 09]: Docker detectDockerFramework() for backend detection (FastAPI/Django/Go/Rust) without extending FrameworkId type
+- [Phase 09]: Zod ^3.24.0 in dependencyVersionMap for user projects (t3-env requires Zod 3.x; tinkerise uses Zod 4)
+- [Phase 09]: Env module auto-detects src/ directory for env.ts placement
+- [Phase 09]: VITE_FRAMEWORKS Set for O(1) static build framework lookup
 - [Phase 09]: Commitlint config uses .js for type:module, .mjs otherwise (consistent with ESM pattern)
 - [Phase 09]: Testing module always generates vitest.config.ts (locked: always Vitest, no Jest)
 - [Phase 09]: No example test files generated (locked: config only)
@@ -171,5 +176,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 09-02-PLAN.md
-Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-02-SUMMARY.md
+Stopped at: Completed 09-01-PLAN.md
+Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-01-SUMMARY.md
