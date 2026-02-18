@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 8 complete -- Configuration & Presets done
+**Current focus:** Phase 9 in progress -- Additional Enhancements & Utility Templates
 
 ## Current Position
 
-Phase: 8 of 10 (Configuration & Presets) -- COMPLETE
-Plan: 5 of 5 in current phase (08-01 through 08-05 complete)
-Status: Phase 8 complete -- config types, project config, merge chain, resolver, preset CRUD, npm discovery, config CLI, preset CLI all done
-Last activity: 2026-02-18 -- Plan 08-05 complete (preset CLI command with save/use/list/delete, 13 new tests)
+Phase: 9 of 10 (Additional Enhancements & Utility Templates)
+Plan: 2 of 5 in current phase (09-02 complete)
+Status: Commitlint and Testing enhancement modules done -- 2 of 5 plans complete
+Last activity: 2026-02-18 -- Plan 09-02 complete (commitlint + testing enhancement modules, 22 new tests)
 
-Progress: [█████████░] 90%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 33
+- Total plans completed: 34
 - Average duration: ~4 min/plan
-- Total execution time: ~119 minutes
+- Total execution time: ~122 minutes
 
 **By Phase:**
 
@@ -37,7 +37,7 @@ Progress: [█████████░] 90%
 | 8 | 5/5 | ~20 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-01, 08-02, 08-03, 08-04, 08-05
+- Last 5 plans: 08-02, 08-03, 08-04, 08-05, 09-02
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -66,6 +66,7 @@ Progress: [█████████░] 90%
 | Phase 08 P03 | 3min | 2 tasks | 6 files |
 | Phase 08 P04 | 3min | 2 tasks | 3 files |
 | Phase 08 P05 | 5min | 2 tasks | 5 files |
+| Phase 09 P02 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -153,6 +154,9 @@ Recent decisions affecting current work:
 - [Phase 08]: preset save prompts for framework/category when flags not provided (interactive fallback)
 - [Phase 08]: preset use applies directly without confirmation (per user decision)
 - [Phase 08]: preset use falls back to npm lookup (tinkerise-preset-<name>) when local not found
+- [Phase 09]: Commitlint config uses .js for type:module, .mjs otherwise (consistent with ESM pattern)
+- [Phase 09]: Testing module always generates vitest.config.ts (locked: always Vitest, no Jest)
+- [Phase 09]: No example test files generated (locked: config only)
 
 ### Pending Todos
 
@@ -167,5 +171,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-05-PLAN.md (Phase 8 complete, all 5 plans done)
-Resume file: Phase 9 next
+Stopped at: Completed 09-02-PLAN.md
+Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-02-SUMMARY.md
