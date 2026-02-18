@@ -147,3 +147,9 @@ export {
   discoverNpmPresets,
   loadNpmPreset,
 } from './config/index.js'
+
+/**
+ * Templates — utility project generators (MCP server, CLI tool, npm library).
+ */
+export { generateMcpServer, TEMPLATE_METADATA } from './templates/index.js'
+export type { TemplateOptions } from './templates/index.js'
