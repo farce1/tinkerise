@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Web Framework Scaffolders** - All 7 web scaffolders with unified flag mapping (completed 2026-02-17)
 - [ ] **Phase 5: Enhancement Module System** - Enhancement architecture, dependency graph resolution, and framework adaptation
 - [x] **Phase 6: Core Enhancements & Add Command** - ESLint, Prettier, husky, GitHub Actions CI, and `tinkerise add` (completed 2026-02-17)
-- [ ] **Phase 7: Backend & Mobile Scaffolders** - Backend (FastAPI, Django, Go, Rust, Express), mobile (Flutter, React Native), and `tinkerise doctor`
+- [x] **Phase 7: Backend & Mobile Scaffolders** - Backend (FastAPI, Django, Go, Rust, Express), mobile (Flutter, React Native), and `tinkerise doctor` (completed 2026-02-18)
 - [ ] **Phase 8: Configuration & Presets** - Config management (global/project/CLI merge), preset save/use/distribute
 - [ ] **Phase 9: Additional Enhancements & Utility Templates** - Docker, env, commitlint, testing, renovate, editorconfig + MCP/CLI/lib templates
 - [ ] **Phase 10: Distribution & Release Automation** - npm publishing, Homebrew tap, self-update, final QA automation, and release pipeline
@@ -218,7 +218,7 @@ Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with P
 | 4. Web Framework Scaffolders | 0/5 | Complete    | 2026-02-17 |
 | 5. Enhancement Module System | 0/4 | Not started | - |
 | 6. Core Enhancements & Add Command | 4/4 | Complete | 2026-02-17 |
-| 7. Backend & Mobile Scaffolders | 0/3 | Not started | - |
+| 7. Backend & Mobile Scaffolders | 0/3 | Complete    | 2026-02-18 |
 | 8. Configuration & Presets | 0/5 | Not started | - |
 | 9. Additional Enhancements & Utility Templates | 0/5 | Not started | - |
 | 10. Distribution & Release Automation | 0/4 | Not started | - |
