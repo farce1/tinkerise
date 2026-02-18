@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 8 in progress -- Configuration & Presets
+**Current focus:** Phase 8 complete -- Configuration & Presets done
 
 ## Current Position
 
-Phase: 8 of 10 (Configuration & Presets)
-Plan: 4 of 5 in current phase (08-01, 08-02, 08-03, 08-04 complete)
-Status: Config types, project config, merge chain, resolver, preset CRUD, npm discovery, config CLI command complete
-Last activity: 2026-02-18 -- Plan 08-04 complete (config get/set/list/init CLI command, 16 tests)
+Phase: 8 of 10 (Configuration & Presets) -- COMPLETE
+Plan: 5 of 5 in current phase (08-01 through 08-05 complete)
+Status: Phase 8 complete -- config types, project config, merge chain, resolver, preset CRUD, npm discovery, config CLI, preset CLI all done
+Last activity: 2026-02-18 -- Plan 08-05 complete (preset CLI command with save/use/list/delete, 13 new tests)
 
-Progress: [████████░░] 85%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 32
+- Total plans completed: 33
 - Average duration: ~4 min/plan
-- Total execution time: ~114 minutes
+- Total execution time: ~119 minutes
 
 **By Phase:**
 
@@ -33,9 +33,11 @@ Progress: [████████░░] 85%
 | 4 | 5/5 | ~15 min | ~3 min |
 | 5 | 5/5 | ~21 min | ~4 min |
 | 6 | 4/4 | ~14 min | ~4 min |
+| 7 | 3/3 | ~7 min | ~2 min |
+| 8 | 5/5 | ~20 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03, 08-01, 08-02, 08-03, 08-04
+- Last 5 plans: 08-01, 08-02, 08-03, 08-04, 08-05
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -63,6 +65,7 @@ Progress: [████████░░] 85%
 | Phase 08 P02 | 5min | 2 tasks | 8 files |
 | Phase 08 P03 | 3min | 2 tasks | 6 files |
 | Phase 08 P04 | 3min | 2 tasks | 3 files |
+| Phase 08 P05 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -147,6 +150,9 @@ Recent decisions affecting current work:
 - [Phase 08]: Commander .command() chaining for config subcommands (list, get, set, init)
 - [Phase 08]: String-to-boolean coercion for typescript config key (CLI args are always strings)
 - [Phase 08]: generateProjectConfig omits undefined keys for clean TS output
+- [Phase 08]: preset save prompts for framework/category when flags not provided (interactive fallback)
+- [Phase 08]: preset use applies directly without confirmation (per user decision)
+- [Phase 08]: preset use falls back to npm lookup (tinkerise-preset-<name>) when local not found
 
 ### Pending Todos
 
@@ -161,5 +167,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-04-PLAN.md (08-01 through 08-04 complete)
-Resume file: .planning/phases/08-configuration-presets/08-05-PLAN.md
+Stopped at: Completed 08-05-PLAN.md (Phase 8 complete, all 5 plans done)
+Resume file: Phase 9 next
