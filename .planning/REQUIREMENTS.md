@@ -252,7 +252,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIAG-03 | Phase 10 | Pending |
 | CFG-01 | Phase 8 | Pending |
 | CFG-02 | Phase 8 | Pending |
-| CFG-03 | Phase 8 | Pending |
+| CFG-03 | Phase 11 | Pending |
 | CFG-04 | Phase 8 | Pending |
 | CFG-05 | Phase 8 | Pending |
 | PRE-01 | Phase 8 | Pending |
@@ -279,6 +279,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 88
 - Unmapped: 0
 
+**Gap Closure (added 2026-02-18):**
+- Phase 11 addresses: CFG-03 (integration wiring), PRE-02 (preset use wiring), CLI-05 (list enhancements)
+- Phase 12 verifies: REG-01-05, UX-06-07 (Phase 2), ADD-01-04, CLI-02 (Phase 6), DIST-01-05, DIAG-03, QA-08 (Phase 10)
+
 ---
 *Requirements defined: 2026-02-16*
-*Last updated: 2026-02-16 after roadmap creation*
+*Last updated: 2026-02-18 after milestone audit gap closure*

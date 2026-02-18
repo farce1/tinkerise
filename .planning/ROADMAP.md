@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Additional Enhancements & Utility Templates** - Docker, env, commitlint, testing, renovate, editorconfig + MCP/CLI/lib templates
 - [x] **Phase 10: Distribution & Release Automation** - npm publishing, Homebrew tap, self-update, final QA automation, and release pipeline (completed 2026-02-18)
 - [x] **Phase 11: Cross-Phase Integration Wiring** - Wire config resolve chain into scaffold commands, add --preset flag, session context, list enhancements (gap closure) (completed 2026-02-18)
-- [ ] **Phase 12: Retroactive Phase Verification** - Generate VERIFICATION.md for phases 2, 6, and 10 (gap closure)
+- [x] **Phase 12: Retroactive Phase Verification** - Generate VERIFICATION.md for phases 2, 6, and 10 (gap closure) (completed 2026-02-18)
 
 ## Phase Details
 
@@ -256,4 +256,4 @@ Phase 11 (integration wiring) should run before Phase 12 (verification) so that 
 | 9. Additional Enhancements & Utility Templates | 5/5 | Complete | 2026-02-18 |
 | 10. Distribution & Release Automation | 3/3 | Complete | 2026-02-18 |
 | 11. Cross-Phase Integration Wiring | 0/2 | Complete    | 2026-02-18 |
-| 12. Retroactive Phase Verification | 0/3 | Not started | - |
+| 12. Retroactive Phase Verification | 0/3 | Complete    | 2026-02-18 |
