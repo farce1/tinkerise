@@ -36,6 +36,10 @@ export const dependencyVersionMap = {
 
   // Testing
   'vitest': '^3.1.0',
+
+  // Env validation
+  '@t3-oss/env-core': '^0.13.10',
+  'zod': '^3.24.0',
 } as const satisfies Record<string, string>
 
 export type DependencyName = keyof typeof dependencyVersionMap
