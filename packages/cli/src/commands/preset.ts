@@ -55,7 +55,7 @@ export function registerPresetCommand(program: Command): void {
       if (!framework) {
         const result = await p.text({
           message: 'Framework/scaffolder ID (e.g., next, vite, astro):',
-          validate: (v) => (v.length === 0 ? 'Framework is required' : undefined),
+          validate: (v) => (!v || v.length === 0 ? 'Framework is required' : undefined),
         })
         if (p.isCancel(result)) {
           p.cancel('Cancelled.')

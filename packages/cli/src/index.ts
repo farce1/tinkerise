@@ -22,6 +22,11 @@ import { registerPresetCommand } from './commands/preset.js'
 import { registerMcpCommand } from './commands/mcp.js'
 import { registerCliToolCommand } from './commands/cli-tool.js'
 import { registerLibCommand } from './commands/lib.js'
+import { registerUpdateCommand } from './commands/update.js'
+import { checkForUpdate, printUpdateNudge } from './utils/update-check.js'
+
+// Fire update check asynchronously (non-blocking)
+const updateCheckPromise = checkForUpdate().catch(() => null)
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -127,6 +132,9 @@ registerCliToolCommand(program)
 // Lib command — scaffold npm library projects
 registerLibCommand(program)
 
+// Update command — self-update with install-method detection
+registerUpdateCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -147,7 +155,8 @@ Examples:
   $ ${programName} preset delete my-stack     Remove a preset
   $ ${programName} mcp my-server              Scaffold an MCP server
   $ ${programName} cli my-tool                Scaffold a CLI tool
-  $ ${programName} lib my-lib                 Scaffold an npm library`)
+  $ ${programName} lib my-lib                 Scaffold an npm library
+  $ ${programName} update                     Update to latest version`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
@@ -166,4 +175,9 @@ if (helpIdx >= 0 && userArgs.length >= 2) {
   }
 }
 
-program.parse()
+program.parseAsync().then(async () => {
+  const latestVersion = await updateCheckPromise
+  if (latestVersion) {
+    printUpdateNudge(latestVersion)
+  }
+})
