@@ -11,7 +11,7 @@
 import pc from 'picocolors'
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
 import { getAllScaffolders, getScaffoldersByCategory, checkPrerequisite } from '@tinkerise/core'
-import { getScaffolderMetadata } from '@tinkerise/core'
+import { getScaffolderMetadata, TEMPLATE_METADATA } from '@tinkerise/core'
 
 const CATEGORY_ORDER: ScaffolderCategory[] = ['web', 'backend', 'mobile']
 const CATEGORY_LABELS: Record<string, string> = {
@@ -97,5 +97,15 @@ export async function listScaffolders(filterCategory?: string): Promise<void> {
       }
     }
   }
+
+  // Templates section — always shown (no category filter hides them)
+  if (!filterCategory) {
+    console.log(`\n${pc.bold('Templates')}`)
+    for (const tmpl of TEMPLATE_METADATA) {
+      const icon = pc.green('\u2713')
+      console.log(`  ${icon} ${tmpl.command.padEnd(10)} ${pc.dim(tmpl.description)}`)
+    }
+  }
+
   console.log() // trailing newline
 }

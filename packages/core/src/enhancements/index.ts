@@ -56,12 +56,18 @@ export type { EnhancementExecutorOptions, ExecutionSummary } from './executor.js
 export { showEnhancementSummary, showPerEnhancementSummary, ENHANCEMENT_NEXT_STEPS } from './summary.js'
 export type { EnhancementNextSteps } from './summary.js'
 
-// Enhancement modules (06-03)
+// Enhancement modules (06-03, extended 09-01 through 09-03)
 export {
   allEnhancementModules,
   ciModule,
+  commitlintModule,
+  dockerModule,
+  editorconfigModule,
   enhancementRegistry,
+  envModule,
   eslintModule,
   huskyModule,
   prettierModule,
+  renovateModule,
+  testingModule,
 } from './modules/index.js'

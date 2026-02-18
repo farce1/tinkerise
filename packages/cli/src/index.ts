@@ -19,6 +19,7 @@ import { runAddCommand } from './commands/add.js'
 import { runDoctor } from './commands/doctor.js'
 import { registerConfigCommand } from './commands/config.js'
 import { registerPresetCommand } from './commands/preset.js'
+import { registerMcpCommand } from './commands/mcp.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -93,8 +94,8 @@ program
 program
   .command('add')
   .summary('Add enhancements to your project')
-  .description('Add ESLint, Prettier, husky, GitHub Actions CI, and more to your project. Run without arguments for an interactive picker.')
-  .argument('[enhancements...]', 'Enhancement names (eslint, prettier, husky, ci)')
+  .description('Add ESLint, Prettier, husky, GitHub Actions CI, Docker, env, commitlint, testing, Renovate, EditorConfig, and more to your project. Run without arguments for an interactive picker.')
+  .argument('[enhancements...]', 'Enhancement names (eslint, prettier, husky, ci, docker, env, commitlint, testing, renovate, editorconfig)')
   .option('--verbose', 'Show detailed output from package installation')
   .action(async (enhancements: string[], options) => {
     await runAddCommand(enhancements, options)
@@ -115,6 +116,9 @@ registerConfigCommand(program)
 // Preset command — manage configuration presets
 registerPresetCommand(program)
 
+// MCP command — scaffold MCP server projects
+registerMcpCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -132,7 +136,8 @@ Examples:
   $ ${programName} preset save my-stack       Save current config as preset
   $ ${programName} preset use my-stack        Apply a saved preset
   $ ${programName} preset list                Show available presets
-  $ ${programName} preset delete my-stack     Remove a preset`)
+  $ ${programName} preset delete my-stack     Remove a preset
+  $ ${programName} mcp my-server              Scaffold an MCP server`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h

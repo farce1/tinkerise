@@ -28,6 +28,11 @@ vi.mock('@tinkerise/core', () => ({
   getScaffoldersByCategory: mockGetScaffoldersByCategory,
   checkPrerequisite: mockCheckPrerequisite,
   getScaffolderMetadata: mockGetScaffolderMetadata,
+  TEMPLATE_METADATA: [
+    { id: 'mcp', command: 'mcp', displayName: 'MCP Server', description: 'MCP server with TypeScript' },
+    { id: 'cli', command: 'cli', displayName: 'CLI Tool', description: 'CLI tool with Commander.js' },
+    { id: 'lib', command: 'lib', displayName: 'npm Library', description: 'npm library with dual CJS/ESM' },
+  ],
 }))
 
 vi.mock('picocolors', () => ({
