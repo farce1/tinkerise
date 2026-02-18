@@ -33,6 +33,18 @@ vi.mock('@tinkerise/core', () => ({
     { id: 'cli', command: 'cli', displayName: 'CLI Tool', description: 'CLI tool with Commander.js' },
     { id: 'lib', command: 'lib', displayName: 'npm Library', description: 'npm library with dual CJS/ESM' },
   ],
+  allEnhancementModules: [
+    { id: 'eslint', name: 'ESLint', description: 'Linting with ESLint' },
+    { id: 'prettier', name: 'Prettier', description: 'Code formatting with Prettier' },
+    { id: 'husky', name: 'Husky', description: 'Git hooks with Husky' },
+    { id: 'commitlint', name: 'Commitlint', description: 'Commit message linting' },
+    { id: 'ci', name: 'CI', description: 'GitHub Actions CI pipeline' },
+    { id: 'testing', name: 'Testing', description: 'Testing with Vitest' },
+    { id: 'docker', name: 'Docker', description: 'Docker containerization' },
+    { id: 'env', name: 'Env', description: 'Type-safe environment variables' },
+    { id: 'renovate', name: 'Renovate', description: 'Automated dependency updates' },
+    { id: 'editorconfig', name: 'EditorConfig', description: 'Editor configuration' },
+  ],
 }))
 
 vi.mock('picocolors', () => ({
@@ -155,5 +167,32 @@ describe('listScaffolders', () => {
 
     const output = consoleSpy.mock.calls.map(c => c[0]).join('\n')
     expect(output).toContain('No scaffolders available')
+  })
+
+  it('shows Enhancements section in default view', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    const output = consoleSpy.mock.calls.map(c => c[0]).join('\n')
+    expect(output).toContain('Enhancements')
+  })
+
+  it('lists all 10 enhancement modules', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    const output = consoleSpy.mock.calls.map(c => c[0]).join('\n')
+    const enhancementIds = ['eslint', 'prettier', 'husky', 'commitlint', 'ci', 'testing', 'docker', 'env', 'renovate', 'editorconfig']
+    for (const id of enhancementIds) {
+      expect(output).toContain(id)
+    }
+  })
+
+  it('does not show Enhancements section with category filter', async () => {
+    mockGetScaffoldersByCategory.mockReturnValue(webEntries)
+    await listScaffolders('web')
+
+    const output = consoleSpy.mock.calls.map(c => c[0]).join('\n')
+    expect(output).not.toContain('Enhancements')
   })
 })
