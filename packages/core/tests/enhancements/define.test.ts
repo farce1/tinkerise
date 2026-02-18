@@ -157,6 +157,8 @@ describe('dependencyVersionMap', () => {
     '@commitlint/config-conventional',
     '@commitlint/cli',
     'vitest',
+    '@t3-oss/env-core',
+    'zod',
   ]
 
   it('contains all expected dependency keys', () => {
