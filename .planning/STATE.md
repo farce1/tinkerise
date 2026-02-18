@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 9 of 10 (Additional Enhancements & Utility Templates)
-Plan: 3 of 5 in current phase (09-01 through 09-03 complete)
-Status: Docker, Env, Commitlint, Testing, Renovate, EditorConfig modules done + all 10 registered -- 3 of 5 plans complete
-Last activity: 2026-02-18 -- Plan 09-03 complete (Renovate + EditorConfig modules, all 10 enhancements registered)
+Plan: 4 of 5 in current phase (09-01 through 09-04 complete)
+Status: All 10 enhancement modules + MCP server template done -- 4 of 5 plans complete
+Last activity: 2026-02-18 -- Plan 09-04 complete (MCP server template scaffolder, shared template infra, CLI command, list integration)
 
-Progress: [█████████░] 93%
+Progress: [█████████░] 95%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 36
+- Total plans completed: 37
 - Average duration: ~4 min/plan
-- Total execution time: ~131 minutes
+- Total execution time: ~137 minutes
 
 **By Phase:**
 
@@ -37,7 +37,7 @@ Progress: [█████████░] 93%
 | 8 | 5/5 | ~20 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-04, 08-05, 09-01, 09-02, 09-03
+- Last 5 plans: 08-05, 09-01, 09-02, 09-03, 09-04
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -69,6 +69,7 @@ Progress: [█████████░] 93%
 | Phase 09 P01 | 4min | 2 tasks | 6 files |
 | Phase 09 P02 | 3min | 2 tasks | 5 files |
 | Phase 09 P03 | 5min | 2 tasks | 8 files |
+| Phase 09 P04 | 6min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -166,6 +167,10 @@ Recent decisions affecting current work:
 - [Phase 09]: config:recommended as Renovate baseline (auto-merge patch, group minor, weekly)
 - [Phase 09]: EditorConfig: 2-space indent, LF, UTF-8, Makefile tab exception, markdown trim exception
 - [Phase 09]: Config-only enhancement pattern: no installPackages, empty packagesAdded, writeConfigFile only
+- [Phase 09]: Template generators use shared helpers (writeProjectFile, runInstall, printTemplateSummary) for DRY reuse
+- [Phase 09]: TEMPLATE_METADATA includes all 3 entries upfront so list shows them before generators exist
+- [Phase 09]: Templates always show checkmark in list (no prerequisite checks -- only Node.js required)
+- [Phase 09]: MCP generated project uses ESM-only format (per SDK requirements)
 
 ### Pending Todos
 
@@ -180,5 +185,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 09-03-PLAN.md
-Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-03-SUMMARY.md
+Stopped at: Completed 09-04-PLAN.md
+Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-04-SUMMARY.md
