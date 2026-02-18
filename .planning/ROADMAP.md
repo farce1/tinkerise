@@ -22,7 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Configuration & Presets** - Config management (global/project/CLI merge), preset save/use/distribute
 - [ ] **Phase 9: Additional Enhancements & Utility Templates** - Docker, env, commitlint, testing, renovate, editorconfig + MCP/CLI/lib templates
 - [x] **Phase 10: Distribution & Release Automation** - npm publishing, Homebrew tap, self-update, final QA automation, and release pipeline (completed 2026-02-18)
-- [ ] **Phase 11: Cross-Phase Integration Wiring** - Wire config resolve chain into scaffold commands, add --preset flag, session context, list enhancements (gap closure)
+- [x] **Phase 11: Cross-Phase Integration Wiring** - Wire config resolve chain into scaffold commands, add --preset flag, session context, list enhancements (gap closure) (completed 2026-02-18)
 - [ ] **Phase 12: Retroactive Phase Verification** - Generate VERIFICATION.md for phases 2, 6, and 10 (gap closure)
 
 ## Phase Details
@@ -230,7 +230,12 @@ Plans:
   1. Phase 2 has a VERIFICATION.md confirming REG-01 through REG-05, UX-06, UX-07
   2. Phase 6 has a VERIFICATION.md confirming ADD-01 through ADD-04, CLI-02
   3. Phase 10 has a VERIFICATION.md confirming DIST-01 through DIST-05, DIAG-03, QA-08
-**Plans**: TBD
+**Plans**: 3 plans in 1 wave
+
+Plans:
+- [ ] 12-01-PLAN.md -- Phase 2 verification report (REG-01 to REG-05, UX-06, UX-07) (Wave 1)
+- [ ] 12-02-PLAN.md -- Phase 6 verification report (ADD-01 to ADD-04, CLI-02) (Wave 1)
+- [ ] 12-03-PLAN.md -- Phase 10 verification report (DIST-01 to DIST-05, DIAG-03, QA-08) (Wave 1)
 
 ## Progress
 
@@ -250,5 +255,5 @@ Phase 11 (integration wiring) should run before Phase 12 (verification) so that 
 | 8. Configuration & Presets | 5/5 | Complete | 2026-02-18 |
 | 9. Additional Enhancements & Utility Templates | 5/5 | Complete | 2026-02-18 |
 | 10. Distribution & Release Automation | 3/3 | Complete | 2026-02-18 |
-| 11. Cross-Phase Integration Wiring | 0/2 | Not started | - |
-| 12. Retroactive Phase Verification | 0/? | Not started | - |
+| 11. Cross-Phase Integration Wiring | 0/2 | Complete    | 2026-02-18 |
+| 12. Retroactive Phase Verification | 0/3 | Not started | - |
