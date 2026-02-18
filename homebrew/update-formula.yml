@@ -1,0 +1,67 @@
+# GitHub Actions workflow for the tinkerise/homebrew-tap repository.
+# Triggered by the main repo's release workflow via workflow_dispatch.
+# This file is a template -- copy to .github/workflows/ in the tap repo.
+name: Update Formula
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update to'
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update formula
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          URL="https://registry.npmjs.org/tinkerise/-/tinkerise-${VERSION}.tgz"
+          SHA256=$(curl -sL "$URL" | shasum -a 256 | awk '{print $1}')
+
+          cat > Formula/tinkerise.rb << FORMULA
+          class Tinkerise < Formula
+            desc "Scaffold any project with any stack"
+            homepage "https://github.com/tinkerise/tinkerise"
+            url "${URL}"
+            sha256 "${SHA256}"
+            license "MIT"
+
+            def install
+              system "npm", "install", *std_npm_args
+              bin.install_symlink libexec.glob("bin/*")
+            end
+
+            def caveats
+              <<~EOS
+                tinkerise requires Node.js >= 20.11.0.
+                Install Node.js: brew install node
+              EOS
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/tinkerise --version")
+            end
+          end
+          FORMULA
+
+      - name: Create and auto-merge PR
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          git checkout -b "update-${VERSION}"
+          git add Formula/tinkerise.rb
+          git commit -m "Update tinkerise to ${VERSION}"
+          gh pr create \
+            --title "Update tinkerise to ${VERSION}" \
+            --body "Automated formula update from tinkerise release pipeline." \
+            --base main
+          gh pr merge --auto --squash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
