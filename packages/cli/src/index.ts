@@ -18,6 +18,7 @@ import { buildScaffolderHelpText } from './commands/help.js'
 import { runAddCommand } from './commands/add.js'
 import { runDoctor } from './commands/doctor.js'
 import { registerConfigCommand } from './commands/config.js'
+import { registerPresetCommand } from './commands/preset.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -111,6 +112,9 @@ program
 // Config command — manage tinkerise configuration
 registerConfigCommand(program)
 
+// Preset command — manage configuration presets
+registerPresetCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -124,7 +128,11 @@ Examples:
   $ ${programName} doctor                     Check system tools
   $ ${programName} config list                Show configuration
   $ ${programName} config set packageManager pnpm  Set default PM
-  $ ${programName} config init                Interactive config setup`)
+  $ ${programName} config init                Interactive config setup
+  $ ${programName} preset save my-stack       Save current config as preset
+  $ ${programName} preset use my-stack        Apply a saved preset
+  $ ${programName} preset list                Show available presets
+  $ ${programName} preset delete my-stack     Remove a preset`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
