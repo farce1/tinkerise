@@ -22,6 +22,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: Configuration & Presets** - Config management (global/project/CLI merge), preset save/use/distribute
 - [ ] **Phase 9: Additional Enhancements & Utility Templates** - Docker, env, commitlint, testing, renovate, editorconfig + MCP/CLI/lib templates
 - [x] **Phase 10: Distribution & Release Automation** - npm publishing, Homebrew tap, self-update, final QA automation, and release pipeline (completed 2026-02-18)
+- [ ] **Phase 11: Cross-Phase Integration Wiring** - Wire config resolve chain into scaffold commands, add --preset flag, session context, list enhancements (gap closure)
+- [ ] **Phase 12: Retroactive Phase Verification** - Generate VERIFICATION.md for phases 2, 6, and 10 (gap closure)
 
 ## Phase Details
 
@@ -203,21 +205,50 @@ Plans:
 - [ ] 10-02-PLAN.md — `tinkerise update` command, install-method detection, background update check (Wave 1)
 - [ ] 10-03-PLAN.md — Changesets config, GitHub Actions release workflow, Homebrew tap templates (Wave 2)
 
+### Phase 11: Cross-Phase Integration Wiring
+**Goal**: Config and preset systems actually affect scaffold commands, and `tinkerise list` shows the complete feature set
+**Depends on**: Phase 8, Phase 10
+**Requirements**: CFG-03, PRE-02, CLI-05
+**Gap Closure**: Closes integration gaps from v1.0 milestone audit
+**Success Criteria** (what must be TRUE):
+  1. `tinkerise config set packageManager pnpm` causes subsequent `tinkerise web next my-app` to use pnpm without `--package-manager` flag
+  2. `tinkerise preset use my-stack` applies the preset's configuration to the next scaffold invocation (via `--preset` flag or direct application)
+  3. `tinkerise list` shows all scaffolders, templates, AND enhancement modules
+  4. Running `tinkerise add eslint` immediately after scaffolding in the same session reuses framework/PM context without re-detection
+**Plans**: 2 plans in 2 waves
+
+Plans:
+- [ ] 11-01-PLAN.md — Config-to-scaffold wiring, --preset flag, --verbose flag (Wave 1)
+- [ ] 11-02-PLAN.md — File-based session persistence and list enhancements display (Wave 2)
+
+### Phase 12: Retroactive Phase Verification
+**Goal**: All 10 original phases have formal VERIFICATION.md reports confirming requirement satisfaction
+**Depends on**: Phase 10
+**Requirements**: REG-01, REG-02, REG-03, REG-04, REG-05, UX-06, UX-07, ADD-01, ADD-02, ADD-03, ADD-04, CLI-02, DIST-01, DIST-02, DIST-03, DIST-04, DIST-05, DIAG-03, QA-08
+**Gap Closure**: Closes 19 orphaned requirements by verifying phases 2, 6, 10
+**Success Criteria** (what must be TRUE):
+  1. Phase 2 has a VERIFICATION.md confirming REG-01 through REG-05, UX-06, UX-07
+  2. Phase 6 has a VERIFICATION.md confirming ADD-01 through ADD-04, CLI-02
+  3. Phase 10 has a VERIFICATION.md confirming DIST-01 through DIST-05, DIAG-03, QA-08
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
-Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with Phases 5-6 if desired.
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
+Phase 11 (integration wiring) should run before Phase 12 (verification) so that integration fixes are verified together.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Foundation | 4/4 | Complete | 2026-02-17 |
-| 2. Scaffolder Registry & Execution | 0/3 | Not started | - |
-| 3. Interactive UX & Package Manager Detection | 0/3 | Not started | - |
-| 4. Web Framework Scaffolders | 0/5 | Complete    | 2026-02-17 |
-| 5. Enhancement Module System | 0/4 | Not started | - |
+| 2. Scaffolder Registry & Execution | 3/3 | Complete | 2026-02-17 |
+| 3. Interactive UX & Package Manager Detection | 3/3 | Complete | 2026-02-17 |
+| 4. Web Framework Scaffolders | 5/5 | Complete | 2026-02-17 |
+| 5. Enhancement Module System | 5/5 | Complete | 2026-02-17 |
 | 6. Core Enhancements & Add Command | 4/4 | Complete | 2026-02-17 |
-| 7. Backend & Mobile Scaffolders | 0/3 | Complete    | 2026-02-18 |
-| 8. Configuration & Presets | 0/5 | Not started | - |
-| 9. Additional Enhancements & Utility Templates | 0/5 | Not started | - |
-| 10. Distribution & Release Automation | 0/3 | Complete    | 2026-02-18 |
+| 7. Backend & Mobile Scaffolders | 3/3 | Complete | 2026-02-18 |
+| 8. Configuration & Presets | 5/5 | Complete | 2026-02-18 |
+| 9. Additional Enhancements & Utility Templates | 5/5 | Complete | 2026-02-18 |
+| 10. Distribution & Release Automation | 3/3 | Complete | 2026-02-18 |
+| 11. Cross-Phase Integration Wiring | 0/2 | Not started | - |
+| 12. Retroactive Phase Verification | 0/? | Not started | - |
