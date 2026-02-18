@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 9 complete -- Additional Enhancements & Utility Templates done
+**Current focus:** Phase 10 in progress -- Distribution & Release Automation (Wave 1 complete: 10-01, 10-02)
 
 ## Current Position
 
-Phase: 9 of 10 (Additional Enhancements & Utility Templates) -- COMPLETE
-Plan: 5 of 5 in current phase (09-01 through 09-05 complete)
-Status: All 10 enhancement modules + all 3 utility templates done -- Phase 9 complete (5/5 plans)
-Last activity: 2026-02-18 -- Plan 09-05 complete (CLI tool and npm library template scaffolders)
+Phase: 10 of 10 (Distribution & Release Automation) -- IN PROGRESS
+Plan: 2 of 3 in current phase (10-01, 10-02 complete; 10-03 pending)
+Status: npm publishConfig, wrapper package, update command, background check done -- Wave 2 next
+Last activity: 2026-02-18 -- Plans 10-01 and 10-02 complete (Wave 1)
 
-Progress: [██████████] 100%
+Progress: [██████████] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
+- Total plans completed: 40
 - Average duration: ~4 min/plan
-- Total execution time: ~141 minutes
+- Total execution time: ~148 minutes
 
 **By Phase:**
 
@@ -37,8 +37,10 @@ Progress: [██████████] 100%
 | 8 | 5/5 | ~20 min | ~4 min |
 | 9 | 5/5 | ~22 min | ~4 min |
 
+| 10 | 2/3 | ~7 min | ~4 min |
+
 **Recent Trend:**
-- Last 5 plans: 09-01, 09-02, 09-03, 09-04, 09-05
+- Last 5 plans: 09-03, 09-04, 09-05, 10-01, 10-02
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -72,6 +74,8 @@ Progress: [██████████] 100%
 | Phase 09 P03 | 5min | 2 tasks | 8 files |
 | Phase 09 P04 | 6min | 2 tasks | 12 files |
 | Phase 09 P05 | 4min | 2 tasks | 11 files |
+| Phase 10 P01 | 3min | 2 tasks | 6 files |
+| Phase 10 P02 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -177,6 +181,13 @@ Recent decisions affecting current work:
 - [Phase 09]: Library template uses dual CJS/ESM format with types field first in exports for TypeScript resolution
 - [Phase 09]: Library template includes Vitest ^3.1.0, declarationMap, sourceMap for library consumers
 
+- [Phase 10]: Wrapper package uses plain .mjs files -- no build step, no TypeScript, no tsup
+- [Phase 10]: postinstall uses npm_config_global/npm_config_location for global install detection
+- [Phase 10]: execFileSync instead of execa in update command (CJS cross-spawn bundling incompatible with tsup ESM)
+- [Phase 10]: Inline global install detection via npm prefix -g instead of is-installed-globally package
+- [Phase 10]: semver added as direct CLI dependency for version comparison
+- [Phase 10]: program.parse() changed to program.parseAsync() for async command flow with update nudge
+
 ### Pending Todos
 
 None yet.
@@ -190,5 +201,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 09-05-PLAN.md -- Phase 09 complete (all 5 plans done)
-Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-05-SUMMARY.md
+Stopped at: Completed 10-01 and 10-02 (Wave 1) -- proceeding to Wave 2 (10-03)
+Resume file: .planning/phases/10-distribution-release-automation/10-02-SUMMARY.md
