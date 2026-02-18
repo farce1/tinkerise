@@ -118,13 +118,32 @@ export type {
 } from './enhancements/index.js'
 
 /**
- * Config — global config read/write operations.
+ * Config — global config, project config, merge chain, resolve orchestrator,
+ * preset CRUD, npm preset discovery.
  */
 export {
+  CONFIG_FILENAME,
   getConfigDir,
   getConfigPath,
   getGlobalConfigValue,
   loadGlobalConfig,
+  loadProjectConfig,
+  mergeConfigChain,
+  resolveConfig,
   saveGlobalConfig,
   setGlobalConfigValue,
+} from './config/index.js'
+export type { ResolveConfigOptions } from './config/index.js'
+
+export {
+  deletePreset,
+  getPresetsDir,
+  listPresets,
+  loadPreset,
+  savePreset,
+} from './config/index.js'
+
+export {
+  discoverNpmPresets,
+  loadNpmPreset,
 } from './config/index.js'
