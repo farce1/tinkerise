@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 9 in progress -- Additional Enhancements & Utility Templates
+**Current focus:** Phase 9 complete -- Additional Enhancements & Utility Templates done
 
 ## Current Position
 
-Phase: 9 of 10 (Additional Enhancements & Utility Templates)
-Plan: 4 of 5 in current phase (09-01 through 09-04 complete)
-Status: All 10 enhancement modules + MCP server template done -- 4 of 5 plans complete
-Last activity: 2026-02-18 -- Plan 09-04 complete (MCP server template scaffolder, shared template infra, CLI command, list integration)
+Phase: 9 of 10 (Additional Enhancements & Utility Templates) -- COMPLETE
+Plan: 5 of 5 in current phase (09-01 through 09-05 complete)
+Status: All 10 enhancement modules + all 3 utility templates done -- Phase 9 complete (5/5 plans)
+Last activity: 2026-02-18 -- Plan 09-05 complete (CLI tool and npm library template scaffolders)
 
-Progress: [█████████░] 95%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37
+- Total plans completed: 38
 - Average duration: ~4 min/plan
-- Total execution time: ~137 minutes
+- Total execution time: ~141 minutes
 
 **By Phase:**
 
@@ -35,9 +35,10 @@ Progress: [█████████░] 95%
 | 6 | 4/4 | ~14 min | ~4 min |
 | 7 | 3/3 | ~7 min | ~2 min |
 | 8 | 5/5 | ~20 min | ~4 min |
+| 9 | 5/5 | ~22 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-05, 09-01, 09-02, 09-03, 09-04
+- Last 5 plans: 09-01, 09-02, 09-03, 09-04, 09-05
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -70,6 +71,7 @@ Progress: [█████████░] 95%
 | Phase 09 P02 | 3min | 2 tasks | 5 files |
 | Phase 09 P03 | 5min | 2 tasks | 8 files |
 | Phase 09 P04 | 6min | 2 tasks | 12 files |
+| Phase 09 P05 | 4min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -171,6 +173,9 @@ Recent decisions affecting current work:
 - [Phase 09]: TEMPLATE_METADATA includes all 3 entries upfront so list shows them before generators exist
 - [Phase 09]: Templates always show checkmark in list (no prerequisite checks -- only Node.js required)
 - [Phase 09]: MCP generated project uses ESM-only format (per SDK requirements)
+- [Phase 09]: CLI tool template uses Commander.js ^13.0.0 with one example greet command and bin entry
+- [Phase 09]: Library template uses dual CJS/ESM format with types field first in exports for TypeScript resolution
+- [Phase 09]: Library template includes Vitest ^3.1.0, declarationMap, sourceMap for library consumers
 
 ### Pending Todos
 
@@ -185,5 +190,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 09-04-PLAN.md
-Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-04-SUMMARY.md
+Stopped at: Completed 09-05-PLAN.md -- Phase 09 complete (all 5 plans done)
+Resume file: .planning/phases/09-additional-enhancements-utility-templates/09-05-SUMMARY.md
