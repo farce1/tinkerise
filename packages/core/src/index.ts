@@ -116,3 +116,15 @@ export type {
   InstallResult,
   ProjectContext,
 } from './enhancements/index.js'
+
+/**
+ * Config — global config read/write operations.
+ */
+export {
+  getConfigDir,
+  getConfigPath,
+  getGlobalConfigValue,
+  loadGlobalConfig,
+  saveGlobalConfig,
+  setGlobalConfigValue,
+} from './config/index.js'
