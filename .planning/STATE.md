@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 7 complete -- Backend & Mobile Scaffolders
+**Current focus:** Phase 8 in progress -- Configuration & Presets
 
 ## Current Position
 
-Phase: 7 of 10 (Backend & Mobile Scaffolders) -- COMPLETE
-Plan: 3 of 3 in current phase (07-03 complete)
-Status: Phase 7 complete -- all backend/mobile scaffolders + doctor command
-Last activity: 2026-02-18 -- Plan 07-03 complete (tinkerise doctor command, 15 tests)
+Phase: 8 of 10 (Configuration & Presets)
+Plan: 1 of 5 in current phase (08-01 complete)
+Status: Config type system, Zod schemas, defineConfig(), global config CRUD complete
+Last activity: 2026-02-18 -- Plan 08-01 complete (config types + global config, 29 tests)
 
-Progress: [████████░░] 83%
+Progress: [████████░░] 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: ~4 min/plan
-- Total execution time: ~107 minutes
+- Total execution time: ~111 minutes
 
 **By Phase:**
 
@@ -35,7 +35,7 @@ Progress: [████████░░] 83%
 | 6 | 4/4 | ~14 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-04, 07-01, 07-02, 07-03
+- Last 5 plans: 07-01, 07-02, 07-03, 08-01
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -59,6 +59,7 @@ Progress: [████████░░] 83%
 | Phase 07 P01 | 2min | 2 tasks | 6 files |
 | Phase 07 P02 | 2min | 2 tasks | 5 files |
 | Phase 07 P03 | 3min | 2 tasks | 3 files |
+| Phase 08 P01 | 4min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,9 @@ Recent decisions affecting current work:
 - [Phase 07]: Manual string padding for doctor table alignment (no table library dependency)
 - [Phase 07]: Dart informational-only check in doctor (no versionRange, bundled with Flutter)
 - [Phase 07]: DOCTOR_CHECKS exported for test assertion access
+- [Phase 08]: TinkeriseUserConfig as direct interface, not z.infer (per Phase 5 decision)
+- [Phase 08]: Graceful null return on missing/invalid config (loadGlobalConfig never throws)
+- [Phase 08]: XDG_CONFIG_HOME with bracket notation env access per codebase pattern
 
 ### Pending Todos
 
@@ -145,5 +149,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 07-03-PLAN.md (Phase 7 complete)
-Resume file: .planning/phases/08-preset-distribution/08-01-PLAN.md
+Stopped at: Completed 08-01-PLAN.md
+Resume file: .planning/phases/08-configuration-presets/08-02-PLAN.md
