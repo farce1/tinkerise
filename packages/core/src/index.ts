@@ -157,5 +157,5 @@ export {
 /**
  * Templates — utility project generators (MCP server, CLI tool, npm library).
  */
-export { generateMcpServer, TEMPLATE_METADATA } from './templates/index.js'
+export { generateMcpServer, generateCliTool, generateLib, TEMPLATE_METADATA } from './templates/index.js'
 export type { TemplateOptions } from './templates/index.js'
