@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 ## Current Position
 
 Phase: 8 of 10 (Configuration & Presets)
-Plan: 3 of 5 in current phase (08-03 complete)
-Status: Preset CRUD operations and npm preset discovery complete
-Last activity: 2026-02-18 -- Plan 08-03 complete (preset CRUD + npm discovery, 16 tests)
+Plan: 3 of 5 in current phase (08-01, 08-02, 08-03 complete)
+Status: Config types, project config loading, merge chain, resolver, preset CRUD, npm discovery complete
+Last activity: 2026-02-18 -- Plan 08-02 complete (project config + merge chain + resolver, 27 tests)
 
 Progress: [████████░░] 85%
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 85%
 | Phase 07 P02 | 2min | 2 tasks | 5 files |
 | Phase 07 P03 | 3min | 2 tasks | 3 files |
 | Phase 08 P01 | 4min | 2 tasks | 11 files |
+| Phase 08 P02 | 5min | 2 tasks | 8 files |
 | Phase 08 P03 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
@@ -136,6 +137,9 @@ Recent decisions affecting current work:
 - [Phase 08]: TinkeriseUserConfig as direct interface, not z.infer (per Phase 5 decision)
 - [Phase 08]: Graceful null return on missing/invalid config (loadGlobalConfig never throws)
 - [Phase 08]: XDG_CONFIG_HOME with bracket notation env access per codebase pattern
+- [Phase 08]: Empty Zod parse result treated as null (jiti no-default-export returns module namespace)
+- [Phase 08]: deepmerge-ts default array replacement for config merge (not custom mergeConfigs)
+- [Phase 08]: resolveConfig defaults projectDir to process.cwd() when not specified
 - [Phase 08]: Preset files stored as {name}.json in presets/ subdirectory of config dir
 - [Phase 08]: loadPreset returns null on any error (same graceful pattern as loadGlobalConfig)
 - [Phase 08]: import.meta.resolve for npm preset package resolution (throws on missing, caught gracefully)
@@ -153,5 +157,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 08-03-PLAN.md
+Stopped at: Completed 08-02-PLAN.md (08-01, 08-02, 08-03 all complete)
 Resume file: .planning/phases/08-configuration-presets/08-04-PLAN.md
