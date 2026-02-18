@@ -158,14 +158,14 @@ Plans:
   3. CLI flags override project config, which overrides global config
   4. `tinkerise preset save my-stack` captures current scaffold+enhancement selections as a reusable preset
   5. `tinkerise preset use my-stack` applies a saved preset, and presets can be distributed as npm packages
-**Plans**: TBD
+**Plans**: 5 plans in 3 waves
 
 Plans:
-- [ ] 08-01: Global and project config with cosmiconfig resolution
-- [ ] 08-02: `defineConfig()` helper and `tinkerise config` command
-- [ ] 08-03: Config merge chain (CLI > project > global > preset)
-- [ ] 08-04: Preset save and use commands
-- [ ] 08-05: Preset npm distribution and merge with CLI overrides
+- [ ] 08-01-PLAN.md -- Config types, Zod schemas, defineConfig() helper, and global config read/write (Wave 1)
+- [ ] 08-02-PLAN.md -- Project config loading via jiti, config merge chain, and resolveConfig() orchestrator (Wave 2)
+- [ ] 08-03-PLAN.md -- Preset CRUD operations and npm preset discovery (Wave 2)
+- [ ] 08-04-PLAN.md -- `tinkerise config` command with get/set/list/init subcommands (Wave 3)
+- [ ] 08-05-PLAN.md -- `tinkerise preset` command with save/use/list/delete and merge chain integration (Wave 3)
 
 ### Phase 9: Additional Enhancements & Utility Templates
 **Goal**: Users have access to the full enhancement catalog and can scaffold utility projects (MCP servers, CLI tools, npm libraries)
