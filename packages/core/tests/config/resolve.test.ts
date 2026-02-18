@@ -11,12 +11,18 @@ vi.mock('../../src/config/project', () => ({
   loadProjectConfig: vi.fn(),
 }))
 
+vi.mock('../../src/config/preset', () => ({
+  loadPreset: vi.fn(),
+}))
+
 // Import mocked modules
 const { loadGlobalConfig } = await import('../../src/config/global')
 const { loadProjectConfig } = await import('../../src/config/project')
+const { loadPreset } = await import('../../src/config/preset')
 
 const mockLoadGlobal = vi.mocked(loadGlobalConfig)
 const mockLoadProject = vi.mocked(loadProjectConfig)
+const mockLoadPreset = vi.mocked(loadPreset)
 
 describe('resolveConfig()', () => {
   it('returns empty object when no config sources exist', async () => {
@@ -116,5 +122,57 @@ describe('resolveConfig()', () => {
     })
 
     expect(result).toEqual({ typescript: true, packageManager: 'yarn' })
+  })
+
+  it('preset config is lowest priority (global overrides preset)', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'test-preset',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: { packageManager: 'npm', typescript: true },
+    })
+    mockLoadGlobal.mockResolvedValue({ packageManager: 'pnpm' })
+    mockLoadProject.mockResolvedValue(null)
+
+    const result = await resolveConfig({ presetName: 'test-preset' })
+
+    // Global overrides preset's packageManager, preset's typescript survives
+    expect(result).toEqual({ packageManager: 'pnpm', typescript: true })
+  })
+
+  it('CLI flags override all including preset', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'test-preset',
+      scaffold: { framework: 'vite', category: 'web', flags: {} },
+      enhancements: [],
+      config: { packageManager: 'npm', typescript: false, defaultCategory: 'web' },
+    })
+    mockLoadGlobal.mockResolvedValue({ packageManager: 'pnpm' })
+    mockLoadProject.mockResolvedValue({ typescript: true })
+
+    const cliFlags: Partial<TinkeriseUserConfig> = { packageManager: 'bun' }
+
+    const result = await resolveConfig({ presetName: 'test-preset', cliFlags })
+
+    // CLI > project > global > preset
+    expect(result).toEqual({
+      packageManager: 'bun',
+      typescript: true,
+      defaultCategory: 'web',
+    })
+  })
+
+  it('preset name that does not exist is silently ignored', async () => {
+    mockLoadPreset.mockResolvedValue(null)
+    mockLoadGlobal.mockResolvedValue({ packageManager: 'npm' })
+    mockLoadProject.mockResolvedValue(null)
+
+    const result = await resolveConfig({ presetName: 'nonexistent' })
+
+    // Should behave as if no preset was provided
+    expect(result).toEqual({ packageManager: 'npm' })
+    expect(mockLoadPreset).toHaveBeenCalledWith('nonexistent')
   })
 })
