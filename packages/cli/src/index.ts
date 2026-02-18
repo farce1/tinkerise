@@ -20,6 +20,8 @@ import { runDoctor } from './commands/doctor.js'
 import { registerConfigCommand } from './commands/config.js'
 import { registerPresetCommand } from './commands/preset.js'
 import { registerMcpCommand } from './commands/mcp.js'
+import { registerCliToolCommand } from './commands/cli-tool.js'
+import { registerLibCommand } from './commands/lib.js'
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -119,6 +121,12 @@ registerPresetCommand(program)
 // MCP command — scaffold MCP server projects
 registerMcpCommand(program)
 
+// CLI tool command — scaffold CLI tool projects
+registerCliToolCommand(program)
+
+// Lib command — scaffold npm library projects
+registerLibCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -137,7 +145,9 @@ Examples:
   $ ${programName} preset use my-stack        Apply a saved preset
   $ ${programName} preset list                Show available presets
   $ ${programName} preset delete my-stack     Remove a preset
-  $ ${programName} mcp my-server              Scaffold an MCP server`)
+  $ ${programName} mcp my-server              Scaffold an MCP server
+  $ ${programName} cli my-tool                Scaffold a CLI tool
+  $ ${programName} lib my-lib                 Scaffold an npm library`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
