@@ -17,6 +17,10 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@types/node": "^22",
     "tsup": "^8.4"

@@ -29,6 +29,10 @@
     "which": "^6.0.1",
     "zod": "^4.3.6"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@types/node": "^22",
     "@types/semver": "^7.7.1",

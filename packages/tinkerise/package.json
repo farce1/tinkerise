@@ -1,0 +1,27 @@
+{
+  "name": "tinkerise",
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Scaffold any project with any stack",
+  "bin": {
+    "tinkerise": "./bin.mjs",
+    "tk": "./bin.mjs"
+  },
+  "dependencies": {
+    "@tinkerise/cli": "workspace:*"
+  },
+  "files": ["bin.mjs", "postinstall.mjs"],
+  "scripts": {
+    "postinstall": "node postinstall.mjs"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinkerise/tinkerise.git",
+    "directory": "packages/tinkerise"
+  }
+}

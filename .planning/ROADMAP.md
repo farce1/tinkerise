@@ -196,13 +196,12 @@ Plans:
   3. `brew install tinkerise` installs via the Homebrew tap on macOS/Linux
   4. Publishing a new npm version automatically triggers Homebrew formula update via GitHub Actions
   5. `tinkerise update` detects installation method (npm vs Homebrew vs npx) and provides appropriate update instructions
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 10-01: npm package configuration and bin entries
-- [ ] 10-02: Homebrew tap formula and automation
-- [ ] 10-03: `tinkerise update` with install-method detection
-- [ ] 10-04: Release automation with changesets + GitHub Actions
+- [ ] 10-01-PLAN.md — npm publishConfig, thin unscoped wrapper package, postinstall welcome (Wave 1)
+- [ ] 10-02-PLAN.md — `tinkerise update` command, install-method detection, background update check (Wave 1)
+- [ ] 10-03-PLAN.md — Changesets config, GitHub Actions release workflow, Homebrew tap templates (Wave 2)
 
 ## Progress
 
@@ -221,4 +220,4 @@ Note: Phase 7 depends on Phase 4 (not Phase 6), so it can run in parallel with P
 | 7. Backend & Mobile Scaffolders | 0/3 | Complete    | 2026-02-18 |
 | 8. Configuration & Presets | 0/5 | Not started | - |
 | 9. Additional Enhancements & Utility Templates | 0/5 | Not started | - |
-| 10. Distribution & Release Automation | 0/4 | Not started | - |
+| 10. Distribution & Release Automation | 0/3 | Not started | - |
