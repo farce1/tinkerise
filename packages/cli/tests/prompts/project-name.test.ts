@@ -18,6 +18,7 @@ vi.mock('@clack/prompts', () => ({
   isCancel: mockIsCancel,
 }))
 
+// eslint-disable-next-line import/first
 import { validateProjectName } from '../../src/prompts/project-name.js'
 
 describe('validateProjectName', () => {

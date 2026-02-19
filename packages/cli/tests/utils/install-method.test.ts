@@ -77,7 +77,6 @@ describe('detectInstallMethod', () => {
     // We need to mock the module to control import.meta paths
     // Since we can't directly mock import.meta.dirname, we test via
     // the isGlobalNpmInstall branch with matching paths
-    const testDir = '/usr/local/lib/node_modules/@tinkerise/cli/dist'
     mockExecSync.mockReturnValue('/usr/local\n')
     mockRealpathSync.mockReturnValue('/usr/local/lib/node_modules')
 
@@ -97,7 +96,7 @@ describe('detectInstallMethod', () => {
     expect(result).toBe('unknown')
   })
 
-  describe('Homebrew detection via mocked module', () => {
+  describe('homebrew detection via mocked module', () => {
     it('returns homebrew when dirname contains /Cellar/', async () => {
       // Mock the entire module to inject a controlled dirname
       vi.doMock('../../src/utils/install-method.js', () => ({

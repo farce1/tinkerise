@@ -5,8 +5,8 @@
  * Mocks detectInstallMethod, execFileSync, and @clack/prompts logging.
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Command } from 'commander'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Hoist mocks
 const mockDetectInstallMethod = vi.hoisted(() => vi.fn())
@@ -29,6 +29,7 @@ vi.mock('@clack/prompts', () => ({
   log: mockPLog,
 }))
 
+// eslint-disable-next-line import/first
 import { registerUpdateCommand } from '../../src/commands/update.js'
 
 describe('registerUpdateCommand', () => {

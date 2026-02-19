@@ -44,6 +44,7 @@ vi.mock('../../src/prompts/project-name.js', () => ({
   promptProjectName: mockPromptProjectName,
 }))
 
+// eslint-disable-next-line import/first
 import { runPromptFlow } from '../../src/prompts/flow.js'
 
 describe('runPromptFlow', () => {
@@ -60,7 +61,7 @@ describe('runPromptFlow', () => {
     mockPromptProjectName.mockResolvedValue('my-app')
 
     // Mock p.group to execute the prompt functions like the real implementation
-    mockGroup.mockImplementation(async (prompts: Record<string, Function>, opts?: { onCancel?: () => void }) => {
+    mockGroup.mockImplementation(async (prompts: Record<string, (ctx: { results: Record<string, unknown> }) => Promise<unknown>>, opts?: { onCancel?: () => void }) => {
       if (opts?.onCancel) {
         capturedOnCancel = opts.onCancel
       }
