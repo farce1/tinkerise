@@ -2,6 +2,18 @@
   "name": "@tinkerise/core",
   "type": "module",
   "version": "0.0.0",
+  "description": "Core business logic for tinkerise — scaffolder registry, enhancement system, config, and presets",
+  "keywords": ["tinkerise", "scaffolding", "enhancements", "registry", "project-setup"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farce1/tinkerise.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/farce1/tinkerise",
+  "bugs": {
+    "url": "https://github.com/farce1/tinkerise/issues"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -38,5 +50,8 @@
     "@types/semver": "^7.7.1",
     "@types/which": "^3.0.4",
     "tsup": "^8.4"
+  },
+  "engines": {
+    "node": ">=20.11.0"
   }
 }

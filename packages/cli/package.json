@@ -2,6 +2,18 @@
   "name": "@tinkerise/cli",
   "type": "module",
   "version": "0.0.0",
+  "description": "CLI entry point for tinkerise — commands, prompts, and user-facing output",
+  "keywords": ["tinkerise", "cli", "scaffolding", "project-generator", "developer-tools"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farce1/tinkerise.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/farce1/tinkerise",
+  "bugs": {
+    "url": "https://github.com/farce1/tinkerise/issues"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -38,5 +50,8 @@
     "@types/semver": "^7.7.1",
     "execa": "^9.6.1",
     "tsup": "^8.4"
+  },
+  "engines": {
+    "node": ">=20.11.0"
   }
 }
