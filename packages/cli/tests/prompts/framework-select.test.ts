@@ -5,7 +5,9 @@
  * to verify option building, category headers, and cancel handling.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { selectFramework } from '../../src/prompts/framework-select.js'
 
 // Use vi.hoisted so mock fns are available inside vi.mock factories
 const { mockSelect, mockIsCancel, mockGetAllScaffolders, mockGetScaffoldersByCategory } = vi.hoisted(() => ({
@@ -31,8 +33,6 @@ vi.mock('picocolors', () => ({
     dim: (s: string) => s,
   },
 }))
-
-import { selectFramework } from '../../src/prompts/framework-select.js'
 
 // Test scaffolder data
 const testScaffolders = [

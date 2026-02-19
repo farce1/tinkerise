@@ -1,12 +1,12 @@
+import type { TinkeriseUserConfig } from '../../src/index'
 import { describe, expect, it } from 'vitest'
 import {
+  defineConfig,
   PresetDataSchema,
   TinkeriseUserConfigSchema,
-  defineConfig,
 } from '../../src/index'
-import type { TinkeriseUserConfig } from '../../src/index'
 
-describe('TinkeriseUserConfigSchema', () => {
+describe('tinkeriseUserConfigSchema', () => {
   it('parses a valid full config', () => {
     const config = TinkeriseUserConfigSchema.parse({
       packageManager: 'pnpm',
@@ -51,11 +51,11 @@ describe('TinkeriseUserConfigSchema', () => {
     })
 
     expect(config.packageManager).toBe('bun')
-    expect((config as Record<string, unknown>)['unknownField']).toBeUndefined()
+    expect((config as Record<string, unknown>).unknownField).toBeUndefined()
   })
 })
 
-describe('PresetDataSchema', () => {
+describe('presetDataSchema', () => {
   const validPreset = {
     version: 1 as const,
     name: 'my-preset',
@@ -75,7 +75,7 @@ describe('PresetDataSchema', () => {
     expect(preset.version).toBe(1)
     expect(preset.name).toBe('my-preset')
     expect(preset.scaffold.framework).toBe('next')
-    expect(preset.scaffold.flags['typescript']).toBe(true)
+    expect(preset.scaffold.flags.typescript).toBe(true)
     expect(preset.enhancements).toEqual(['eslint', 'prettier'])
     expect(preset.config.packageManager).toBe('pnpm')
   })

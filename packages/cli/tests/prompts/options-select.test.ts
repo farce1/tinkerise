@@ -5,7 +5,9 @@
  * empty-framework handling, cancel behavior, and preselection.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { FRAMEWORK_OPTIONS, selectFrameworkOptions } from '../../src/prompts/options-select.js'
 
 // Use vi.hoisted so mock fns are available inside vi.mock factories
 const { mockMultiselect, mockIsCancel } = vi.hoisted(() => ({
@@ -17,8 +19,6 @@ vi.mock('@clack/prompts', () => ({
   multiselect: mockMultiselect,
   isCancel: mockIsCancel,
 }))
-
-import { selectFrameworkOptions, FRAMEWORK_OPTIONS } from '../../src/prompts/options-select.js'
 
 describe('selectFrameworkOptions', () => {
   beforeEach(() => {
@@ -101,7 +101,7 @@ describe('selectFrameworkOptions', () => {
     expect(result).toEqual(['typescript', 'eslint'])
   })
 
-  it('FRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint', () => {
+  it('fRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint', () => {
     const nextOptions = FRAMEWORK_OPTIONS.next
     expect(nextOptions).toBeDefined()
     expect(nextOptions!.length).toBe(3)
@@ -112,7 +112,7 @@ describe('selectFrameworkOptions', () => {
     expect(values).toContain('eslint')
   })
 
-  it('TypeScript option has hint "recommended"', () => {
+  it('typeScript option has hint "recommended"', () => {
     const tsOption = FRAMEWORK_OPTIONS.next!.find(o => o.value === 'typescript')
     expect(tsOption).toBeDefined()
     expect(tsOption!.hint).toBe('recommended')

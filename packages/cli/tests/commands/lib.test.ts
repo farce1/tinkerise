@@ -9,8 +9,10 @@
  * - --package-manager is passed through
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { Command } from 'commander'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { registerLibCommand } from '../../src/commands/lib.js'
 
 // vi.hoisted mock fns
 const { mockGenerateLib } = vi.hoisted(() => ({
@@ -20,8 +22,6 @@ const { mockGenerateLib } = vi.hoisted(() => ({
 vi.mock('@tinkerise/core', () => ({
   generateLib: mockGenerateLib,
 }))
-
-import { registerLibCommand } from '../../src/commands/lib.js'
 
 describe('registerLibCommand', () => {
   let program: Command
@@ -73,8 +73,12 @@ describe('registerLibCommand', () => {
 
   it('passes --package-manager to generateLib', async () => {
     await program.parseAsync([
-      'node', 'test', 'lib', 'my-lib',
-      '--package-manager', 'yarn',
+      'node',
+      'test',
+      'lib',
+      'my-lib',
+      '--package-manager',
+      'yarn',
     ])
 
     expect(mockGenerateLib).toHaveBeenCalledWith('my-lib', {
@@ -85,7 +89,10 @@ describe('registerLibCommand', () => {
 
   it('passes --no-install as noInstall: true', async () => {
     await program.parseAsync([
-      'node', 'test', 'lib', 'my-lib',
+      'node',
+      'test',
+      'lib',
+      'my-lib',
       '--no-install',
     ])
 

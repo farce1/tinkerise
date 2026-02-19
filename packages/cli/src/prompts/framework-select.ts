@@ -6,13 +6,13 @@
  * category selection step per user decision.
  */
 
-import * as p from '@clack/prompts'
-import pc from 'picocolors'
-import { getAllScaffolders, getScaffoldersByCategory } from '@tinkerise/core'
 import type { ScaffolderCategory } from '@tinkerise/shared'
+import * as p from '@clack/prompts'
+import { getAllScaffolders, getScaffoldersByCategory } from '@tinkerise/core'
+import pc from 'picocolors'
 
 /** Category display config: emoji + label */
-const CATEGORY_DISPLAY: Record<string, { emoji: string; label: string }> = {
+const CATEGORY_DISPLAY: Record<string, { emoji: string, label: string }> = {
   web: { emoji: '\uD83C\uDF10', label: 'Web' },
   backend: { emoji: '\u2699\uFE0F', label: 'Backend' },
   mobile: { emoji: '\uD83D\uDCF1', label: 'Mobile' },
@@ -41,11 +41,12 @@ export async function selectFramework(filterCategory?: ScaffolderCategory): Prom
   }
 
   // Build flat options list with disabled category headers
-  const options: Array<{ value: string; label: string; hint?: string; disabled?: boolean }> = []
+  const options: Array<{ value: string, label: string, hint?: string, disabled?: boolean }> = []
 
   for (const cat of CATEGORY_ORDER) {
     const items = grouped.get(cat)
-    if (!items || items.length === 0) continue
+    if (!items || items.length === 0)
+      continue
 
     const display = CATEGORY_DISPLAY[cat] ?? { emoji: '', label: cat }
 

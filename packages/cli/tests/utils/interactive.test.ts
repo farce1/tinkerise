@@ -8,7 +8,16 @@
  * @tinkerise/core for isCI/ciName.
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import type { Command } from 'commander'
+
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  buildPreselectedOptions,
+  ensureNonInteractive,
+  isFullyNonInteractive,
+  isOptionProvided,
+  mergePromptAndFlags,
+} from '../../src/utils/interactive.js'
 
 // Use vi.hoisted for mocks referenced inside vi.mock factories
 const { mockIsCI, mockCiName } = vi.hoisted(() => ({
@@ -28,15 +37,6 @@ vi.mock('picocolors', () => ({
     dim: (s: string) => s,
   },
 }))
-
-import {
-  isOptionProvided,
-  isFullyNonInteractive,
-  buildPreselectedOptions,
-  mergePromptAndFlags,
-  ensureNonInteractive,
-} from '../../src/utils/interactive.js'
-import type { Command } from 'commander'
 
 /**
  * Create a mock Commander Command with configurable option sources.
@@ -215,7 +215,10 @@ describe('ensureNonInteractive', () => {
 
   it('prints error mentioning category when missing', () => {
     const cmd = createMockCommand()
-    try { ensureNonInteractive(cmd) } catch { /* expected */ }
+    try {
+      ensureNonInteractive(cmd)
+    }
+    catch { /* expected */ }
     const output = stderrSpy.mock.calls.map(c => c[0]).join('')
     expect(output).toContain('category')
   })
@@ -245,7 +248,10 @@ describe('ensureNonInteractive', () => {
   it('includes CI environment name in error message', () => {
     mockCiName.value = 'GitHub Actions'
     const cmd = createMockCommand()
-    try { ensureNonInteractive(cmd) } catch { /* expected */ }
+    try {
+      ensureNonInteractive(cmd)
+    }
+    catch { /* expected */ }
     const output = stderrSpy.mock.calls.map(c => c[0]).join('')
     expect(output).toContain('GitHub Actions')
   })
@@ -253,7 +259,10 @@ describe('ensureNonInteractive', () => {
   it('shows "unknown" when CI name is null', () => {
     mockCiName.value = null
     const cmd = createMockCommand()
-    try { ensureNonInteractive(cmd) } catch { /* expected */ }
+    try {
+      ensureNonInteractive(cmd)
+    }
+    catch { /* expected */ }
     const output = stderrSpy.mock.calls.map(c => c[0]).join('')
     expect(output).toContain('unknown')
   })

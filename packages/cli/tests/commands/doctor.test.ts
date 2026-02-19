@@ -10,7 +10,9 @@
  * - DOCTOR_CHECKS completeness (all 10 tools)
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { DOCTOR_CHECKS, runDoctor } from '../../src/commands/doctor.js'
 
 // vi.hoisted mock fns
 const { mockCheckPrerequisite } = vi.hoisted(() => ({
@@ -30,9 +32,7 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { runDoctor, DOCTOR_CHECKS } from '../../src/commands/doctor.js'
-
-describe('DOCTOR_CHECKS completeness', () => {
+describe('dOCTOR_CHECKS completeness', () => {
   it('contains all 6 runtime tool entries', () => {
     const runtimeCommands = DOCTOR_CHECKS
       .filter(c => c.category === 'Runtimes')
@@ -63,17 +63,17 @@ describe('DOCTOR_CHECKS completeness', () => {
     expect(DOCTOR_CHECKS).toHaveLength(10)
   })
 
-  it('Go uses versionFlag "version" not "--version"', () => {
+  it('go uses versionFlag "version" not "--version"', () => {
     const goCheck = DOCTOR_CHECKS.find(c => c.command === 'go')!
     expect(goCheck.versionFlag).toBe('version')
   })
 
-  it('Dart has no versionRange (informational only)', () => {
+  it('dart has no versionRange (informational only)', () => {
     const dartCheck = DOCTOR_CHECKS.find(c => c.command === 'dart')!
     expect(dartCheck.versionRange).toBeUndefined()
   })
 
-  it('Python uses python3 command (not python)', () => {
+  it('python uses python3 command (not python)', () => {
     const pythonCheck = DOCTOR_CHECKS.find(c => c.tool === 'Python')!
     expect(pythonCheck.command).toBe('python3')
   })
@@ -120,7 +120,7 @@ describe('runDoctor', () => {
         return {
           ok: false,
           command: 'python3',
-          error: "'python3' not found in PATH",
+          error: '\'python3\' not found in PATH',
           installInstructions: 'brew install python@3.12',
         }
       }

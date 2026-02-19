@@ -5,8 +5,7 @@
  * unified flags. Native flags work but are not advertised in help output.
  */
 
-import { getScaffolder } from '@tinkerise/core'
-import { getScaffolderMetadata } from '@tinkerise/core'
+import { getScaffolder, getScaffolderMetadata } from '@tinkerise/core'
 
 /**
  * Build custom help text for a scaffolder showing only unified flags.
@@ -14,7 +13,8 @@ import { getScaffolderMetadata } from '@tinkerise/core'
  */
 export function buildScaffolderHelpText(scaffolderName: string): string {
   const entry = getScaffolder(scaffolderName)
-  if (!entry) return ''
+  if (!entry)
+    return ''
 
   const metadata = getScaffolderMetadata(scaffolderName)
   const displayName = metadata?.displayName ?? scaffolderName
@@ -23,7 +23,8 @@ export function buildScaffolderHelpText(scaffolderName: string): string {
   lines.push(`Usage: tinkerise web ${scaffolderName} <name> [options]`)
   lines.push('')
   lines.push(`Scaffold a new ${displayName} project`)
-  if (metadata?.description) lines.push(metadata.description)
+  if (metadata?.description)
+    lines.push(metadata.description)
   lines.push('')
   lines.push('Supported flags:')
 
@@ -31,7 +32,8 @@ export function buildScaffolderHelpText(scaffolderName: string): string {
     const flagStr = `  --${flag.unified}`
     if (flag.native === '') {
       lines.push(`${flagStr}${' '.repeat(Math.max(1, 24 - flagStr.length))}(always enabled)`)
-    } else {
+    }
+    else {
       lines.push(flagStr)
     }
   }

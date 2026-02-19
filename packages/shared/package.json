@@ -21,11 +21,11 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "zod": "^4.3.6"
+  },
   "devDependencies": {
     "@types/node": "^22",
     "tsup": "^8.4"
-  },
-  "dependencies": {
-    "zod": "^4.3.6"
   }
 }

@@ -8,7 +8,7 @@
 import * as p from '@clack/prompts'
 
 /** Available options per scaffolder name */
-export const FRAMEWORK_OPTIONS: Record<string, Array<{ value: string; label: string; hint?: string }>> = {
+export const FRAMEWORK_OPTIONS: Record<string, Array<{ value: string, label: string, hint?: string }>> = {
   next: [
     { value: 'typescript', label: 'TypeScript', hint: 'recommended' },
     { value: 'tailwind', label: 'Tailwind CSS' },
@@ -37,7 +37,8 @@ export async function selectFrameworkOptions(
   preselected?: string[],
 ): Promise<string[]> {
   const available = FRAMEWORK_OPTIONS[framework]
-  if (!available || available.length === 0) return []
+  if (!available || available.length === 0)
+    return []
 
   const result = await p.multiselect({
     message: 'Select options:',

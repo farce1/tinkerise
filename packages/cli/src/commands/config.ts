@@ -11,20 +11,20 @@
  * Pass `--project` to target the project-level tinkerise.config.ts instead.
  */
 
-import { writeFile, readFile } from 'node:fs/promises'
+import type { TinkeriseUserConfig } from '@tinkerise/shared'
+import type { Command } from 'commander'
+import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import * as p from '@clack/prompts'
-import type { Command } from 'commander'
 import {
+  CONFIG_FILENAME,
+  getConfigPath,
+  getGlobalConfigValue,
   loadGlobalConfig,
+  loadProjectConfig,
   saveGlobalConfig,
   setGlobalConfigValue,
-  getGlobalConfigValue,
-  getConfigPath,
-  loadProjectConfig,
-  CONFIG_FILENAME,
 } from '@tinkerise/core'
-import type { TinkeriseUserConfig } from '@tinkerise/shared'
 
 /** The three valid config keys. */
 const VALID_KEYS = ['packageManager', 'typescript', 'defaultCategory'] as const
@@ -98,7 +98,8 @@ export function registerConfigCommand(program: Command): void {
           const value = config[key]
           p.log.info(`${key}: ${value !== undefined ? String(value) : '(not set)'}`)
         }
-      } else {
+      }
+      else {
         const configPath = getConfigPath()
         p.log.info(`Global config: ${configPath}`)
         const config = await loadGlobalConfig()
@@ -128,7 +129,8 @@ export function registerConfigCommand(program: Command): void {
         const config = await loadProjectConfig(process.cwd())
         const value = config?.[key]
         p.log.info(value !== undefined ? String(value) : '(not set)')
-      } else {
+      }
+      else {
         const value = await getGlobalConfigValue(key)
         p.log.info(value !== undefined ? String(value) : '(not set)')
       }
@@ -154,13 +156,15 @@ export function registerConfigCommand(program: Command): void {
           process.exit(1)
         }
         coerced = value
-      } else if (key === 'typescript') {
+      }
+      else if (key === 'typescript') {
         if (value !== 'true' && value !== 'false') {
           p.log.error(`Invalid value for typescript: '${value}'. Must be 'true' or 'false'.`)
           process.exit(1)
         }
         coerced = value === 'true'
-      } else {
+      }
+      else {
         // defaultCategory
         if (!(VALID_CATEGORIES as readonly string[]).includes(value)) {
           p.log.error(`Invalid category: '${value}'. Valid values: ${VALID_CATEGORIES.join(', ')}`)
@@ -178,7 +182,8 @@ export function registerConfigCommand(program: Command): void {
         const content = generateProjectConfig(updated)
         await writeFile(configPath, content, 'utf-8')
         p.log.success(`Set ${key} = ${String(coerced)} in ${configPath}`)
-      } else {
+      }
+      else {
         await setGlobalConfigValue(key, coerced as TinkeriseUserConfig[ConfigKey])
         p.log.success(`Set ${key} = ${String(coerced)}`)
       }
@@ -248,7 +253,8 @@ export function registerConfigCommand(program: Command): void {
         try {
           await readFile(configPath, 'utf-8')
           existingConfig = await loadProjectConfig(projectDir)
-        } catch {
+        }
+        catch {
           // File doesn't exist, that's fine
         }
 
@@ -273,7 +279,8 @@ export function registerConfigCommand(program: Command): void {
         const content = generateProjectConfig(config)
         await writeFile(configPath, content, 'utf-8')
         p.log.success(`Created ${configPath}`)
-      } else {
+      }
+      else {
         await saveGlobalConfig(config)
         p.log.success(`Global config saved to ${getConfigPath()}`)
       }

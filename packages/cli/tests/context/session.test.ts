@@ -11,17 +11,17 @@
  * - writeSessionFile auto-adds to .gitignore
  */
 
-import { describe, expect, it, beforeEach, afterEach } from 'vitest'
-import { mkdtemp, rm, readFile, writeFile, mkdir } from 'node:fs/promises'
-import { join } from 'node:path'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import {
-  writeSessionFile,
-  readSessionFile,
-  getSessionContext,
-  setSessionContext,
   clearSessionContext,
+  getSessionContext,
+  readSessionFile,
   SESSION_FILENAME,
+  setSessionContext,
+  writeSessionFile,
 } from '../../src/context/session.js'
 
 describe('session file persistence', () => {
@@ -114,7 +114,8 @@ describe('session file persistence', () => {
       // In-memory takes priority
       expect(result.framework).toBe('react')
       expect(result.packageManager).toBe('pnpm')
-    } finally {
+    }
+    finally {
       process.cwd = originalCwd
     }
   })
@@ -138,7 +139,8 @@ describe('session file persistence', () => {
       expect(result.framework).toBe('astro')
       expect(result.packageManager).toBe('bun')
       expect(result.projectDir).toBe(tempDir)
-    } finally {
+    }
+    finally {
       process.cwd = originalCwd
     }
   })
@@ -201,7 +203,8 @@ describe('session file persistence', () => {
 
       const result = await readSessionFile(tempDir)
       expect(result.framework).toBeUndefined()
-    } finally {
+    }
+    finally {
       await rm(emptyDir, { recursive: true, force: true })
     }
   })

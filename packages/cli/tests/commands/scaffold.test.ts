@@ -8,8 +8,14 @@
  * - PM detection source handling (default, binary-missing, lockfile)
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import type { Command } from 'commander'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  runCategoryFlow,
+  runDirectExecution,
+  runInteractiveFlow,
+} from '../../src/commands/scaffold.js'
 
 // vi.hoisted for mock fns used in vi.mock factories
 const {
@@ -111,12 +117,6 @@ vi.mock('picocolors', () => ({
     yellow: (s: string) => s,
   },
 }))
-
-import {
-  runInteractiveFlow,
-  runCategoryFlow,
-  runDirectExecution,
-} from '../../src/commands/scaffold.js'
 
 function createMockCommand(
   optionSources: Record<string, string> = {},
@@ -284,7 +284,10 @@ describe('runDirectExecution', () => {
     await runDirectExecution('web', 'next', undefined, cmd, {})
 
     expect(mockEnsureNonInteractive).toHaveBeenCalledWith(
-      cmd, 'web', 'next', undefined,
+      cmd,
+      'web',
+      'next',
+      undefined,
     )
   })
 
@@ -306,7 +309,7 @@ describe('runDirectExecution', () => {
   })
 })
 
-describe('PM detection integration', () => {
+describe('pM detection integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false

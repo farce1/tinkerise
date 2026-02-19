@@ -10,9 +10,9 @@
  * directory within 5 minutes, session context is transparently reused.
  */
 
+import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { existsSync } from 'node:fs'
 import { z } from 'zod'
 
 /** Session filename written to the scaffolded project directory */
@@ -87,7 +87,7 @@ export function clearSessionContext(): void {
  */
 export async function writeSessionFile(
   projectDir: string,
-  data: { framework: string; packageManager: string },
+  data: { framework: string, packageManager: string },
 ): Promise<void> {
   try {
     const sessionData = {
@@ -100,12 +100,13 @@ export async function writeSessionFile(
 
     await writeFile(
       join(projectDir, SESSION_FILENAME),
-      JSON.stringify(sessionData, null, 2) + '\n',
+      `${JSON.stringify(sessionData, null, 2)}\n`,
       'utf-8',
     )
 
     await addToGitignore(projectDir, SESSION_FILENAME)
-  } catch {
+  }
+  catch {
     // Best-effort: session persistence is not critical
   }
 }
@@ -122,22 +123,26 @@ export async function readSessionFile(dir: string): Promise<SessionContext> {
     const parsed = JSON.parse(raw)
     const result = SessionFileSchema.safeParse(parsed)
 
-    if (!result.success) return {}
+    if (!result.success)
+      return {}
 
     const data = result.data
 
     // Check expiry
-    if (Date.now() - data.createdAt > SESSION_EXPIRY_MS) return {}
+    if (Date.now() - data.createdAt > SESSION_EXPIRY_MS)
+      return {}
 
     // Light validation: project directory should contain package.json
-    if (!existsSync(join(data.projectDir, 'package.json'))) return {}
+    if (!existsSync(join(data.projectDir, 'package.json')))
+      return {}
 
     return {
       framework: data.framework,
       packageManager: data.packageManager,
       projectDir: data.projectDir,
     }
-  } catch {
+  }
+  catch {
     return {}
   }
 }
@@ -154,7 +159,8 @@ async function addToGitignore(rootDir: string, entry: string): Promise<boolean> 
   let content: string
   try {
     content = await readFile(gitignorePath, 'utf-8')
-  } catch {
+  }
+  catch {
     // .gitignore doesn't exist, create it
     await writeFile(gitignorePath, `${entry}\n`, 'utf-8')
     return true

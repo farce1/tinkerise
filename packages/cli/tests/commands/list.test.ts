@@ -8,7 +8,9 @@
  * - Prerequisite status display
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { listScaffolders } from '../../src/commands/list.js'
 
 // vi.hoisted mock fns
 const {
@@ -56,10 +58,8 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { listScaffolders } from '../../src/commands/list.js'
-
 /** Minimal scaffolder entry for testing */
-function makeEntry(name: string, category: string, packageName: string, flags: Array<{ unified: string; native: string }> = []) {
+function makeEntry(name: string, category: string, packageName: string, flags: Array<{ unified: string, native: string }> = []) {
   return {
     name,
     category,
@@ -119,8 +119,10 @@ describe('listScaffolders', () => {
   it('shows detailed view when filtering by category', async () => {
     mockGetScaffoldersByCategory.mockReturnValue(webEntries)
     mockGetScaffolderMetadata.mockImplementation((name: string) => {
-      if (name === 'next') return { displayName: 'Next.js', description: 'React framework', suggestions: [] }
-      if (name === 'vite') return { displayName: 'Vite', description: 'Fast build tool', suggestions: [] }
+      if (name === 'next')
+        return { displayName: 'Next.js', description: 'React framework', suggestions: [] }
+      if (name === 'vite')
+        return { displayName: 'Vite', description: 'Fast build tool', suggestions: [] }
       return undefined
     })
 

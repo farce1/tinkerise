@@ -12,16 +12,16 @@
 import { createRequire } from 'node:module'
 import { basename } from 'node:path'
 import { Command } from 'commander'
-import { runInteractiveFlow, runCategoryFlow, runDirectExecution } from './commands/scaffold.js'
-import { listScaffolders } from './commands/list.js'
-import { buildScaffolderHelpText } from './commands/help.js'
 import { runAddCommand } from './commands/add.js'
-import { runDoctor } from './commands/doctor.js'
-import { registerConfigCommand } from './commands/config.js'
-import { registerPresetCommand } from './commands/preset.js'
-import { registerMcpCommand } from './commands/mcp.js'
 import { registerCliToolCommand } from './commands/cli-tool.js'
+import { registerConfigCommand } from './commands/config.js'
+import { runDoctor } from './commands/doctor.js'
+import { buildScaffolderHelpText } from './commands/help.js'
 import { registerLibCommand } from './commands/lib.js'
+import { listScaffolders } from './commands/list.js'
+import { registerMcpCommand } from './commands/mcp.js'
+import { registerPresetCommand } from './commands/preset.js'
+import { runCategoryFlow, runDirectExecution, runInteractiveFlow } from './commands/scaffold.js'
 import { registerUpdateCommand } from './commands/update.js'
 import { checkForUpdate, printUpdateNudge } from './utils/update-check.js'
 
@@ -68,9 +68,11 @@ program
 
     if (!category) {
       await runInteractiveFlow(command, options)
-    } else if (!framework) {
+    }
+    else if (!framework) {
       await runCategoryFlow(category, command, options)
-    } else {
+    }
+    else {
       await runDirectExecution(category, framework, name, command, options)
     }
   })
@@ -95,7 +97,8 @@ program
   .option('--package-manager <pm>', 'Package manager (npm, pnpm, yarn, bun)')
   .action(async (name: string, options) => {
     // Merge options same as scaffold command
-    if (options.ts) options.typescript = true
+    if (options.ts)
+      options.typescript = true
     await runDirectExecution('web', 'turbo', name, program, options)
   })
 

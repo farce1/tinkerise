@@ -6,12 +6,12 @@
  * failures at the end.
  */
 
-import { readFile, writeFile } from 'node:fs/promises'
-import { showFileDiff } from './conflict.js'
-import { topologicalSort, CyclicDependencyError } from './graph.js'
-import { tinkeriseLog } from '../executor/framing.js'
 import type { ConflictAction } from './conflict.js'
 import type { EnhancementModule, FrameworkId, ProjectContext } from './types.js'
+import { readFile, writeFile } from 'node:fs/promises'
+import { tinkeriseLog } from '../executor/framing.js'
+import { showFileDiff } from './conflict.js'
+import { CyclicDependencyError, topologicalSort } from './graph.js'
 
 /** Options for the enhancement executor pipeline */
 export interface EnhancementExecutorOptions {
@@ -43,7 +43,7 @@ export interface ExecutionSummary {
   /** Modules that were skipped (user chose skip on conflict) */
   skipped: string[]
   /** Modules that failed with error details */
-  failed: Array<{ id: string; error: string }>
+  failed: Array<{ id: string, error: string }>
   /** Modules that did not run due to an earlier failure */
   notRun: string[]
   /** Per-module install results (only for successfully installed modules) */
@@ -53,7 +53,7 @@ export interface ExecutionSummary {
 /**
  * Mark all modules after index `from` in `sorted` as not run.
  */
-function markRemainingAsNotRun(
+function _markRemainingAsNotRun(
   summary: ExecutionSummary,
   sorted: EnhancementModule[],
   from: number,
@@ -88,7 +88,8 @@ export async function runEnhancements(
   let sorted: EnhancementModule[]
   try {
     sorted = topologicalSort(opts.modules)
-  } catch (err) {
+  }
+  catch (err) {
     if (err instanceof CyclicDependencyError) {
       // All modules marked as failed
       for (const mod of opts.modules) {
@@ -113,7 +114,8 @@ export async function runEnhancements(
     let detection
     try {
       detection = await mod.detect(opts.context)
-    } catch (err) {
+    }
+    catch (err) {
       summary.failed.push({
         id: mod.id,
         error: err instanceof Error ? err.message : String(err),
@@ -139,7 +141,8 @@ export async function runEnhancements(
       for (const filePath of detection.configFiles) {
         try {
           existingContents.set(filePath, await readFile(filePath, 'utf-8'))
-        } catch {
+        }
+        catch {
           existingContents.set(filePath, '')
         }
       }
@@ -148,7 +151,8 @@ export async function runEnhancements(
       let installResult: import('./types.js').InstallResult | undefined
       try {
         installResult = await mod.install(opts.context)
-      } catch (err) {
+      }
+      catch (err) {
         summary.failed.push({
           id: mod.id,
           error: err instanceof Error ? err.message : String(err),
@@ -168,7 +172,8 @@ export async function runEnhancements(
         let proposedContent: string
         try {
           proposedContent = await readFile(filePath, 'utf-8')
-        } catch {
+        }
+        catch {
           proposedContent = existingContent
         }
 
@@ -211,7 +216,7 @@ export async function runEnhancements(
 
     // d. Check for missing dependencies
     const missingDeps = mod.dependsOn.filter(
-      (dep) => !summary.installed.includes(dep),
+      dep => !summary.installed.includes(dep),
     )
     if (missingDeps.length > 0) {
       const approved = await opts.onDependencyApproval(mod.id, missingDeps)
@@ -231,7 +236,8 @@ export async function runEnhancements(
         summary.installed.push(mod.id)
         summary.results.set(mod.id, result)
         tinkeriseLog(`Done: ${mod.name} \u2714`)
-      } else {
+      }
+      else {
         summary.failed.push({
           id: mod.id,
           error: result.warnings.join('; ') || 'Install returned success: false',
@@ -239,7 +245,8 @@ export async function runEnhancements(
         tinkeriseLog(`Failed: ${mod.name} \u2718`)
         continue
       }
-    } catch (err) {
+    }
+    catch (err) {
       // g. Install threw: record failure and continue to next module
       summary.failed.push({
         id: mod.id,

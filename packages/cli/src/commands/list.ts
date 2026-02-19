@@ -8,10 +8,9 @@
  * Prerequisite status shown next to each scaffolder (checkmark or X).
  */
 
-import pc from 'picocolors'
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
-import { getAllScaffolders, getScaffoldersByCategory, checkPrerequisite } from '@tinkerise/core'
-import { getScaffolderMetadata, TEMPLATE_METADATA, allEnhancementModules } from '@tinkerise/core'
+import { allEnhancementModules, checkPrerequisite, getAllScaffolders, getScaffolderMetadata, getScaffoldersByCategory, TEMPLATE_METADATA } from '@tinkerise/core'
+import pc from 'picocolors'
 
 const CATEGORY_ORDER: ScaffolderCategory[] = ['web', 'backend', 'mobile']
 const CATEGORY_LABELS: Record<string, string> = {
@@ -24,14 +23,17 @@ const CATEGORY_LABELS: Record<string, string> = {
  * Check if all prerequisites for a scaffolder are met.
  */
 async function checkPrereqStatus(entry: ScaffolderEntry): Promise<boolean> {
-  if (entry.prerequisites.length === 0) return true
+  if (entry.prerequisites.length === 0)
+    return true
   try {
     for (const prereq of entry.prerequisites) {
       const result = await checkPrerequisite(prereq)
-      if (!result.ok) return false
+      if (!result.ok)
+        return false
     }
     return true
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -65,7 +67,8 @@ export async function listScaffolders(filterCategory?: string): Promise<void> {
 
   for (const cat of CATEGORY_ORDER) {
     const items = grouped.get(cat)
-    if (!items || items.length === 0) continue
+    if (!items || items.length === 0)
+      continue
 
     const label = CATEGORY_LABELS[cat] ?? cat
     console.log(`\n${pc.bold(label)}`)
@@ -91,7 +94,8 @@ export async function listScaffolders(filterCategory?: string): Promise<void> {
         if (supportedFlags.length > 0) {
           console.log(`    ${pc.dim(`Flags: ${supportedFlags.join(', ')}`)}`)
         }
-      } else {
+      }
+      else {
         // Minimal view: just name
         console.log(`  ${icon} ${displayName}`)
       }

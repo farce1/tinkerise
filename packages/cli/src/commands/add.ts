@@ -8,19 +8,19 @@
  * Orchestrates: context build -> module selection -> execution -> summary
  */
 
+import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
 import * as p from '@clack/prompts'
-import pc from 'picocolors'
 import {
+  allEnhancementModules,
   buildProjectContext,
+  ENHANCEMENT_NEXT_STEPS,
+  enhancementRegistry,
+  isCI,
   runEnhancements,
   showEnhancementSummary,
   showPerEnhancementSummary,
-  enhancementRegistry,
-  allEnhancementModules,
-  isCI,
-  ENHANCEMENT_NEXT_STEPS,
 } from '@tinkerise/core'
-import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
+import pc from 'picocolors'
 import { getSessionContext } from '../context/session.js'
 import { showEnhancementPicker } from '../prompts/enhancement-select.js'
 
@@ -50,16 +50,16 @@ export async function runAddCommand(
     onAmbiguousFramework: isCI
       ? undefined
       : async (detected) => {
-          const result = await p.select({
-            message: 'Multiple frameworks detected. Which is the primary one?',
-            options: detected.map(fw => ({ value: fw, label: fw })),
-          })
-          if (p.isCancel(result)) {
-            p.cancel('Cancelled.')
-            process.exit(0)
-          }
-          return result as typeof detected[number]
-        },
+        const result = await p.select({
+          message: 'Multiple frameworks detected. Which is the primary one?',
+          options: detected.map(fw => ({ value: fw, label: fw })),
+        })
+        if (p.isCancel(result)) {
+          p.cancel('Cancelled.')
+          process.exit(0)
+        }
+        return result as typeof detected[number]
+      },
   })
 
   // 2. Determine which enhancements to run
@@ -73,10 +73,12 @@ export async function runAddCommand(
       process.exit(1)
     }
     modules = await showEnhancementPicker(ctx)
-    if (modules.length === 0) return
-  } else {
+    if (modules.length === 0)
+      return
+  }
+  else {
     // Direct: resolve names to modules
-    modules = enhancementNames.map(name => {
+    modules = enhancementNames.map((name) => {
       const mod = enhancementRegistry.get(name)
       if (!mod) {
         p.log.error(pc.red(`Unknown enhancement: '${name}'`))
@@ -93,7 +95,8 @@ export async function runAddCommand(
     context: ctx,
     interactive: !isCI,
     onConflict: async (moduleId, _filePath, diff): Promise<ConflictAction> => {
-      if (isCI) return 'skip'
+      if (isCI)
+        return 'skip'
       console.log(diff)
       const action = await p.select({
         message: `${moduleId}: Config file already exists. What would you like to do?`,
@@ -110,7 +113,8 @@ export async function runAddCommand(
       return action as ConflictAction
     },
     onDependencyApproval: async (moduleId, deps): Promise<boolean> => {
-      if (isCI) return true
+      if (isCI)
+        return true
       const result = await p.confirm({
         message: `${moduleId} requires: ${deps.join(', ')}. These were not installed in this run. Continue anyway?`,
       })
@@ -125,7 +129,8 @@ export async function runAddCommand(
   // 4. Show per-enhancement summary cards
   for (const installedId of summary.installed) {
     const mod = enhancementRegistry.get(installedId)
-    if (!mod) continue
+    if (!mod)
+      continue
     const result = summary.results.get(installedId) ?? {
       success: true,
       filesModified: [],

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { ZodError } from 'zod'
 import {
+  defineScaffolder,
   FlagMappingSchema,
   IntegrationStrategySchema,
   PrerequisiteSchema,
   ScaffolderEntrySchema,
   VersionedFlagMapSchema,
-  defineScaffolder,
 } from '../../src/index'
 
 /** Minimal valid scaffolder entry for reuse in tests */
@@ -21,7 +21,7 @@ function validEntry(overrides: Record<string, unknown> = {}) {
   }
 }
 
-describe('ScaffolderEntrySchema', () => {
+describe('scaffolderEntrySchema', () => {
   it('parses a valid complete entry', () => {
     const entry = ScaffolderEntrySchema.parse({
       name: 'next',
@@ -67,7 +67,7 @@ describe('ScaffolderEntrySchema', () => {
   })
 })
 
-describe('FlagMappingSchema', () => {
+describe('flagMappingSchema', () => {
   it('parses valid flag mapping with all fields', () => {
     const flag = FlagMappingSchema.parse({
       unified: 'typescript',
@@ -96,7 +96,7 @@ describe('FlagMappingSchema', () => {
   })
 })
 
-describe('PrerequisiteSchema', () => {
+describe('prerequisiteSchema', () => {
   it('parses complete prerequisite with installInstructions', () => {
     const prereq = PrerequisiteSchema.parse({
       command: 'node',
@@ -121,7 +121,7 @@ describe('PrerequisiteSchema', () => {
   })
 })
 
-describe('IntegrationStrategySchema', () => {
+describe('integrationStrategySchema', () => {
   it('parses delegate variant', () => {
     const strategy = IntegrationStrategySchema.parse({ type: 'delegate', command: 'create-next-app' })
     expect(strategy.type).toBe('delegate')
@@ -142,7 +142,7 @@ describe('IntegrationStrategySchema', () => {
   })
 })
 
-describe('VersionedFlagMapSchema', () => {
+describe('versionedFlagMapSchema', () => {
   it('parses valid versioned flag map', () => {
     const vfm = VersionedFlagMapSchema.parse({
       versionRange: '>=15.0.0',

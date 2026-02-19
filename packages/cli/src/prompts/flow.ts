@@ -6,8 +6,8 @@
  * Centralized cancel handling via onCancel.
  */
 
-import * as p from '@clack/prompts'
 import type { ScaffolderCategory } from '@tinkerise/shared'
+import * as p from '@clack/prompts'
 import { selectFramework } from './framework-select.js'
 import { FRAMEWORK_OPTIONS, selectFrameworkOptions } from './options-select.js'
 import { promptProjectName } from './project-name.js'

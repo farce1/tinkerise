@@ -12,25 +12,24 @@
  * - Full non-interactive: skips all prompts when all positional args provided
  */
 
-import * as p from '@clack/prompts'
-import pc from 'picocolors'
-import type { Command } from 'commander'
-import type { ScaffolderCategory } from '@tinkerise/shared'
-import type { TinkeriseUserConfig, PresetData } from '@tinkerise/shared'
-import { detectPackageManager, executeScaffolder, isCI, tinkeriseSummaryCard, resolveConfig, loadPreset } from '@tinkerise/core'
 import type { PackageManager } from '@tinkerise/core'
+import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinkerise/shared'
+import type { Command } from 'commander'
 import { join } from 'node:path'
-import { showBanner } from '../utils/banner.js'
+import * as p from '@clack/prompts'
+import { detectPackageManager, executeScaffolder, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import pc from 'picocolors'
+import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
 import { promptProjectName } from '../prompts/project-name.js'
-import { selectViteTemplate, resolveViteTemplate, selectT3Components } from '../prompts/variant-select.js'
+import { resolveViteTemplate, selectT3Components, selectViteTemplate } from '../prompts/variant-select.js'
+import { showBanner } from '../utils/banner.js'
 import {
   buildPreselectedOptions,
   ensureNonInteractive,
   mergePromptAndFlags,
 } from '../utils/interactive.js'
-import { setSessionContext, writeSessionFile } from '../context/session.js'
 
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
@@ -114,13 +113,16 @@ function buildUserFlags(
 
   // Config typescript pre-selection: applies when CLI --typescript not explicitly set
   if (config?.typescript === true && !cliOptions.typescript) {
-    flags['typescript'] = true
+    flags.typescript = true
   }
 
   // Override with explicit CLI flags if provided
-  if (cliOptions.typescript) flags['typescript'] = true
-  if (cliOptions.tailwind) flags['tailwind'] = true
-  if (cliOptions.eslint) flags['eslint'] = true
+  if (cliOptions.typescript)
+    flags.typescript = true
+  if (cliOptions.tailwind)
+    flags.tailwind = true
+  if (cliOptions.eslint)
+    flags.eslint = true
 
   // Add PM if not npm (npm is the default for upstream tools)
   if (pm !== 'npm') {
@@ -139,7 +141,7 @@ function buildUserFlags(
  */
 async function resolveConfigAndPreset(
   options: ScaffoldOptions,
-): Promise<{ config: Partial<TinkeriseUserConfig>; preset: PresetData | null }> {
+): Promise<{ config: Partial<TinkeriseUserConfig>, preset: PresetData | null }> {
   const config = await resolveConfig({
     projectDir: process.cwd(),
     presetName: options.preset,
@@ -161,7 +163,8 @@ function mergePresetFlags(
   preset: PresetData | null,
   cliPreselected: string[],
 ): string[] {
-  if (!preset?.scaffold.flags) return cliPreselected
+  if (!preset?.scaffold.flags)
+    return cliPreselected
 
   const presetOptions: string[] = []
   for (const [key, value] of Object.entries(preset.scaffold.flags)) {
@@ -200,7 +203,7 @@ async function executePipeline(
     const resolved = resolveViteTemplate(base, !!cliOptions.typescript)
     extraArgs = ['--template', resolved]
     // Remove typescript from userFlags -- handled via template suffix
-    delete userFlags['typescript']
+    delete userFlags.typescript
   }
 
   if (framework === 't3') {
@@ -317,8 +320,8 @@ export async function runCategoryFlow(
 
   // Preset framework pre-fill: only use if preset category matches user-provided category.
   // If categories don't match, ignore preset framework (Pitfall 2 from research).
-  const presetFramework =
-    preset?.scaffold.framework && preset.scaffold.category === category
+  const presetFramework
+    = preset?.scaffold.framework && preset.scaffold.category === category
       ? preset.scaffold.framework
       : undefined
 

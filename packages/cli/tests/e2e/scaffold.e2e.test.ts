@@ -11,11 +11,11 @@
  * Skipped by default in CI and local test runs.
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { mkdtemp, rm, access } from 'node:fs/promises'
+import { access, mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { execaNode } from 'execa'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 const E2E_ENABLED = process.env.TINKERISE_E2E === 'true'
 
@@ -36,7 +36,7 @@ async function expectFileExists(filePath: string): Promise<void> {
 // ---------------------------------------------------------------------------
 // Next.js
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold Next.js', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold Next.js', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -49,8 +49,12 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Next.js', () => {
 
   it('scaffolds a Next.js project', async () => {
     const result = await execaNode(CLI_PATH, [
-      'web', 'next', 'test-next',
-      '--ts', '--no-install', '--no-git',
+      'web',
+      'next',
+      'test-next',
+      '--ts',
+      '--no-install',
+      '--no-git',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -69,7 +73,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Next.js', () => {
 // ---------------------------------------------------------------------------
 // Vite
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold Vite', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold Vite', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -83,8 +87,13 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Vite', () => {
   it('scaffolds a Vite project', async () => {
     // Vite doesn't install deps by default, so no --no-install needed
     const result = await execaNode(CLI_PATH, [
-      'web', 'vite', 'test-vite',
-      '--template', 'react', '--ts', '--no-git',
+      'web',
+      'vite',
+      'test-vite',
+      '--template',
+      'react',
+      '--ts',
+      '--no-git',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -103,7 +112,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Vite', () => {
 // ---------------------------------------------------------------------------
 // Astro
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold Astro', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold Astro', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -117,9 +126,13 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Astro', () => {
   it('scaffolds an Astro project', async () => {
     // Pass --yes via passthrough to skip Astro's own prompts
     const result = await execaNode(CLI_PATH, [
-      'web', 'astro', 'test-astro',
-      '--no-install', '--no-git',
-      '--', '--yes',
+      'web',
+      'astro',
+      'test-astro',
+      '--no-install',
+      '--no-git',
+      '--',
+      '--yes',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -137,7 +150,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Astro', () => {
 // ---------------------------------------------------------------------------
 // T3
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold T3', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold T3', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -153,9 +166,14 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold T3', () => {
     // to native camelCase (--noInstall, --noGit).
     // Pass --CI via passthrough to suppress T3's interactive prompts.
     const result = await execaNode(CLI_PATH, [
-      'web', 't3', 'test-t3',
-      '--tailwind', '--no-install', '--no-git',
-      '--', '--CI',
+      'web',
+      't3',
+      'test-t3',
+      '--tailwind',
+      '--no-install',
+      '--no-git',
+      '--',
+      '--CI',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -173,7 +191,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold T3', () => {
 // ---------------------------------------------------------------------------
 // Remix (React Router v7)
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold Remix', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold Remix', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -187,9 +205,13 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Remix', () => {
   it('scaffolds a Remix (React Router) project', async () => {
     // Pass --yes to skip RR's interactive prompts
     const result = await execaNode(CLI_PATH, [
-      'web', 'remix', 'test-remix',
-      '--no-install', '--no-git',
-      '--', '--yes',
+      'web',
+      'remix',
+      'test-remix',
+      '--no-install',
+      '--no-git',
+      '--',
+      '--yes',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -206,7 +228,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Remix', () => {
 // ---------------------------------------------------------------------------
 // TanStack Start
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold TanStack Start', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold TanStack Start', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -220,8 +242,11 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold TanStack Start', () => {
   it('scaffolds a TanStack Start project', async () => {
     // Pass -y to create with defaults only
     const result = await execaNode(CLI_PATH, [
-      'web', 'tanstack', 'test-tanstack',
-      '--', '-y',
+      'web',
+      'tanstack',
+      'test-tanstack',
+      '--',
+      '-y',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,
@@ -238,7 +263,7 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold TanStack Start', () => {
 // ---------------------------------------------------------------------------
 // Turborepo
 // ---------------------------------------------------------------------------
-describe.skipIf(!E2E_ENABLED)('E2E: scaffold Turborepo', () => {
+describe.skipIf(!E2E_ENABLED)('e2E: scaffold Turborepo', () => {
   let tmpDir: string
 
   beforeAll(async () => {
@@ -251,8 +276,11 @@ describe.skipIf(!E2E_ENABLED)('E2E: scaffold Turborepo', () => {
 
   it('scaffolds a Turborepo monorepo', async () => {
     const result = await execaNode(CLI_PATH, [
-      'monorepo', 'test-turbo',
-      '--no-install', '--package-manager', 'npm',
+      'monorepo',
+      'test-turbo',
+      '--no-install',
+      '--package-manager',
+      'npm',
     ], {
       cwd: tmpDir,
       timeout: E2E_TIMEOUT,

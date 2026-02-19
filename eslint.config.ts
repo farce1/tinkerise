@@ -12,4 +12,10 @@ export default antfu({
     '**/.turbo/**',
     'templates/**',
   ],
+  rules: {
+    // process is always globally available in Node.js/Bun CLI context
+    'node/prefer-global/process': 'off',
+    // CLI tool uses console for user-facing output (tinkeriseLog, printTemplateSummary)
+    'no-console': 'off',
+  },
 })

@@ -23,6 +23,21 @@ export interface TinkeriseConfig {
 export type ScaffolderCategory = 'web' | 'backend' | 'mobile' | 'utility'
 
 /**
+ * Config — user config types, Zod schemas, and defineConfig helper.
+ */
+export { defineConfig } from './config/define-config.js'
+
+export {
+  PresetDataSchema,
+  TinkeriseUserConfigSchema,
+} from './config/schemas.js'
+
+export type {
+  PresetData,
+  TinkeriseUserConfig,
+} from './config/types.js'
+
+/**
  * Registry — schemas, types, and helpers for the scaffolder registry.
  */
 export {
@@ -41,18 +56,3 @@ export type {
   ScaffolderEntry,
   VersionedFlagMap,
 } from './registry/index.js'
-
-/**
- * Config — user config types, Zod schemas, and defineConfig helper.
- */
-export { defineConfig } from './config/define-config.js'
-
-export {
-  TinkeriseUserConfigSchema,
-  PresetDataSchema,
-} from './config/schemas.js'
-
-export type {
-  TinkeriseUserConfig,
-  PresetData,
-} from './config/types.js'

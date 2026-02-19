@@ -12,7 +12,10 @@
  * - generateProjectConfig omits undefined keys
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { Command } from 'commander'
+
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { generateProjectConfig, registerConfigCommand } from '../../src/commands/config.js'
 
 // vi.hoisted mock fns
 const {
@@ -90,9 +93,6 @@ vi.stubGlobal('process', {
   env: process.env,
 })
 
-import { Command } from 'commander'
-import { registerConfigCommand, generateProjectConfig } from '../../src/commands/config.js'
-
 /**
  * Create a Commander program with the config command registered and parse args.
  */
@@ -106,7 +106,9 @@ async function runConfigCommand(args: string[]): Promise<void> {
 describe('config list', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
   })
 
   it('calls loadGlobalConfig and displays values', async () => {
@@ -151,7 +153,9 @@ describe('config list', () => {
 describe('config get', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
   })
 
   it('returns correct value for packageManager', async () => {
@@ -184,7 +188,9 @@ describe('config get', () => {
 describe('config set', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
     mockSetGlobalConfigValue.mockResolvedValue(undefined)
   })
 
@@ -221,7 +227,7 @@ describe('config set', () => {
       await runConfigCommand(['config', 'set', 'typescript', 'yes'])
     }).rejects.toThrow('process.exit')
 
-    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining("Invalid value for typescript"))
+    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining('Invalid value for typescript'))
     expect(mockProcessExit).toHaveBeenCalledWith(1)
   })
 
@@ -242,7 +248,7 @@ describe('config set', () => {
 
     expect(mockWriteFile).toHaveBeenCalledWith(
       expect.stringContaining('tinkerise.config.ts'),
-      expect.stringContaining("packageManager: 'pnpm'"),
+      expect.stringContaining('packageManager: \'pnpm\''),
       'utf-8',
     )
     expect(mockPLogSuccess).toHaveBeenCalledWith(expect.stringContaining('Set packageManager = pnpm'))
@@ -257,11 +263,11 @@ describe('generateProjectConfig', () => {
       defaultCategory: 'web',
     })
 
-    expect(result).toContain("import { defineConfig } from '@tinkerise/shared'")
+    expect(result).toContain('import { defineConfig } from \'@tinkerise/shared\'')
     expect(result).toContain('export default defineConfig({')
-    expect(result).toContain("packageManager: 'pnpm',")
+    expect(result).toContain('packageManager: \'pnpm\',')
     expect(result).toContain('typescript: true,')
-    expect(result).toContain("defaultCategory: 'web',")
+    expect(result).toContain('defaultCategory: \'web\',')
     expect(result).toContain('})')
   })
 
@@ -270,7 +276,7 @@ describe('generateProjectConfig', () => {
       packageManager: 'npm',
     })
 
-    expect(result).toContain("packageManager: 'npm',")
+    expect(result).toContain('packageManager: \'npm\',')
     expect(result).not.toContain('typescript')
     expect(result).not.toContain('defaultCategory')
   })
@@ -278,7 +284,7 @@ describe('generateProjectConfig', () => {
   it('produces minimal config when all keys are undefined', () => {
     const result = generateProjectConfig({})
 
-    expect(result).toContain("import { defineConfig } from '@tinkerise/shared'")
+    expect(result).toContain('import { defineConfig } from \'@tinkerise/shared\'')
     expect(result).toContain('export default defineConfig({')
     expect(result).toContain('})')
     // No key lines between { and }

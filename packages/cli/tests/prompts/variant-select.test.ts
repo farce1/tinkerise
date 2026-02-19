@@ -5,7 +5,15 @@
  * for interactive functions to verify bypass behavior.
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  resolveViteTemplate,
+  selectT3Components,
+  selectViteTemplate,
+  T3_COMPONENTS,
+  VITE_TEMPLATES,
+} from '../../src/prompts/variant-select.js'
 
 // Use vi.hoisted so mock fns are available inside vi.mock factories
 const { mockSelect, mockMultiselect, mockIsCancel } = vi.hoisted(() => ({
@@ -19,14 +27,6 @@ vi.mock('@clack/prompts', () => ({
   multiselect: mockMultiselect,
   isCancel: mockIsCancel,
 }))
-
-import {
-  VITE_TEMPLATES,
-  T3_COMPONENTS,
-  resolveViteTemplate,
-  selectViteTemplate,
-  selectT3Components,
-} from '../../src/prompts/variant-select.js'
 
 describe('resolveViteTemplate', () => {
   it('returns base unchanged when typescript is false', () => {
@@ -54,7 +54,7 @@ describe('resolveViteTemplate', () => {
   })
 })
 
-describe('VITE_TEMPLATES', () => {
+describe('vITE_TEMPLATES', () => {
   it('has 8 entries', () => {
     expect(VITE_TEMPLATES).toHaveLength(8)
   })
@@ -64,7 +64,7 @@ describe('VITE_TEMPLATES', () => {
   })
 })
 
-describe('T3_COMPONENTS', () => {
+describe('t3_COMPONENTS', () => {
   it('has 5 entries', () => {
     expect(T3_COMPONENTS).toHaveLength(5)
   })

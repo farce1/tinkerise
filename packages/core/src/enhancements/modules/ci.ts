@@ -6,12 +6,15 @@
  * steps based on what tools are installed.
  */
 
+import type { PackageManager } from '../../pm/detect.js'
+import type { ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
-import type { ProjectContext } from '../types.js'
-import { writeConfigFile, readPackageJson } from './_utils.js'
-import type { PackageManager } from '../../pm/detect.js'
+import { readPackageJson, writeConfigFile } from './_utils.js'
+
+// GitHub Actions expression (extracted to avoid no-template-curly-in-string lint rule)
+const GHA_MATRIX_NODE_VERSION = '$' + '{{ matrix.node-version }}'
 
 /** CI workflow file patterns to check */
 const WORKFLOW_FILES = [
@@ -170,9 +173,7 @@ function buildCiYaml(
     )
   }
 
-  lines.push('    steps:',
-    '      - uses: actions/checkout@v4',
-  )
+  lines.push('    steps:', '      - uses: actions/checkout@v4')
 
   // PM-specific setup
   if (pm === 'pnpm') {
@@ -189,13 +190,14 @@ function buildCiYaml(
       '',
       `      - uses: ${config.setupAction}`,
     )
-  } else {
+  }
+  else {
     // Setup Node.js
     lines.push(
       '',
       '      - uses: actions/setup-node@v4',
       '        with:',
-      '          node-version: ${{ matrix.node-version }}',
+      `          node-version: ${GHA_MATRIX_NODE_VERSION}`,
     )
 
     if (config.cacheKey) {

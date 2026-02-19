@@ -12,29 +12,29 @@
  * resolution chain as lowest priority (CLI > project > global > preset).
  */
 
+import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
+import type { PresetData, TinkeriseUserConfig } from '@tinkerise/shared'
 import type { Command } from 'commander'
 import * as p from '@clack/prompts'
-import pc from 'picocolors'
-import type { PresetData, TinkeriseUserConfig } from '@tinkerise/shared'
 import {
-  savePreset,
-  loadPreset,
-  listPresets,
-  deletePreset,
-  discoverNpmPresets,
-  loadNpmPreset,
-  loadProjectConfig,
-  getPresetsDir,
   allEnhancementModules,
   buildProjectContext,
+  deletePreset,
+  discoverNpmPresets,
+  ENHANCEMENT_NEXT_STEPS,
+  enhancementRegistry,
+  getPresetsDir,
   isCI,
+  listPresets,
+  loadNpmPreset,
+  loadPreset,
+  loadProjectConfig,
   runEnhancements,
+  savePreset,
   showEnhancementSummary,
   showPerEnhancementSummary,
-  enhancementRegistry,
-  ENHANCEMENT_NEXT_STEPS,
 } from '@tinkerise/core'
-import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
+import pc from 'picocolors'
 
 /**
  * Registers the `preset` command group on the given Commander program.
@@ -52,7 +52,7 @@ export function registerPresetCommand(program: Command): void {
     .option('--description <desc>', 'Description of what this preset does')
     .option('--framework <fw>', 'Framework/scaffolder ID (e.g., next, vite)')
     .option('--category <cat>', 'Scaffolder category (web, backend, mobile)')
-    .action(async (name: string, options: { description?: string; framework?: string; category?: string }) => {
+    .action(async (name: string, options: { description?: string, framework?: string, category?: string }) => {
       // Read project config for config overrides
       const projectConfig = await loadProjectConfig(process.cwd())
       const config: Partial<TinkeriseUserConfig> = projectConfig ?? {}
@@ -64,7 +64,7 @@ export function registerPresetCommand(program: Command): void {
       if (!framework) {
         const result = await p.text({
           message: 'Framework/scaffolder ID (e.g., next, vite, astro):',
-          validate: (v) => (!v || v.length === 0 ? 'Framework is required' : undefined),
+          validate: v => (!v || v.length === 0 ? 'Framework is required' : undefined),
         })
         if (p.isCancel(result)) {
           p.cancel('Cancelled.')
@@ -103,7 +103,8 @@ export function registerPresetCommand(program: Command): void {
           if (detection.installed) {
             installedEnhancements.push(mod.id)
           }
-        } catch {
+        }
+        catch {
           // Skip modules that fail detection (e.g., missing package.json)
         }
       }
@@ -140,7 +141,7 @@ export function registerPresetCommand(program: Command): void {
 
       // Try npm if not found locally
       if (!presetData) {
-        presetData = await loadNpmPreset('tinkerise-preset-' + name)
+        presetData = await loadNpmPreset(`tinkerise-preset-${name}`)
       }
 
       if (!presetData) {
@@ -152,7 +153,8 @@ export function registerPresetCommand(program: Command): void {
         p.log.error(pc.red(`Preset "${name}" not found.`))
         if (available.length > 0) {
           p.log.info(`Available presets: ${available.join(', ')}`)
-        } else {
+        }
+        else {
           p.log.info('No presets available. Create one with: tinkerise preset save <name>')
         }
         process.exit(1)
@@ -187,7 +189,8 @@ export function registerPresetCommand(program: Command): void {
           const mod = enhancementRegistry.get(enhId)
           if (mod) {
             modules.push(mod)
-          } else {
+          }
+          else {
             unknownEnhancements.push(enhId)
           }
         }
@@ -203,7 +206,8 @@ export function registerPresetCommand(program: Command): void {
             context: ctx,
             interactive: !isCI,
             onConflict: async (_moduleId, _filePath, diff): Promise<ConflictAction> => {
-              if (isCI) return 'skip'
+              if (isCI)
+                return 'skip'
               console.log(diff)
               const action = await p.select({
                 message: 'Config file already exists. What would you like to do?',
@@ -219,7 +223,8 @@ export function registerPresetCommand(program: Command): void {
               return action as ConflictAction
             },
             onDependencyApproval: async (_moduleId, deps): Promise<boolean> => {
-              if (isCI) return true
+              if (isCI)
+                return true
               const result = await p.confirm({
                 message: `Missing dependencies: ${deps.join(', ')}. Continue anyway?`,
               })
@@ -234,7 +239,8 @@ export function registerPresetCommand(program: Command): void {
           // Show per-enhancement summary cards
           for (const installedId of summary.installed) {
             const mod = enhancementRegistry.get(installedId)
-            if (!mod) continue
+            if (!mod)
+              continue
             const result = summary.results.get(installedId) ?? {
               success: true,
               filesModified: [],
@@ -273,7 +279,8 @@ export function registerPresetCommand(program: Command): void {
           const desc = data?.description ? ` — ${data.description}` : ''
           p.log.info(`  ${name}${desc}`)
         }
-      } else {
+      }
+      else {
         p.log.info('  (none)')
       }
 
@@ -282,7 +289,8 @@ export function registerPresetCommand(program: Command): void {
         for (const pkg of npms) {
           p.log.info(`  ${pkg}`)
         }
-      } else {
+      }
+      else {
         p.log.info('  (none)')
       }
     })
@@ -296,7 +304,8 @@ export function registerPresetCommand(program: Command): void {
 
       if (deleted) {
         p.log.success(`Preset "${name}" deleted.`)
-      } else {
+      }
+      else {
         p.log.error(pc.red(`Preset "${name}" not found.`))
       }
     })

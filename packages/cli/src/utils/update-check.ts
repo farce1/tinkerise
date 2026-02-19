@@ -1,7 +1,7 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
-import path from 'node:path'
-import os from 'node:os'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
+import os from 'node:os'
+import path from 'node:path'
 import pc from 'picocolors'
 import semver from 'semver'
 
@@ -11,8 +11,8 @@ interface UpdateCache {
 }
 
 const CACHE_DIR = path.join(
-  process.env['XDG_CACHE_HOME'] || path.join(os.homedir(), '.cache'),
-  'tinkerise'
+  process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'),
+  'tinkerise',
 )
 const CACHE_FILE = path.join(CACHE_DIR, 'update-check.json')
 const CHECK_INTERVAL = 24 * 60 * 60 * 1000 // 24 hours
@@ -21,7 +21,8 @@ async function readCache(): Promise<UpdateCache | null> {
   try {
     const raw = await readFile(CACHE_FILE, 'utf-8')
     return JSON.parse(raw) as UpdateCache
-  } catch {
+  }
+  catch {
     return null
   }
 }
@@ -44,7 +45,8 @@ function getCurrentVersion(): string {
  */
 export async function checkForUpdate(): Promise<string | null> {
   // Respect opt-out for CI and scripts
-  if (process.env['TINKERISE_NO_UPDATE_CHECK'] === '1') return null
+  if (process.env.TINKERISE_NO_UPDATE_CHECK === '1')
+    return null
 
   try {
     const cache = await readCache()
@@ -67,11 +69,12 @@ export async function checkForUpdate(): Promise<string | null> {
     const timeout = setTimeout(() => controller.abort(), 5000)
 
     const res = await fetch('https://registry.npmjs.org/@tinkerise/cli/latest', {
-      signal: controller.signal
+      signal: controller.signal,
     })
     clearTimeout(timeout)
 
-    if (!res.ok) return null
+    if (!res.ok)
+      return null
     const data = await res.json() as { version: string }
     const latest = data.version
 
@@ -82,7 +85,8 @@ export async function checkForUpdate(): Promise<string | null> {
       return latest
     }
     return null
-  } catch {
+  }
+  catch {
     // Never let update check failure affect CLI operation
     return null
   }
@@ -95,7 +99,7 @@ export function printUpdateNudge(latestVersion: string): void {
   const currentVersion = getCurrentVersion()
   console.log()
   console.log(
-    pc.dim(`  Update available: ${currentVersion} → ${latestVersion}. Run `) +
-    pc.bold('tinkerise update')
+    pc.dim(`  Update available: ${currentVersion} → ${latestVersion}. Run `)
+    + pc.bold('tinkerise update'),
   )
 }

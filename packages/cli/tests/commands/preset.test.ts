@@ -17,7 +17,10 @@
  * - preset delete nonexistent shows "not found" error
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { Command } from 'commander'
+
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { registerPresetCommand } from '../../src/commands/preset.js'
 
 // vi.hoisted mock fns for @tinkerise/core
 const {
@@ -166,9 +169,6 @@ vi.stubGlobal('process', {
   env: process.env,
 })
 
-import { Command } from 'commander'
-import { registerPresetCommand } from '../../src/commands/preset.js'
-
 /**
  * Create a Commander program with the preset command registered and parse args.
  */
@@ -182,7 +182,9 @@ async function runPresetCommand(args: string[]): Promise<void> {
 describe('preset save', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
     mockSavePreset.mockResolvedValue(undefined)
     mockLoadProjectConfig.mockResolvedValue(null)
     mockBuildProjectContext.mockResolvedValue({
@@ -202,10 +204,15 @@ describe('preset save', () => {
 
   it('calls savePreset with correct name and data', async () => {
     await runPresetCommand([
-      'preset', 'save', 'my-stack',
-      '--framework', 'next',
-      '--category', 'web',
-      '--description', 'My stack preset',
+      'preset',
+      'save',
+      'my-stack',
+      '--framework',
+      'next',
+      '--category',
+      'web',
+      '--description',
+      'My stack preset',
     ])
 
     expect(mockSavePreset).toHaveBeenCalledWith({
@@ -229,9 +236,13 @@ describe('preset save', () => {
     mockLoadProjectConfig.mockResolvedValue({ packageManager: 'pnpm', typescript: true })
 
     await runPresetCommand([
-      'preset', 'save', 'my-stack',
-      '--framework', 'vite',
-      '--category', 'web',
+      'preset',
+      'save',
+      'my-stack',
+      '--framework',
+      'vite',
+      '--category',
+      'web',
     ])
 
     expect(mockSavePreset).toHaveBeenCalledWith(
@@ -261,9 +272,13 @@ describe('preset save', () => {
     })
 
     await runPresetCommand([
-      'preset', 'save', 'my-stack',
-      '--framework', 'next',
-      '--category', 'web',
+      'preset',
+      'save',
+      'my-stack',
+      '--framework',
+      'next',
+      '--category',
+      'web',
     ])
 
     expect(mockSavePreset).toHaveBeenCalledWith(
@@ -280,9 +295,13 @@ describe('preset save', () => {
   it('produces empty enhancements array when none detected', async () => {
     // Both modules return installed: false (default)
     await runPresetCommand([
-      'preset', 'save', 'my-stack',
-      '--framework', 'next',
-      '--category', 'web',
+      'preset',
+      'save',
+      'my-stack',
+      '--framework',
+      'next',
+      '--category',
+      'web',
     ])
 
     expect(mockSavePreset).toHaveBeenCalledWith(
@@ -296,7 +315,9 @@ describe('preset save', () => {
 describe('preset use', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
     mockBuildProjectContext.mockResolvedValue({
       rootDir: '/test/project',
       packageManager: 'npm',
@@ -515,7 +536,9 @@ describe('preset list', () => {
 describe('preset delete', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockProcessExit.mockImplementation(() => {
+      throw new Error('process.exit')
+    })
   })
 
   it('calls deletePreset and shows success', async () => {

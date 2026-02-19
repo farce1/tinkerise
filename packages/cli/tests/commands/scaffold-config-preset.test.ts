@@ -12,8 +12,14 @@
  * - Verbose mode shows config override messages
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import type { Command } from 'commander'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  runCategoryFlow,
+  runDirectExecution,
+  runInteractiveFlow,
+} from '../../src/commands/scaffold.js'
 
 // vi.hoisted for mock fns used in vi.mock factories
 const {
@@ -112,12 +118,6 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import {
-  runInteractiveFlow,
-  runCategoryFlow,
-  runDirectExecution,
-} from '../../src/commands/scaffold.js'
-
 function createMockCommand(
   optionSources: Record<string, string> = {},
   optionValues: Record<string, unknown> = {},
@@ -207,7 +207,7 @@ describe('lockfile overrides config', () => {
   })
 })
 
-describe('CLI flag overrides config', () => {
+describe('cLI flag overrides config', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
@@ -287,7 +287,7 @@ describe('config typescript pre-selection', () => {
     )
   })
 
-  it('CLI --typescript overrides config typescript: false', async () => {
+  it('cLI --typescript overrides config typescript: false', async () => {
     mockResolveConfig.mockResolvedValue({ typescript: false })
     mockMergePromptAndFlags.mockReturnValue({})
 
@@ -423,7 +423,7 @@ describe('preset scaffold flags merge', () => {
     )
   })
 
-  it('CLI preselected options are preserved alongside preset flags', async () => {
+  it('cLI preselected options are preserved alongside preset flags', async () => {
     mockLoadPreset.mockResolvedValue({
       version: 1,
       name: 'ts-stack',

@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { execaNode } from 'execa'
 import { resolve } from 'node:path'
+import { execaNode } from 'execa'
+import { describe, expect, it } from 'vitest'
 
 const CLI_PATH = resolve(import.meta.dirname, '../../dist/index.js')
 

@@ -5,8 +5,8 @@
  * User sees the full picture but can only select uninstalled ones.
  */
 
-import * as p from '@clack/prompts'
 import type { EnhancementModule, ProjectContext } from '@tinkerise/core'
+import * as p from '@clack/prompts'
 import { allEnhancementModules } from '@tinkerise/core'
 
 /**
@@ -20,7 +20,7 @@ export async function showEnhancementPicker(
 ): Promise<EnhancementModule[]> {
   // Run detect() on all modules in parallel
   const detections = await Promise.all(
-    allEnhancementModules.map(async (mod) => ({
+    allEnhancementModules.map(async mod => ({
       mod,
       detection: await mod.detect(ctx),
     })),

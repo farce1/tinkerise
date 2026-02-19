@@ -1,5 +1,5 @@
+import type { Command } from 'commander'
 import { execFileSync } from 'node:child_process'
-import { Command } from 'commander'
 import * as p from '@clack/prompts'
 import { detectInstallMethod } from '../utils/install-method.js'
 

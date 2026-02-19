@@ -7,9 +7,9 @@
  * for failures.
  */
 
-import pc from 'picocolors'
-import { checkPrerequisite } from '@tinkerise/core'
 import type { PrereqResult } from '@tinkerise/core'
+import { checkPrerequisite } from '@tinkerise/core'
+import pc from 'picocolors'
 
 export interface DoctorCheck {
   tool: string
@@ -69,8 +69,8 @@ export const DOCTOR_CHECKS: DoctorCheck[] = [
     versionRange: '>=1.78',
     category: 'Runtimes',
     installInstructions: {
-      darwin: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
-      linux: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
+      darwin: 'curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh',
+      linux: 'curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh',
       win32: 'winget install Rustlang.Rustup',
     },
   },
@@ -219,11 +219,12 @@ export async function runDoctor(): Promise<void> {
     for (const check of checks) {
       const cr = resultMap.get(check.command)!
       const statusIcon = cr.result.ok ? pc.green('\u2713') : pc.red('\u2717')
-      const versionStr = cr.result.version ?? pc.dim('not found')
+      const _versionStr = cr.result.version ?? pc.dim('not found')
       const versionPad = cr.result.version ? cr.result.version : 'not found'
       const requiredStr = check.versionRange ?? '-'
 
-      if (cr.result.ok) passed++
+      if (cr.result.ok)
+        passed++
 
       const row = `  ${check.tool.padEnd(maxTool)}  ${statusIcon}${' '.repeat(Math.max(0, maxStatus - 1))}  ${versionPad.padEnd(maxVersion)}  ${requiredStr.padEnd(maxRequired)}`
       // Replace the plain version with the potentially styled one

@@ -2,8 +2,8 @@
  * Package manager selection prompt — fallback when PM is not detected.
  */
 
-import * as p from '@clack/prompts'
 import type { PackageManager } from '@tinkerise/core'
+import * as p from '@clack/prompts'
 
 /**
  * Prompt user to choose a package manager.

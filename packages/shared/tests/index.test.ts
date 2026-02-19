@@ -1,9 +1,9 @@
+import type { ScaffolderCategory, TinkeriseConfig } from '../src/index'
 import { describe, expect, it } from 'vitest'
 import { VERSION } from '../src/index'
-import type { ScaffolderCategory, TinkeriseConfig } from '../src/index'
 
 describe('@tinkerise/shared', () => {
-  describe('VERSION', () => {
+  describe('vERSION', () => {
     it('exports a string', () => {
       expect(typeof VERSION).toBe('string')
     })
@@ -13,7 +13,7 @@ describe('@tinkerise/shared', () => {
     })
   })
 
-  describe('TinkeriseConfig', () => {
+  describe('tinkeriseConfig', () => {
     it('accepts a valid config object', () => {
       const config: TinkeriseConfig = { name: 'my-project' }
       expect(config.name).toBe('my-project')
@@ -25,7 +25,7 @@ describe('@tinkerise/shared', () => {
     })
   })
 
-  describe('ScaffolderCategory', () => {
+  describe('scaffolderCategory', () => {
     it('accepts valid categories', () => {
       const categories: ScaffolderCategory[] = ['web', 'backend', 'mobile', 'utility']
       expect(categories).toHaveLength(4)

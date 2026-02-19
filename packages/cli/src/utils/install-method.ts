@@ -1,6 +1,6 @@
+import { execSync } from 'node:child_process'
 import { realpathSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { execSync } from 'node:child_process'
 
 export type InstallMethod = 'homebrew' | 'npm-global' | 'npx' | 'unknown'
 
@@ -14,7 +14,8 @@ function isGlobalNpmInstall(): boolean {
     const npmPrefix = execSync('npm prefix -g', { encoding: 'utf-8' }).trim()
     const globalDir = realpathSync(join(npmPrefix, 'lib', 'node_modules'))
     return moduleDir.startsWith(globalDir)
-  } catch {
+  }
+  catch {
     return false
   }
 }
@@ -28,7 +29,7 @@ export function detectInstallMethod(): InstallMethod {
   }
 
   // 2. Check for npx (npm_execpath or _npx cache path)
-  const npmExecPath = process.env['npm_execpath'] ?? ''
+  const npmExecPath = process.env.npm_execpath ?? ''
   if (npmExecPath.includes('npx') || moduleDir.includes('_npx')) {
     return 'npx'
   }

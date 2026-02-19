@@ -1,8 +1,8 @@
+import type { EnhancementModule } from '../../src/enhancements/types.js'
 import { describe, expect, it } from 'vitest'
 import { ZodError } from 'zod'
 import { defineEnhancement } from '../../src/enhancements/define.js'
 import { dependencyVersionMap } from '../../src/enhancements/version-map.js'
-import type { EnhancementModule } from '../../src/enhancements/types.js'
 
 /**
  * Creates a valid enhancement module for testing.
@@ -45,7 +45,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when id is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).id
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -53,7 +53,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when name is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).name
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -61,7 +61,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when description is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).description
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -69,7 +69,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when dependsOn is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).dependsOn
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -77,7 +77,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when detect is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).detect
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -85,7 +85,7 @@ describe('defineEnhancement()', () => {
 
   it('throws ZodError when install is missing', () => {
     const module = createValidModule()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     delete (module as any).install
 
     expect(() => defineEnhancement(module)).toThrow(ZodError)
@@ -170,7 +170,7 @@ describe('dependencyVersionMap', () => {
   })
 
   it('has values that are semver range strings starting with ^', () => {
-    for (const [key, value] of Object.entries(dependencyVersionMap)) {
+    for (const [_key, value] of Object.entries(dependencyVersionMap)) {
       expect(value).toMatch(/^\^/)
       // Verify it looks like a semver range: ^major.minor.patch
       expect(value).toMatch(/^\^\d+\.\d+\.\d+$/)
@@ -181,7 +181,7 @@ describe('dependencyVersionMap', () => {
     expect(Object.keys(dependencyVersionMap)).toHaveLength(expectedKeys.length)
   })
 
-  it('DependencyName type covers all entries (runtime check)', () => {
+  it('dependencyName type covers all entries (runtime check)', () => {
     // This validates that Object.keys matches the expected set,
     // proving DependencyName (keyof typeof) covers all entries
     const keys = Object.keys(dependencyVersionMap)

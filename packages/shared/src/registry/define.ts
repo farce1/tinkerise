@@ -3,8 +3,8 @@
  * and runtime validation.
  */
 
-import { ScaffolderEntrySchema } from './schemas.js'
 import type { ScaffolderEntry } from './types.js'
+import { ScaffolderEntrySchema } from './schemas.js'
 
 /**
  * Define a scaffolder registry entry with full type safety.

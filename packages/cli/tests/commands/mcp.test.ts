@@ -9,8 +9,10 @@
  * - --package-manager is passed through
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { Command } from 'commander'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { registerMcpCommand } from '../../src/commands/mcp.js'
 
 // vi.hoisted mock fns
 const { mockGenerateMcpServer } = vi.hoisted(() => ({
@@ -20,8 +22,6 @@ const { mockGenerateMcpServer } = vi.hoisted(() => ({
 vi.mock('@tinkerise/core', () => ({
   generateMcpServer: mockGenerateMcpServer,
 }))
-
-import { registerMcpCommand } from '../../src/commands/mcp.js'
 
 describe('registerMcpCommand', () => {
   let program: Command
@@ -74,8 +74,12 @@ describe('registerMcpCommand', () => {
 
   it('passes --package-manager to generateMcpServer', async () => {
     await program.parseAsync([
-      'node', 'test', 'mcp', 'my-server',
-      '--package-manager', 'pnpm',
+      'node',
+      'test',
+      'mcp',
+      'my-server',
+      '--package-manager',
+      'pnpm',
     ])
 
     expect(mockGenerateMcpServer).toHaveBeenCalledWith('my-server', {
@@ -86,7 +90,10 @@ describe('registerMcpCommand', () => {
 
   it('passes --no-install as noInstall: true', async () => {
     await program.parseAsync([
-      'node', 'test', 'mcp', 'my-server',
+      'node',
+      'test',
+      'mcp',
+      'my-server',
       '--no-install',
     ])
 

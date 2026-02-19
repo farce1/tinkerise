@@ -10,8 +10,10 @@
  * - Summary card is called instead of simple success message
  */
 
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import type { Command } from 'commander'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { runDirectExecution } from '../../src/commands/scaffold.js'
 
 // vi.hoisted for mock fns used in vi.mock factories
 const {
@@ -106,8 +108,6 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { runDirectExecution } from '../../src/commands/scaffold.js'
-
 function createMockCommand(
   optionSources: Record<string, string> = {},
   optionValues: Record<string, unknown> = {},
@@ -134,7 +134,7 @@ describe('variant prompt wiring', () => {
     mockIsCI.value = false
   })
 
-  describe('Vite variant selection', () => {
+  describe('vite variant selection', () => {
     it('triggers template selection for vite framework', async () => {
       mockSelectViteTemplate.mockResolvedValue('react')
       mockResolveViteTemplate.mockReturnValue('react')
@@ -184,7 +184,7 @@ describe('variant prompt wiring', () => {
     })
   })
 
-  describe('T3 variant selection', () => {
+  describe('t3 variant selection', () => {
     it('triggers component selection for t3 framework', async () => {
       mockSelectT3Components.mockResolvedValue(['trpc', 'prisma'])
 

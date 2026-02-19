@@ -1,4 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { runAddCommand } from '../../src/commands/add.js'
 
 // Hoist mocks
 const mockBuildProjectContext = vi.hoisted(() => vi.fn())
@@ -53,8 +55,6 @@ vi.mock('../../src/context/session.js', () => ({
 vi.mock('../../src/prompts/enhancement-select.js', () => ({
   showEnhancementPicker: mockShowEnhancementPicker,
 }))
-
-import { runAddCommand } from '../../src/commands/add.js'
 
 describe('runAddCommand', () => {
   beforeEach(() => {
@@ -189,7 +189,7 @@ describe('runAddCommand', () => {
     expect(mockShowEnhancementSummary).toHaveBeenCalledWith(summary)
   })
 
-  it('CI mode exits when no args', async () => {
+  it('cI mode exits when no args', async () => {
     mockIsCI.value = true
 
     await runAddCommand([], {})

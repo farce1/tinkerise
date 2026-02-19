@@ -7,13 +7,13 @@
  * readPackageJson — reads and parses package.json from disk.
  */
 
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
-import { join, dirname } from 'node:path'
-import { execa } from 'execa'
 import type { PackageManager } from '../../pm/detect.js'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { execa } from 'execa'
 
 /** PM-specific install command maps */
-const INSTALL_CMD_MAP: Record<PackageManager, { cmd: string; args: string[] }> = {
+const INSTALL_CMD_MAP: Record<PackageManager, { cmd: string, args: string[] }> = {
   npm: { cmd: 'npm', args: ['install', '--save-dev'] },
   pnpm: { cmd: 'pnpm', args: ['add', '--save-dev'] },
   yarn: { cmd: 'yarn', args: ['add', '--dev'] },
@@ -25,13 +25,17 @@ const INSTALL_CMD_MAP: Record<PackageManager, { cmd: string; args: string[] }> =
  *
  * @param packages — package names (optionally with @version)
  * @param opts — cwd, packageManager, verbose
+ * @param opts.cwd — working directory for installation
+ * @param opts.packageManager — which package manager to use
+ * @param opts.verbose — show verbose output
  * @returns The package list passed in (for chaining)
  */
 export async function installPackages(
   packages: string[],
-  opts: { cwd: string; packageManager: PackageManager; verbose?: boolean },
+  opts: { cwd: string, packageManager: PackageManager, verbose?: boolean },
 ): Promise<string[]> {
-  if (packages.length === 0) return []
+  if (packages.length === 0)
+    return []
 
   const { cmd, args } = INSTALL_CMD_MAP[opts.packageManager]
   await execa(cmd, [...args, ...packages], {
@@ -78,11 +82,12 @@ export async function addScript(
   const pkg = JSON.parse(raw) as Record<string, unknown>
 
   const scripts = (pkg.scripts ?? {}) as Record<string, string>
-  if (scripts[name]) return false
+  if (scripts[name])
+    return false
 
   scripts[name] = command
   pkg.scripts = scripts
-  await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
+  await writeFile(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, 'utf-8')
   return true
 }
 

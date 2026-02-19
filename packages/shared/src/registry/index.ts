@@ -2,6 +2,8 @@
  * Registry module — schemas, types, and helpers for the scaffolder registry.
  */
 
+export { defineScaffolder } from './define.js'
+
 export {
   FlagMappingSchema,
   IntegrationStrategySchema,
@@ -17,5 +19,3 @@ export type {
   ScaffolderEntry,
   VersionedFlagMap,
 } from './types.js'
-
-export { defineScaffolder } from './define.js'

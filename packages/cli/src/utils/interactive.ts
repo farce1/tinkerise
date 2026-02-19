@@ -7,7 +7,7 @@
  */
 
 import type { Command } from 'commander'
-import { isCI, ciName } from '@tinkerise/core'
+import { ciName, isCI } from '@tinkerise/core'
 import pc from 'picocolors'
 
 /**
@@ -109,21 +109,26 @@ export function ensureNonInteractive(
   framework?: string,
   name?: string,
 ): void {
-  if (!isCI) return
+  if (!isCI)
+    return
 
   const missing: string[] = []
-  if (!category) missing.push('category')
-  if (!framework) missing.push('framework')
-  if (!name) missing.push('name')
+  if (!category)
+    missing.push('category')
+  if (!framework)
+    missing.push('framework')
+  if (!name)
+    missing.push('name')
 
-  if (missing.length === 0) return
+  if (missing.length === 0)
+    return
 
   const ciEnv = ciName ?? 'unknown'
   process.stderr.write(
-    pc.red(`Error: Running in CI environment (${ciEnv}).\n`) +
-    pc.red(`Missing required arguments: ${missing.join(', ')}\n`) +
-    pc.red('Provide all arguments for non-interactive execution:\n') +
-    pc.red('  tinkerise <category> <framework> <name> [options]\n'),
+    pc.red(`Error: Running in CI environment (${ciEnv}).\n`)
+    + pc.red(`Missing required arguments: ${missing.join(', ')}\n`)
+    + pc.red('Provide all arguments for non-interactive execution:\n')
+    + pc.red('  tinkerise <category> <framework> <name> [options]\n'),
   )
   process.exit(1)
 }
