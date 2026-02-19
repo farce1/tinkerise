@@ -101,11 +101,13 @@ describe('showPerEnhancementSummary', () => {
 })
 
 describe('ENHANCEMENT_NEXT_STEPS', () => {
-  it('has entries for all four modules', () => {
+  it('has entries for all six modules', () => {
     expect(ENHANCEMENT_NEXT_STEPS.eslint).toBeDefined()
     expect(ENHANCEMENT_NEXT_STEPS.prettier).toBeDefined()
     expect(ENHANCEMENT_NEXT_STEPS.husky).toBeDefined()
     expect(ENHANCEMENT_NEXT_STEPS.ci).toBeDefined()
+    expect(ENHANCEMENT_NEXT_STEPS.changelog).toBeDefined()
+    expect(ENHANCEMENT_NEXT_STEPS.testing).toBeDefined()
   })
 
   it('each entry is a non-empty array', () => {
@@ -113,5 +115,14 @@ describe('ENHANCEMENT_NEXT_STEPS', () => {
       expect(Array.isArray(steps)).toBe(true)
       expect(steps.length).toBeGreaterThan(0)
     }
+  })
+
+  it('changelog entry mentions changelog and release scripts', () => {
+    expect(ENHANCEMENT_NEXT_STEPS.changelog.some(s => s.includes('changelog'))).toBe(true)
+    expect(ENHANCEMENT_NEXT_STEPS.changelog.some(s => s.includes('release'))).toBe(true)
+  })
+
+  it('testing entry mentions running tests', () => {
+    expect(ENHANCEMENT_NEXT_STEPS.testing.some(s => s.includes('test'))).toBe(true)
   })
 })
