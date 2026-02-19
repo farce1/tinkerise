@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 13 (first of 3 in v1.1) — Core Bug Fixes & Wiring
-Plan: 2 of 3 complete
+Plan: 01 complete (13-01, 13-02 done; 13-03 remaining)
 Status: Executing
-Last activity: 2026-02-19 — Completed 13-02 (Wire defaultCategory Config)
+Last activity: 2026-02-19 — Completed 13-01 (Conflict Diff Fix & Dead Export Removal)
 
 Progress: [████████████████████████░░░░] 45/45 v1.0 complete, 2/3 phase 13
 
@@ -31,6 +31,8 @@ Progress: [███████████████████████
 All v1.0 decisions logged in PROJECT.md Key Decisions table and archived in milestones/v1.0-ROADMAP.md.
 
 **v1.1 Phase 13:**
+- 13-01: Post-install diff approach for conflict resolution (install runs before diff, file content restored on skip, packages not reversed)
+- 13-01: markRemainingAsNotRun retained only for cyclic dependency; per-module failures use continue
 - 13-02: Preset category takes precedence over defaultCategory config (presets are more specific)
 - 13-02: Invalid defaultCategory warns and falls back to unfiltered list (graceful degradation)
 
@@ -45,4 +47,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 13-02-PLAN.md (Wire defaultCategory Config). Ready for 13-03.
+Stopped at: Completed 13-01-PLAN.md (Conflict Diff Fix & Dead Export Removal). 13-01 and 13-02 done, 13-03 remaining.
