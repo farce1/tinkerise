@@ -367,3 +367,84 @@ describe('PM detection integration', () => {
     expect(mockPromptPackageManager).not.toHaveBeenCalled()
   })
 })
+
+describe('defaultCategory config wiring', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockIsCI.value = false
+    mockLoadPreset.mockResolvedValue(null)
+    mockRunPromptFlow.mockResolvedValue({
+      framework: 'next',
+      options: ['typescript'],
+      name: 'my-app',
+    })
+    mockDetectPackageManager.mockResolvedValue({
+      pm: 'npm',
+      source: 'lockfile',
+    })
+    mockExecuteScaffolder.mockResolvedValue(undefined)
+    mockBuildPreselectedOptions.mockReturnValue([])
+    mockMergePromptAndFlags.mockReturnValue({ typescript: true })
+  })
+
+  afterEach(() => {
+    mockIsCI.value = false
+  })
+
+  it('passes defaultCategory as filterCategory to runPromptFlow', async () => {
+    mockResolveConfig.mockResolvedValue({ defaultCategory: 'web' })
+
+    const cmd = createMockCommand()
+    await runInteractiveFlow(cmd, {})
+
+    expect(mockRunPromptFlow).toHaveBeenCalledWith(
+      expect.objectContaining({ filterCategory: 'web' }),
+    )
+  })
+
+  it('falls back to unfiltered list with warning for invalid defaultCategory', async () => {
+    mockResolveConfig.mockResolvedValue({ defaultCategory: 'desktop' as any })
+
+    const cmd = createMockCommand()
+    await runInteractiveFlow(cmd, {})
+
+    expect(mockRunPromptFlow).toHaveBeenCalledWith(
+      expect.objectContaining({ filterCategory: undefined }),
+    )
+    expect(mockLogWarn).toHaveBeenCalled()
+    const warnMsg = mockLogWarn.mock.calls[0]![0] as string
+    expect(warnMsg).toContain('Invalid defaultCategory')
+    expect(warnMsg).toContain('desktop')
+  })
+
+  it('preset category overrides defaultCategory', async () => {
+    mockResolveConfig.mockResolvedValue({ defaultCategory: 'backend' })
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'web-stack',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    const cmd = createMockCommand()
+    await runInteractiveFlow(cmd, { preset: 'web-stack' })
+
+    // Preset category 'web' should override config defaultCategory 'backend'
+    expect(mockRunPromptFlow).toHaveBeenCalledWith(
+      expect.objectContaining({ filterCategory: 'web' }),
+    )
+  })
+
+  it('does not pass filterCategory when no defaultCategory in config', async () => {
+    mockResolveConfig.mockResolvedValue({})
+
+    const cmd = createMockCommand()
+    await runInteractiveFlow(cmd, {})
+
+    expect(mockRunPromptFlow).toHaveBeenCalledWith(
+      expect.objectContaining({ filterCategory: undefined }),
+    )
+    expect(mockLogWarn).not.toHaveBeenCalled()
+  })
+})
