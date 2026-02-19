@@ -17,15 +17,6 @@ export function tinkeriseLog(message: string): void {
 }
 
 /**
- * Print a brief one-liner summary after scaffolder execution.
- * Per user decision: "After upstream finishes, show a brief one-liner summary."
- */
-export function tinkeriseSummary(scaffolderName: string, projectName: string, flags: string[]): void {
-  const flagStr = flags.length > 0 ? ` with ${flags.join(', ')}` : ''
-  tinkeriseLog(`Created ${projectName} using ${scaffolderName}${flagStr}`)
-}
-
-/**
  * Print a blank line to visually separate tinkerise framing from upstream output.
  */
 export function tinkeriseBlankLine(): void {

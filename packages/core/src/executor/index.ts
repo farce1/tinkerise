@@ -12,7 +12,7 @@ import { validateFlagApplicability } from '../flags/validator.js'
 import { checkPrerequisites } from '../prerequisites/checker.js'
 import { detectUpstreamVersion } from './version.js'
 import { spawnScaffolder } from './process.js'
-import { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary } from './framing.js'
+import { tinkeriseBlankLine, tinkeriseLog } from './framing.js'
 
 export interface ExecuteOptions {
   /** Scaffolder name to look up in registry */
@@ -145,4 +145,4 @@ export function buildCommandArgs(
 }
 
 // Re-export framing utilities for use by CLI layer
-export { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummary, tinkeriseSummaryCard } from './framing.js'
+export { tinkeriseBlankLine, tinkeriseLog, tinkeriseSummaryCard } from './framing.js'
