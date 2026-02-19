@@ -39,16 +39,16 @@ jobs:
             snapshot: create-turbo.txt
           # Backend scaffolders
           - name: fastapi-admin
-            cmd: pip install fastapi-admin-cli -q && fastapi-admin --help
+            cmd: fastapi-admin --help
             snapshot: fastapi-admin.txt
           - name: django-admin
-            cmd: pip install django -q && django-admin help startproject
+            cmd: django-admin help startproject
             snapshot: django-admin.txt
           - name: go-blueprint
             cmd: go-blueprint --help
             snapshot: go-blueprint.txt
           - name: cargo-generate
-            cmd: cargo install cargo-generate && cargo generate --help
+            cmd: cargo generate --help
             snapshot: cargo-generate.txt
           - name: express-generator-typescript
             cmd: npx express-generator-typescript --help
@@ -78,9 +78,25 @@ jobs:
         if: matrix.tool.name == 'go-blueprint'
         run: go install github.com/melkeydev/go-blueprint@latest
 
+      - name: Set up Rust
+        if: matrix.tool.name == 'cargo-generate'
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Set up Flutter
         if: matrix.tool.name == 'flutter'
         uses: subosito/flutter-action@v2
+
+      - name: Install cargo-generate
+        if: matrix.tool.name == 'cargo-generate'
+        run: cargo install cargo-generate
+
+      - name: Install fastapi-admin-cli
+        if: matrix.tool.name == 'fastapi-admin'
+        run: pip install --break-system-packages -q fastapi-admin-cli
+
+      - name: Install django
+        if: matrix.tool.name == 'django-admin'
+        run: pip install --break-system-packages -q django
 
       - name: Capture help output
         run: ${{ matrix.tool.cmd }} > current-help.txt 2>&1 || true
