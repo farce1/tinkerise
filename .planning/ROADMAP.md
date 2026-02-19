@@ -44,10 +44,10 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 **Milestone Goal:** Make the repo production-ready — green CI, comprehensive test coverage, working release pipeline, proper package metadata, and clean codebase.
 
-- [ ] **Phase 17: CI & Lint** (0/2 plans) - Fix all ESLint errors and get CI matrix green across all platforms
-- [ ] **Phase 18: Release Pipeline** - Fix broken publish path so stable versions can ship via CI
-- [ ] **Phase 19: Core Test Coverage** - Write tests for 5 untested core and shared modules
-- [ ] **Phase 20: CLI Test Coverage** - Write tests for 5 untested CLI modules
+- [x] **Phase 17: CI & Lint** (0/2 plans) - Fix all ESLint errors and get CI matrix green across all platforms (completed 2026-02-19)
+- [x] **Phase 18: Release Pipeline** - Fix broken publish path so stable versions can ship via CI (completed 2026-02-19)
+- [x] **Phase 19: Core Test Coverage** - Write tests for 5 untested core and shared modules (completed 2026-02-19)
+- [x] **Phase 20: CLI Test Coverage** - Write tests for 5 untested CLI modules (completed 2026-02-19)
 - [ ] **Phase 21: Polish & Metadata** - Clean metadata, consistent URLs, dead code removal, community docs
 - [ ] **Phase 22: Drift Detection Hardening** - Harden drift detection CI workflow against real-world failures
 
@@ -76,7 +76,10 @@ Plans:
   3. The release workflow does not double-build (no redundant `bun run build` step before publish)
   4. The Homebrew version-reading step uses `jq` and succeeds in the CI ESM environment without CJS/ESM errors
   5. All changeset and package.json references to the repo slug use `farce1/tinkerise` consistently
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 18-01-PLAN.md — Fix release pipeline (pre-release exit, double-build, ci scripts, jq, repo slugs)
+- [ ] 18-02-PLAN.md — Document NPM_TOKEN and HOMEBREW_TAP_TOKEN setup in RELEASE.md
 
 ### Phase 19: Core Test Coverage
 **Goal**: The 5 untested core and shared modules all have meaningful test suites covering their primary behaviors
@@ -88,7 +91,10 @@ Plans:
   3. `core/prerequisites/platform.ts` has tests verifying `detectPlatform` returns the correct platform enum and `getInstallInstructions` returns non-empty strings for each platform
   4. `core/executor/version.ts` has tests for `detectUpstreamVersion` including the early-return path when no version is found
   5. `core/templates/shared.ts` has tests covering `writeProjectFile`, `runInstall`, and `printTemplateSummary` outputs
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 19-01-PLAN.md — Write changelog enhancement module and _utils tests
+- [ ] 19-02-PLAN.md — Write platform, version, and shared template tests
 
 ### Phase 20: CLI Test Coverage
 **Goal**: The 5 untested CLI modules all have meaningful test suites covering their primary behaviors
@@ -100,7 +106,10 @@ Plans:
   3. `cli/prompts/project-name.ts` has tests verifying the validation regex rejects invalid names and accepts valid ones
   4. `cli/prompts/flow.ts` has tests for the happy path, pre-fill skip logic (flags bypass prompts), and cancellation returning undefined
   5. `cli/commands/update.ts` has tests for all install-method branches (brew upgrade, npm install -g, npx hint, unknown fallback)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 20-01-PLAN.md — Write update-check and install-method utility test suites
+- [ ] 20-02-PLAN.md — Write project-name, prompt flow, and update command test suites
 
 ### Phase 21: Polish & Metadata
 **Goal**: All package metadata is complete and consistent, dead code is removed, and community contribution files exist
@@ -144,9 +153,9 @@ Plans:
 | 14. Enhancement & Quality Expansion | v1.1 | 2/2 | Complete | 2026-02-19 |
 | 15. Homebrew Tap Deployment | v1.1 | 1/1 | Complete | 2026-02-19 |
 | 16. Enhancement Export & UX Cleanup | v1.1 | 1/1 | Complete | 2026-02-19 |
-| 17. CI & Lint | v2.0 | 0/2 | Planned | - |
-| 18. Release Pipeline | v2.0 | 0/TBD | Not started | - |
-| 19. Core Test Coverage | v2.0 | 0/TBD | Not started | - |
-| 20. CLI Test Coverage | v2.0 | 0/TBD | Not started | - |
+| 17. CI & Lint | v2.0 | Complete    | 2026-02-19 | - |
+| 18. Release Pipeline | v2.0 | Complete    | 2026-02-19 | - |
+| 19. Core Test Coverage | v2.0 | 2/2 | Complete | 2026-02-19 |
+| 20. CLI Test Coverage | v2.0 | Complete    | 2026-02-19 | - |
 | 21. Polish & Metadata | v2.0 | 0/TBD | Not started | - |
 | 22. Drift Detection Hardening | v2.0 | 0/TBD | Not started | - |
