@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { readFile, writeFile } from 'node:fs/promises'
 import { runEnhancements } from '../../src/enhancements/executor.js'
 import type { EnhancementExecutorOptions, ExecutionSummary } from '../../src/enhancements/executor.js'
 import type {
@@ -14,10 +15,14 @@ vi.mock('../../src/executor/framing.js', () => ({
   tinkeriseBlankLine: vi.fn(),
 }))
 
-// Mock readFile for conflict detection tests
+// Mock readFile/writeFile for conflict detection tests
 vi.mock('node:fs/promises', () => ({
   readFile: vi.fn().mockResolvedValue('existing content'),
+  writeFile: vi.fn().mockResolvedValue(undefined),
 }))
+
+const mockReadFile = vi.mocked(readFile)
+const mockWriteFile = vi.mocked(writeFile)
 
 /** Default project context for testing */
 const ctx: ProjectContext = {
@@ -66,6 +71,11 @@ function makeOpts(
 }
 
 describe('runEnhancements()', () => {
+  beforeEach(() => {
+    mockReadFile.mockReset().mockResolvedValue('existing content' as any)
+    mockWriteFile.mockReset().mockResolvedValue(undefined as any)
+  })
+
   it('installs a single module with no conflicts', async () => {
     const mod = mockModule({ id: 'eslint' })
     const result = await runEnhancements(makeOpts([mod]))
@@ -102,6 +112,11 @@ describe('runEnhancements()', () => {
   })
 
   it('skips module when conflict detected and user chooses skip', async () => {
+    // First read: existing content (before install). Second read: new content (after install).
+    mockReadFile
+      .mockResolvedValueOnce('existing content' as any)
+      .mockResolvedValueOnce('new proposed content' as any)
+
     const mod = mockModule({
       id: 'eslint',
       detect: async () => ({
@@ -119,9 +134,16 @@ describe('runEnhancements()', () => {
 
     expect(result.installed).toEqual([])
     expect(result.skipped).toEqual(['eslint'])
+    // Verify original content was restored
+    expect(mockWriteFile).toHaveBeenCalled()
   })
 
   it('installs module when conflict detected and user chooses replace', async () => {
+    // First read: existing content. Second read: new content after install.
+    mockReadFile
+      .mockResolvedValueOnce('existing content' as any)
+      .mockResolvedValueOnce('new proposed content' as any)
+
     const mod = mockModule({
       id: 'eslint',
       detect: async () => ({
@@ -141,7 +163,7 @@ describe('runEnhancements()', () => {
     expect(result.skipped).toEqual([])
   })
 
-  it('stops on first failure and marks remaining as notRun', async () => {
+  it('continues after failure and attempts remaining modules', async () => {
     const failing = mockModule({
       id: 'eslint',
       install: async () => {
@@ -152,14 +174,15 @@ describe('runEnhancements()', () => {
 
     const result = await runEnhancements(makeOpts([failing, after]))
 
-    expect(result.installed).toEqual([])
     expect(result.failed).toEqual([
       { id: 'eslint', error: 'Install failed' },
     ])
-    expect(result.notRun).toEqual(['prettier'])
+    // prettier should be attempted and succeed (not marked as notRun)
+    expect(result.installed).toEqual(['prettier'])
+    expect(result.notRun).toEqual([])
   })
 
-  it('fails with error in non-interactive mode when conflict detected', async () => {
+  it('fails module in non-interactive mode when conflict detected but continues', async () => {
     const mod = mockModule({
       id: 'eslint',
       detect: async () => ({
@@ -176,7 +199,9 @@ describe('runEnhancements()', () => {
     expect(result.failed).toEqual([
       { id: 'eslint', error: 'Conflict detected in non-interactive mode' },
     ])
-    expect(result.notRun).toEqual(['prettier'])
+    // prettier should still be attempted (not marked as notRun)
+    expect(result.installed).toEqual(['prettier'])
+    expect(result.notRun).toEqual([])
   })
 
   it('installs module when missing dependency approval is granted', async () => {

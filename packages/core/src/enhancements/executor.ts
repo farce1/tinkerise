@@ -2,10 +2,11 @@
  * Enhancement executor — orchestrates the detect -> conflict -> install pipeline.
  *
  * Runs enhancement modules in topologically sorted order, resolves conflicts
- * via caller-provided callbacks, and stops on first failure.
+ * via caller-provided callbacks, and continues on failure, reporting all
+ * failures at the end.
  */
 
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { showFileDiff } from './conflict.js'
 import { topologicalSort, CyclicDependencyError } from './graph.js'
 import { tinkeriseLog } from '../executor/framing.js'
@@ -69,8 +70,8 @@ function markRemainingAsNotRun(
  * Run the enhancement pipeline: sort -> detect -> resolve conflicts -> install.
  *
  * Modules are executed in topological (dependency-first) order.
- * Stops on first failure — remaining modules are marked as not run.
- * In non-interactive mode, any conflict causes an immediate failure.
+ * Continues on failure — all modules are attempted and failures are collected.
+ * In non-interactive mode, any conflict causes the module to fail (remaining modules still run).
  */
 export async function runEnhancements(
   opts: EnhancementExecutorOptions,
@@ -117,52 +118,93 @@ export async function runEnhancements(
         id: mod.id,
         error: err instanceof Error ? err.message : String(err),
       })
-      markRemainingAsNotRun(summary, sorted, i + 1)
-      break
+      tinkeriseLog(`Failed: ${mod.name} \u2718`)
+      continue
     }
 
     // c. Handle conflicts when already installed
     if (detection.installed) {
-      // Non-interactive mode: fail on any conflict
+      // Non-interactive mode: fail on any conflict, continue to next module
       if (!opts.interactive) {
         summary.failed.push({
           id: mod.id,
           error: 'Conflict detected in non-interactive mode',
         })
-        markRemainingAsNotRun(summary, sorted, i + 1)
-        break
+        tinkeriseLog(`Failed: ${mod.name} \u2718`)
+        continue
       }
 
-      // Interactive: show diff per config file, ask skip/merge/replace
+      // Store existing content before install overwrites files
+      const existingContents = new Map<string, string>()
+      for (const filePath of detection.configFiles) {
+        try {
+          existingContents.set(filePath, await readFile(filePath, 'utf-8'))
+        } catch {
+          existingContents.set(filePath, '')
+        }
+      }
+
+      // Run install to generate actual proposed content on disk
+      let installResult: import('./types.js').InstallResult | undefined
+      try {
+        installResult = await mod.install(opts.context)
+      } catch (err) {
+        summary.failed.push({
+          id: mod.id,
+          error: err instanceof Error ? err.message : String(err),
+        })
+        // Restore original files
+        for (const [fp, content] of existingContents) {
+          await writeFile(fp, content, 'utf-8')
+        }
+        tinkeriseLog(`Failed: ${mod.name} \u2718`)
+        continue
+      }
+
+      // Show diffs and let user decide per file
       let skipModule = false
       for (const filePath of detection.configFiles) {
-        let existingContent: string
+        const existingContent = existingContents.get(filePath) ?? ''
+        let proposedContent: string
         try {
-          existingContent = await readFile(filePath, 'utf-8')
+          proposedContent = await readFile(filePath, 'utf-8')
         } catch {
-          existingContent = ''
+          proposedContent = existingContent
         }
 
-        // Generate proposed content by doing a dry-run install
-        // For diff purposes, we show what would change in this specific file
-        const proposedResult = await mod.install(opts.context)
-        const proposedContent = proposedResult.filesModified.includes(filePath)
-          ? existingContent // If file is in modified list, the install would change it
-          : existingContent
+        // Only show diff if content actually changed
+        if (proposedContent === existingContent) {
+          tinkeriseLog(`Note: ${filePath} detected as conflict but content unchanged — skipping diff`)
+          continue
+        }
 
         const diff = showFileDiff(filePath, existingContent, proposedContent)
         const action = await opts.onConflict(mod.id, filePath, diff)
 
         if (action === 'skip') {
+          // Restore original content for this file
+          await writeFile(filePath, existingContent, 'utf-8')
           skipModule = true
           break
         }
-        // 'merge' or 'replace' -> proceed to install
+        // 'accept'/'merge'/'replace' -> keep the new content (already on disk)
       }
 
       if (skipModule) {
+        // Restore ALL original files for this module
+        for (const [fp, content] of existingContents) {
+          await writeFile(fp, content, 'utf-8')
+        }
         summary.skipped.push(mod.id)
         tinkeriseLog(`Skipped ${mod.name}`)
+        continue
+      }
+
+      // Module accepted — record as installed (install already ran)
+      if (installResult && installResult.success) {
+        summary.installed.push(mod.id)
+        summary.results.set(mod.id, installResult)
+        tinkeriseLog(`Done: ${mod.name} \u2714`)
         continue
       }
     }
@@ -194,18 +236,17 @@ export async function runEnhancements(
           id: mod.id,
           error: result.warnings.join('; ') || 'Install returned success: false',
         })
-        // Stop on first failure: mark remaining as not run
-        markRemainingAsNotRun(summary, sorted, i + 1)
-        break
+        tinkeriseLog(`Failed: ${mod.name} \u2718`)
+        continue
       }
     } catch (err) {
-      // g. Install threw: stop on first failure
+      // g. Install threw: record failure and continue to next module
       summary.failed.push({
         id: mod.id,
         error: err instanceof Error ? err.message : String(err),
       })
-      markRemainingAsNotRun(summary, sorted, i + 1)
-      break
+      tinkeriseLog(`Failed: ${mod.name} \u2718`)
+      continue
     }
   }
 
