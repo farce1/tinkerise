@@ -84,6 +84,7 @@ export type { ScaffolderMetadata } from './registry/metadata.js'
 export {
   allEnhancementModules,
   buildProjectContext,
+  changelogModule,
   ciModule,
   commitlintModule,
   CyclicDependencyError,

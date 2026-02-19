@@ -59,6 +59,7 @@ export type { EnhancementNextSteps } from './summary.js'
 // Enhancement modules (06-03, extended 09-01 through 09-03)
 export {
   allEnhancementModules,
+  changelogModule,
   ciModule,
   commitlintModule,
   dockerModule,

@@ -91,4 +91,12 @@ export const ENHANCEMENT_NEXT_STEPS: Record<string, string[]> = {
   prettier: ['Run "npm run format" to format your code'],
   husky: ['Make a commit to test the pre-commit hook'],
   ci: ['Push to GitHub to trigger the CI workflow'],
+  changelog: [
+    'Run "npm run changelog" to generate your first CHANGELOG.md',
+    'Run "npm run release" to generate a full release changelog',
+  ],
+  testing: [
+    'Run "npm test" to execute the example test',
+    'Add your own tests alongside source files',
+  ],
 }
