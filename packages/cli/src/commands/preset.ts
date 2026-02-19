@@ -25,6 +25,9 @@ import {
   loadNpmPreset,
   loadProjectConfig,
   getPresetsDir,
+  allEnhancementModules,
+  buildProjectContext,
+  isCI,
 } from '@tinkerise/core'
 
 /**
@@ -80,6 +83,25 @@ export function registerPresetCommand(program: Command): void {
         category = result as string
       }
 
+      // Detect installed enhancements by running detect() on each module
+      const ctx = await buildProjectContext({
+        rootDir: process.cwd(),
+        freshScaffold: false,
+        verbose: false,
+      })
+
+      const installedEnhancements: string[] = []
+      for (const mod of allEnhancementModules) {
+        try {
+          const detection = await mod.detect(ctx)
+          if (detection.installed) {
+            installedEnhancements.push(mod.id)
+          }
+        } catch {
+          // Skip modules that fail detection (e.g., missing package.json)
+        }
+      }
+
       const presetData: PresetData = {
         version: 1,
         name,
@@ -89,7 +111,7 @@ export function registerPresetCommand(program: Command): void {
           category,
           flags: {},
         },
-        enhancements: [],
+        enhancements: installedEnhancements,
         config,
       }
 
@@ -97,6 +119,9 @@ export function registerPresetCommand(program: Command): void {
 
       const presetsDir = getPresetsDir()
       p.log.success(`Preset "${name}" saved to ${presetsDir}/${name}.json`)
+      if (installedEnhancements.length > 0) {
+        p.log.info(`  Enhancements: ${installedEnhancements.join(', ')}`)
+      }
     })
 
   // --- preset use <name> ---

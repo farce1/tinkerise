@@ -255,10 +255,31 @@ export async function runInteractiveFlow(
 
   const { config, preset } = await resolveConfigAndPreset(options)
 
+  // Determine effective category: preset category or defaultCategory from config
+  // Per CONF-01: skip category prompt entirely when defaultCategory is set
+  let filterCategory: ScaffolderCategory | undefined
+
+  if (preset?.scaffold.category) {
+    // Preset category takes precedence
+    filterCategory = preset.scaffold.category as ScaffolderCategory
+  }
+  else if (config.defaultCategory) {
+    // Validate defaultCategory — invalid values fall back to unfiltered with a warning
+    if (VALID_CATEGORIES.includes(config.defaultCategory as ScaffolderCategory)) {
+      filterCategory = config.defaultCategory as ScaffolderCategory
+    }
+    else {
+      p.log.warn(
+        pc.yellow(`Invalid defaultCategory '${config.defaultCategory}' in config. Showing all frameworks.`),
+      )
+    }
+  }
+
   const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
   const answers = await runPromptFlow({
     framework: preset?.scaffold.framework,
     preselectedOptions: preselected,
+    filterCategory,
   })
   const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
 
