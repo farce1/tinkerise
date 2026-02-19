@@ -37,6 +37,29 @@ jobs:
           - name: create-turbo
             cmd: npx create-turbo@latest --help
             snapshot: create-turbo.txt
+          # Backend scaffolders
+          - name: fastapi-admin
+            cmd: pip install fastapi-admin-cli -q && fastapi-admin --help
+            snapshot: fastapi-admin.txt
+          - name: django-admin
+            cmd: pip install django -q && django-admin help startproject
+            snapshot: django-admin.txt
+          - name: go-blueprint
+            cmd: go-blueprint --help
+            snapshot: go-blueprint.txt
+          - name: cargo-generate
+            cmd: cargo install cargo-generate && cargo generate --help
+            snapshot: cargo-generate.txt
+          - name: express-generator-typescript
+            cmd: npx express-generator-typescript --help
+            snapshot: express-generator-typescript.txt
+          # Mobile scaffolders
+          - name: flutter
+            cmd: flutter create --help
+            snapshot: flutter.txt
+          - name: create-expo-app
+            cmd: npx create-expo-app@latest --help
+            snapshot: create-expo-app.txt
 
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +67,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      - name: Set up Go
+        if: contains(matrix.tool.name, 'go-')
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install go-blueprint
+        if: matrix.tool.name == 'go-blueprint'
+        run: go install github.com/melkeydev/go-blueprint@latest
+
+      - name: Set up Flutter
+        if: matrix.tool.name == 'flutter'
+        uses: subosito/flutter-action@v2
 
       - name: Capture help output
         run: ${{ matrix.tool.cmd }} > current-help.txt 2>&1 || true
@@ -70,7 +107,7 @@ jobs:
       - name: Emit warning on drift
         if: steps.drift.outputs.status == 'changed'
         run: |
-          echo "::warning title=Flag Drift Detected::${{ matrix.tool.name }} help output has changed. Review flag mappings in packages/core/src/registry/scaffolders/web.ts"
+          echo "::warning title=Flag Drift Detected::${{ matrix.tool.name }} help output has changed. Review flag mappings in packages/core/src/registry/scaffolders/"
 
       - name: Upload help output
         if: always()
