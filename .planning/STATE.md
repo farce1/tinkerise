@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-18)
 ## Current Position
 
 Phase: 13 (first of 3 in v1.1) — Core Bug Fixes & Wiring
-Plan: 01 complete (13-01, 13-02 done; 13-03 remaining)
-Status: Executing
-Last activity: 2026-02-19 — Completed 13-01 (Conflict Diff Fix & Dead Export Removal)
+Plan: 03 complete (13-01, 13-02, 13-03 all done)
+Status: Phase 13 complete
+Last activity: 2026-02-19 — Completed 13-03 (Preset Enhancement Lifecycle Fix)
 
-Progress: [████████████████████████░░░░] 45/45 v1.0 complete, 2/3 phase 13
+Progress: [████████████████████████░░░░] 45/45 v1.0 complete, 3/3 phase 13
 
 ## Performance Metrics
 
@@ -35,6 +35,8 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table and archived in mile
 - 13-01: markRemainingAsNotRun retained only for cyclic dependency; per-module failures use continue
 - 13-02: Preset category takes precedence over defaultCategory config (presets are more specific)
 - 13-02: Invalid defaultCategory warns and falls back to unfiltered list (graceful degradation)
+- 13-03: Preset save captures installed enhancements via detect() iteration; preset use applies them via runEnhancements pipeline
+- 13-03: Unknown enhancement IDs in preset use produce warnings but don't block execution
 
 ### Pending Todos
 
@@ -47,4 +49,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 13-01-PLAN.md (Conflict Diff Fix & Dead Export Removal). 13-01 and 13-02 done, 13-03 remaining.
+Stopped at: Completed 13-03-PLAN.md (Preset Enhancement Lifecycle Fix). Phase 13 fully complete (3/3 plans done).

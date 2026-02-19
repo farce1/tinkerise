@@ -12,6 +12,7 @@ export { ciModule } from './ci.js'
 export { dockerModule } from './docker.js'
 export { envModule } from './env.js'
 export { commitlintModule } from './commitlint.js'
+export { changelogModule } from './changelog.js'
 export { testingModule } from './testing.js'
 export { renovateModule } from './renovate.js'
 export { editorconfigModule } from './editorconfig.js'
@@ -23,6 +24,7 @@ import { ciModule } from './ci.js'
 import { dockerModule } from './docker.js'
 import { envModule } from './env.js'
 import { commitlintModule } from './commitlint.js'
+import { changelogModule } from './changelog.js'
 import { testingModule } from './testing.js'
 import { renovateModule } from './renovate.js'
 import { editorconfigModule } from './editorconfig.js'
@@ -34,6 +36,7 @@ export const allEnhancementModules: EnhancementModule[] = [
   prettierModule,
   huskyModule,
   commitlintModule,
+  changelogModule,
   ciModule,
   testingModule,
   dockerModule,

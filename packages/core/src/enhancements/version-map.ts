@@ -33,6 +33,7 @@ export const dependencyVersionMap = {
   'commitlint': '^19.6.0',
   '@commitlint/config-conventional': '^19.6.0',
   '@commitlint/cli': '^19.6.0',
+  'conventional-changelog-cli': '^6.0.0',
 
   // Testing
   'vitest': '^3.1.0',

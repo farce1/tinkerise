@@ -31,7 +31,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 **Milestone Goal:** Close all 10 tech debt items from v1.0 audit — fix code issues, expand two enhancement modules, deploy Homebrew infrastructure.
 
-- [ ] **Phase 13: Core Bug Fixes & Wiring** - Fix diff display, preset enhancement lifecycle, defaultCategory routing, and dead export
+- [x] **Phase 13: Core Bug Fixes & Wiring** - Fix diff display, preset enhancement lifecycle, defaultCategory routing, and dead export (completed 2026-02-19)
 - [ ] **Phase 14: Enhancement & Quality Expansion** - Add changelog generation, example test files, and full-spectrum drift detection
 - [ ] **Phase 15: Homebrew Tap Deployment** - Create external tap repo and deploy auto-update workflow
 
@@ -58,10 +58,13 @@ Plans:
 **Depends on**: Nothing (independent of Phase 13)
 **Requirements**: EPOL-02, EPOL-03, QUAL-01
 **Success Criteria** (what must be TRUE):
-  1. `tinkerise add commitlint` generates both commit enforcement config and a changelog configuration file (e.g., .changelogrc or conventional-changelog config)
+  1. `tinkerise add changelog` generates a changelog configuration file (e.g., .changelogrc) and installs conventional-changelog (separate enhancement per user decision, not bundled in commitlint)
   2. `tinkerise add testing` generates both Vitest configuration and an example test file demonstrating the test setup
   3. Upstream drift detection snapshots exist for all 14 scaffolders (7 web + 5 backend + 2 mobile), and the drift check script validates all of them
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 14-01-PLAN.md — Create changelog enhancement and expand testing with example test files
+- [ ] 14-02-PLAN.md — Expand drift detection snapshots and workflow to all 14 scaffolders
 
 ### Phase 15: Homebrew Tap Deployment
 **Goal**: Users can install and update tinkerise via Homebrew
@@ -88,6 +91,6 @@ Plans:
 | 10. Distribution & Release Automation | v1.0 | 3/3 | Complete | 2026-02-18 |
 | 11. Cross-Phase Integration Wiring | v1.0 | 2/2 | Complete | 2026-02-18 |
 | 12. Retroactive Phase Verification | v1.0 | 3/3 | Complete | 2026-02-18 |
-| 13. Core Bug Fixes & Wiring | v1.1 | 0/3 | Planned | - |
-| 14. Enhancement & Quality Expansion | v1.1 | 0/? | Not started | - |
+| 13. Core Bug Fixes & Wiring | v1.1 | Complete    | 2026-02-19 | - |
+| 14. Enhancement & Quality Expansion | v1.1 | 0/2 | Not started | - |
 | 15. Homebrew Tap Deployment | v1.1 | 0/? | Not started | - |

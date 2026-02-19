@@ -156,6 +156,7 @@ describe('dependencyVersionMap', () => {
     'commitlint',
     '@commitlint/config-conventional',
     '@commitlint/cli',
+    'conventional-changelog-cli',
     'vitest',
     '@t3-oss/env-core',
     'zod',
