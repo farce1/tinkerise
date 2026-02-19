@@ -28,7 +28,13 @@ import {
   allEnhancementModules,
   buildProjectContext,
   isCI,
+  runEnhancements,
+  showEnhancementSummary,
+  showPerEnhancementSummary,
+  enhancementRegistry,
+  ENHANCEMENT_NEXT_STEPS,
 } from '@tinkerise/core'
+import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
 
 /**
  * Registers the `preset` command group on the given Commander program.
@@ -162,7 +168,94 @@ export function registerPresetCommand(program: Command): void {
         p.log.info(`  Config: ${JSON.stringify(presetData.config)}`)
       }
 
-      p.log.success(`Preset "${name}" applied. Use --preset ${name} with scaffold commands to include in config resolution.`)
+      // Apply enhancements if the preset has any
+      if (presetData.enhancements.length > 0) {
+        p.log.info('')
+        p.log.info(pc.bold('Applying enhancements...'))
+
+        // Build project context for enhancement execution
+        const ctx = await buildProjectContext({
+          rootDir: process.cwd(),
+          freshScaffold: false,
+          verbose: false,
+        })
+
+        // Resolve enhancement IDs to modules
+        const modules: EnhancementModule[] = []
+        const unknownEnhancements: string[] = []
+        for (const enhId of presetData.enhancements) {
+          const mod = enhancementRegistry.get(enhId)
+          if (mod) {
+            modules.push(mod)
+          } else {
+            unknownEnhancements.push(enhId)
+          }
+        }
+
+        // Warn about unknown enhancements (may be from a newer version)
+        if (unknownEnhancements.length > 0) {
+          p.log.warn(pc.yellow(`Unknown enhancements (skipped): ${unknownEnhancements.join(', ')}`))
+        }
+
+        if (modules.length > 0) {
+          const summary = await runEnhancements({
+            modules,
+            context: ctx,
+            interactive: !isCI,
+            onConflict: async (_moduleId, _filePath, diff): Promise<ConflictAction> => {
+              if (isCI) return 'skip'
+              console.log(diff)
+              const action = await p.select({
+                message: 'Config file already exists. What would you like to do?',
+                options: [
+                  { value: 'replace', label: 'Accept', hint: 'Apply the new config' },
+                  { value: 'skip', label: 'Skip', hint: 'Keep existing config' },
+                ],
+              })
+              if (p.isCancel(action)) {
+                p.cancel('Cancelled.')
+                process.exit(0)
+              }
+              return action as ConflictAction
+            },
+            onDependencyApproval: async (_moduleId, deps): Promise<boolean> => {
+              if (isCI) return true
+              const result = await p.confirm({
+                message: `Missing dependencies: ${deps.join(', ')}. Continue anyway?`,
+              })
+              if (p.isCancel(result)) {
+                p.cancel('Cancelled.')
+                process.exit(0)
+              }
+              return result as boolean
+            },
+          })
+
+          // Show per-enhancement summary cards
+          for (const installedId of summary.installed) {
+            const mod = enhancementRegistry.get(installedId)
+            if (!mod) continue
+            const result = summary.results.get(installedId) ?? {
+              success: true,
+              filesModified: [],
+              packagesAdded: [],
+              warnings: [],
+            }
+            const nextSteps = ENHANCEMENT_NEXT_STEPS[installedId] ?? []
+            showPerEnhancementSummary({
+              moduleId: installedId,
+              moduleName: mod.name,
+              result,
+              nextSteps,
+            })
+          }
+
+          // Show overall summary
+          showEnhancementSummary(summary)
+        }
+      }
+
+      p.log.success(`Preset "${name}" applied.`)
     })
 
   // --- preset list ---

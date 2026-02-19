@@ -3,8 +3,13 @@
  *
  * Verifies:
  * - preset save <name> calls savePreset with correct data
+ * - preset save detects and captures installed enhancements
+ * - preset save with no enhancements detected produces empty array
  * - preset save without name shows error
  * - preset use <name> calls loadPreset and displays preset info
+ * - preset use with enhancements calls runEnhancements
+ * - preset use with unknown enhancement IDs warns and continues
+ * - preset use with no enhancements skips enhancement pipeline
  * - preset use nonexistent shows error
  * - preset list calls both listPresets and discoverNpmPresets
  * - preset list shows "(none)" when no presets exist
@@ -14,7 +19,7 @@
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 
-// vi.hoisted mock fns
+// vi.hoisted mock fns for @tinkerise/core
 const {
   mockSavePreset,
   mockLoadPreset,
@@ -24,31 +29,88 @@ const {
   mockLoadNpmPreset,
   mockLoadProjectConfig,
   mockGetPresetsDir,
-} = vi.hoisted(() => ({
-  mockSavePreset: vi.fn(),
-  mockLoadPreset: vi.fn(),
-  mockListPresets: vi.fn(),
-  mockDeletePreset: vi.fn(),
-  mockDiscoverNpmPresets: vi.fn(),
-  mockLoadNpmPreset: vi.fn(),
-  mockLoadProjectConfig: vi.fn(),
-  mockGetPresetsDir: vi.fn().mockReturnValue('/home/user/.config/tinkerise/presets'),
-}))
+  mockBuildProjectContext,
+  mockRunEnhancements,
+  mockShowEnhancementSummary,
+  mockShowPerEnhancementSummary,
+  mockEnhancementRegistry,
+  mockAllEnhancementModules,
+  mockEnhancementNextSteps,
+  mockIsCI,
+} = vi.hoisted(() => {
+  const eslintMod = {
+    id: 'eslint',
+    name: 'ESLint',
+    description: 'Lint',
+    dependsOn: [],
+    detect: vi.fn().mockResolvedValue({ installed: false, configFiles: [], partial: false }),
+    install: vi.fn().mockResolvedValue({ success: true, filesModified: [], packagesAdded: [], warnings: [] }),
+  }
+  const prettierMod = {
+    id: 'prettier',
+    name: 'Prettier',
+    description: 'Format',
+    dependsOn: [],
+    detect: vi.fn().mockResolvedValue({ installed: false, configFiles: [], partial: false }),
+    install: vi.fn().mockResolvedValue({ success: true, filesModified: [], packagesAdded: [], warnings: [] }),
+  }
+
+  const registry = new Map()
+  registry.set('eslint', eslintMod)
+  registry.set('prettier', prettierMod)
+
+  return {
+    mockSavePreset: vi.fn(),
+    mockLoadPreset: vi.fn(),
+    mockListPresets: vi.fn(),
+    mockDeletePreset: vi.fn(),
+    mockDiscoverNpmPresets: vi.fn(),
+    mockLoadNpmPreset: vi.fn(),
+    mockLoadProjectConfig: vi.fn(),
+    mockGetPresetsDir: vi.fn().mockReturnValue('/home/user/.config/tinkerise/presets'),
+    mockBuildProjectContext: vi.fn().mockResolvedValue({
+      rootDir: '/test/project',
+      packageManager: 'npm',
+      framework: null,
+      packageJson: {},
+      installedDeps: {},
+      freshScaffold: false,
+      verbose: false,
+    }),
+    mockRunEnhancements: vi.fn().mockResolvedValue({
+      installed: [],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
+    }),
+    mockShowEnhancementSummary: vi.fn(),
+    mockShowPerEnhancementSummary: vi.fn(),
+    mockEnhancementRegistry: registry,
+    mockAllEnhancementModules: [eslintMod, prettierMod],
+    mockEnhancementNextSteps: { eslint: ['Run lint'], prettier: ['Run format'] },
+    mockIsCI: { value: false },
+  }
+})
 
 const {
   mockPLogInfo,
   mockPLogError,
   mockPLogSuccess,
+  mockPLogWarn,
   mockPText,
   mockPSelect,
+  mockPConfirm,
   mockPCancel,
   mockPIsCancel,
 } = vi.hoisted(() => ({
   mockPLogInfo: vi.fn(),
   mockPLogError: vi.fn(),
   mockPLogSuccess: vi.fn(),
+  mockPLogWarn: vi.fn(),
   mockPText: vi.fn(),
   mockPSelect: vi.fn(),
+  mockPConfirm: vi.fn(),
   mockPCancel: vi.fn(),
   mockPIsCancel: vi.fn().mockReturnValue(false),
 }))
@@ -64,6 +126,14 @@ vi.mock('@tinkerise/core', () => ({
   loadNpmPreset: mockLoadNpmPreset,
   loadProjectConfig: mockLoadProjectConfig,
   getPresetsDir: mockGetPresetsDir,
+  buildProjectContext: mockBuildProjectContext,
+  allEnhancementModules: mockAllEnhancementModules,
+  get isCI() { return mockIsCI.value },
+  runEnhancements: mockRunEnhancements,
+  showEnhancementSummary: mockShowEnhancementSummary,
+  showPerEnhancementSummary: mockShowPerEnhancementSummary,
+  enhancementRegistry: mockEnhancementRegistry,
+  ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
 }))
 
 vi.mock('@clack/prompts', () => ({
@@ -71,9 +141,11 @@ vi.mock('@clack/prompts', () => ({
     info: mockPLogInfo,
     error: mockPLogError,
     success: mockPLogSuccess,
+    warn: mockPLogWarn,
   },
   text: mockPText,
   select: mockPSelect,
+  confirm: mockPConfirm,
   cancel: mockPCancel,
   isCancel: mockPIsCancel,
 }))
@@ -82,6 +154,7 @@ vi.mock('picocolors', () => ({
   default: {
     red: (s: string) => s,
     bold: (s: string) => s,
+    yellow: (s: string) => s,
   },
 }))
 
@@ -112,6 +185,19 @@ describe('preset save', () => {
     mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
     mockSavePreset.mockResolvedValue(undefined)
     mockLoadProjectConfig.mockResolvedValue(null)
+    mockBuildProjectContext.mockResolvedValue({
+      rootDir: '/test/project',
+      packageManager: 'npm',
+      framework: null,
+      packageJson: {},
+      installedDeps: {},
+      freshScaffold: false,
+      verbose: false,
+    })
+    // Default: no enhancements detected
+    for (const mod of mockAllEnhancementModules) {
+      mod.detect.mockResolvedValue({ installed: false, configFiles: [], partial: false })
+    }
   })
 
   it('calls savePreset with correct name and data', async () => {
@@ -160,12 +246,73 @@ describe('preset save', () => {
       await runPresetCommand(['preset', 'save'])
     }).rejects.toThrow()
   })
+
+  it('detects and captures installed enhancements', async () => {
+    // eslint detected as installed, prettier not installed
+    mockAllEnhancementModules[0].detect.mockResolvedValue({
+      installed: true,
+      configFiles: ['eslint.config.js'],
+      partial: false,
+    })
+    mockAllEnhancementModules[1].detect.mockResolvedValue({
+      installed: false,
+      configFiles: [],
+      partial: false,
+    })
+
+    await runPresetCommand([
+      'preset', 'save', 'my-stack',
+      '--framework', 'next',
+      '--category', 'web',
+    ])
+
+    expect(mockSavePreset).toHaveBeenCalledWith(
+      expect.objectContaining({
+        enhancements: ['eslint'],
+      }),
+    )
+    // Should log detected enhancements
+    expect(mockPLogInfo).toHaveBeenCalledWith(
+      expect.stringContaining('Enhancements: eslint'),
+    )
+  })
+
+  it('produces empty enhancements array when none detected', async () => {
+    // Both modules return installed: false (default)
+    await runPresetCommand([
+      'preset', 'save', 'my-stack',
+      '--framework', 'next',
+      '--category', 'web',
+    ])
+
+    expect(mockSavePreset).toHaveBeenCalledWith(
+      expect.objectContaining({
+        enhancements: [],
+      }),
+    )
+  })
 })
 
 describe('preset use', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockProcessExit.mockImplementation(() => { throw new Error('process.exit') })
+    mockBuildProjectContext.mockResolvedValue({
+      rootDir: '/test/project',
+      packageManager: 'npm',
+      framework: null,
+      packageJson: {},
+      installedDeps: {},
+      freshScaffold: false,
+      verbose: false,
+    })
+    mockRunEnhancements.mockResolvedValue({
+      installed: [],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
+    })
   })
 
   it('calls loadPreset and displays preset info', async () => {
@@ -176,6 +323,14 @@ describe('preset use', () => {
       scaffold: { framework: 'next', category: 'web', flags: {} },
       enhancements: ['eslint', 'prettier'],
       config: { packageManager: 'pnpm' },
+    })
+
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint', 'prettier'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
     })
 
     await runPresetCommand(['preset', 'use', 'my-stack'])
@@ -226,6 +381,93 @@ describe('preset use', () => {
     expect(mockLoadPreset).toHaveBeenCalledWith('saas')
     expect(mockLoadNpmPreset).toHaveBeenCalledWith('tinkerise-preset-saas')
     expect(mockPLogSuccess).toHaveBeenCalled()
+  })
+
+  it('calls runEnhancements when preset has enhancements', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'full-stack',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: ['eslint', 'prettier'],
+      config: {},
+    })
+
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint', 'prettier'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map([
+        ['eslint', { success: true, filesModified: ['eslint.config.js'], packagesAdded: [], warnings: [] }],
+        ['prettier', { success: true, filesModified: ['.prettierrc'], packagesAdded: [], warnings: [] }],
+      ]),
+    })
+
+    await runPresetCommand(['preset', 'use', 'full-stack'])
+
+    expect(mockBuildProjectContext).toHaveBeenCalledWith(
+      expect.objectContaining({ rootDir: '/test/project' }),
+    )
+    expect(mockRunEnhancements).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modules: expect.arrayContaining([
+          expect.objectContaining({ id: 'eslint' }),
+          expect.objectContaining({ id: 'prettier' }),
+        ]),
+      }),
+    )
+    expect(mockShowEnhancementSummary).toHaveBeenCalled()
+  })
+
+  it('warns about unknown enhancement IDs and continues with known ones', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'future-stack',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: ['eslint', 'unknown-thing'],
+      config: {},
+    })
+
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map([
+        ['eslint', { success: true, filesModified: [], packagesAdded: [], warnings: [] }],
+      ]),
+    })
+
+    await runPresetCommand(['preset', 'use', 'future-stack'])
+
+    // Should warn about unknown enhancement
+    expect(mockPLogWarn).toHaveBeenCalledWith(
+      expect.stringContaining('unknown-thing'),
+    )
+    // Should still call runEnhancements with only eslint
+    expect(mockRunEnhancements).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modules: [expect.objectContaining({ id: 'eslint' })],
+      }),
+    )
+  })
+
+  it('skips enhancement pipeline when preset has no enhancements', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'minimal',
+      scaffold: { framework: 'vite', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'use', 'minimal'])
+
+    expect(mockRunEnhancements).not.toHaveBeenCalled()
+    expect(mockBuildProjectContext).not.toHaveBeenCalled()
+    expect(mockPLogSuccess).toHaveBeenCalledWith(
+      expect.stringContaining('Preset "minimal" applied'),
+    )
   })
 })
 
