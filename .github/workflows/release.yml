@@ -53,7 +53,7 @@ jobs:
       - name: Trigger Homebrew tap update
         if: steps.changesets.outputs.published == 'true'
         run: |
-          VERSION=$(node -p "require('./packages/tinkerise/package.json').version")
+          VERSION=$(jq -r '.version' packages/tinkerise/package.json)
           gh workflow run update-formula.yml \
             -R farce1/homebrew-tap \
             -f version="$VERSION"

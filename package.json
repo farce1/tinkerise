@@ -15,8 +15,8 @@
     "license-check": "bun scripts/license-check.ts",
     "prepare": "husky",
     "changeset": "changeset",
-    "ci:version": "changeset version && bun update",
-    "ci:publish": "bun run build && changeset publish"
+    "ci:version": "changeset version && bun install --frozen-lockfile",
+    "ci:publish": "changeset publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.4.3",
