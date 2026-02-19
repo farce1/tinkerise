@@ -3,17 +3,17 @@
   "type": "module",
   "version": "0.0.0",
   "description": "Shared types, Zod schemas, and constants for the tinkerise monorepo",
-  "keywords": ["tinkerise", "shared", "types", "schemas", "utilities"],
   "license": "MIT",
+  "homepage": "https://github.com/farce1/tinkerise",
   "repository": {
     "type": "git",
     "url": "https://github.com/farce1/tinkerise.git",
     "directory": "packages/shared"
   },
-  "homepage": "https://github.com/farce1/tinkerise",
   "bugs": {
     "url": "https://github.com/farce1/tinkerise/issues"
   },
+  "keywords": ["tinkerise", "shared", "types", "schemas", "utilities"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -23,6 +23,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=20.11.0"
+  },
   "scripts": {
     "build": "tsup",
     "lint": "eslint .",
@@ -39,8 +42,5 @@
   "devDependencies": {
     "@types/node": "^22",
     "tsup": "^8.4"
-  },
-  "engines": {
-    "node": ">=20.11.0"
   }
 }
