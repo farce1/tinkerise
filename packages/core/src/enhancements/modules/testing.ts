@@ -1,9 +1,10 @@
 /**
  * Testing (Vitest) enhancement module.
  *
- * Generates vitest.config.ts and adds test scripts to package.json.
+ * Generates vitest.config.ts, adds test scripts to package.json,
+ * and creates example test files (tests/sum.ts + tests/sum.test.ts)
+ * so users see tests working immediately.
  * Always uses Vitest regardless of framework (per locked decision).
- * Config only — does NOT generate example test files.
  */
 
 import { access } from 'node:fs/promises'
@@ -100,7 +101,42 @@ export default defineConfig({
     await addScript(ctx.rootDir, 'test', 'vitest')
     await addScript(ctx.rootDir, 'test:run', 'vitest run')
 
-    // Step 4: No example test files (per locked decision)
+    // Step 4: Generate example source file
+    const sumContent = `/**
+ * Adds two numbers together.
+ *
+ * @example
+ * \`\`\`ts
+ * sum(1, 2) // 3
+ * \`\`\`
+ */
+export function sum(a: number, b: number): number {
+  return a + b
+}
+`
+    const sumPath = await writeConfigFile(ctx.rootDir, 'tests/sum.ts', sumContent)
+    filesModified.push(sumPath)
+
+    // Step 5: Generate example test file
+    const testContent = `import { describe, expect, it } from 'vitest'
+import { sum } from './sum'
+
+describe('sum', () => {
+  it('adds two positive numbers', () => {
+    expect(sum(1, 2)).toBe(3)
+  })
+
+  it('handles zero', () => {
+    expect(sum(0, 5)).toBe(5)
+  })
+
+  it('handles negative numbers', () => {
+    expect(sum(-1, -2)).toBe(-3)
+  })
+})
+`
+    const testPath = await writeConfigFile(ctx.rootDir, 'tests/sum.test.ts', testContent)
+    filesModified.push(testPath)
 
     return {
       success: true,

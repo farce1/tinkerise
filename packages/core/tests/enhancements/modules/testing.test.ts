@@ -137,17 +137,28 @@ describe('testingModule', () => {
       expect(secondPkg.scripts['test:run']).toBe('vitest run')
     })
 
-    it('does NOT create any test files', async () => {
+    it('creates example test files (sum.ts and sum.test.ts)', async () => {
       await testingModule.install(makeCtx())
 
-      // Check that no writeFile calls target paths with .test. or .spec.
-      const testFileWrites = mockWriteFile.mock.calls.filter(
-        (c: unknown[]) => {
-          const path = c[0] as string
-          return path.includes('.test.') || path.includes('.spec.')
-        },
+      // Check that writeFile is called for tests/sum.ts
+      const sumWrite = mockWriteFile.mock.calls.find(
+        (c: unknown[]) => (c[0] as string).includes('tests/sum.ts') && !(c[0] as string).includes('.test.'),
       )
-      expect(testFileWrites).toHaveLength(0)
+      expect(sumWrite).toBeTruthy()
+      const sumContent = sumWrite![1] as string
+      expect(sumContent).toContain('export function sum(a: number, b: number): number')
+
+      // Check that writeFile is called for tests/sum.test.ts
+      const testWrite = mockWriteFile.mock.calls.find(
+        (c: unknown[]) => (c[0] as string).includes('tests/sum.test.ts'),
+      )
+      expect(testWrite).toBeTruthy()
+      const testContent = testWrite![1] as string
+      expect(testContent).toContain("import { describe, expect, it } from 'vitest'")
+      expect(testContent).toContain("import { sum } from './sum'")
+      expect(testContent).toContain('adds two positive numbers')
+      expect(testContent).toContain('handles zero')
+      expect(testContent).toContain('handles negative numbers')
     })
 
     it('returns success with correct structure', async () => {
@@ -158,7 +169,11 @@ describe('testingModule', () => {
         expect.arrayContaining([expect.stringContaining('vitest@')]),
       )
       expect(result.filesModified).toEqual(
-        expect.arrayContaining([expect.stringContaining('vitest.config.ts')]),
+        expect.arrayContaining([
+          expect.stringContaining('vitest.config.ts'),
+          expect.stringContaining('tests/sum.ts'),
+          expect.stringContaining('tests/sum.test.ts'),
+        ]),
       )
       expect(result.warnings).toHaveLength(0)
     })
