@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 ## Current Position
 
 Phase: 21 of 22 (Polish & Metadata)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-02-19 — Plan 21-01 complete
+Plan: 2 of 2 in current phase
+Status: Verifying
+Last activity: 2026-02-19 — Plan 21-02 complete
 
 Progress: [#######░░░] 67% (v2.0)
 
@@ -29,7 +29,7 @@ Progress: [#######░░░] 67% (v2.0)
 - Timeline: 3 days (2026-02-16 -> 2026-02-19)
 
 **v2.0 Summary:**
-- Total plans completed: 8
+- Total plans completed: 10
 - In progress since: 2026-02-19
 
 | Phase | Plan | Duration | Tasks | Files |
@@ -39,6 +39,7 @@ Progress: [#######░░░] 67% (v2.0)
 | 20-01 | update-check + install-method tests | 3min | 2 | 2 |
 | 20-02 | project-name + flow + update tests | 3min | 3 | 3 |
 | 21-01 | package metadata + URL fixes | 1min | 2 | 7 |
+| 21-02 | CODE_OF_CONDUCT + cleanup | 1min | 2 | 1 |
 
 ## Accumulated Context
 
@@ -54,6 +55,7 @@ All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
 - Phase 20-01: Used vi.resetModules + dynamic import for update-check per-test isolation; vi.doMock for import.meta.dirname Homebrew/npx tests
 - Phase 20-02: Used Commander exitOverride() + parseAsync for command testing; mocked p.group with sequential function executor
 - Phase 21-01: All metadata fields placed after version and before exports/bin for consistent layout across packages
+- Phase 21-02: Used Contributor Covenant v2.1 verbatim; .gitignore and TinkeriseConfig already clean from prior phases
 
 ### Pending Todos
 
@@ -66,5 +68,5 @@ None. (Phase 18 resolved all prior blockers: HOMEBREW_TAP_TOKEN docs, NPM_TOKEN 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 21-01-PLAN.md
+Stopped at: Phase 21 execution complete, verifying
 Resume file: None

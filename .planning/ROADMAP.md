@@ -48,7 +48,7 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 - [x] **Phase 18: Release Pipeline** - Fix broken publish path so stable versions can ship via CI (completed 2026-02-19)
 - [x] **Phase 19: Core Test Coverage** - Write tests for 5 untested core and shared modules (completed 2026-02-19)
 - [x] **Phase 20: CLI Test Coverage** - Write tests for 5 untested CLI modules (completed 2026-02-19)
-- [ ] **Phase 21: Polish & Metadata** - Clean metadata, consistent URLs, dead code removal, community docs
+- [x] **Phase 21: Polish & Metadata** - Clean metadata, consistent URLs, dead code removal, community docs (completed 2026-02-19)
 - [ ] **Phase 22: Drift Detection Hardening** - Harden drift detection CI workflow against real-world failures
 
 ## Phase Details
@@ -121,7 +121,10 @@ Plans:
   3. `CODE_OF_CONDUCT.md` exists at repo root with a recognized code of conduct (Contributor Covenant or equivalent)
   4. `.gitignore` contains the `tsup.config.bundled_*.mjs` pattern and no stale artifact files exist in the repo
   5. The dead `TinkeriseConfig` export is absent from `shared/src/index.ts` and importing the package does not expose that symbol
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 21-01-PLAN.md — Complete package.json metadata and fix stale repository URLs
+- [ ] 21-02-PLAN.md — Create CODE_OF_CONDUCT.md, clean .gitignore, remove dead TinkeriseConfig export
 
 ### Phase 22: Drift Detection Hardening
 **Goal**: The drift detection CI workflow handles real-world tool installation failures and reports detected drift as a trackable GitHub Issue
@@ -157,5 +160,5 @@ Plans:
 | 18. Release Pipeline | v2.0 | Complete    | 2026-02-19 | - |
 | 19. Core Test Coverage | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 20. CLI Test Coverage | v2.0 | Complete    | 2026-02-19 | - |
-| 21. Polish & Metadata | v2.0 | 0/TBD | Not started | - |
+| 21. Polish & Metadata | v2.0 | Complete    | 2026-02-19 | - |
 | 22. Drift Detection Hardening | v2.0 | 0/TBD | Not started | - |
