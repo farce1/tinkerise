@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-19)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 19 — Core Test Coverage (v2.0 Quality & Robustness)
+**Current focus:** Phase 20 — CLI Test Coverage (v2.0 Quality & Robustness)
 
 ## Current Position
 
-Phase: 19 of 22 (Core Test Coverage)
+Phase: 20 of 22 (CLI Test Coverage)
 Plan: 2 of 2 in current phase
-Status: Phase 19 complete
-Last activity: 2026-02-19 — Phase 19 plan 02 complete
+Status: All plans executed, pending verification
+Last activity: 2026-02-19 — Phase 20 plans complete
 
-Progress: [####░░░░░░] 33% (v2.0)
+Progress: [######░░░░] 67% (v2.0)
 
 ## Performance Metrics
 
@@ -29,13 +29,15 @@ Progress: [####░░░░░░] 33% (v2.0)
 - Timeline: 3 days (2026-02-16 -> 2026-02-19)
 
 **v2.0 Summary:**
-- Total plans completed: 6
+- Total plans completed: 8
 - In progress since: 2026-02-19
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 19-01 | changelog + utils tests | 1min | 2 | 2 |
 | 19-02 | platform + version + shared tests | 2min | 2 | 3 |
+| 20-01 | update-check + install-method tests | 3min | 2 | 2 |
+| 20-02 | project-name + flow + update tests | 3min | 3 | 3 |
 
 ## Accumulated Context
 
@@ -48,6 +50,8 @@ All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
 - Phase 18: Exited changeset pre-release mode, fixed ci scripts, switched Homebrew version to jq, corrected all repo slugs to farce1/tinkerise, documented NPM_TOKEN and HOMEBREW_TAP_TOKEN setup in RELEASE.md
 - Phase 19-01: Both tasks committed together since they share the same test infrastructure pattern
 - Phase 19-02: Removed invalid displayName from Prerequisite tests, fixed versionedFlags schema shape from { minVersion, flag, native } to { versionRange, flags }
+- Phase 20-01: Used vi.resetModules + dynamic import for update-check per-test isolation; vi.doMock for import.meta.dirname Homebrew/npx tests
+- Phase 20-02: Used Commander exitOverride() + parseAsync for command testing; mocked p.group with sequential function executor
 
 ### Pending Todos
 
@@ -60,5 +64,5 @@ None. (Phase 18 resolved all prior blockers: HOMEBREW_TAP_TOKEN docs, NPM_TOKEN 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 19 complete, ready to plan Phase 20
+Stopped at: Phase 20 executed, pending verification
 Resume file: None
