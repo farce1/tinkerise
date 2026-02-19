@@ -1,0 +1,14 @@
+# Snapshot generated from CLI documentation — will be replaced by CI on first run
+# Tool: fastapi-admin (pip package: fastapi-admin-cli)
+# Command: pip install fastapi-admin-cli -q && fastapi-admin --help
+
+Usage: fastapi-admin [OPTIONS] COMMAND [ARGS]...
+
+  FastAPI Admin CLI - Django-inspired scaffolding for FastAPI projects.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  startproject  Create a new FastAPI project with modular structure.

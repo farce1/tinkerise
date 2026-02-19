@@ -1,0 +1,8 @@
+# Snapshot generated from CLI documentation — will be replaced by CI on first run
+# Tool: express-generator-typescript (npm package)
+# Command: npx express-generator-typescript --help
+# Note: This tool does not support --help. It treats all args as project names.
+# The CI workflow captures stderr/stdout with || true.
+
+Setting up new Express/TypeScript project...
+Project setup complete!

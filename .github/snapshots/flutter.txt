@@ -1,0 +1,78 @@
+# Snapshot generated from CLI documentation — will be replaced by CI on first run
+# Tool: flutter create
+# Command: flutter create --help
+
+Create a new Flutter project.
+
+If run on a directory that already contains a Flutter project, this will attempt
+to re-create any missing files.
+
+Usage: flutter create <output directory>
+
+Global options:
+-h, --help                  Print this usage information.
+-v, --verbose               Noisy logging, including all shell commands
+                            executed. If used with "--help", shows hidden
+                            options. If used with "flutter doctor", shows
+                            additional diagnostic information.
+-d, --device-id             Target device id or name (prefixes allowed).
+    --version               Reports the version of this tool.
+    --enable-analytics       Enable telemetry reporting each time a flutter or
+                            dart command runs.
+    --disable-analytics      Disable telemetry reporting.
+    --suppress-analytics     Suppress analytics reporting for the current CLI
+                            invocation.
+
+Options:
+    --[no-]pub               Whether to run "flutter pub get" after the project
+                            has been created.
+                            (defaults to on)
+    --[no-]offline           When "flutter pub get" is run by the create
+                            command, this indicates whether to run it in
+                            offline mode or not. In offline mode, it will need
+                            to have all dependencies already available in the
+                            pub cache to succeed.
+    --[no-]overwrite         When performing operations, overwrite existing
+                            files.
+    --description            The description to use for your new Flutter
+                            project. This string ends up in the
+                            pubspec.yaml file.
+                            (defaults to "A new Flutter project.")
+    --org                   The organization responsible for your new Flutter
+                            project, in reverse domain name notation. This
+                            string is used in Java package names and as prefix
+                            in the iOS bundle identifier.
+                            (defaults to "com.example")
+    --project-name           The project name for this new Flutter project.
+                            This must be a valid dart package name.
+-t, --template              Specify the type of project to create.
+
+          [app]              (default) Generate a Flutter application.
+          [module]           Generate a project to add a Flutter module to an
+                            existing Android or iOS application.
+          [package]          Generate a shareable Flutter project containing
+                            modular Dart code.
+          [plugin]           Generate a shareable Flutter project containing
+                            an API in Dart code with a platform-specific
+                            implementation through method channels.
+          [plugin_ffi]       Generate a shareable Flutter project containing
+                            an API in Dart code with a platform-specific
+                            implementation through dart:ffi.
+          [skeleton]         Generate a List View / Detail View Flutter
+                            application that follows community best
+                            practices.
+
+-s, --sample                Specifies the Flutter code sample to use as the
+                            "main.dart" for an application.
+    --list-samples           Specifies a JSON output file for a listing of
+                            Flutter code samples.
+    --[no-]empty             Specifies creating using an application template
+                            with a main.dart that is minimal.
+    --platforms              The platforms supported by this project. Platform
+                            folders (e.g. android/) will be generated in the
+                            target project. Adding desktop platforms requires
+                            the corresponding desktop config setting to be
+                            enabled.
+                            [ios (default), android (default), windows
+                            (default), linux (default), macos (default), web
+                            (default)]

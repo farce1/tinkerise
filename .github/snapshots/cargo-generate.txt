@@ -1,0 +1,31 @@
+# Snapshot generated from CLI documentation — will be replaced by CI on first run
+# Tool: cargo-generate
+# Command: cargo install cargo-generate && cargo generate --help
+
+cargo-generate: Generate a new Cargo project from a given template
+
+Usage: cargo generate [OPTIONS] [git|path|favorite] [--] [template_values]...
+
+Arguments:
+  [template_values]...  List of template values in the form `key=value`
+
+Options:
+  -n, --name <NAME>                    Name of the project to generate
+  -f, --force                          Enforce to create a new project in an existing directory
+  -v, --verbose                        Enables verbose diagnostics
+  -t, --template-values-file <FILE>    Path to a file with template values
+  -s, --silent                         Don't prompt and use defaults
+  -l, --list-favorites                 List defined favorite templates
+      --vcs <VCS>                      Version control system to use [default: git] [possible values: none, git]
+      --lib                            Generates a library template
+      --bin                            Generates a binary template
+      --ssh-identity <FILE>            Use specific ssh identity
+  -d, --define <DEFINE>                Define a value for a template variable
+      --init                           Generate the template directly into the current dir
+      --destination <DESTINATION>      Generate the template into a target directory
+      --allow-commands                 Allow the template to run commands
+      --overwrite                      Skip the check for existing files
+      --skip-submodules                Skip git submodules when cloning
+      --other-branch <OTHER_BRANCH>    Use a different branch than the default
+  -h, --help                           Print help
+  -V, --version                        Print version

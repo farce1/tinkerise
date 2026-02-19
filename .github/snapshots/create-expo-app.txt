@@ -1,0 +1,32 @@
+npm warn exec The following package was not found and will be installed: create-expo-app@3.5.3
+
+  Info
+    Creates a new Expo project
+
+  Usage
+    $ npx create-expo-app <path> [options]
+
+  Options
+    -y, --yes             Use the default options for creating a project
+        --no-install      Skip installing npm packages or CocoaPods
+    -t, --template [pkg]  NPM template to use: default, blank, blank-typescript, tabs, bare-minimum. Default: default
+    -e, --example [name]  Example name from https://github.com/expo/examples.
+    -v, --version         Version number
+    -h, --help            Usage info
+
+    To choose a template pass in the --template arg:
+
+    $ npx create-expo-app --template
+
+    To choose an Expo example pass in the --example arg:
+
+    $ npx create-expo-app --example
+    $ npx create-expo-app --example with-router
+
+    The package manager used for installing
+    node modules is based on how you invoke the CLI:
+
+     npm: npx create-expo-app
+    yarn: yarn create expo-app
+    pnpm: pnpm create expo-app
+     bun: bun create expo-app
