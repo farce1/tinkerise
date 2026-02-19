@@ -12,7 +12,7 @@ Thanks for your interest in contributing! This guide covers everything you need 
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-org/tinkerise.git
+git clone https://github.com/farce1/tinkerise.git
 cd tinkerise
 
 # Install dependencies

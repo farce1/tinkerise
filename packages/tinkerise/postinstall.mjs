@@ -13,6 +13,6 @@ if (isGlobal && !process.env.CI) {
   console.log()
   console.log('  Get started:  tinkerise')
   console.log('  Short alias:  tk')
-  console.log('  Docs:         https://github.com/tinkerise/tinkerise')
+  console.log('  Docs:         https://github.com/farce1/tinkerise')
   console.log()
 }
