@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-18)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** v1.1 Tech Debt — Phase 13: Core Bug Fixes & Wiring
+**Current focus:** v1.1 Tech Debt — Phase 14: Enhancement & Quality Expansion
 
 ## Current Position
 
-Phase: 13 (first of 3 in v1.1) — Core Bug Fixes & Wiring
-Plan: 03 complete (13-01, 13-02, 13-03 all done)
-Status: Phase 13 complete
-Last activity: 2026-02-19 — Completed 13-03 (Preset Enhancement Lifecycle Fix)
+Phase: 14 (second of 3 in v1.1) — Enhancement & Quality Expansion
+Plan: 2 of 2 complete
+Status: Phase 14 complete
+Last activity: 2026-02-19 — Phase 14 plan 02 executed
 
-Progress: [████████████████████████░░░░] 45/45 v1.0 complete, 3/3 phase 13
+Progress: [██████████████████████████░░] 45/45 v1.0, 3/3 phase 13, 2/2 phase 14
 
 ## Performance Metrics
 
@@ -38,6 +38,13 @@ All v1.0 decisions logged in PROJECT.md Key Decisions table and archived in mile
 - 13-03: Preset save captures installed enhancements via detect() iteration; preset use applies them via runEnhancements pipeline
 - 13-03: Unknown enhancement IDs in preset use produce warnings but don't block execution
 
+**v1.1 Phase 14:**
+- 14-01: Changelog module independent of commitlint (dependsOn: []) with cross-reference hint
+- 14-01: Example test files use tests/ directory with sum.ts + sum.test.ts pair
+- 14-02: Documentation-based snapshots for unavailable tools; CI replaces on first run
+- 14-02: Go setup gated on tool name containing 'go-' pattern
+- 14-02: Flutter setup uses subosito/flutter-action@v2
+
 ### Pending Todos
 
 None.
@@ -49,4 +56,4 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 13-03-PLAN.md (Preset Enhancement Lifecycle Fix). Phase 13 fully complete (3/3 plans done).
+Stopped at: Completed 14-02-PLAN.md. Phase 14 complete. Ready for phase 15.
