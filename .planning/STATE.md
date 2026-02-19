@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-19)
 ## Current Position
 
 Phase: 21 of 22 (Polish & Metadata)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-19 — Phase 20 complete
+Plan: 1 of 2 in current phase
+Status: Executing
+Last activity: 2026-02-19 — Plan 21-01 complete
 
 Progress: [#######░░░] 67% (v2.0)
 
@@ -38,6 +38,7 @@ Progress: [#######░░░] 67% (v2.0)
 | 19-02 | platform + version + shared tests | 2min | 2 | 3 |
 | 20-01 | update-check + install-method tests | 3min | 2 | 2 |
 | 20-02 | project-name + flow + update tests | 3min | 3 | 3 |
+| 21-01 | package metadata + URL fixes | 1min | 2 | 7 |
 
 ## Accumulated Context
 
@@ -52,6 +53,7 @@ All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
 - Phase 19-02: Removed invalid displayName from Prerequisite tests, fixed versionedFlags schema shape from { minVersion, flag, native } to { versionRange, flags }
 - Phase 20-01: Used vi.resetModules + dynamic import for update-check per-test isolation; vi.doMock for import.meta.dirname Homebrew/npx tests
 - Phase 20-02: Used Commander exitOverride() + parseAsync for command testing; mocked p.group with sequential function executor
+- Phase 21-01: All metadata fields placed after version and before exports/bin for consistent layout across packages
 
 ### Pending Todos
 
@@ -64,5 +66,5 @@ None. (Phase 18 resolved all prior blockers: HOMEBREW_TAP_TOKEN docs, NPM_TOKEN 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 20 complete, ready to plan Phase 21
+Stopped at: Completed 21-01-PLAN.md
 Resume file: None
