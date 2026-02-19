@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   check-drift:
@@ -125,6 +126,51 @@ jobs:
         run: |
           echo "::warning title=Flag Drift Detected::${{ matrix.tool.name }} help output has changed. Review flag mappings in packages/core/src/registry/scaffolders/"
 
+      - name: Create or update drift issue
+        if: steps.drift.outputs.status == 'changed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Ensure drift label exists
+          gh label create "drift" --description "Upstream tool drift detected" --color "FBCA04" 2>/dev/null || true
+
+          TOOL="${{ matrix.tool.name }}"
+          DATE=$(date +%Y-%m-%d)
+          TITLE="Drift detected: ${TOOL} (${DATE})"
+          TITLE_PREFIX="Drift detected: ${TOOL}"
+
+          # Search for existing open issue with matching title prefix
+          EXISTING=$(gh issue list --state open --search "in:title \"${TITLE_PREFIX}\"" --json number,title --jq ".[] | select(.title | startswith(\"${TITLE_PREFIX}\")) | .number" | head -1)
+
+          # Build issue body
+          DIFF_CONTENT=$(cat drift-diff.txt | head -100)
+          BODY="## Drift Detected
+
+          **Tool:** ${TOOL}
+          **Date:** ${DATE}
+          **Runner:** ${{ runner.os }} (${{ runner.arch }})
+          **CI Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ### Diff
+
+          \`\`\`diff
+          ${DIFF_CONTENT}
+          \`\`\`
+
+          > Review flag mappings in \`packages/core/src/registry/scaffolders/\`"
+
+          if [ -n "$EXISTING" ]; then
+            # Add comment to existing issue instead of creating duplicate
+            gh issue comment "$EXISTING" --body "$BODY"
+            echo "Updated existing issue #${EXISTING}"
+          else
+            # Create new issue with drift label
+            gh issue create \
+              --title "$TITLE" \
+              --body "$BODY" \
+              --label "drift"
+          fi
+
       - name: Upload help output
         if: always()
         uses: actions/upload-artifact@v4
@@ -140,3 +186,9 @@ jobs:
           name: drift-${{ matrix.tool.name }}
           path: drift-diff.txt
           retention-days: 30
+
+      - name: Fail if drift detected
+        if: steps.drift.outputs.status == 'changed'
+        run: |
+          echo "::error::Drift detected for ${{ matrix.tool.name }} — see issue above"
+          exit 1
