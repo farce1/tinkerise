@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 24 of 29 (Error Handling & CLI Polish)
-Plan: 2 of 3 complete
-Status: Executing
-Last activity: 2026-02-20 -- Completed 24-03 (subcommand help examples)
+Plan: 3 of 3 complete
+Status: Phase Complete
+Last activity: 2026-02-20 -- Completed 24-02 (error boundary & CLI integration)
 
-Progress: [█████████████████████████░░░░░] 80% (67/~75 plans across all milestones)
+Progress: [██████████████████████████░░░░] 81% (68/~75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [███████████████████████
 | 22-02 | GitHub Issue on drift | - | 1 | 1 |
 | 23-01 | lint regression fix | 2min | 2 | 7 |
 | 24-01 | error hierarchy + fuzzy match | 5min | 2 | 9 |
+| 24-02 | error boundary & throws | 8min | 2 | 14 |
 | 24-03 | subcommand help examples | 7min | 2 | 7 |
 
 ## Accumulated Context
@@ -63,6 +64,9 @@ Recent decisions (v3.0):
 - Non-null assertions for TypeScript strict mode array access in Levenshtein DP matrix
 - Used program.name() in registered commands for dynamic help text name resolution
 - addHelpText('after') pattern for contextual examples on all subcommands
+- Single error boundary via handleError() at program.parseAsync().catch() level
+- Commander exitOverride to throw CommanderError instead of process.exit for central handling
+- User cancellations (process.exit(0)) left as-is -- not errors
 
 ### Pending Todos
 
@@ -75,5 +79,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 24-03-PLAN.md (subcommand help examples)
+Stopped at: Completed 24-02-PLAN.md (error boundary & CLI integration) -- Phase 24 complete
 Resume file: None
