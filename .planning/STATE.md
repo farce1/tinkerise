@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 24 of 29 (Error Handling & CLI Polish)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: Executing
-Last activity: 2026-02-20 -- Completed 24-01 (error hierarchy and fuzzy match)
+Last activity: 2026-02-20 -- Completed 24-03 (subcommand help examples)
 
-Progress: [████████████████████████░░░░░░] 79% (66/~75 plans across all milestones)
+Progress: [█████████████████████████░░░░░] 80% (67/~75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [███████████████████████
 | 22-02 | GitHub Issue on drift | - | 1 | 1 |
 | 23-01 | lint regression fix | 2min | 2 | 7 |
 | 24-01 | error hierarchy + fuzzy match | 5min | 2 | 9 |
+| 24-03 | subcommand help examples | 7min | 2 | 7 |
 
 ## Accumulated Context
 
@@ -60,6 +61,8 @@ All v2.0 decisions archived in milestones/v2.0-ROADMAP.md.
 Recent decisions (v3.0):
 - Centralized errors in errors/ module with re-exports from original modules for backward compatibility
 - Non-null assertions for TypeScript strict mode array access in Levenshtein DP matrix
+- Used program.name() in registered commands for dynamic help text name resolution
+- addHelpText('after') pattern for contextual examples on all subcommands
 
 ### Pending Todos
 
@@ -72,5 +75,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 24-01-PLAN.md (error hierarchy)
+Stopped at: Completed 24-03-PLAN.md (subcommand help examples)
 Resume file: None

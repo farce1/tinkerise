@@ -12,6 +12,8 @@
 import { createRequire } from 'node:module'
 import { basename } from 'node:path'
 import { Command } from 'commander'
+import pc from 'picocolors'
+import { handleError } from './utils/error-handler.js'
 import { runAddCommand } from './commands/add.js'
 import { registerCliToolCommand } from './commands/cli-tool.js'
 import { registerConfigCommand } from './commands/config.js'
@@ -36,6 +38,22 @@ const invokedAs = basename(process.argv[1] ?? 'tinkerise')
 const programName = invokedAs === 'tk' ? 'tk' : 'tinkerise'
 
 const program = new Command()
+
+// Convert Commander's internal process.exit() calls into thrown CommanderError exceptions
+program.exitOverride()
+
+// Enable built-in "Did you mean X?" suggestions for mistyped commands/options
+program.showSuggestionAfterError(true)
+
+// Show a pointer to --help after usage errors (not the full help dump)
+program.showHelpAfterError('(run with --help for usage information)')
+
+// Customize Commander's error output to use our formatting
+program.configureOutput({
+  outputError: (str, write) => {
+    write(pc.red(str.replace(/^error:\s*/i, '')))
+  },
+})
 
 program
   .name(programName)
@@ -186,20 +204,27 @@ Examples:
 const VALID_CATEGORIES = ['web', 'backend', 'mobile']
 const userArgs = process.argv.slice(2)
 const helpIdx = userArgs.findIndex(a => a === '--help' || a === '-h')
-if (helpIdx >= 0 && userArgs.length >= 2) {
-  const [cat, fw] = userArgs.filter(a => a !== '--help' && a !== '-h')
-  if (cat && fw && VALID_CATEGORIES.includes(cat)) {
-    const helpText = buildScaffolderHelpText(fw)
-    if (helpText) {
-      console.log(helpText)
-      process.exit(0)
+try {
+  if (helpIdx >= 0 && userArgs.length >= 2) {
+    const [cat, fw] = userArgs.filter(a => a !== '--help' && a !== '-h')
+    if (cat && fw && VALID_CATEGORIES.includes(cat)) {
+      const helpText = buildScaffolderHelpText(fw)
+      if (helpText) {
+        console.log(helpText)
+        process.exit(0)
+      }
     }
   }
 }
+catch (err) {
+  handleError(err)
+}
 
-program.parseAsync().then(async () => {
-  const latestVersion = await updateCheckPromise
-  if (latestVersion) {
-    printUpdateNudge(latestVersion)
-  }
-})
+program.parseAsync()
+  .then(async () => {
+    const latestVersion = await updateCheckPromise
+    if (latestVersion) {
+      printUpdateNudge(latestVersion)
+    }
+  })
+  .catch(handleError)
