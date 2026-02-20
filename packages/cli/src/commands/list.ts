@@ -9,7 +9,7 @@
  */
 
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
-import { allEnhancementModules, checkPrerequisite, getAllScaffolders, getScaffolderMetadata, getScaffoldersByCategory, TEMPLATE_METADATA } from '@tinkerise/core'
+import { allEnhancementModules, checkPrerequisite, findClosestMatch, getAllScaffolders, getScaffolderMetadata, getScaffoldersByCategory, InvalidCategoryError, TEMPLATE_METADATA } from '@tinkerise/core'
 import pc from 'picocolors'
 
 const CATEGORY_ORDER: ScaffolderCategory[] = ['web', 'backend', 'mobile']
@@ -44,8 +44,8 @@ async function checkPrereqStatus(entry: ScaffolderEntry): Promise<boolean> {
 export async function listScaffolders(filterCategory?: string): Promise<void> {
   // Validate category if provided
   if (filterCategory && !CATEGORY_ORDER.includes(filterCategory as ScaffolderCategory)) {
-    console.error(pc.red(`Unknown category: '${filterCategory}'. Valid: ${CATEGORY_ORDER.join(', ')}`))
-    process.exit(1)
+    const closest = findClosestMatch(filterCategory, [...CATEGORY_ORDER])
+    throw new InvalidCategoryError(filterCategory, closest)
   }
 
   const scaffolders = filterCategory

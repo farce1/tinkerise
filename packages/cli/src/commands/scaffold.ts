@@ -17,7 +17,7 @@ import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinke
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { detectPackageManager, executeScaffolder, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import { detectPackageManager, executeScaffolder, findClosestMatch, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
@@ -301,10 +301,9 @@ export async function runCategoryFlow(
   options: ScaffoldOptions,
 ): Promise<void> {
   if (!VALID_CATEGORIES.includes(category as ScaffolderCategory)) {
-    p.log.error(
-      pc.red(`Unknown category: '${category}'. Valid categories: ${VALID_CATEGORIES.join(', ')}`),
-    )
-    process.exit(1)
+    const validNames = VALID_CATEGORIES as readonly string[]
+    const closest = findClosestMatch(category, [...validNames])
+    throw new InvalidCategoryError(category, closest)
   }
 
   // CI guard: category provided but framework/name missing

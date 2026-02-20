@@ -7,8 +7,7 @@
  */
 
 import type { Command } from 'commander'
-import { ciName, isCI } from '@tinkerise/core'
-import pc from 'picocolors'
+import { ciName, CIRequiredArgsError, isCI } from '@tinkerise/core'
 
 /**
  * Check whether a specific option was explicitly provided via CLI.
@@ -124,11 +123,5 @@ export function ensureNonInteractive(
     return
 
   const ciEnv = ciName ?? 'unknown'
-  process.stderr.write(
-    pc.red(`Error: Running in CI environment (${ciEnv}).\n`)
-    + pc.red(`Missing required arguments: ${missing.join(', ')}\n`)
-    + pc.red('Provide all arguments for non-interactive execution:\n')
-    + pc.red('  tinkerise <category> <framework> <name> [options]\n'),
-  )
-  process.exit(1)
+  throw new CIRequiredArgsError(missing, ciEnv)
 }

@@ -19,8 +19,9 @@ import {
   runEnhancements,
   showEnhancementSummary,
   showPerEnhancementSummary,
+  TinkeriseError,
+  UnknownEnhancementError,
 } from '@tinkerise/core'
-import pc from 'picocolors'
 import { getSessionContext } from '../context/session.js'
 import { showEnhancementPicker } from '../prompts/enhancement-select.js'
 
@@ -68,9 +69,11 @@ export async function runAddCommand(
   if (enhancementNames.length === 0) {
     // Interactive: show multi-select picker
     if (isCI) {
-      p.log.error(pc.red('No enhancements specified. In CI, pass enhancement names as arguments.'))
-      p.log.info(`Example: tinkerise add eslint prettier`)
-      process.exit(1)
+      throw new TinkeriseError({
+        message: 'No enhancements specified. In CI, pass enhancement names as arguments.',
+        code: 'CI_MISSING_ARGS',
+        suggestion: 'Example: tinkerise add eslint prettier',
+      })
     }
     modules = await showEnhancementPicker(ctx)
     if (modules.length === 0)
@@ -81,9 +84,7 @@ export async function runAddCommand(
     modules = enhancementNames.map((name) => {
       const mod = enhancementRegistry.get(name)
       if (!mod) {
-        p.log.error(pc.red(`Unknown enhancement: '${name}'`))
-        p.log.info(`Available: ${allEnhancementModules.map(m => m.id).join(', ')}`)
-        process.exit(1)
+        throw new UnknownEnhancementError(name, allEnhancementModules.map(m => m.id))
       }
       return mod
     })

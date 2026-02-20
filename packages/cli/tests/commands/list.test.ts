@@ -25,29 +25,33 @@ const {
   mockGetScaffolderMetadata: vi.fn(),
 }))
 
-vi.mock('@tinkerise/core', () => ({
-  getAllScaffolders: mockGetAllScaffolders,
-  getScaffoldersByCategory: mockGetScaffoldersByCategory,
-  checkPrerequisite: mockCheckPrerequisite,
-  getScaffolderMetadata: mockGetScaffolderMetadata,
-  TEMPLATE_METADATA: [
-    { id: 'mcp', command: 'mcp', displayName: 'MCP Server', description: 'MCP server with TypeScript' },
-    { id: 'cli', command: 'cli', displayName: 'CLI Tool', description: 'CLI tool with Commander.js' },
-    { id: 'lib', command: 'lib', displayName: 'npm Library', description: 'npm library with dual CJS/ESM' },
-  ],
-  allEnhancementModules: [
-    { id: 'eslint', name: 'ESLint', description: 'Linting with ESLint' },
-    { id: 'prettier', name: 'Prettier', description: 'Code formatting with Prettier' },
-    { id: 'husky', name: 'Husky', description: 'Git hooks with Husky' },
-    { id: 'commitlint', name: 'Commitlint', description: 'Commit message linting' },
-    { id: 'ci', name: 'CI', description: 'GitHub Actions CI pipeline' },
-    { id: 'testing', name: 'Testing', description: 'Testing with Vitest' },
-    { id: 'docker', name: 'Docker', description: 'Docker containerization' },
-    { id: 'env', name: 'Env', description: 'Type-safe environment variables' },
-    { id: 'renovate', name: 'Renovate', description: 'Automated dependency updates' },
-    { id: 'editorconfig', name: 'EditorConfig', description: 'Editor configuration' },
-  ],
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    getAllScaffolders: mockGetAllScaffolders,
+    getScaffoldersByCategory: mockGetScaffoldersByCategory,
+    checkPrerequisite: mockCheckPrerequisite,
+    getScaffolderMetadata: mockGetScaffolderMetadata,
+    TEMPLATE_METADATA: [
+      { id: 'mcp', command: 'mcp', displayName: 'MCP Server', description: 'MCP server with TypeScript' },
+      { id: 'cli', command: 'cli', displayName: 'CLI Tool', description: 'CLI tool with Commander.js' },
+      { id: 'lib', command: 'lib', displayName: 'npm Library', description: 'npm library with dual CJS/ESM' },
+    ],
+    allEnhancementModules: [
+      { id: 'eslint', name: 'ESLint', description: 'Linting with ESLint' },
+      { id: 'prettier', name: 'Prettier', description: 'Code formatting with Prettier' },
+      { id: 'husky', name: 'Husky', description: 'Git hooks with Husky' },
+      { id: 'commitlint', name: 'Commitlint', description: 'Commit message linting' },
+      { id: 'ci', name: 'CI', description: 'GitHub Actions CI pipeline' },
+      { id: 'testing', name: 'Testing', description: 'Testing with Vitest' },
+      { id: 'docker', name: 'Docker', description: 'Docker containerization' },
+      { id: 'env', name: 'Env', description: 'Type-safe environment variables' },
+      { id: 'renovate', name: 'Renovate', description: 'Automated dependency updates' },
+      { id: 'editorconfig', name: 'EditorConfig', description: 'Editor configuration' },
+    ],
+  }
+})
 
 vi.mock('picocolors', () => ({
   default: {
@@ -134,11 +138,8 @@ describe('listScaffolders', () => {
     expect(output).toContain('Flags: --typescript, --tailwind')
   })
 
-  it('exits with error for invalid category', async () => {
-    await expect(listScaffolders('invalid')).rejects.toThrow('process.exit called')
-    expect(exitSpy).toHaveBeenCalledWith(1)
-    const errorOutput = consoleErrorSpy.mock.calls.map(c => c[0]).join('\n')
-    expect(errorOutput).toContain('Unknown category')
+  it('throws InvalidCategoryError for invalid category', async () => {
+    await expect(listScaffolders('invalid')).rejects.toThrow('Unknown category')
   })
 
   it('shows checkmark for met prerequisites', async () => {

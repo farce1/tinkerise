@@ -6,10 +6,10 @@
  * stack traces in verbose mode (--verbose flag or DEBUG env var).
  */
 
-import { CommanderError } from 'commander'
 import * as p from '@clack/prompts'
-import pc from 'picocolors'
 import { TinkeriseError } from '@tinkerise/core'
+import { CommanderError } from 'commander'
+import pc from 'picocolors'
 
 const isVerbose = process.argv.includes('--verbose') || !!process.env.DEBUG
 

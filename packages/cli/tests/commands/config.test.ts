@@ -58,15 +58,19 @@ const mockProcessExit = vi.hoisted(() => vi.fn())
 const mockWriteFile = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
 
-vi.mock('@tinkerise/core', () => ({
-  loadGlobalConfig: mockLoadGlobalConfig,
-  saveGlobalConfig: mockSaveGlobalConfig,
-  setGlobalConfigValue: mockSetGlobalConfigValue,
-  getGlobalConfigValue: mockGetGlobalConfigValue,
-  getConfigPath: mockGetConfigPath,
-  loadProjectConfig: mockLoadProjectConfig,
-  CONFIG_FILENAME: mockConfigFilename,
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    loadGlobalConfig: mockLoadGlobalConfig,
+    saveGlobalConfig: mockSaveGlobalConfig,
+    setGlobalConfigValue: mockSetGlobalConfigValue,
+    getGlobalConfigValue: mockGetGlobalConfigValue,
+    getConfigPath: mockGetConfigPath,
+    loadProjectConfig: mockLoadProjectConfig,
+    CONFIG_FILENAME: mockConfigFilename,
+  }
+})
 
 vi.mock('@clack/prompts', () => ({
   log: {
@@ -106,9 +110,6 @@ async function runConfigCommand(args: string[]): Promise<void> {
 describe('config list', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
   })
 
   it('calls loadGlobalConfig and displays values', async () => {
@@ -153,9 +154,6 @@ describe('config list', () => {
 describe('config get', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
   })
 
   it('returns correct value for packageManager', async () => {
@@ -175,22 +173,16 @@ describe('config get', () => {
     expect(mockPLogInfo).toHaveBeenCalledWith('(not set)')
   })
 
-  it('exits with error for invalid key', async () => {
-    await expect(async () => {
-      await runConfigCommand(['config', 'get', 'invalidKey'])
-    }).rejects.toThrow('process.exit')
-
-    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining('Invalid config key'))
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+  it('throws InvalidConfigKeyError for invalid key', async () => {
+    await expect(
+      runConfigCommand(['config', 'get', 'invalidKey']),
+    ).rejects.toThrow('Unknown config key')
   })
 })
 
 describe('config set', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
     mockSetGlobalConfigValue.mockResolvedValue(undefined)
   })
 
@@ -213,31 +205,22 @@ describe('config set', () => {
     expect(mockSetGlobalConfigValue).toHaveBeenCalledWith('typescript', false)
   })
 
-  it('exits with error for invalid package manager', async () => {
-    await expect(async () => {
-      await runConfigCommand(['config', 'set', 'packageManager', 'invalid'])
-    }).rejects.toThrow('process.exit')
-
-    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining('Invalid package manager'))
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+  it('throws ConfigValidationError for invalid package manager', async () => {
+    await expect(
+      runConfigCommand(['config', 'set', 'packageManager', 'invalid']),
+    ).rejects.toThrow('Invalid value \'invalid\' for packageManager')
   })
 
-  it('exits with error for invalid typescript value', async () => {
-    await expect(async () => {
-      await runConfigCommand(['config', 'set', 'typescript', 'yes'])
-    }).rejects.toThrow('process.exit')
-
-    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining('Invalid value for typescript'))
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+  it('throws ConfigValidationError for invalid typescript value', async () => {
+    await expect(
+      runConfigCommand(['config', 'set', 'typescript', 'yes']),
+    ).rejects.toThrow('Invalid value \'yes\' for typescript')
   })
 
-  it('exits with error for invalid category', async () => {
-    await expect(async () => {
-      await runConfigCommand(['config', 'set', 'defaultCategory', 'desktop'])
-    }).rejects.toThrow('process.exit')
-
-    expect(mockPLogError).toHaveBeenCalledWith(expect.stringContaining('Invalid category'))
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+  it('throws ConfigValidationError for invalid category', async () => {
+    await expect(
+      runConfigCommand(['config', 'set', 'defaultCategory', 'desktop']),
+    ).rejects.toThrow('Invalid value \'desktop\' for defaultCategory')
   })
 
   it('writes project config file when --project is used', async () => {

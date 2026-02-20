@@ -120,24 +120,28 @@ const {
 
 const mockProcessExit = vi.hoisted(() => vi.fn())
 
-vi.mock('@tinkerise/core', () => ({
-  savePreset: mockSavePreset,
-  loadPreset: mockLoadPreset,
-  listPresets: mockListPresets,
-  deletePreset: mockDeletePreset,
-  discoverNpmPresets: mockDiscoverNpmPresets,
-  loadNpmPreset: mockLoadNpmPreset,
-  loadProjectConfig: mockLoadProjectConfig,
-  getPresetsDir: mockGetPresetsDir,
-  buildProjectContext: mockBuildProjectContext,
-  allEnhancementModules: mockAllEnhancementModules,
-  get isCI() { return mockIsCI.value },
-  runEnhancements: mockRunEnhancements,
-  showEnhancementSummary: mockShowEnhancementSummary,
-  showPerEnhancementSummary: mockShowPerEnhancementSummary,
-  enhancementRegistry: mockEnhancementRegistry,
-  ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    savePreset: mockSavePreset,
+    loadPreset: mockLoadPreset,
+    listPresets: mockListPresets,
+    deletePreset: mockDeletePreset,
+    discoverNpmPresets: mockDiscoverNpmPresets,
+    loadNpmPreset: mockLoadNpmPreset,
+    loadProjectConfig: mockLoadProjectConfig,
+    getPresetsDir: mockGetPresetsDir,
+    buildProjectContext: mockBuildProjectContext,
+    allEnhancementModules: mockAllEnhancementModules,
+    get isCI() { return mockIsCI.value },
+    runEnhancements: mockRunEnhancements,
+    showEnhancementSummary: mockShowEnhancementSummary,
+    showPerEnhancementSummary: mockShowPerEnhancementSummary,
+    enhancementRegistry: mockEnhancementRegistry,
+    ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
+  }
+})
 
 vi.mock('@clack/prompts', () => ({
   log: {
@@ -182,9 +186,6 @@ async function runPresetCommand(args: string[]): Promise<void> {
 describe('preset save', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
     mockSavePreset.mockResolvedValue(undefined)
     mockLoadProjectConfig.mockResolvedValue(null)
     mockBuildProjectContext.mockResolvedValue({
@@ -315,9 +316,6 @@ describe('preset save', () => {
 describe('preset use', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
     mockBuildProjectContext.mockResolvedValue({
       rootDir: '/test/project',
       packageManager: 'npm',
@@ -371,20 +369,13 @@ describe('preset use', () => {
     )
   })
 
-  it('shows error when preset not found', async () => {
+  it('throws PresetNotFoundError when preset not found', async () => {
     mockLoadPreset.mockResolvedValue(null)
     mockLoadNpmPreset.mockResolvedValue(null)
-    mockListPresets.mockResolvedValue([])
-    mockDiscoverNpmPresets.mockResolvedValue([])
 
-    await expect(async () => {
-      await runPresetCommand(['preset', 'use', 'nonexistent'])
-    }).rejects.toThrow('process.exit')
-
-    expect(mockPLogError).toHaveBeenCalledWith(
-      expect.stringContaining('Preset "nonexistent" not found'),
-    )
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+    await expect(
+      runPresetCommand(['preset', 'use', 'nonexistent']),
+    ).rejects.toThrow('Preset not found')
   })
 
   it('falls back to npm preset when local not found', async () => {
@@ -536,9 +527,6 @@ describe('preset list', () => {
 describe('preset delete', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProcessExit.mockImplementation(() => {
-      throw new Error('process.exit')
-    })
   })
 
   it('calls deletePreset and shows success', async () => {
@@ -552,14 +540,11 @@ describe('preset delete', () => {
     )
   })
 
-  it('shows "not found" error for nonexistent preset', async () => {
+  it('throws PresetNotFoundError for nonexistent preset', async () => {
     mockDeletePreset.mockResolvedValue(false)
 
-    await runPresetCommand(['preset', 'delete', 'nonexistent'])
-
-    expect(mockDeletePreset).toHaveBeenCalledWith('nonexistent')
-    expect(mockPLogError).toHaveBeenCalledWith(
-      expect.stringContaining('Preset "nonexistent" not found'),
-    )
+    await expect(
+      runPresetCommand(['preset', 'delete', 'nonexistent']),
+    ).rejects.toThrow('Preset not found')
   })
 })

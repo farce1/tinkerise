@@ -29,6 +29,7 @@ import {
   loadNpmPreset,
   loadPreset,
   loadProjectConfig,
+  PresetNotFoundError,
   runEnhancements,
   savePreset,
   showEnhancementSummary,
@@ -151,19 +152,7 @@ Examples:
       }
 
       if (!presetData) {
-        // Show available presets for guidance
-        const locals = await listPresets()
-        const npms = await discoverNpmPresets(process.cwd())
-        const available = [...locals, ...npms]
-
-        p.log.error(pc.red(`Preset "${name}" not found.`))
-        if (available.length > 0) {
-          p.log.info(`Available presets: ${available.join(', ')}`)
-        }
-        else {
-          p.log.info('No presets available. Create one with: tinkerise preset save <name>')
-        }
-        process.exit(1)
+        throw new PresetNotFoundError(name)
       }
 
       // Apply directly without confirmation (per user decision)
@@ -319,7 +308,7 @@ Examples:
         p.log.success(`Preset "${name}" deleted.`)
       }
       else {
-        p.log.error(pc.red(`Preset "${name}" not found.`))
+        throw new PresetNotFoundError(name)
       }
     })
     .addHelpText('after', `

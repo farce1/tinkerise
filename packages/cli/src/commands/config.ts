@@ -18,8 +18,10 @@ import { resolve } from 'node:path'
 import * as p from '@clack/prompts'
 import {
   CONFIG_FILENAME,
+  ConfigValidationError,
   getConfigPath,
   getGlobalConfigValue,
+  InvalidConfigKeyError,
   loadGlobalConfig,
   loadProjectConfig,
   saveGlobalConfig,
@@ -127,8 +129,7 @@ Examples:
     .option('--project', 'Read from project config instead of global')
     .action(async (key: string, opts: { project?: boolean }) => {
       if (!isValidKey(key)) {
-        p.log.error(`Invalid config key: '${key}'. Valid keys: ${VALID_KEYS.join(', ')}`)
-        process.exit(1)
+        throw new InvalidConfigKeyError(key)
       }
 
       if (opts.project) {
@@ -153,8 +154,7 @@ Examples:
     .option('--project', 'Set in project config instead of global')
     .action(async (key: string, value: string, opts: { project?: boolean }) => {
       if (!isValidKey(key)) {
-        p.log.error(`Invalid config key: '${key}'. Valid keys: ${VALID_KEYS.join(', ')}`)
-        process.exit(1)
+        throw new InvalidConfigKeyError(key)
       }
 
       // Validate and coerce value based on key
@@ -162,23 +162,20 @@ Examples:
 
       if (key === 'packageManager') {
         if (!(VALID_PACKAGE_MANAGERS as readonly string[]).includes(value)) {
-          p.log.error(`Invalid package manager: '${value}'. Valid values: ${VALID_PACKAGE_MANAGERS.join(', ')}`)
-          process.exit(1)
+          throw new ConfigValidationError('packageManager', value, VALID_PACKAGE_MANAGERS.join(', '))
         }
         coerced = value
       }
       else if (key === 'typescript') {
         if (value !== 'true' && value !== 'false') {
-          p.log.error(`Invalid value for typescript: '${value}'. Must be 'true' or 'false'.`)
-          process.exit(1)
+          throw new ConfigValidationError('typescript', value, 'true, false')
         }
         coerced = value === 'true'
       }
       else {
         // defaultCategory
         if (!(VALID_CATEGORIES as readonly string[]).includes(value)) {
-          p.log.error(`Invalid category: '${value}'. Valid values: ${VALID_CATEGORIES.join(', ')}`)
-          process.exit(1)
+          throw new ConfigValidationError('defaultCategory', value, VALID_CATEGORIES.join(', '))
         }
         coerced = value
       }

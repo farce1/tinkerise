@@ -29,16 +29,20 @@ const mockProcessExit = vi.hoisted(() => vi.fn())
 const mockPLogError = vi.hoisted(() => vi.fn())
 const mockPLogInfo = vi.hoisted(() => vi.fn())
 
-vi.mock('@tinkerise/core', () => ({
-  buildProjectContext: mockBuildProjectContext,
-  runEnhancements: mockRunEnhancements,
-  showEnhancementSummary: mockShowEnhancementSummary,
-  showPerEnhancementSummary: mockShowPerEnhancementSummary,
-  enhancementRegistry: mockEnhancementRegistry,
-  allEnhancementModules: mockAllEnhancementModules,
-  get isCI() { return mockIsCI.value },
-  ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    buildProjectContext: mockBuildProjectContext,
+    runEnhancements: mockRunEnhancements,
+    showEnhancementSummary: mockShowEnhancementSummary,
+    showPerEnhancementSummary: mockShowPerEnhancementSummary,
+    enhancementRegistry: mockEnhancementRegistry,
+    allEnhancementModules: mockAllEnhancementModules,
+    get isCI() { return mockIsCI.value },
+    ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
+  }
+})
 
 vi.mock('@clack/prompts', () => ({
   log: { error: mockPLogError, info: mockPLogInfo },
@@ -139,12 +143,12 @@ describe('runAddCommand', () => {
     )
   })
 
-  it('exits with error for unknown enhancement name', async () => {
+  it('throws UnknownEnhancementError for unknown enhancement name', async () => {
     mockEnhancementRegistry.delete('unknown')
 
-    await runAddCommand(['unknown'], {})
-
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+    await expect(
+      runAddCommand(['unknown'], {}),
+    ).rejects.toThrow('Unknown enhancement')
   })
 
   it('shows per-enhancement summary for installed modules', async () => {
@@ -189,12 +193,12 @@ describe('runAddCommand', () => {
     expect(mockShowEnhancementSummary).toHaveBeenCalledWith(summary)
   })
 
-  it('cI mode exits when no args', async () => {
+  it('throws TinkeriseError in CI mode when no args', async () => {
     mockIsCI.value = true
 
-    await runAddCommand([], {})
-
-    expect(mockProcessExit).toHaveBeenCalledWith(1)
+    await expect(
+      runAddCommand([], {}),
+    ).rejects.toThrow('No enhancements specified')
   })
 
   it('passes verbose option to buildProjectContext', async () => {

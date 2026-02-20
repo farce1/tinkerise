@@ -78,14 +78,18 @@ vi.mock('../../src/prompts/project-name.js', () => ({
   promptProjectName: mockPromptProjectName,
 }))
 
-vi.mock('@tinkerise/core', () => ({
-  detectPackageManager: mockDetectPackageManager,
-  executeScaffolder: mockExecuteScaffolder,
-  tinkeriseSummaryCard: mockTinkeriseSummaryCard,
-  resolveConfig: mockResolveConfig,
-  loadPreset: mockLoadPreset,
-  get isCI() { return mockIsCI.value },
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    detectPackageManager: mockDetectPackageManager,
+    executeScaffolder: mockExecuteScaffolder,
+    tinkeriseSummaryCard: mockTinkeriseSummaryCard,
+    resolveConfig: mockResolveConfig,
+    loadPreset: mockLoadPreset,
+    get isCI() { return mockIsCI.value },
+  }
+})
 
 vi.mock('../../src/prompts/variant-select.js', () => ({
   selectViteTemplate: mockSelectViteTemplate,
@@ -182,16 +186,11 @@ describe('runInteractiveFlow', () => {
 })
 
 describe('runCategoryFlow', () => {
-  let exitSpy: ReturnType<typeof vi.spyOn>
-
   beforeEach(() => {
     vi.clearAllMocks()
     mockIsCI.value = false
     mockResolveConfig.mockResolvedValue({})
     mockLoadPreset.mockResolvedValue(null)
-    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
-      throw new Error('process.exit called')
-    })
     mockRunPromptFlow.mockResolvedValue({
       framework: 'next',
       options: ['typescript'],
@@ -207,16 +206,14 @@ describe('runCategoryFlow', () => {
   })
 
   afterEach(() => {
-    exitSpy.mockRestore()
     mockIsCI.value = false
   })
 
-  it('exits with code 1 for invalid category', async () => {
+  it('throws InvalidCategoryError for invalid category', async () => {
     const cmd = createMockCommand()
     await expect(
       runCategoryFlow('invalid', cmd, {}),
-    ).rejects.toThrow('process.exit called')
-    expect(exitSpy).toHaveBeenCalledWith(1)
+    ).rejects.toThrow('Unknown category')
   })
 
   it('calls ensureNonInteractive in CI', async () => {

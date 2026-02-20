@@ -25,18 +25,19 @@ const { mockIsCI, mockCiName } = vi.hoisted(() => ({
   mockCiName: { value: null as string | null },
 }))
 
-vi.mock('@tinkerise/core', () => ({
-  get isCI() { return mockIsCI.value },
-  get ciName() { return mockCiName.value },
-}))
+// Import real CIRequiredArgsError for instanceof checks
+const { CIRequiredArgsError: RealCIRequiredArgsError } = await vi.importActual<typeof import('@tinkerise/core')>('@tinkerise/core')
 
-vi.mock('picocolors', () => ({
-  default: {
-    red: (s: string) => s,
-    bold: (s: string) => s,
-    dim: (s: string) => s,
-  },
-}))
+vi.mock('@tinkerise/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tinkerise/core')>()
+  return {
+    ...actual,
+    get isCI() { return mockIsCI.value },
+    get ciName() { return mockCiName.value },
+  }
+})
+
+// picocolors no longer needed — interactive.ts uses CIRequiredArgsError instead of formatted stderr
 
 /**
  * Create a mock Commander Command with configurable option sources.
@@ -187,62 +188,55 @@ describe('mergePromptAndFlags', () => {
 })
 
 describe('ensureNonInteractive', () => {
-  let exitSpy: ReturnType<typeof vi.spyOn>
-  let stderrSpy: ReturnType<typeof vi.spyOn>
-
   beforeEach(() => {
-    exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => {
-      throw new Error('process.exit called')
-    })
-    stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true)
     // Enable CI for these tests
     mockIsCI.value = true
     mockCiName.value = null
   })
 
   afterEach(() => {
-    exitSpy.mockRestore()
-    stderrSpy.mockRestore()
     mockIsCI.value = false
     mockCiName.value = null
   })
 
-  it('exits with code 1 when category is missing', () => {
+  it('throws CIRequiredArgsError when category is missing', () => {
     const cmd = createMockCommand()
-    expect(() => ensureNonInteractive(cmd)).toThrow('process.exit called')
-    expect(exitSpy).toHaveBeenCalledWith(1)
+    expect(() => ensureNonInteractive(cmd)).toThrow(RealCIRequiredArgsError)
   })
 
-  it('prints error mentioning category when missing', () => {
+  it('error message mentions category when missing', () => {
     const cmd = createMockCommand()
     try {
       ensureNonInteractive(cmd)
     }
-    catch { /* expected */ }
-    const output = stderrSpy.mock.calls.map(c => c[0]).join('')
-    expect(output).toContain('category')
+    catch (err) {
+      expect((err as Error).message).toContain('category')
+    }
   })
 
-  it('exits when framework is missing', () => {
+  it('throws when framework is missing', () => {
     const cmd = createMockCommand()
-    expect(() => ensureNonInteractive(cmd, 'web')).toThrow('process.exit called')
-    expect(exitSpy).toHaveBeenCalledWith(1)
-    const output = stderrSpy.mock.calls.map(c => c[0]).join('')
-    expect(output).toContain('framework')
+    try {
+      ensureNonInteractive(cmd, 'web')
+    }
+    catch (err) {
+      expect((err as Error).message).toContain('framework')
+    }
   })
 
-  it('exits when name is missing', () => {
+  it('throws when name is missing', () => {
     const cmd = createMockCommand()
-    expect(() => ensureNonInteractive(cmd, 'web', 'next')).toThrow('process.exit called')
-    expect(exitSpy).toHaveBeenCalledWith(1)
-    const output = stderrSpy.mock.calls.map(c => c[0]).join('')
-    expect(output).toContain('name')
+    try {
+      ensureNonInteractive(cmd, 'web', 'next')
+    }
+    catch (err) {
+      expect((err as Error).message).toContain('name')
+    }
   })
 
-  it('does not exit when all args provided', () => {
+  it('does not throw when all args provided', () => {
     const cmd = createMockCommand()
     expect(() => ensureNonInteractive(cmd, 'web', 'next', 'my-app')).not.toThrow()
-    expect(exitSpy).not.toHaveBeenCalled()
   })
 
   it('includes CI environment name in error message', () => {
@@ -251,9 +245,9 @@ describe('ensureNonInteractive', () => {
     try {
       ensureNonInteractive(cmd)
     }
-    catch { /* expected */ }
-    const output = stderrSpy.mock.calls.map(c => c[0]).join('')
-    expect(output).toContain('GitHub Actions')
+    catch (err) {
+      expect((err as Error).message).toContain('GitHub Actions')
+    }
   })
 
   it('shows "unknown" when CI name is null', () => {
@@ -262,16 +256,15 @@ describe('ensureNonInteractive', () => {
     try {
       ensureNonInteractive(cmd)
     }
-    catch { /* expected */ }
-    const output = stderrSpy.mock.calls.map(c => c[0]).join('')
-    expect(output).toContain('unknown')
+    catch (err) {
+      expect((err as Error).message).toContain('unknown')
+    }
   })
 
-  it('does not exit when isCI is false', () => {
+  it('does not throw when isCI is false', () => {
     mockIsCI.value = false
     const cmd = createMockCommand()
     // No args at all, but not in CI, so should be a no-op
     expect(() => ensureNonInteractive(cmd)).not.toThrow()
-    expect(exitSpy).not.toHaveBeenCalled()
   })
 })
