@@ -86,6 +86,10 @@ program
   .action(async (category?: string) => {
     await listScaffolders(category)
   })
+  .addHelpText('after', `
+Examples:
+  $ ${programName} list                       Show all scaffolders, templates, and enhancements
+  $ ${programName} list web                   Show web scaffolders with details and flags`)
 
 // Monorepo command — routes to turbo scaffolder (WEB-07)
 program
@@ -101,6 +105,10 @@ program
       options.typescript = true
     await runDirectExecution('web', 'turbo', name, program, options)
   })
+  .addHelpText('after', `
+Examples:
+  $ ${programName} monorepo my-repo           Create a Turborepo monorepo
+  $ ${programName} monorepo my-repo --no-install  Create without installing dependencies`)
 
 // Add command — apply enhancements to existing projects
 program
@@ -112,6 +120,11 @@ program
   .action(async (enhancements: string[], options) => {
     await runAddCommand(enhancements, options)
   })
+  .addHelpText('after', `
+Examples:
+  $ ${programName} add eslint                 Add ESLint to your project
+  $ ${programName} add eslint prettier husky  Add multiple enhancements
+  $ ${programName} add                        Interactive enhancement picker`)
 
 // Doctor command — check system for required tools and versions
 program
@@ -121,6 +134,9 @@ program
   .action(async () => {
     await runDoctor()
   })
+  .addHelpText('after', `
+Examples:
+  $ ${programName} doctor                     Check all system tools and versions`)
 
 // Config command — manage tinkerise configuration
 registerConfigCommand(program)
