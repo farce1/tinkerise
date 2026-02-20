@@ -5,6 +5,7 @@
 - ✅ **v1.0 MVP** — Phases 1-12 (shipped 2026-02-18)
 - ✅ **v1.1 Tech Debt** — Phases 13-16 (shipped 2026-02-19)
 - ✅ **v2.0 Quality & Robustness** — Phases 17-23 (shipped 2026-02-20)
+- 🚧 **v3.0 Documentation & Polish** — Phases 24-29 (in progress)
 
 ## Phases
 
@@ -55,7 +56,111 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 
 </details>
 
+### 🚧 v3.0 Documentation & Polish (In Progress)
+
+**Milestone Goal:** Make tinkerise discoverable and polished with a comprehensive Starlight docs site, improved CLI UX, terminal demos, and updated project presentation.
+
+- [ ] **Phase 24: Error Handling & CLI Polish** - Structured errors, friendly messages, help text improvements
+- [ ] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks
+- [ ] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes
+- [ ] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows
+- [ ] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link
+- [ ] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page
+
+## Phase Details
+
+### Phase 24: Error Handling & CLI Polish
+**Goal**: Users never see raw stack traces; every CLI failure produces a friendly, actionable message with consistent formatting
+**Depends on**: Nothing (first phase in v3.0)
+**Requirements**: CLI-01, CLI-02, CLI-03, CLI-04, CLI-05
+**Success Criteria** (what must be TRUE):
+  1. User sees a human-readable error message with a suggested fix when any command fails (no raw stack traces escape to terminal)
+  2. User sees a "Did you mean X?" suggestion when they mistype a command name (e.g., `tinkerise scaff` suggests `scaffold`)
+  3. User sees usage examples in `--help` output for every command (scaffold, add, list, doctor, update)
+  4. All error paths use structured TinkeriseError subclasses that carry error codes and user-facing messages
+  5. A top-level error boundary around `program.parseAsync()` catches all unhandled errors and formats them consistently
+**Plans:** 3 plans
+
+Plans:
+- [ ] 24-01-PLAN.md — TinkeriseError hierarchy and fuzzy match utility in @tinkerise/core
+- [ ] 24-02-PLAN.md — Error boundary, Commander config, and process.exit migration in CLI
+- [ ] 24-03-PLAN.md — Usage examples in --help output for all subcommands
+
+### Phase 25: Docs Site Infrastructure
+**Goal**: A working Starlight documentation site exists in apps/docs/ with built-in search, syntax-highlighted code blocks, and correct monorepo integration
+**Depends on**: Nothing (independent of Phase 24, but sequenced after for content accuracy)
+**Requirements**: DOCS-01, DOCS-08, DOCS-09
+**Success Criteria** (what must be TRUE):
+  1. User can run the Starlight dev server from the monorepo root and see a documentation site with the tinkerise brand
+  2. User can search docs content via Pagefind search (built into Starlight, works in production build)
+  3. User can see syntax-highlighted code examples in Expressive Code blocks on any content page
+  4. The docs site builds successfully with `bun run build` in apps/docs/ (Bun as package manager, Node.js as Astro runtime)
+**Plans**: TBD
+
+Plans:
+- [ ] 25-01: TBD
+
+### Phase 26: Docs Content
+**Goal**: Users can learn everything about tinkerise from the documentation site -- from first install through advanced recipes
+**Depends on**: Phase 25 (docs infrastructure must exist before content)
+**Requirements**: DOCS-02, DOCS-03, DOCS-04, DOCS-05, DOCS-06, DOCS-07
+**Success Criteria** (what must be TRUE):
+  1. User can follow the Getting Started guide from install to first scaffold without needing external help
+  2. User can browse individual guides for all 14 scaffolders and all 11 enhancement modules
+  3. User can read preset and configuration guides that explain the 4-layer config merge chain with examples
+  4. User can look up any CLI command, flag, and option in a generated Command Reference page (single source of truth from CLI help output)
+  5. User can follow 3-5 recipe pages for common scenarios (e.g., "Next.js + ESLint + Docker", "Full-stack preset for teams")
+**Plans**: TBD
+
+Plans:
+- [ ] 26-01: TBD
+- [ ] 26-02: TBD
+- [ ] 26-03: TBD
+
+### Phase 27: VHS Terminal Demos
+**Goal**: Reproducible terminal demo GIFs exist for key CLI workflows, generated from version-controlled tape files
+**Depends on**: Phase 24 (CLI must be polished before recording demos)
+**Requirements**: VIS-03, VIS-04
+**Success Criteria** (what must be TRUE):
+  1. VHS `.tape` files exist for at least 4 key workflows: scaffold, add, list, and doctor
+  2. Generated GIF files are committed to the repository and render correctly in both README and docs site
+  3. Tape files are reproducible -- running `vhs` on any tape produces a visually consistent recording
+**Plans**: TBD
+
+Plans:
+- [ ] 27-01: TBD
+
+### Phase 28: README Overhaul
+**Goal**: The README serves as a compelling landing page that converts visitors into users within 30 seconds of reading
+**Depends on**: Phase 27 (needs hero GIF), Phase 25 (needs docs site URL)
+**Requirements**: VIS-01, VIS-02
+**Success Criteria** (what must be TRUE):
+  1. README leads with a hero GIF that demonstrates the core scaffold workflow in under 15 seconds
+  2. README has a clear value proposition ("One command to scaffold any project"), a copy-paste quickstart command, and a prominent link to the full docs site
+  3. README is concise -- details live in docs, README is the hook
+**Plans**: TBD
+
+Plans:
+- [ ] 28-01: TBD
+
+### Phase 29: Deployment & Release
+**Goal**: Documentation site auto-deploys to GitHub Pages and releases include categorized notes with a changelog page in docs
+**Depends on**: Phase 26 (content must exist before deploying), Phase 25 (site must build)
+**Requirements**: DIST-01, DIST-02, DIST-03
+**Success Criteria** (what must be TRUE):
+  1. Pushing docs changes to main automatically deploys the Starlight site to GitHub Pages (path-filtered workflow, no unnecessary builds)
+  2. GitHub Releases are created automatically on publish with categorized release notes (features, fixes, docs, etc.)
+  3. Documentation site includes a changelog page that reflects the project's release history
+**Plans**: TBD
+
+Plans:
+- [ ] 29-01: TBD
+- [ ] 29-02: TBD
+
 ## Progress
+
+**Execution Order:**
+Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -82,3 +187,9 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 | 21. Polish & Metadata | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 22. Drift Detection Hardening | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 23. Lint Regression Fix | v2.0 | 1/1 | Complete | 2026-02-19 |
+| 24. Error Handling & CLI Polish | v3.0 | 0/3 | Not started | - |
+| 25. Docs Site Infrastructure | v3.0 | 0/? | Not started | - |
+| 26. Docs Content | v3.0 | 0/? | Not started | - |
+| 27. VHS Terminal Demos | v3.0 | 0/? | Not started | - |
+| 28. README Overhaul | v3.0 | 0/? | Not started | - |
+| 29. Deployment & Release | v3.0 | 0/? | Not started | - |
