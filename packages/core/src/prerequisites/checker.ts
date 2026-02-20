@@ -12,7 +12,10 @@ import type { Prerequisite } from '@tinkerise/shared'
 import { execa } from 'execa'
 import semver from 'semver'
 import which from 'which'
+import { PrerequisiteError } from '../errors/index.js'
 import { getInstallInstructions } from './platform.js'
+
+export { PrerequisiteError } from '../errors/index.js'
 
 export interface PrereqResult {
   ok: boolean
@@ -20,22 +23,6 @@ export interface PrereqResult {
   version?: string
   error?: string
   installInstructions?: string
-}
-
-/**
- * Error thrown when one or more prerequisites are not met.
- */
-export class PrerequisiteError extends Error {
-  constructor(
-    public readonly results: PrereqResult[],
-  ) {
-    const failures = results.filter(r => !r.ok)
-    const lines = failures.map(f =>
-      `  - ${f.command}: ${f.error}\n    Fix: ${f.installInstructions}`,
-    )
-    super(`Missing prerequisites:\n${lines.join('\n')}`)
-    this.name = 'PrerequisiteError'
-  }
 }
 
 /**

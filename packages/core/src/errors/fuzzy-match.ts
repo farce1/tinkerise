@@ -18,8 +18,9 @@ export function levenshteinDistance(a: string, b: string): number {
   const n = bl.length
 
   // Create a (m+1) x (n+1) matrix
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    Array.from<number>({ length: n + 1 }).fill(0),
+  const dp: number[][] = Array.from(
+    { length: m + 1 },
+    () => Array.from<number>({ length: n + 1 }).fill(0),
   )
 
   for (let i = 0; i <= m; i++) dp[i]![0] = i

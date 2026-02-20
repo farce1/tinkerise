@@ -6,21 +6,9 @@
  */
 
 import type { EnhancementModule } from './types.js'
+import { CyclicDependencyError } from '../errors/index.js'
 
-/**
- * Error thrown when a cyclic dependency is detected in the
- * enhancement module graph.
- */
-export class CyclicDependencyError extends Error {
-  /** IDs of the modules involved in the cycle */
-  readonly cycle: string[]
-
-  constructor(cycle: string[]) {
-    super(`Cyclic dependency detected: ${cycle.join(' -> ')}`)
-    this.name = 'CyclicDependencyError'
-    this.cycle = cycle
-  }
-}
+export { CyclicDependencyError } from '../errors/index.js'
 
 /**
  * Topologically sort enhancement modules by their dependency graph.

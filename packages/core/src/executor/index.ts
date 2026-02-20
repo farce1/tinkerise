@@ -6,6 +6,7 @@
  */
 
 import type { ScaffolderEntry } from '@tinkerise/shared'
+import { ScaffolderExitError, ScaffolderNotFoundError } from '../errors/index.js'
 import { resolveFlags } from '../flags/resolver.js'
 import { validateFlagApplicability } from '../flags/validator.js'
 import { checkPrerequisites } from '../prerequisites/checker.js'
@@ -13,6 +14,8 @@ import { getScaffolder } from '../registry/index.js'
 import { tinkeriseBlankLine, tinkeriseLog } from './framing.js'
 import { spawnScaffolder } from './process.js'
 import { detectUpstreamVersion } from './version.js'
+
+export { ScaffolderExitError, ScaffolderNotFoundError } from '../errors/index.js'
 
 export interface ExecuteOptions {
   /** Scaffolder name to look up in registry */
@@ -27,29 +30,6 @@ export interface ExecuteOptions {
   extraArgs?: string[]
   /** Working directory */
   cwd?: string
-}
-
-/**
- * Error thrown when the scaffolder name is not found in the registry.
- */
-export class ScaffolderNotFoundError extends Error {
-  constructor(name: string) {
-    super(`Unknown scaffolder: '${name}'. Run 'tinkerise list' to see available scaffolders.`)
-    this.name = 'ScaffolderNotFoundError'
-  }
-}
-
-/**
- * Error thrown when the upstream scaffolder exits with a non-zero code.
- */
-export class ScaffolderExitError extends Error {
-  constructor(
-    public readonly scaffolderName: string,
-    public readonly exitCode: number,
-  ) {
-    super(`Scaffolder '${scaffolderName}' exited with code ${exitCode}`)
-    this.name = 'ScaffolderExitError'
-  }
 }
 
 /**

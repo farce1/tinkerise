@@ -45,6 +45,7 @@ export {
   discoverNpmPresets,
   loadNpmPreset,
 } from './config/index.js'
+
 /**
  * Enhancements — module system for post-scaffold tooling setup.
  */
@@ -89,6 +90,21 @@ export type {
   InstallResult,
   ProjectContext,
 } from './enhancements/index.js'
+
+/**
+ * Errors — structured error hierarchy and fuzzy matching utilities.
+ */
+export {
+  CIRequiredArgsError,
+  ConfigValidationError,
+  findClosestMatch,
+  InvalidCategoryError,
+  InvalidConfigKeyError,
+  PresetNotFoundError,
+  TinkeriseError,
+  UnknownEnhancementError,
+} from './errors/index.js'
+export type { TinkeriseErrorOptions } from './errors/index.js'
 
 /**
  * Executor — the end-to-end detect-map-execute pipeline.

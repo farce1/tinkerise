@@ -7,19 +7,9 @@
  */
 
 import type { ScaffolderEntry } from '@tinkerise/shared'
+import { FlagNotApplicableError } from '../errors/index.js'
 
-/**
- * Error thrown when a user flag doesn't apply to the chosen scaffolder.
- */
-export class FlagNotApplicableError extends Error {
-  constructor(
-    public readonly flag: string,
-    public readonly scaffolderName: string,
-  ) {
-    super(`Flag '--${flag}' does not apply to scaffolder '${scaffolderName}'`)
-    this.name = 'FlagNotApplicableError'
-  }
-}
+export { FlagNotApplicableError } from '../errors/index.js'
 
 /**
  * Validate that all user-provided flags apply to the chosen scaffolder.
