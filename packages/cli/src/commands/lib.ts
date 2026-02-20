@@ -9,6 +9,8 @@ import type { Command } from 'commander'
 import { generateLib } from '@tinkerise/core'
 
 export function registerLibCommand(program: Command): void {
+  const programName = program.name()
+
   program
     .command('lib')
     .summary('Scaffold an npm library')
@@ -22,4 +24,8 @@ export function registerLibCommand(program: Command): void {
         noInstall: options.install === false, // Commander inverts --no-install
       })
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} lib my-lib                 Scaffold an npm library
+  $ ${programName} lib my-lib --package-manager pnpm  Use pnpm`)
 }

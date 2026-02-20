@@ -9,6 +9,8 @@ import type { Command } from 'commander'
 import { generateMcpServer } from '@tinkerise/core'
 
 export function registerMcpCommand(program: Command): void {
+  const programName = program.name()
+
   program
     .command('mcp')
     .summary('Scaffold an MCP server')
@@ -22,4 +24,8 @@ export function registerMcpCommand(program: Command): void {
         noInstall: options.install === false, // Commander inverts --no-install
       })
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} mcp my-server              Scaffold an MCP server project
+  $ ${programName} mcp my-server --package-manager pnpm  Use pnpm`)
 }

@@ -40,6 +40,8 @@ import pc from 'picocolors'
  * Registers the `preset` command group on the given Commander program.
  */
 export function registerPresetCommand(program: Command): void {
+  const programName = program.name()
+
   const preset = program
     .command('preset')
     .summary('Manage configuration presets')
@@ -130,6 +132,10 @@ export function registerPresetCommand(program: Command): void {
         p.log.info(`  Enhancements: ${installedEnhancements.join(', ')}`)
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset save my-stack                         Save current config as preset
+  $ ${programName} preset save my-stack --framework next --category web  Save with framework info`)
 
   // --- preset use <name> ---
   preset
@@ -263,6 +269,10 @@ export function registerPresetCommand(program: Command): void {
 
       p.log.success(`Preset "${name}" applied.`)
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset use my-stack        Apply a saved preset
+  $ ${programName} preset use team-defaults   Apply an npm-published preset`)
 
   // --- preset list ---
   preset
@@ -294,6 +304,9 @@ export function registerPresetCommand(program: Command): void {
         p.log.info('  (none)')
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset list                Show all local and npm presets`)
 
   // --- preset delete <name> ---
   preset
@@ -309,4 +322,7 @@ export function registerPresetCommand(program: Command): void {
         p.log.error(pc.red(`Preset "${name}" not found.`))
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset delete my-stack     Remove a local preset`)
 }

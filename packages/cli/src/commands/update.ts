@@ -4,6 +4,8 @@ import * as p from '@clack/prompts'
 import { detectInstallMethod } from '../utils/install-method.js'
 
 export function registerUpdateCommand(program: Command): void {
+  const programName = program.name()
+
   program
     .command('update')
     .summary('Update tinkerise to the latest version')
@@ -37,4 +39,7 @@ export function registerUpdateCommand(program: Command): void {
           break
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} update                     Auto-detect install method and update`)
 }

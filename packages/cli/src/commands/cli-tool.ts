@@ -9,6 +9,8 @@ import type { Command } from 'commander'
 import { generateCliTool } from '@tinkerise/core'
 
 export function registerCliToolCommand(program: Command): void {
+  const programName = program.name()
+
   program
     .command('cli')
     .summary('Scaffold a CLI tool')
@@ -22,4 +24,8 @@ export function registerCliToolCommand(program: Command): void {
         noInstall: options.install === false, // Commander inverts --no-install
       })
     })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} cli my-tool                Scaffold a CLI tool with Commander.js
+  $ ${programName} cli my-tool --no-install   Create without installing dependencies`)
 }

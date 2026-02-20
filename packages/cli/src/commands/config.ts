@@ -74,6 +74,8 @@ export function generateProjectConfig(config: Partial<TinkeriseUserConfig>): str
  * Register the `config` command group on a Commander program.
  */
 export function registerConfigCommand(program: Command): void {
+  const name = program.name()
+
   const configCmd = program
     .command('config')
     .summary('Manage tinkerise configuration')
@@ -113,6 +115,10 @@ export function registerConfigCommand(program: Command): void {
         }
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${name} config list                Show global configuration
+  $ ${name} config list --project      Show project configuration`)
 
   // --- config get <key> ---
   configCmd
@@ -135,6 +141,10 @@ export function registerConfigCommand(program: Command): void {
         p.log.info(value !== undefined ? String(value) : '(not set)')
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${name} config get packageManager  Get package manager setting
+  $ ${name} config get typescript      Get TypeScript default`)
 
   // --- config set <key> <value> ---
   configCmd
@@ -188,6 +198,11 @@ export function registerConfigCommand(program: Command): void {
         p.log.success(`Set ${key} = ${String(coerced)}`)
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${name} config set packageManager pnpm   Set default package manager
+  $ ${name} config set typescript true       Enable TypeScript by default
+  $ ${name} config set defaultCategory web   Set default category`)
 
   // --- config init ---
   configCmd
@@ -285,4 +300,8 @@ export function registerConfigCommand(program: Command): void {
         p.log.success(`Global config saved to ${getConfigPath()}`)
       }
     })
+    .addHelpText('after', `
+Examples:
+  $ ${name} config init                Interactive global config setup
+  $ ${name} config init --project      Create project-level config`)
 }
