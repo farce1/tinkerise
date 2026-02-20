@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { renovateModule } from '../../../src/enhancements/modules/renovate.js'
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -12,8 +14,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { renovateModule } from '../../../src/enhancements/modules/renovate.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -43,7 +43,8 @@ describe('renovateModule', () => {
 
     it('returns true when renovate.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/renovate.json') return undefined
+        if (path === '/tmp/test-project/renovate.json')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -54,7 +55,8 @@ describe('renovateModule', () => {
 
     it('returns true when .renovaterc exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.renovaterc') return undefined
+        if (path === '/tmp/test-project/.renovaterc')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -64,7 +66,8 @@ describe('renovateModule', () => {
 
     it('returns true when .github/renovate.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/renovate.json') return undefined
+        if (path === '/tmp/test-project/.github/renovate.json')
+          return undefined
         throw new Error('ENOENT')
       })
 

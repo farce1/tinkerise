@@ -1,11 +1,11 @@
+import type { ConflictAction } from '../../src/enhancements/conflict.js'
 import { describe, expect, it } from 'vitest'
 import {
   formatColoredDiff,
-  showFileDiff,
   mergeConfigs,
   parseJsonConfig,
+  showFileDiff,
 } from '../../src/enhancements/conflict.js'
-import type { ConflictAction } from '../../src/enhancements/conflict.js'
 
 describe('formatColoredDiff()', () => {
   it('preserves addition line content', () => {
@@ -162,7 +162,7 @@ describe('parseJsonConfig()', () => {
   })
 })
 
-describe('ConflictAction type', () => {
+describe('conflictAction type', () => {
   it('accepts valid conflict actions', () => {
     const actions: ConflictAction[] = ['skip', 'merge', 'replace']
     expect(actions).toHaveLength(3)

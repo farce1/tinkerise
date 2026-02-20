@@ -3,7 +3,7 @@
 # It is automatically updated by the update-formula.yml workflow.
 class Tinkerise < Formula
   desc "Scaffold any project with any stack"
-  homepage "https://github.com/tinkerise/tinkerise"
+  homepage "https://github.com/farce1/tinkerise"
   url "https://registry.npmjs.org/tinkerise/-/tinkerise-0.0.0.tgz"
   sha256 "PLACEHOLDER_SHA256"
   license "MIT"

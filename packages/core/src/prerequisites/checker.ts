@@ -8,10 +8,10 @@
  * time — no caching."
  */
 
-import which from 'which'
-import semver from 'semver'
-import { execa } from 'execa'
 import type { Prerequisite } from '@tinkerise/shared'
+import { execa } from 'execa'
+import semver from 'semver'
+import which from 'which'
 import { getInstallInstructions } from './platform.js'
 
 export interface PrereqResult {

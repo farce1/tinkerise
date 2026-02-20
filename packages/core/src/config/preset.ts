@@ -3,10 +3,10 @@
  * stored at ~/.config/tinkerise/presets/ (XDG-compliant).
  */
 
-import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises'
+import type { PresetData } from '@tinkerise/shared'
+import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { PresetDataSchema } from '@tinkerise/shared'
-import type { PresetData } from '@tinkerise/shared'
 import { getConfigDir } from './global.js'
 
 /**
@@ -27,7 +27,7 @@ export async function savePreset(preset: PresetData): Promise<void> {
   const presetsDir = getPresetsDir()
   await mkdir(presetsDir, { recursive: true })
   const filePath = path.join(presetsDir, `${validated.name}.json`)
-  await writeFile(filePath, JSON.stringify(validated, null, 2) + '\n', 'utf-8')
+  await writeFile(filePath, `${JSON.stringify(validated, null, 2)}\n`, 'utf-8')
 }
 
 /**
@@ -40,7 +40,8 @@ export async function loadPreset(name: string): Promise<PresetData | null> {
     const raw = await readFile(filePath, 'utf-8')
     const data: unknown = JSON.parse(raw)
     return PresetDataSchema.parse(data)
-  } catch {
+  }
+  catch {
     return null
   }
 }
@@ -56,7 +57,8 @@ export async function listPresets(): Promise<string[]> {
     return entries
       .filter(f => f.endsWith('.json'))
       .map(f => f.replace(/\.json$/, ''))
-  } catch {
+  }
+  catch {
     return []
   }
 }
@@ -70,7 +72,8 @@ export async function deletePreset(name: string): Promise<boolean> {
     const filePath = path.join(getPresetsDir(), `${name}.json`)
     await unlink(filePath)
     return true
-  } catch {
+  }
+  catch {
     return false
   }
 }

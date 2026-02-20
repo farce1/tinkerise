@@ -12,7 +12,9 @@
  * - package.json types field comes first in exports
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { generateLib } from '../../src/templates/lib.js'
 
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
@@ -36,8 +38,6 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { generateLib } from '../../src/templates/lib.js'
-
 describe('generateLib', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>
 
@@ -47,7 +47,7 @@ describe('generateLib', () => {
   })
 
   /** Helper: get all writeFile calls as { path, content } pairs */
-  function getWrittenFiles(): Array<{ path: string; content: string }> {
+  function getWrittenFiles(): Array<{ path: string, content: string }> {
     return mockWriteFile.mock.calls.map((call: [string, string, string]) => ({
       path: call[0],
       content: call[1],
@@ -55,7 +55,7 @@ describe('generateLib', () => {
   }
 
   /** Helper: find a written file by partial path match */
-  function findFile(partialPath: string): { path: string; content: string } | undefined {
+  function findFile(partialPath: string): { path: string, content: string } | undefined {
     return getWrittenFiles().find(f => f.path.includes(partialPath))
   }
 

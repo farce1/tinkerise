@@ -26,7 +26,7 @@ describe('pythonPrerequisite helper', () => {
   })
 })
 
-describe('FastAPI scaffolder', () => {
+describe('fastAPI scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('fastapi')
     expect(entry).toBeDefined()
@@ -54,9 +54,9 @@ describe('FastAPI scaffolder', () => {
     const toolPrereq = entry.prerequisites.find(p => p.command === 'fastapi-admin')
     expect(toolPrereq).toBeDefined()
     expect(toolPrereq!.installInstructions).toBeDefined()
-    expect(toolPrereq!.installInstructions!['darwin']).toContain('pip install fastapi-admin-cli')
-    expect(toolPrereq!.installInstructions!['linux']).toContain('pip install fastapi-admin-cli')
-    expect(toolPrereq!.installInstructions!['win32']).toContain('pip install fastapi-admin-cli')
+    expect(toolPrereq!.installInstructions!.darwin).toContain('pip install fastapi-admin-cli')
+    expect(toolPrereq!.installInstructions!.linux).toContain('pip install fastapi-admin-cli')
+    expect(toolPrereq!.installInstructions!.win32).toContain('pip install fastapi-admin-cli')
   })
 
   it('uses delegate integration with multi-word command', () => {
@@ -72,7 +72,7 @@ describe('FastAPI scaffolder', () => {
   })
 })
 
-describe('Django scaffolder', () => {
+describe('django scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('django')
     expect(entry).toBeDefined()
@@ -100,9 +100,9 @@ describe('Django scaffolder', () => {
     const toolPrereq = entry.prerequisites.find(p => p.command === 'django-admin')
     expect(toolPrereq).toBeDefined()
     expect(toolPrereq!.installInstructions).toBeDefined()
-    expect(toolPrereq!.installInstructions!['darwin']).toContain('pip install django')
-    expect(toolPrereq!.installInstructions!['linux']).toContain('pip install django')
-    expect(toolPrereq!.installInstructions!['win32']).toContain('pip install django')
+    expect(toolPrereq!.installInstructions!.darwin).toContain('pip install django')
+    expect(toolPrereq!.installInstructions!.linux).toContain('pip install django')
+    expect(toolPrereq!.installInstructions!.win32).toContain('pip install django')
   })
 
   it('uses delegate integration with multi-word command', () => {

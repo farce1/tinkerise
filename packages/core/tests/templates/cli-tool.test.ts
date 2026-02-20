@@ -10,7 +10,9 @@
  * - Generated src/index.ts has example greet command
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { generateCliTool } from '../../src/templates/cli-tool.js'
 
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
@@ -34,8 +36,6 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { generateCliTool } from '../../src/templates/cli-tool.js'
-
 describe('generateCliTool', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>
 
@@ -45,7 +45,7 @@ describe('generateCliTool', () => {
   })
 
   /** Helper: get all writeFile calls as { path, content } pairs */
-  function getWrittenFiles(): Array<{ path: string; content: string }> {
+  function getWrittenFiles(): Array<{ path: string, content: string }> {
     return mockWriteFile.mock.calls.map((call: [string, string, string]) => ({
       path: call[0],
       content: call[1],
@@ -53,7 +53,7 @@ describe('generateCliTool', () => {
   }
 
   /** Helper: find a written file by partial path match */
-  function findFile(partialPath: string): { path: string; content: string } | undefined {
+  function findFile(partialPath: string): { path: string, content: string } | undefined {
     return getWrittenFiles().find(f => f.path.includes(partialPath))
   }
 

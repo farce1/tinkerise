@@ -3,10 +3,10 @@
  * directory using jiti for runtime TypeScript execution (no build step).
  */
 
-import { resolve } from 'node:path'
-import { createJiti } from 'jiti'
-import { TinkeriseUserConfigSchema } from '@tinkerise/shared'
 import type { TinkeriseUserConfig } from '@tinkerise/shared'
+import { resolve } from 'node:path'
+import { TinkeriseUserConfigSchema } from '@tinkerise/shared'
+import { createJiti } from 'jiti'
 
 /** The expected project config filename */
 export const CONFIG_FILENAME = 'tinkerise.config.ts' as const
@@ -37,16 +37,19 @@ export async function loadProjectConfig(
       try: true, // Returns undefined instead of throwing if file missing
     })
 
-    if (!raw) return null
+    if (!raw)
+      return null
 
     const parsed = TinkeriseUserConfigSchema.parse(raw)
 
     // If Zod stripped all keys (e.g., module namespace with only named exports,
     // no default export), treat as missing config
-    if (Object.keys(parsed).length === 0) return null
+    if (Object.keys(parsed).length === 0)
+      return null
 
     return parsed
-  } catch {
+  }
+  catch {
     return null
   }
 }

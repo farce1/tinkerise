@@ -5,8 +5,8 @@
  * config merging with array deduplication for skip/merge/replace flows.
  */
 
-import { createPatch } from 'diff'
 import { deepmergeCustom } from 'deepmerge-ts'
+import { createPatch } from 'diff'
 import pc from 'picocolors'
 
 /** Action a user can take when a config conflict is detected */
@@ -27,11 +27,14 @@ export function formatColoredDiff(patch: string): string {
   return patch
     .split('\n')
     .map((line) => {
-      if (line.startsWith('@@')) return pc.cyan(line)
+      if (line.startsWith('@@'))
+        return pc.cyan(line)
       if (line.startsWith('+++') || line.startsWith('---'))
         return pc.dim(line)
-      if (line.startsWith('+')) return pc.green(line)
-      if (line.startsWith('-')) return pc.red(line)
+      if (line.startsWith('+'))
+        return pc.green(line)
+      if (line.startsWith('-'))
+        return pc.red(line)
       return pc.dim(line)
     })
     .join('\n')
@@ -68,10 +71,10 @@ export const mergeConfigs = deepmergeCustom({
 
     // Check if all items are primitives (strings/numbers/booleans)
     const allPrimitive = merged.every(
-      (item) =>
-        typeof item === 'string' ||
-        typeof item === 'number' ||
-        typeof item === 'boolean',
+      item =>
+        typeof item === 'string'
+        || typeof item === 'number'
+        || typeof item === 'boolean',
     )
 
     if (allPrimitive) {
@@ -94,12 +97,13 @@ export const mergeConfigs = deepmergeCustom({
 export function parseJsonConfig(content: string): Record<string, unknown> {
   try {
     return JSON.parse(content) as Record<string, unknown>
-  } catch (err) {
-    const message =
-      err instanceof Error ? err.message : String(err)
+  }
+  catch (err) {
+    const message
+      = err instanceof Error ? err.message : String(err)
     throw new Error(
-      `Failed to parse JSON config: ${message}. ` +
-        'Check for trailing commas or syntax errors.',
+      `Failed to parse JSON config: ${message}. `
+      + 'Check for trailing commas or syntax errors.',
     )
   }
 }

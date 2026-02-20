@@ -38,7 +38,8 @@ export class CyclicDependencyError extends Error {
 export function topologicalSort(
   modules: EnhancementModule[],
 ): EnhancementModule[] {
-  if (modules.length === 0) return []
+  if (modules.length === 0)
+    return []
 
   // Build module map and adjacency list
   const moduleMap = new Map<string, EnhancementModule>()
@@ -56,7 +57,8 @@ export function topologicalSort(
   for (const mod of modules) {
     for (const dep of mod.dependsOn) {
       // Skip dependencies not in the current batch
-      if (!moduleMap.has(dep)) continue
+      if (!moduleMap.has(dep))
+        continue
 
       adjacency.get(dep)!.push(mod.id)
       inDegree.set(mod.id, inDegree.get(mod.id)! + 1)
@@ -88,10 +90,10 @@ export function topologicalSort(
 
   // If not all modules were sorted, a cycle exists
   if (sorted.length !== modules.length) {
-    const sortedIds = new Set(sorted.map((m) => m.id))
+    const sortedIds = new Set(sorted.map(m => m.id))
     const cycleIds = modules
-      .filter((m) => !sortedIds.has(m.id))
-      .map((m) => m.id)
+      .filter(m => !sortedIds.has(m.id))
+      .map(m => m.id)
     throw new CyclicDependencyError(cycleIds)
   }
 

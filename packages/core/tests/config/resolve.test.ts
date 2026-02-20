@@ -1,6 +1,6 @@
+import type { TinkeriseUserConfig } from '@tinkerise/shared'
 import { describe, expect, it, vi } from 'vitest'
 import { resolveConfig } from '../../src/config/resolve'
-import type { TinkeriseUserConfig } from '@tinkerise/shared'
 
 // Mock the config loaders so we can control inputs deterministically
 vi.mock('../../src/config/global', () => ({
@@ -52,7 +52,7 @@ describe('resolveConfig()', () => {
     expect(result).toEqual({ packageManager: 'pnpm', typescript: false })
   })
 
-  it('CLI flags override everything', async () => {
+  it('cLI flags override everything', async () => {
     mockLoadGlobal.mockResolvedValue({
       packageManager: 'npm',
       typescript: false,
@@ -141,7 +141,7 @@ describe('resolveConfig()', () => {
     expect(result).toEqual({ packageManager: 'pnpm', typescript: true })
   })
 
-  it('CLI flags override all including preset', async () => {
+  it('cLI flags override all including preset', async () => {
     mockLoadPreset.mockResolvedValue({
       version: 1,
       name: 'test-preset',

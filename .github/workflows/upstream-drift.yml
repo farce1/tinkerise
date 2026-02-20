@@ -146,18 +146,18 @@ jobs:
           DIFF_CONTENT=$(cat drift-diff.txt | head -100)
           BODY="## Drift Detected
 
-          **Tool:** ${TOOL}
-          **Date:** ${DATE}
-          **Runner:** ${{ runner.os }} (${{ runner.arch }})
-          **CI Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+**Tool:** ${TOOL}
+**Date:** ${DATE}
+**Runner:** ${{ runner.os }} (${{ runner.arch }})
+**CI Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-          ### Diff
+### Diff
 
-          \`\`\`diff
-          ${DIFF_CONTENT}
-          \`\`\`
+\`\`\`diff
+${DIFF_CONTENT}
+\`\`\`
 
-          > Review flag mappings in \`packages/core/src/registry/scaffolders/\`"
+> Review flag mappings in \`packages/core/src/registry/scaffolders/\`"
 
           if [ -n "$EXISTING" ]; then
             # Add comment to existing issue instead of creating duplicate

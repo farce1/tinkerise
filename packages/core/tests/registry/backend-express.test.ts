@@ -5,7 +5,7 @@ import {
 } from '../../src/registry/index'
 import { getScaffolderMetadata } from '../../src/registry/metadata'
 
-describe('Express scaffolder', () => {
+describe('express scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('express')
     expect(entry).toBeDefined()

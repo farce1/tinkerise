@@ -5,10 +5,10 @@
  * summary card for visual consistency.
  */
 
-import pc from 'picocolors'
-import { tinkeriseBlankLine, tinkeriseLog } from '../executor/framing.js'
 import type { ExecutionSummary } from './executor.js'
 import type { InstallResult } from './types.js'
+import pc from 'picocolors'
+import { tinkeriseBlankLine, tinkeriseLog } from '../executor/framing.js'
 
 /**
  * Display a styled enhancement summary card.

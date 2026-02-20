@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { prettierModule } from '../../../src/enhancements/modules/prettier.js'
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -17,8 +19,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { prettierModule } from '../../../src/enhancements/modules/prettier.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -48,7 +48,8 @@ describe('prettierModule', () => {
 
     it('returns installed when .prettierrc exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.prettierrc') return undefined
+        if (path === '/tmp/test-project/.prettierrc')
+          return undefined
         throw new Error('ENOENT')
       })
 

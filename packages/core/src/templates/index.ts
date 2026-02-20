@@ -5,9 +5,9 @@
  * for the list command.
  */
 
-export { generateMcpServer } from './mcp.js'
 export { generateCliTool } from './cli-tool.js'
 export { generateLib } from './lib.js'
+export { generateMcpServer } from './mcp.js'
 export type { TemplateOptions } from './types.js'
 
 /**

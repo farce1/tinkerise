@@ -4,9 +4,9 @@
  * Per user decision: no caching — detect fresh every run.
  */
 
+import type { ScaffolderEntry } from '@tinkerise/shared'
 import { execa } from 'execa'
 import semver from 'semver'
-import type { ScaffolderEntry } from '@tinkerise/shared'
 
 /**
  * Detect the installed version of an upstream scaffolder tool.

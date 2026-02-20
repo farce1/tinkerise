@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { defineScaffolder } from '@tinkerise/shared'
+import { describe, expect, it } from 'vitest'
 import { buildCommandArgs, ScaffolderNotFoundError } from '../../src/executor/index'
 
 /** Test entry for buildCommandArgs */
@@ -54,7 +54,7 @@ describe('buildCommandArgs()', () => {
   })
 })
 
-describe('ScaffolderNotFoundError', () => {
+describe('scaffolderNotFoundError', () => {
   it('includes scaffolder name in message', () => {
     const error = new ScaffolderNotFoundError('nonexistent')
     expect(error.message).toContain('nonexistent')

@@ -3,18 +3,18 @@
  * ~/.config/tinkerise/config.json (XDG-compliant).
  */
 
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
-import path from 'node:path'
-import os from 'node:os'
-import { TinkeriseUserConfigSchema } from '@tinkerise/shared'
 import type { TinkeriseUserConfig } from '@tinkerise/shared'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { TinkeriseUserConfigSchema } from '@tinkerise/shared'
 
 /**
  * Returns the XDG-compliant config directory for tinkerise.
  * Defaults to ~/.config/tinkerise if XDG_CONFIG_HOME is not set.
  */
 export function getConfigDir(): string {
-  const xdgHome = process.env['XDG_CONFIG_HOME'] || path.join(os.homedir(), '.config')
+  const xdgHome = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config')
   return path.join(xdgHome, 'tinkerise')
 }
 
@@ -34,7 +34,8 @@ export async function loadGlobalConfig(): Promise<Partial<TinkeriseUserConfig> |
     const raw = await readFile(getConfigPath(), 'utf-8')
     const data: unknown = JSON.parse(raw)
     return TinkeriseUserConfigSchema.parse(data)
-  } catch {
+  }
+  catch {
     return null
   }
 }
@@ -48,7 +49,7 @@ export async function saveGlobalConfig(config: Partial<TinkeriseUserConfig>): Pr
   const validated = TinkeriseUserConfigSchema.parse(config)
   const configDir = getConfigDir()
   await mkdir(configDir, { recursive: true })
-  await writeFile(getConfigPath(), JSON.stringify(validated, null, 2) + '\n', 'utf-8')
+  await writeFile(getConfigPath(), `${JSON.stringify(validated, null, 2)}\n`, 'utf-8')
 }
 
 /**
@@ -58,7 +59,8 @@ export async function getGlobalConfigValue<K extends keyof TinkeriseUserConfig>(
   key: K,
 ): Promise<TinkeriseUserConfig[K] | undefined> {
   const config = await loadGlobalConfig()
-  if (!config) return undefined
+  if (!config)
+    return undefined
   return config[key] as TinkeriseUserConfig[K] | undefined
 }
 

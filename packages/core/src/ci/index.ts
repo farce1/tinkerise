@@ -9,7 +9,7 @@
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
-const ci = require('ci-info') as { isCI: boolean; name: string | null }
+const ci = require('ci-info') as { isCI: boolean, name: string | null }
 
 /** Whether the current environment is a CI system. */
 export const isCI: boolean = ci.isCI

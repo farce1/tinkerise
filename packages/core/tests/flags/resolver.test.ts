@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { defineScaffolder } from '@tinkerise/shared'
+import { describe, expect, it } from 'vitest'
 import { resolveFlags } from '../../src/flags/resolver'
 
 /** Entry with base flags and versioned flags for testing */

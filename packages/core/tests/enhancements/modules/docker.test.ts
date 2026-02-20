@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { dockerModule } from '../../../src/enhancements/modules/docker.js'
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -12,8 +14,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { dockerModule } from '../../../src/enhancements/modules/docker.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -44,7 +44,8 @@ describe('dockerModule', () => {
 
     it('returns installed when Dockerfile exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/Dockerfile') return undefined
+        if (path === '/tmp/test-project/Dockerfile')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -55,7 +56,8 @@ describe('dockerModule', () => {
 
     it('returns installed when .dockerignore exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.dockerignore') return undefined
+        if (path === '/tmp/test-project/.dockerignore')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -164,7 +166,8 @@ describe('dockerModule', () => {
 
     it('generates Go Dockerfile when go.mod exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if ((path as string).endsWith('go.mod')) return undefined
+        if ((path as string).endsWith('go.mod'))
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -183,7 +186,8 @@ describe('dockerModule', () => {
 
     it('generates Rust Dockerfile when Cargo.toml exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if ((path as string).endsWith('Cargo.toml')) return undefined
+        if ((path as string).endsWith('Cargo.toml'))
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -251,7 +255,8 @@ describe('dockerModule', () => {
 
     it('writes Rust .dockerignore for Rust projects', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if ((path as string).endsWith('Cargo.toml')) return undefined
+        if ((path as string).endsWith('Cargo.toml'))
+          return undefined
         throw new Error('ENOENT')
       })
 

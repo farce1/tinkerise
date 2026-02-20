@@ -9,9 +9,8 @@
  * so the caller can warn and fall back to prompting.
  */
 
-import { access } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { readFile } from 'node:fs/promises'
 import { verifyPmBinary } from './verify.js'
 
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun'
@@ -98,7 +97,8 @@ export async function detectPackageManager(
   const fromLockfile = await detectFromLockfile(cwd)
   if (fromLockfile) {
     const exists = await verifyPmBinary(fromLockfile)
-    if (exists) return { pm: fromLockfile, source: 'lockfile' }
+    if (exists)
+      return { pm: fromLockfile, source: 'lockfile' }
     return { pm: fromLockfile, source: 'binary-missing' }
   }
 
@@ -106,7 +106,8 @@ export async function detectPackageManager(
   const fromPkgJson = await detectFromPackageJson(cwd)
   if (fromPkgJson) {
     const exists = await verifyPmBinary(fromPkgJson)
-    if (exists) return { pm: fromPkgJson, source: 'packageManager-field' }
+    if (exists)
+      return { pm: fromPkgJson, source: 'packageManager-field' }
     return { pm: fromPkgJson, source: 'binary-missing' }
   }
 

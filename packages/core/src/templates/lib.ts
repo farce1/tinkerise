@@ -5,9 +5,9 @@
  * build, package.json exports, Vitest config, and README template.
  */
 
-import { mkdir } from 'node:fs/promises'
 import type { TemplateOptions } from './types.js'
-import { writeProjectFile, runInstall, printTemplateSummary } from './shared.js'
+import { mkdir } from 'node:fs/promises'
+import { printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
 
 /**
  * Generate a publish-ready npm library project.
@@ -39,12 +39,12 @@ export async function generateLib(name: string, options: TemplateOptions = {}): 
     types: './dist/index.d.ts',
     files: ['dist'],
     scripts: {
-      build: 'tsup',
-      dev: 'tsup --watch',
-      test: 'vitest',
+      'build': 'tsup',
+      'dev': 'tsup --watch',
+      'test': 'vitest',
       'test:run': 'vitest run',
-      typecheck: 'tsc --noEmit',
-      prepublishOnly: 'npm run build',
+      'typecheck': 'tsc --noEmit',
+      'prepublishOnly': 'npm run build',
     },
     devDependencies: {
       'tsup': '^8.4.0',
@@ -53,7 +53,7 @@ export async function generateLib(name: string, options: TemplateOptions = {}): 
       '@types/node': '^22.0.0',
     },
   }
-  await writeProjectFile(projectDir, 'package.json', JSON.stringify(packageJson, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'package.json', `${JSON.stringify(packageJson, null, 2)}\n`)
 
   // 3. Generate tsconfig.json — with declarationMap and sourceMap for library consumers
   const tsconfig = {
@@ -71,7 +71,7 @@ export async function generateLib(name: string, options: TemplateOptions = {}): 
     },
     include: ['src'],
   }
-  await writeProjectFile(projectDir, 'tsconfig.json', JSON.stringify(tsconfig, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'tsconfig.json', `${JSON.stringify(tsconfig, null, 2)}\n`)
 
   // 4. Generate tsup.config.ts — dual CJS/ESM
   const tsupConfig = `import { defineConfig } from "tsup";

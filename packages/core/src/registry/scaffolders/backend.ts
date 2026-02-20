@@ -13,40 +13,46 @@
 import { defineScaffolder } from '@tinkerise/shared'
 
 /** Go prerequisite */
-export const goPrerequisite = (versionRange: string) => ({
-  command: 'go',
-  versionFlag: 'version',
-  versionRange,
-  installInstructions: {
-    darwin: 'brew install go',
-    linux: 'sudo apt-get install golang-go  # or download from https://go.dev/dl/',
-    win32: 'winget install GoLang.Go',
-  },
-})
+export function goPrerequisite(versionRange: string) {
+  return {
+    command: 'go',
+    versionFlag: 'version',
+    versionRange,
+    installInstructions: {
+      darwin: 'brew install go',
+      linux: 'sudo apt-get install golang-go  # or download from https://go.dev/dl/',
+      win32: 'winget install GoLang.Go',
+    },
+  }
+}
 
 /** Rust prerequisite */
-export const rustPrerequisite = (versionRange: string) => ({
-  command: 'rustc',
-  versionFlag: '--version',
-  versionRange,
-  installInstructions: {
-    darwin: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
-    linux: "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh",
-    win32: 'winget install Rustlang.Rustup',
-  },
-})
+export function rustPrerequisite(versionRange: string) {
+  return {
+    command: 'rustc',
+    versionFlag: '--version',
+    versionRange,
+    installInstructions: {
+      darwin: 'curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh',
+      linux: 'curl --proto \'=https\' --tlsv1.2 -sSf https://sh.rustup.rs | sh',
+      win32: 'winget install Rustlang.Rustup',
+    },
+  }
+}
 
 /** Python prerequisite shared across Python-based scaffolders */
-export const pythonPrerequisite = (versionRange: string) => ({
-  command: 'python3',
-  versionFlag: '--version',
-  versionRange,
-  installInstructions: {
-    darwin: 'brew install python@3.12',
-    linux: 'sudo apt-get install python3',
-    win32: 'winget install Python.Python.3.12',
-  },
-})
+export function pythonPrerequisite(versionRange: string) {
+  return {
+    command: 'python3',
+    versionFlag: '--version',
+    versionRange,
+    installInstructions: {
+      darwin: 'brew install python@3.12',
+      linux: 'sudo apt-get install python3',
+      win32: 'winget install Python.Python.3.12',
+    },
+  }
+}
 
 /**
  * FastAPI scaffolder — delegates to fastapi-admin startproject.

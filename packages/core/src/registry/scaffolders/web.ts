@@ -8,16 +8,18 @@
 import { defineScaffolder } from '@tinkerise/shared'
 
 /** Node.js prerequisite shared across all web scaffolders */
-const nodePrerequisite = (versionRange: string) => ({
-  command: 'node',
-  versionFlag: '--version',
-  versionRange,
-  installInstructions: {
-    darwin: 'brew install node',
-    linux: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs',
-    win32: 'winget install OpenJS.NodeJS.LTS',
-  },
-})
+function nodePrerequisite(versionRange: string) {
+  return {
+    command: 'node',
+    versionFlag: '--version',
+    versionRange,
+    installInstructions: {
+      darwin: 'brew install node',
+      linux: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs',
+      win32: 'winget install OpenJS.NodeJS.LTS',
+    },
+  }
+}
 
 /**
  * Next.js scaffolder — delegates to create-next-app.

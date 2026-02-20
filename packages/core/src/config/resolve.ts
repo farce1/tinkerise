@@ -8,9 +8,9 @@
 
 import type { TinkeriseUserConfig } from '@tinkerise/shared'
 import { loadGlobalConfig } from './global.js'
-import { loadProjectConfig } from './project.js'
 import { mergeConfigChain } from './merge.js'
 import { loadPreset } from './preset.js'
+import { loadProjectConfig } from './project.js'
 
 /**
  * Options for resolving the final merged configuration.

@@ -7,12 +7,12 @@
  * warns the user to install husky first.
  */
 
+import type { ProjectContext } from '../types.js'
 import { access, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
-import { installPackages, writeConfigFile, readPackageJson } from './_utils.js'
+import { installPackages, readPackageJson, writeConfigFile } from './_utils.js'
 
 /** Commitlint config file patterns to check */
 const CONFIG_FILES = [
@@ -47,7 +47,7 @@ export const commitlintModule = defineEnhancement({
     }
 
     // Check for commitlint key in package.json
-    const hasPackageJsonConfig = !!ctx.packageJson['commitlint']
+    const hasPackageJsonConfig = !!ctx.packageJson.commitlint
 
     return {
       installed: configFiles.length > 0 || hasPackageJsonConfig,

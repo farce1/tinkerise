@@ -7,9 +7,9 @@
  * Uses @modelcontextprotocol/sdk v1 import paths.
  */
 
-import { mkdir } from 'node:fs/promises'
 import type { TemplateOptions } from './types.js'
-import { writeProjectFile, runInstall, printTemplateSummary } from './shared.js'
+import { mkdir } from 'node:fs/promises'
+import { printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
 
 /**
  * Generate a complete MCP server project.
@@ -45,7 +45,7 @@ export async function generateMcpServer(name: string, options: TemplateOptions =
       '@types/node': '^22.0.0',
     },
   }
-  await writeProjectFile(projectDir, 'package.json', JSON.stringify(packageJson, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'package.json', `${JSON.stringify(packageJson, null, 2)}\n`)
 
   // 3. Generate tsconfig.json
   const tsconfig = {
@@ -61,7 +61,7 @@ export async function generateMcpServer(name: string, options: TemplateOptions =
     },
     include: ['src'],
   }
-  await writeProjectFile(projectDir, 'tsconfig.json', JSON.stringify(tsconfig, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'tsconfig.json', `${JSON.stringify(tsconfig, null, 2)}\n`)
 
   // 4. Generate tsup.config.ts
   const tsupConfig = `import { defineConfig } from "tsup";

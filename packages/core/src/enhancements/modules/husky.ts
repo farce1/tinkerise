@@ -6,12 +6,12 @@
  * Guards against missing .git directory.
  */
 
-import { access, writeFile, mkdir } from 'node:fs/promises'
+import type { ProjectContext } from '../types.js'
+import { access, mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
-import { installPackages, addScript, readPackageJson } from './_utils.js'
+import { addScript, installPackages, readPackageJson } from './_utils.js'
 
 export const huskyModule = defineEnhancement({
   id: 'husky',
@@ -109,7 +109,7 @@ export const huskyModule = defineEnhancement({
     const pkg = await readPackageJson(ctx.rootDir)
     pkg['lint-staged'] = lintStagedConfig
     const pkgPath = join(ctx.rootDir, 'package.json')
-    await writeFile(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
+    await writeFile(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, 'utf-8')
     filesModified.push(pkgPath)
 
     return {

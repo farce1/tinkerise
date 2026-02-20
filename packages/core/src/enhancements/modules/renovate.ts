@@ -7,10 +7,10 @@
  * Config-only module — no packages to install.
  */
 
-import { access, readFile } from 'node:fs/promises'
+import type { ProjectContext } from '../types.js'
+import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
-import type { ProjectContext } from '../types.js'
 import { writeConfigFile } from './_utils.js'
 
 /** Renovate config file patterns to check */
@@ -67,7 +67,7 @@ export const renovateModule = defineEnhancement({
     const configPath = await writeConfigFile(
       ctx.rootDir,
       'renovate.json',
-      config + '\n',
+      `${config}\n`,
     )
 
     return {

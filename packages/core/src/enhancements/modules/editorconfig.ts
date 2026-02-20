@@ -7,10 +7,10 @@
  * Config-only module — no packages to install.
  */
 
+import type { ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
-import type { ProjectContext } from '../types.js'
 import { writeConfigFile } from './_utils.js'
 
 /** EditorConfig content with JS/TS ecosystem defaults */

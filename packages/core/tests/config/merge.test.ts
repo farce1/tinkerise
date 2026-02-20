@@ -1,6 +1,6 @@
+import type { TinkeriseUserConfig } from '@tinkerise/shared'
 import { describe, expect, it } from 'vitest'
 import { mergeConfigChain } from '../../src/config/merge'
-import type { TinkeriseUserConfig } from '@tinkerise/shared'
 
 describe('mergeConfigChain()', () => {
   it('returns empty object when called with no arguments', () => {

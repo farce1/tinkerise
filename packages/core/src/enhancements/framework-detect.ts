@@ -10,9 +10,9 @@
  * the detected list so the caller can prompt the user to choose.
  */
 
+import type { FrameworkId } from './types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { FrameworkId } from './types.js'
 
 /** A single framework detection rule */
 export interface FrameworkRule {
@@ -67,7 +67,8 @@ export async function detectFramework(
 
   for (const rule of FRAMEWORK_RULES) {
     const hasDep = rule.packages.some(pkg => pkg in installedDeps)
-    if (!hasDep) continue
+    if (!hasDep)
+      continue
 
     if (rule.configFiles.length > 0) {
       // Confirm with config file existence

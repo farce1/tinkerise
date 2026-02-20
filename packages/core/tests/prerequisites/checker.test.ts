@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
 import type { Prerequisite } from '@tinkerise/shared'
+import { describe, expect, it, vi } from 'vitest'
 
 // Mock modules before importing the module under test
 vi.mock('which', () => ({

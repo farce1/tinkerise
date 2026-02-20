@@ -1,8 +1,8 @@
-import { readFile, rm, mkdir, writeFile } from 'node:fs/promises'
-import path from 'node:path'
-import os from 'node:os'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PresetData } from '@tinkerise/shared'
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   deletePreset,
   getPresetsDir,

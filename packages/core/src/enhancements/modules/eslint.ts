@@ -5,12 +5,12 @@
  * TypeScript support when detected, and globals for browser/node.
  */
 
+import type { FrameworkId, ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { FrameworkId, ProjectContext } from '../types.js'
-import { installPackages, writeConfigFile, addScript } from './_utils.js'
+import { addScript, installPackages, writeConfigFile } from './_utils.js'
 
 /** ESLint config file patterns to check (flat + legacy) */
 const CONFIG_FILES = [
@@ -39,40 +39,40 @@ interface FrameworkEslintConfig {
 const FRAMEWORK_ESLINT_MAP: Partial<Record<FrameworkId, FrameworkEslintConfig>> = {
   next: {
     packages: ['eslint-plugin-react'],
-    configImports: ["import react from 'eslint-plugin-react'"],
-    configSpreads: ['react.configs.flat.recommended', "react.configs.flat['jsx-runtime']"],
-    settings: "settings: { react: { version: 'detect' } },",
+    configImports: ['import react from \'eslint-plugin-react\''],
+    configSpreads: ['react.configs.flat.recommended', 'react.configs.flat[\'jsx-runtime\']'],
+    settings: 'settings: { react: { version: \'detect\' } },',
   },
   react: {
     packages: ['eslint-plugin-react'],
-    configImports: ["import react from 'eslint-plugin-react'"],
-    configSpreads: ['react.configs.flat.recommended', "react.configs.flat['jsx-runtime']"],
-    settings: "settings: { react: { version: 'detect' } },",
+    configImports: ['import react from \'eslint-plugin-react\''],
+    configSpreads: ['react.configs.flat.recommended', 'react.configs.flat[\'jsx-runtime\']'],
+    settings: 'settings: { react: { version: \'detect\' } },',
   },
   remix: {
     packages: ['eslint-plugin-react'],
-    configImports: ["import react from 'eslint-plugin-react'"],
-    configSpreads: ['react.configs.flat.recommended', "react.configs.flat['jsx-runtime']"],
-    settings: "settings: { react: { version: 'detect' } },",
+    configImports: ['import react from \'eslint-plugin-react\''],
+    configSpreads: ['react.configs.flat.recommended', 'react.configs.flat[\'jsx-runtime\']'],
+    settings: 'settings: { react: { version: \'detect\' } },',
   },
   vue: {
     packages: ['eslint-plugin-vue'],
-    configImports: ["import pluginVue from 'eslint-plugin-vue'"],
-    configSpreads: ["...pluginVue.configs['flat/recommended']"],
+    configImports: ['import pluginVue from \'eslint-plugin-vue\''],
+    configSpreads: ['...pluginVue.configs[\'flat/recommended\']'],
   },
   nuxt: {
     packages: ['eslint-plugin-vue'],
-    configImports: ["import pluginVue from 'eslint-plugin-vue'"],
-    configSpreads: ["...pluginVue.configs['flat/recommended']"],
+    configImports: ['import pluginVue from \'eslint-plugin-vue\''],
+    configSpreads: ['...pluginVue.configs[\'flat/recommended\']'],
   },
   svelte: {
     packages: ['eslint-plugin-svelte'],
-    configImports: ["import svelte from 'eslint-plugin-svelte'"],
+    configImports: ['import svelte from \'eslint-plugin-svelte\''],
     configSpreads: ['...svelte.configs.recommended'],
   },
   astro: {
     packages: ['eslint-plugin-astro'],
-    configImports: ["import astro from 'eslint-plugin-astro'"],
+    configImports: ['import astro from \'eslint-plugin-astro\''],
     configSpreads: ['...astro.configs.recommended'],
   },
 }
@@ -98,7 +98,7 @@ export const eslintModule = defineEnhancement({
     }
 
     // Check for eslintConfig in package.json
-    const hasPackageJsonConfig = !!ctx.packageJson['eslintConfig']
+    const hasPackageJsonConfig = !!ctx.packageJson.eslintConfig
 
     return {
       installed: configFiles.length > 0 || hasPackageJsonConfig,
@@ -113,8 +113,10 @@ export const eslintModule = defineEnhancement({
 
     // Step 1: Build packages list
     const basePackages = ['eslint', '@eslint/js', 'globals']
-    if (hasTypeScript) basePackages.push('typescript-eslint')
-    if (fwConfig) basePackages.push(...fwConfig.packages)
+    if (hasTypeScript)
+      basePackages.push('typescript-eslint')
+    if (fwConfig)
+      basePackages.push(...fwConfig.packages)
 
     // Version each package from dependencyVersionMap
     const versionedPackages = basePackages.map((pkg) => {
@@ -161,19 +163,19 @@ function buildEslintConfig(
   framework: FrameworkId | null,
 ): string {
   const imports: string[] = [
-    "import { defineConfig } from 'eslint/config'",
-    "import js from '@eslint/js'",
+    'import { defineConfig } from \'eslint/config\'',
+    'import js from \'@eslint/js\'',
   ]
 
   if (hasTypeScript) {
-    imports.push("import tseslint from 'typescript-eslint'")
+    imports.push('import tseslint from \'typescript-eslint\'')
   }
 
   if (fwConfig) {
     imports.push(...fwConfig.configImports)
   }
 
-  imports.push("import globals from 'globals'")
+  imports.push('import globals from \'globals\'')
 
   const configEntries: string[] = [
     '  js.configs.recommended,',

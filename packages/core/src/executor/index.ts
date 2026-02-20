@@ -6,13 +6,13 @@
  */
 
 import type { ScaffolderEntry } from '@tinkerise/shared'
-import { getScaffolder } from '../registry/index.js'
 import { resolveFlags } from '../flags/resolver.js'
 import { validateFlagApplicability } from '../flags/validator.js'
 import { checkPrerequisites } from '../prerequisites/checker.js'
-import { detectUpstreamVersion } from './version.js'
-import { spawnScaffolder } from './process.js'
+import { getScaffolder } from '../registry/index.js'
 import { tinkeriseBlankLine, tinkeriseLog } from './framing.js'
+import { spawnScaffolder } from './process.js'
+import { detectUpstreamVersion } from './version.js'
 
 export interface ExecuteOptions {
   /** Scaffolder name to look up in registry */

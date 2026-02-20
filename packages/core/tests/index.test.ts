@@ -1,6 +1,6 @@
+import { VERSION } from '@tinkerise/shared'
 import { describe, expect, it } from 'vitest'
 import { getVersion } from '../src/index'
-import { VERSION } from '@tinkerise/shared'
 
 describe('@tinkerise/core', () => {
   describe('getVersion', () => {

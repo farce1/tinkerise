@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { testingModule } from '../../../src/enhancements/modules/testing.js'
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -17,8 +19,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { testingModule } from '../../../src/enhancements/modules/testing.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -55,7 +55,8 @@ describe('testingModule', () => {
 
     it('returns installed when vitest.config.ts exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/vitest.config.ts') return undefined
+        if (path === '/tmp/test-project/vitest.config.ts')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -65,7 +66,8 @@ describe('testingModule', () => {
 
     it('returns installed when jest.config.js exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/jest.config.js') return undefined
+        if (path === '/tmp/test-project/jest.config.js')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -111,9 +113,9 @@ describe('testingModule', () => {
       )
       expect(configCall).toBeTruthy()
       const content = configCall![1] as string
-      expect(content).toContain("import { defineConfig } from 'vitest/config'")
-      expect(content).toContain("include: ['**/*.{test,spec}.{js,ts,jsx,tsx}']")
-      expect(content).toContain("exclude: ['node_modules', 'dist']")
+      expect(content).toContain('import { defineConfig } from \'vitest/config\'')
+      expect(content).toContain('include: [\'**/*.{test,spec}.{js,ts,jsx,tsx}\']')
+      expect(content).toContain('exclude: [\'node_modules\', \'dist\']')
     })
 
     it('adds test and test:run scripts to package.json', async () => {
@@ -154,8 +156,8 @@ describe('testingModule', () => {
       )
       expect(testWrite).toBeTruthy()
       const testContent = testWrite![1] as string
-      expect(testContent).toContain("import { describe, expect, it } from 'vitest'")
-      expect(testContent).toContain("import { sum } from './sum'")
+      expect(testContent).toContain('import { describe, expect, it } from \'vitest\'')
+      expect(testContent).toContain('import { sum } from \'./sum\'')
       expect(testContent).toContain('adds two positive numbers')
       expect(testContent).toContain('handles zero')
       expect(testContent).toContain('handles negative numbers')

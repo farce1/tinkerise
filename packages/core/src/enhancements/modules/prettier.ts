@@ -6,12 +6,12 @@
  * with the Tailwind plugin.
  */
 
+import type { ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
-import { installPackages, writeConfigFile, addScript } from './_utils.js'
+import { addScript, installPackages, writeConfigFile } from './_utils.js'
 
 /** Prettier config file patterns to check */
 const CONFIG_FILES = [
@@ -47,7 +47,7 @@ export const prettierModule = defineEnhancement({
       }
     }
 
-    const hasPackageJsonConfig = !!ctx.packageJson['prettier']
+    const hasPackageJsonConfig = !!ctx.packageJson.prettier
     const hasDep = 'prettier' in ctx.installedDeps
 
     return {
@@ -63,7 +63,8 @@ export const prettierModule = defineEnhancement({
 
     // Step 1: Build packages list
     const packages = ['prettier']
-    if (hasTailwind) packages.push('prettier-plugin-tailwindcss')
+    if (hasTailwind)
+      packages.push('prettier-plugin-tailwindcss')
 
     // Version from dependencyVersionMap
     const versionedPackages = packages.map((pkg) => {
@@ -80,11 +81,11 @@ export const prettierModule = defineEnhancement({
 
     // Step 3: Config file — only if Tailwind detected
     if (hasTailwind) {
-      const configContent = JSON.stringify(
+      const configContent = `${JSON.stringify(
         { plugins: ['prettier-plugin-tailwindcss'] },
         null,
         2,
-      ) + '\n'
+      )}\n`
       const configPath = await writeConfigFile(ctx.rootDir, '.prettierrc', configContent)
       filesModified.push(configPath)
     }

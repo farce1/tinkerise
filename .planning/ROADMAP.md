@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 1-12 (shipped 2026-02-18)
 - ✅ **v1.1 Tech Debt** — Phases 13-16 (shipped 2026-02-19)
-- 🚧 **v2.0 Quality & Robustness** — Phases 17-22 (in progress)
+- ✅ **v2.0 Quality & Robustness** — Phases 17-23 (shipped 2026-02-20)
 
 ## Phases
 
@@ -40,101 +40,20 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 </details>
 
-### v2.0 Quality & Robustness (In Progress)
+<details>
+<summary>✅ v2.0 Quality & Robustness (Phases 17-23) — SHIPPED 2026-02-20</summary>
 
-**Milestone Goal:** Make the repo production-ready — green CI, comprehensive test coverage, working release pipeline, proper package metadata, and clean codebase.
+- [x] Phase 17: CI & Lint (2/2 plans) — completed 2026-02-19
+- [x] Phase 18: Release Pipeline (2/2 plans) — completed 2026-02-19
+- [x] Phase 19: Core Test Coverage (2/2 plans) — completed 2026-02-19
+- [x] Phase 20: CLI Test Coverage (2/2 plans) — completed 2026-02-19
+- [x] Phase 21: Polish & Metadata (2/2 plans) — completed 2026-02-19
+- [x] Phase 22: Drift Detection Hardening (2/2 plans) — completed 2026-02-19
+- [x] Phase 23: Lint Regression Fix (1/1 plan) — completed 2026-02-19
 
-- [x] **Phase 17: CI & Lint** (0/2 plans) - Fix all ESLint errors and get CI matrix green across all platforms (completed 2026-02-19)
-- [x] **Phase 18: Release Pipeline** - Fix broken publish path so stable versions can ship via CI (completed 2026-02-19)
-- [x] **Phase 19: Core Test Coverage** - Write tests for 5 untested core and shared modules (completed 2026-02-19)
-- [x] **Phase 20: CLI Test Coverage** - Write tests for 5 untested CLI modules (completed 2026-02-19)
-- [x] **Phase 21: Polish & Metadata** - Clean metadata, consistent URLs, dead code removal, community docs (completed 2026-02-19)
-- [ ] **Phase 22: Drift Detection Hardening** - Harden drift detection CI workflow against real-world failures
+Full details: `.planning/milestones/v2.0-ROADMAP.md`
 
-## Phase Details
-
-### Phase 17: CI & Lint
-**Goal**: The repository has zero lint errors and CI passes on every platform so every future change can be validated automatically
-**Depends on**: Nothing (first phase of v2.0)
-**Requirements**: CILINT-01, CILINT-02, CILINT-03, CILINT-04
-**Success Criteria** (what must be TRUE):
-  1. `bun run lint` completes with zero errors across all 3 packages
-  2. The GitHub Actions CI workflow passes on all 6 matrix combinations (Node 20/22/24 x ubuntu/macos/windows)
-  3. CI and Release workflows use Bun dependency caching, reducing install times on repeated runs
-**Plans**: 2 plans
-Plans:
-- [ ] 17-01-PLAN.md — Fix all 22 ESLint errors in @tinkerise/shared
-- [ ] 17-02-PLAN.md — Enable Bun dependency caching in CI and Release workflows
-
-### Phase 18: Release Pipeline
-**Goal**: The npm publish pipeline is correctly configured and produces stable (non-pre-release) versions when triggered
-**Depends on**: Phase 17
-**Requirements**: RELPIPE-01, RELPIPE-02, RELPIPE-03, RELPIPE-04, RELPIPE-05, RELPIPE-06, RELPIPE-07
-**Success Criteria** (what must be TRUE):
-  1. NPM_TOKEN and HOMEBREW_TAP_TOKEN setup is documented step-by-step so any maintainer can configure secrets without guesswork
-  2. Running `changeset publish` no longer produces pre-release versions — `.changeset/pre.json` is gone and version bumps produce `1.x.x` not `1.x.x-beta.x`
-  3. The release workflow does not double-build (no redundant `bun run build` step before publish)
-  4. The Homebrew version-reading step uses `jq` and succeeds in the CI ESM environment without CJS/ESM errors
-  5. All changeset and package.json references to the repo slug use `farce1/tinkerise` consistently
-**Plans**: 2 plans
-Plans:
-- [ ] 18-01-PLAN.md — Fix release pipeline (pre-release exit, double-build, ci scripts, jq, repo slugs)
-- [ ] 18-02-PLAN.md — Document NPM_TOKEN and HOMEBREW_TAP_TOKEN setup in RELEASE.md
-
-### Phase 19: Core Test Coverage
-**Goal**: The 5 untested core and shared modules all have meaningful test suites covering their primary behaviors
-**Depends on**: Phase 17
-**Requirements**: TEST-01, TEST-02, TEST-07, TEST-08, TEST-10
-**Success Criteria** (what must be TRUE):
-  1. `core/enhancements/modules/changelog.ts` has tests that verify detect returns true/false correctly and install writes expected files
-  2. `core/enhancements/modules/_utils.ts` has tests for `installPackages`, `writeConfigFile`, `addScript`, and `readPackageJson` with mocked filesystem calls
-  3. `core/prerequisites/platform.ts` has tests verifying `detectPlatform` returns the correct platform enum and `getInstallInstructions` returns non-empty strings for each platform
-  4. `core/executor/version.ts` has tests for `detectUpstreamVersion` including the early-return path when no version is found
-  5. `core/templates/shared.ts` has tests covering `writeProjectFile`, `runInstall`, and `printTemplateSummary` outputs
-**Plans**: 2 plans
-Plans:
-- [ ] 19-01-PLAN.md — Write changelog enhancement module and _utils tests
-- [ ] 19-02-PLAN.md — Write platform, version, and shared template tests
-
-### Phase 20: CLI Test Coverage
-**Goal**: The 5 untested CLI modules all have meaningful test suites covering their primary behaviors
-**Depends on**: Phase 17
-**Requirements**: TEST-03, TEST-04, TEST-05, TEST-06, TEST-09
-**Success Criteria** (what must be TRUE):
-  1. `cli/utils/update-check.ts` has tests for cache read/write, mocked HTTP fetch returning a version, semver comparison logic, and `printUpdateNudge` output
-  2. `cli/utils/install-method.ts` has tests that exercise all 3 detection branches and return the expected `InstallMethod` enum value for each
-  3. `cli/prompts/project-name.ts` has tests verifying the validation regex rejects invalid names and accepts valid ones
-  4. `cli/prompts/flow.ts` has tests for the happy path, pre-fill skip logic (flags bypass prompts), and cancellation returning undefined
-  5. `cli/commands/update.ts` has tests for all install-method branches (brew upgrade, npm install -g, npx hint, unknown fallback)
-**Plans**: 2 plans
-Plans:
-- [ ] 20-01-PLAN.md — Write update-check and install-method utility test suites
-- [ ] 20-02-PLAN.md — Write project-name, prompt flow, and update command test suites
-
-### Phase 21: Polish & Metadata
-**Goal**: All package metadata is complete and consistent, dead code is removed, and community contribution files exist
-**Depends on**: Phase 17
-**Requirements**: POLISH-01, POLISH-02, POLISH-03, POLISH-04, POLISH-05, POLISH-06
-**Success Criteria** (what must be TRUE):
-  1. All 4 `package.json` files have `description`, `keywords`, `repository`, `homepage`, `bugs`, `license`, and `engines` fields populated
-  2. Every reference to the repository URL across all files points to `farce1/tinkerise` with no placeholder or stale org names
-  3. `CODE_OF_CONDUCT.md` exists at repo root with a recognized code of conduct (Contributor Covenant or equivalent)
-  4. `.gitignore` contains the `tsup.config.bundled_*.mjs` pattern and no stale artifact files exist in the repo
-  5. The dead `TinkeriseConfig` export is absent from `shared/src/index.ts` and importing the package does not expose that symbol
-**Plans**: 2 plans
-Plans:
-- [ ] 21-01-PLAN.md — Complete package.json metadata and fix stale repository URLs
-- [ ] 21-02-PLAN.md — Create CODE_OF_CONDUCT.md, clean .gitignore, remove dead TinkeriseConfig export
-
-### Phase 22: Drift Detection Hardening
-**Goal**: The drift detection CI workflow handles real-world tool installation failures and reports detected drift as a trackable GitHub Issue
-**Depends on**: Phase 17
-**Requirements**: DRIFT-01, DRIFT-02, DRIFT-03
-**Success Criteria** (what must be TRUE):
-  1. The `cargo-generate` install step fails loudly (non-zero exit) rather than silently swallowing errors via `|| true`, so CI surfaces Rust tooling problems immediately
-  2. `pip install` commands in the drift workflow include `--break-system-packages` and succeed on modern ubuntu GitHub Actions runners without PEP 668 errors
-  3. When drift is detected, the workflow opens a GitHub Issue (not just an annotation) so maintainers can track it across sessions without inspecting CI logs
-**Plans**: TBD
+</details>
 
 ## Progress
 
@@ -156,9 +75,10 @@ Plans:
 | 14. Enhancement & Quality Expansion | v1.1 | 2/2 | Complete | 2026-02-19 |
 | 15. Homebrew Tap Deployment | v1.1 | 1/1 | Complete | 2026-02-19 |
 | 16. Enhancement Export & UX Cleanup | v1.1 | 1/1 | Complete | 2026-02-19 |
-| 17. CI & Lint | v2.0 | Complete    | 2026-02-19 | - |
-| 18. Release Pipeline | v2.0 | Complete    | 2026-02-19 | - |
+| 17. CI & Lint | v2.0 | 2/2 | Complete | 2026-02-19 |
+| 18. Release Pipeline | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 19. Core Test Coverage | v2.0 | 2/2 | Complete | 2026-02-19 |
-| 20. CLI Test Coverage | v2.0 | Complete    | 2026-02-19 | - |
-| 21. Polish & Metadata | v2.0 | Complete    | 2026-02-19 | - |
-| 22. Drift Detection Hardening | v2.0 | 0/TBD | Not started | - |
+| 20. CLI Test Coverage | v2.0 | 2/2 | Complete | 2026-02-19 |
+| 21. Polish & Metadata | v2.0 | 2/2 | Complete | 2026-02-19 |
+| 22. Drift Detection Hardening | v2.0 | 2/2 | Complete | 2026-02-19 |
+| 23. Lint Regression Fix | v2.0 | 1/1 | Complete | 2026-02-19 |

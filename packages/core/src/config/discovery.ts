@@ -3,10 +3,10 @@
  * in a project's package.json dependencies.
  */
 
+import type { PresetData } from '@tinkerise/shared'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { PresetDataSchema } from '@tinkerise/shared'
-import type { PresetData } from '@tinkerise/shared'
 
 /** Prefix for unscoped preset packages */
 export const PRESET_PREFIX = 'tinkerise-preset-'
@@ -34,18 +34,20 @@ export async function discoverNpmPresets(projectDir: string): Promise<string[]> 
     const raw = await readFile(pkgPath, 'utf-8')
     const pkg: unknown = JSON.parse(raw)
 
-    if (typeof pkg !== 'object' || pkg === null) return []
+    if (typeof pkg !== 'object' || pkg === null)
+      return []
 
     const record = pkg as Record<string, unknown>
-    const deps = (typeof record['dependencies'] === 'object' && record['dependencies'] !== null)
-      ? Object.keys(record['dependencies'] as Record<string, unknown>)
+    const deps = (typeof record.dependencies === 'object' && record.dependencies !== null)
+      ? Object.keys(record.dependencies as Record<string, unknown>)
       : []
-    const devDeps = (typeof record['devDependencies'] === 'object' && record['devDependencies'] !== null)
-      ? Object.keys(record['devDependencies'] as Record<string, unknown>)
+    const devDeps = (typeof record.devDependencies === 'object' && record.devDependencies !== null)
+      ? Object.keys(record.devDependencies as Record<string, unknown>)
       : []
 
     return [...deps, ...devDeps].filter(isPresetPackage)
-  } catch {
+  }
+  catch {
     return []
   }
 }
@@ -66,7 +68,8 @@ export async function loadNpmPreset(packageName: string): Promise<PresetData | n
     const raw = await readFile(filePath, 'utf-8')
     const data: unknown = JSON.parse(raw)
     return PresetDataSchema.parse(data)
-  } catch {
+  }
+  catch {
     return null
   }
 }

@@ -4,6 +4,11 @@
  */
 
 export {
+  discoverNpmPresets,
+  loadNpmPreset,
+} from './discovery.js'
+
+export {
   getConfigDir,
   getConfigPath,
   getGlobalConfigValue,
@@ -12,12 +17,7 @@ export {
   setGlobalConfigValue,
 } from './global.js'
 
-export { CONFIG_FILENAME, loadProjectConfig } from './project.js'
-
 export { mergeConfigChain } from './merge.js'
-
-export { resolveConfig } from './resolve.js'
-export type { ResolveConfigOptions } from './resolve.js'
 
 export {
   deletePreset,
@@ -26,8 +26,8 @@ export {
   loadPreset,
   savePreset,
 } from './preset.js'
+export { CONFIG_FILENAME, loadProjectConfig } from './project.js'
 
-export {
-  discoverNpmPresets,
-  loadNpmPreset,
-} from './discovery.js'
+export { resolveConfig } from './resolve.js'
+
+export type { ResolveConfigOptions } from './resolve.js'

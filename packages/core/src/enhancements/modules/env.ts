@@ -5,11 +5,11 @@
  * following the t3-env pattern. Adds .env to .gitignore automatically.
  */
 
+import type { ProjectContext } from '../types.js'
 import { access, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
 import { installPackages, writeConfigFile } from './_utils.js'
 
 /** Env-related files to check for detection */
@@ -54,7 +54,7 @@ export const envModule = defineEnhancement({
     // Step 1: Install @t3-oss/env-core and zod
     const packages = [
       `@t3-oss/env-core@${dependencyVersionMap['@t3-oss/env-core']}`,
-      `zod@${dependencyVersionMap['zod']}`,
+      `zod@${dependencyVersionMap.zod}`,
     ]
 
     await installPackages(packages, {

@@ -9,8 +9,8 @@
  * concatenate with, a preset's list — per research pitfall #3).
  */
 
-import { deepmerge } from 'deepmerge-ts'
 import type { TinkeriseUserConfig } from '@tinkerise/shared'
+import { deepmerge } from 'deepmerge-ts'
 
 /**
  * Merges configuration layers in priority order.
@@ -32,8 +32,10 @@ export function mergeConfigChain(
     (l): l is Partial<TinkeriseUserConfig> => l != null,
   )
 
-  if (defined.length === 0) return {}
-  if (defined.length === 1) return defined[0]!
+  if (defined.length === 0)
+    return {}
+  if (defined.length === 1)
+    return defined[0]!
 
   return deepmerge(...(defined as [Partial<TinkeriseUserConfig>, ...Partial<TinkeriseUserConfig>[]])) as Partial<TinkeriseUserConfig>
 }

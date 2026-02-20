@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { eslintModule } from '../../../src/enhancements/modules/eslint.js'
 
 // Hoist mocks for vi.mock factories
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
@@ -18,8 +20,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { eslintModule } from '../../../src/enhancements/modules/eslint.js'
 
 /** Build a mock ProjectContext with overridable fields */
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
@@ -55,7 +55,8 @@ describe('eslintModule', () => {
 
     it('returns installed when eslint.config.js exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/eslint.config.js') return undefined
+        if (path === '/tmp/test-project/eslint.config.js')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -68,7 +69,8 @@ describe('eslintModule', () => {
 
     it('returns installed when legacy .eslintrc.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.eslintrc.json') return undefined
+        if (path === '/tmp/test-project/.eslintrc.json')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -136,8 +138,8 @@ describe('eslintModule', () => {
         (c: unknown[]) => (c[0] as string).endsWith('eslint.config.js'),
       )
       const content = configCall![1] as string
-      expect(content).toContain("import react from 'eslint-plugin-react'")
-      expect(content).toContain("react: { version: 'detect' }")
+      expect(content).toContain('import react from \'eslint-plugin-react\'')
+      expect(content).toContain('react: { version: \'detect\' }')
     })
 
     it('installs Vue plugin for Nuxt framework with TypeScript', async () => {
@@ -156,7 +158,7 @@ describe('eslintModule', () => {
         (c: unknown[]) => (c[0] as string).endsWith('eslint.config.js'),
       )
       const content = configCall![1] as string
-      expect(content).toContain("import pluginVue from 'eslint-plugin-vue'")
+      expect(content).toContain('import pluginVue from \'eslint-plugin-vue\'')
       expect(content).toContain('tseslint.parser')
     })
 

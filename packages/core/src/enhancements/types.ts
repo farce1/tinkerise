@@ -9,16 +9,16 @@
 import type { PackageManager } from '../pm/detect.js'
 
 /** Framework identifiers for adaptation */
-export type FrameworkId =
-  | 'next'
-  | 'react'
-  | 'vue'
-  | 'svelte'
-  | 'angular'
-  | 'astro'
-  | 'remix'
-  | 'nuxt'
-  | 'solid'
+export type FrameworkId
+  = | 'next'
+    | 'react'
+    | 'vue'
+    | 'svelte'
+    | 'angular'
+    | 'astro'
+    | 'remix'
+    | 'nuxt'
+    | 'solid'
 
 /** Result of detecting whether an enhancement is already present */
 export interface DetectionResult {

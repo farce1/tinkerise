@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { defineScaffolder } from '@tinkerise/shared'
+import { describe, expect, it } from 'vitest'
 import { FlagNotApplicableError, validateFlagApplicability } from '../../src/flags/validator'
 
 const testEntry = defineScaffolder({

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { getScaffolder } from '../../src/registry/index'
 import { resolveFlags } from '../../src/flags/resolver'
 import { FlagNotApplicableError, validateFlagApplicability } from '../../src/flags/validator'
+import { getScaffolder } from '../../src/registry/index'
 
 describe('web scaffolder flag resolution', () => {
-  describe('Next.js', () => {
+  describe('next.js', () => {
     const entry = getScaffolder('next')!
 
     it('typescript: true -> ["--typescript"] (base flags)', () => {
@@ -35,7 +35,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('Vite', () => {
+  describe('vite', () => {
     const entry = getScaffolder('vite')!
 
     it('typescript: true -> [] (silent accept, empty native)', () => {
@@ -69,7 +69,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('Astro', () => {
+  describe('astro', () => {
     const entry = getScaffolder('astro')!
 
     it('typescript: true -> [] (silent accept, always strict TS)', () => {
@@ -103,7 +103,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('T3', () => {
+  describe('t3', () => {
     const entry = getScaffolder('t3')!
 
     it('typescript: true -> [] (silent accept, TS only)', () => {
@@ -137,7 +137,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('Remix (React Router v7)', () => {
+  describe('remix (React Router v7)', () => {
     const entry = getScaffolder('remix')!
 
     it('typescript: true -> [] (silent accept, TS by default)', () => {
@@ -171,7 +171,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('TanStack Start', () => {
+  describe('tanStack Start', () => {
     const entry = getScaffolder('tanstack')!
 
     it('typescript: true -> [] (silent accept, TS only)', () => {
@@ -205,7 +205,7 @@ describe('web scaffolder flag resolution', () => {
     })
   })
 
-  describe('Turborepo', () => {
+  describe('turborepo', () => {
     const entry = getScaffolder('turbo')!
 
     it('no-install: true -> ["--skip-install"]', () => {

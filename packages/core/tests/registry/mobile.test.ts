@@ -27,7 +27,7 @@ describe('flutterPrerequisite helper', () => {
   })
 })
 
-describe('Flutter scaffolder', () => {
+describe('flutter scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('flutter')
     expect(entry).toBeDefined()
@@ -82,7 +82,7 @@ describe('Flutter scaffolder', () => {
   })
 })
 
-describe('React Native (Expo) scaffolder', () => {
+describe('react Native (Expo) scaffolder', () => {
   it('resolves by name "rn" with correct category and command', () => {
     const entry = getScaffolder('rn')
     expect(entry).toBeDefined()

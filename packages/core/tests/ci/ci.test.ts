@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { isCI, ciName } from '../../src/ci/index'
+import { ciName, isCI } from '../../src/ci/index'
 
-describe('CI detection', () => {
+describe('cI detection', () => {
   it('isCI is a boolean', () => {
     expect(typeof isCI).toBe('boolean')
   })

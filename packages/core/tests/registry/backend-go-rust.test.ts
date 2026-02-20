@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   getScaffolder,
-  getScaffoldersByCategory,
 } from '../../src/registry/index'
 import { getScaffolderMetadata } from '../../src/registry/metadata'
 import { goPrerequisite, rustPrerequisite } from '../../src/registry/scaffolders/backend'
@@ -46,7 +45,7 @@ describe('rustPrerequisite helper', () => {
   })
 })
 
-describe('Go scaffolder', () => {
+describe('go scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('go')
     expect(entry).toBeDefined()
@@ -77,9 +76,9 @@ describe('Go scaffolder', () => {
   it('go-blueprint install instructions use go install', () => {
     const entry = getScaffolder('go')!
     const toolPrereq = entry.prerequisites.find(p => p.command === 'go-blueprint')
-    expect(toolPrereq!.installInstructions!['darwin']).toContain('go install')
-    expect(toolPrereq!.installInstructions!['linux']).toContain('go install')
-    expect(toolPrereq!.installInstructions!['win32']).toContain('go install')
+    expect(toolPrereq!.installInstructions!.darwin).toContain('go install')
+    expect(toolPrereq!.installInstructions!.linux).toContain('go install')
+    expect(toolPrereq!.installInstructions!.win32).toContain('go install')
   })
 
   it('uses delegate integration with "go-blueprint create"', () => {
@@ -94,7 +93,7 @@ describe('Go scaffolder', () => {
   })
 })
 
-describe('Rust scaffolder', () => {
+describe('rust scaffolder', () => {
   it('resolves by name with correct category and command', () => {
     const entry = getScaffolder('rust')
     expect(entry).toBeDefined()
@@ -119,9 +118,9 @@ describe('Rust scaffolder', () => {
   it('cargo-generate install instructions use cargo install', () => {
     const entry = getScaffolder('rust')!
     const toolPrereq = entry.prerequisites.find(p => p.command === 'cargo-generate')
-    expect(toolPrereq!.installInstructions!['darwin']).toContain('cargo install cargo-generate')
-    expect(toolPrereq!.installInstructions!['linux']).toContain('cargo install cargo-generate')
-    expect(toolPrereq!.installInstructions!['win32']).toContain('cargo install cargo-generate')
+    expect(toolPrereq!.installInstructions!.darwin).toContain('cargo install cargo-generate')
+    expect(toolPrereq!.installInstructions!.linux).toContain('cargo install cargo-generate')
+    expect(toolPrereq!.installInstructions!.win32).toContain('cargo install cargo-generate')
   })
 
   it('uses delegate integration with "cargo generate"', () => {

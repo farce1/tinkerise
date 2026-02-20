@@ -6,11 +6,11 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { SCAFFOLDER_METADATA, getScaffolderMetadata } from '../../src/registry/metadata'
+import { getScaffolderMetadata, SCAFFOLDER_METADATA } from '../../src/registry/metadata'
 
 const EXPECTED_SCAFFOLDERS = ['next', 'vite', 'astro', 't3', 'remix', 'tanstack', 'turbo']
 
-describe('SCAFFOLDER_METADATA', () => {
+describe('sCAFFOLDER_METADATA', () => {
   it('has entries for all 7 expected scaffolders', () => {
     for (const name of EXPECTED_SCAFFOLDERS) {
       expect(SCAFFOLDER_METADATA[name]).toBeDefined()

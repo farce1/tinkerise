@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ciModule } from '../../../src/enhancements/modules/ci.js'
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -12,8 +14,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { ciModule } from '../../../src/enhancements/modules/ci.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -49,7 +49,8 @@ describe('ciModule', () => {
 
     it('returns installed when ci.yml exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/workflows/ci.yml') return undefined
+        if (path === '/tmp/test-project/.github/workflows/ci.yml')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -59,7 +60,8 @@ describe('ciModule', () => {
 
     it('returns installed when test.yml exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/workflows/test.yml') return undefined
+        if (path === '/tmp/test-project/.github/workflows/test.yml')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -100,7 +102,7 @@ describe('ciModule', () => {
       expect(yaml).toContain('corepack enable')
       expect(yaml).toContain('pnpm install --frozen-lockfile')
       expect(yaml).toContain('pnpm run lint')
-      expect(yaml).toContain("cache: 'pnpm'")
+      expect(yaml).toContain('cache: \'pnpm\'')
     })
 
     it('generates yarn workflow', async () => {
@@ -113,7 +115,7 @@ describe('ciModule', () => {
 
       expect(yaml).toContain('corepack enable')
       expect(yaml).toContain('yarn install --frozen-lockfile')
-      expect(yaml).toContain("cache: 'yarn'")
+      expect(yaml).toContain('cache: \'yarn\'')
     })
 
     it('generates bun workflow', async () => {

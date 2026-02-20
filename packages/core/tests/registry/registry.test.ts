@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { defineScaffolder } from '@tinkerise/shared'
+import { describe, expect, it } from 'vitest'
 import {
   getAllScaffolders,
   getScaffolder,
@@ -58,7 +58,7 @@ describe('getScaffoldersByCategory()', () => {
   })
 })
 
-describe('Declarative requirement (REG-01)', () => {
+describe('declarative requirement (REG-01)', () => {
   it('adding a scaffolder is a data-only operation', () => {
     // Define a new scaffolder with only data — no logic changes needed
     const myScaffolder = defineScaffolder({

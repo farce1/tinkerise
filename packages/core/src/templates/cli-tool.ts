@@ -5,9 +5,9 @@
  * tsup build, and one example command with bin entry.
  */
 
-import { mkdir } from 'node:fs/promises'
 import type { TemplateOptions } from './types.js'
-import { writeProjectFile, runInstall, printTemplateSummary } from './shared.js'
+import { mkdir } from 'node:fs/promises'
+import { printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
 
 /**
  * Generate a complete CLI tool project.
@@ -34,7 +34,7 @@ export async function generateCliTool(name: string, options: TemplateOptions = {
       start: 'node dist/index.js',
     },
     dependencies: {
-      'commander': '^13.0.0',
+      commander: '^13.0.0',
     },
     devDependencies: {
       'tsup': '^8.4.0',
@@ -42,7 +42,7 @@ export async function generateCliTool(name: string, options: TemplateOptions = {
       '@types/node': '^22.0.0',
     },
   }
-  await writeProjectFile(projectDir, 'package.json', JSON.stringify(packageJson, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'package.json', `${JSON.stringify(packageJson, null, 2)}\n`)
 
   // 3. Generate tsconfig.json
   const tsconfig = {
@@ -58,7 +58,7 @@ export async function generateCliTool(name: string, options: TemplateOptions = {
     },
     include: ['src'],
   }
-  await writeProjectFile(projectDir, 'tsconfig.json', JSON.stringify(tsconfig, null, 2) + '\n')
+  await writeProjectFile(projectDir, 'tsconfig.json', `${JSON.stringify(tsconfig, null, 2)}\n`)
 
   // 4. Generate tsup.config.ts
   const tsupConfig = `import { defineConfig } from "tsup";

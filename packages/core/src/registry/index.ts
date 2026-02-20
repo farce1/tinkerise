@@ -7,9 +7,9 @@
  */
 
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
-import { astro, nextjs, remix, t3, tanstack, turbo, vite } from './scaffolders/web.js'
 import { django, express, fastapi, go, rust } from './scaffolders/backend.js'
 import { flutter, reactnative } from './scaffolders/mobile.js'
+import { astro, nextjs, remix, t3, tanstack, turbo, vite } from './scaffolders/web.js'
 
 /** Private registry store */
 const registry = new Map<string, ScaffolderEntry>()

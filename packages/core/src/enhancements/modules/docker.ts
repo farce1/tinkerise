@@ -6,21 +6,21 @@
  * filesystem for Python, Go, and Rust project markers.
  */
 
+import type { FrameworkId, ProjectContext } from '../types.js'
 import { access, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
-import type { FrameworkId, ProjectContext } from '../types.js'
 import { writeConfigFile } from './_utils.js'
 
 /** Extended framework type for Docker (includes non-web frameworks) */
-type DockerFramework =
-  | 'next'
-  | 'vite'
-  | 'fastapi'
-  | 'django'
-  | 'go'
-  | 'rust'
-  | 'node'
+type DockerFramework
+  = | 'next'
+    | 'vite'
+    | 'fastapi'
+    | 'django'
+    | 'go'
+    | 'rust'
+    | 'node'
 
 /** Docker-specific config per framework */
 interface DockerConfig {
@@ -89,7 +89,8 @@ export async function detectDockerFramework(ctx: ProjectContext): Promise<Docker
   // Filesystem-based detection for non-web frameworks
   // Check Python (FastAPI / Django)
   const pythonFramework = await detectPythonFramework(ctx.rootDir)
-  if (pythonFramework) return pythonFramework
+  if (pythonFramework)
+    return pythonFramework
 
   // Check Go
   try {
@@ -123,8 +124,10 @@ async function detectPythonFramework(rootDir: string): Promise<'fastapi' | 'djan
     try {
       const content = await readFile(join(rootDir, file), 'utf-8')
       const lower = content.toLowerCase()
-      if (lower.includes('fastapi')) return 'fastapi'
-      if (lower.includes('django')) return 'django'
+      if (lower.includes('fastapi'))
+        return 'fastapi'
+      if (lower.includes('django'))
+        return 'django'
     }
     catch {
       // File doesn't exist
@@ -322,7 +325,7 @@ export const dockerModule = defineEnhancement({
     const dockerignorePath = await writeConfigFile(
       ctx.rootDir,
       '.dockerignore',
-      config.dockerignore.join('\n') + '\n',
+      `${config.dockerignore.join('\n')}\n`,
     )
 
     return {

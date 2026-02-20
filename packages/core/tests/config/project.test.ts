@@ -18,7 +18,7 @@ afterEach(async () => {
   await rm(tmpDir, { recursive: true, force: true })
 })
 
-describe('CONFIG_FILENAME', () => {
+describe('cONFIG_FILENAME', () => {
   it('is tinkerise.config.ts', () => {
     expect(CONFIG_FILENAME).toBe('tinkerise.config.ts')
   })

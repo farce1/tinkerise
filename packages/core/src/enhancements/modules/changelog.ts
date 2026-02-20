@@ -7,12 +7,12 @@
  * installing it for commit message enforcement.
  */
 
+import type { ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
-import { installPackages, writeConfigFile, addScript, readPackageJson } from './_utils.js'
+import { addScript, installPackages, readPackageJson, writeConfigFile } from './_utils.js'
 
 /** Changelog config file patterns to check */
 const CONFIG_FILES = [
@@ -83,7 +83,7 @@ export const changelogModule = defineEnhancement({
     })
 
     // Step 2: Generate .changelogrc.json config
-    const configContent = JSON.stringify({
+    const configContent = `${JSON.stringify({
       preset: {
         name: 'conventionalcommits',
         types: [
@@ -97,7 +97,7 @@ export const changelogModule = defineEnhancement({
           { type: 'ci', hidden: true },
         ],
       },
-    }, null, 2) + '\n'
+    }, null, 2)}\n`
 
     const configPath = await writeConfigFile(ctx.rootDir, '.changelogrc.json', configContent)
     filesModified.push(configPath)
@@ -123,7 +123,7 @@ export const changelogModule = defineEnhancement({
     // Also check for commitlint key in package.json
     if (!commitlintDetected) {
       const pkg = await readPackageJson(ctx.rootDir)
-      if (pkg['commitlint']) {
+      if (pkg.commitlint) {
         commitlintDetected = true
       }
     }

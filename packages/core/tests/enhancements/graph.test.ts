@@ -1,9 +1,9 @@
+import type { EnhancementModule } from '../../src/enhancements/types.js'
 import { describe, expect, it } from 'vitest'
 import {
-  topologicalSort,
   CyclicDependencyError,
+  topologicalSort,
 } from '../../src/enhancements/graph.js'
-import type { EnhancementModule } from '../../src/enhancements/types.js'
 
 /**
  * Creates a minimal EnhancementModule stub for graph testing.
@@ -44,14 +44,14 @@ describe('topologicalSort()', () => {
     const a = mod('a')
     const b = mod('b')
     const result = topologicalSort([a, b])
-    expect(result.map((m) => m.id)).toEqual(['a', 'b'])
+    expect(result.map(m => m.id)).toEqual(['a', 'b'])
   })
 
   it('orders linear chain: A depends on B -> [B, A]', () => {
     const a = mod('a', ['b'])
     const b = mod('b')
     const result = topologicalSort([a, b])
-    expect(result.map((m) => m.id)).toEqual(['b', 'a'])
+    expect(result.map(m => m.id)).toEqual(['b', 'a'])
   })
 
   it('orders diamond: D depends on B,C; B,C depend on A -> A first, D last', () => {
@@ -61,7 +61,7 @@ describe('topologicalSort()', () => {
     const d = mod('d', ['b', 'c'])
     // Input order intentionally scrambled
     const result = topologicalSort([d, b, c, a])
-    const ids = result.map((m) => m.id)
+    const ids = result.map(m => m.id)
 
     // A must come before B and C; D must come last
     expect(ids.indexOf('a')).toBeLessThan(ids.indexOf('b'))
@@ -78,7 +78,8 @@ describe('topologicalSort()', () => {
     expect(() => topologicalSort([a, b])).toThrow(CyclicDependencyError)
     try {
       topologicalSort([a, b])
-    } catch (err) {
+    }
+    catch (err) {
       const cycleErr = err as CyclicDependencyError
       expect(cycleErr.cycle).toContain('a')
       expect(cycleErr.cycle).toContain('b')
@@ -94,7 +95,8 @@ describe('topologicalSort()', () => {
     expect(() => topologicalSort([a, b, c])).toThrow(CyclicDependencyError)
     try {
       topologicalSort([a, b, c])
-    } catch (err) {
+    }
+    catch (err) {
       const cycleErr = err as CyclicDependencyError
       expect(cycleErr.cycle).toContain('a')
       expect(cycleErr.cycle).toContain('b')
@@ -105,7 +107,7 @@ describe('topologicalSort()', () => {
   it('skips missing dependencies gracefully', () => {
     const a = mod('a', ['unknown'])
     const result = topologicalSort([a])
-    expect(result.map((m) => m.id)).toEqual(['a'])
+    expect(result.map(m => m.id)).toEqual(['a'])
   })
 
   it('throws CyclicDependencyError for partial cycle: B<->C cycle, A independent', () => {
@@ -116,7 +118,8 @@ describe('topologicalSort()', () => {
     expect(() => topologicalSort([a, b, c])).toThrow(CyclicDependencyError)
     try {
       topologicalSort([a, b, c])
-    } catch (err) {
+    }
+    catch (err) {
       const cycleErr = err as CyclicDependencyError
       expect(cycleErr.cycle).toContain('b')
       expect(cycleErr.cycle).toContain('c')
@@ -124,7 +127,7 @@ describe('topologicalSort()', () => {
   })
 })
 
-describe('CyclicDependencyError', () => {
+describe('cyclicDependencyError', () => {
   it('extends Error', () => {
     const err = new CyclicDependencyError(['a', 'b'])
     expect(err).toBeInstanceOf(Error)

@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { EnhancementNextSteps } from '../../../src/enhancements/summary.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ENHANCEMENT_NEXT_STEPS, showPerEnhancementSummary } from '../../../src/enhancements/summary.js'
 
 const mockTinkeriseLog = vi.hoisted(() => vi.fn())
 const mockTinkeriseBlankLine = vi.hoisted(() => vi.fn())
@@ -8,8 +10,6 @@ vi.mock('../../../src/executor/framing.js', () => ({
   tinkeriseLog: mockTinkeriseLog,
   tinkeriseBlankLine: mockTinkeriseBlankLine,
 }))
-
-import { showPerEnhancementSummary, ENHANCEMENT_NEXT_STEPS } from '../../../src/enhancements/summary.js'
 
 function makeInfo(overrides: Partial<EnhancementNextSteps> = {}): EnhancementNextSteps {
   return {
@@ -100,7 +100,7 @@ describe('showPerEnhancementSummary', () => {
   })
 })
 
-describe('ENHANCEMENT_NEXT_STEPS', () => {
+describe('eNHANCEMENT_NEXT_STEPS', () => {
   it('has entries for all six modules', () => {
     expect(ENHANCEMENT_NEXT_STEPS.eslint).toBeDefined()
     expect(ENHANCEMENT_NEXT_STEPS.prettier).toBeDefined()

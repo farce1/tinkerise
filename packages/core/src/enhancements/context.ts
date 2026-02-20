@@ -9,12 +9,12 @@
  * and framework detection from ./framework-detect.js.
  */
 
+import type { PackageManager } from '../pm/detect.js'
+import type { FrameworkId, ProjectContext } from './types.js'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { PackageManager } from '../pm/detect.js'
 import { detectPackageManager } from '../pm/detect.js'
 import { detectFramework } from './framework-detect.js'
-import type { FrameworkId, ProjectContext } from './types.js'
 
 /** Options for building project context */
 export interface BuildContextOptions {

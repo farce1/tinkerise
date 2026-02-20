@@ -12,7 +12,9 @@
  * - Generated src/index.ts uses v1 SDK import paths
  */
 
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { generateMcpServer } from '../../src/templates/mcp.js'
 
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
@@ -36,8 +38,6 @@ vi.mock('picocolors', () => ({
   },
 }))
 
-import { generateMcpServer } from '../../src/templates/mcp.js'
-
 describe('generateMcpServer', () => {
   let consoleSpy: ReturnType<typeof vi.spyOn>
 
@@ -47,7 +47,7 @@ describe('generateMcpServer', () => {
   })
 
   /** Helper: get all writeFile calls as { filename, content } pairs */
-  function getWrittenFiles(): Array<{ path: string; content: string }> {
+  function getWrittenFiles(): Array<{ path: string, content: string }> {
     return mockWriteFile.mock.calls.map((call: [string, string, string]) => ({
       path: call[0],
       content: call[1],
@@ -55,7 +55,7 @@ describe('generateMcpServer', () => {
   }
 
   /** Helper: find a written file by partial path match */
-  function findFile(partialPath: string): { path: string; content: string } | undefined {
+  function findFile(partialPath: string): { path: string, content: string } | undefined {
     return getWrittenFiles().find(f => f.path.includes(partialPath))
   }
 

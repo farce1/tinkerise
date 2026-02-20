@@ -7,7 +7,7 @@ vi.mock('node:fs/promises', () => ({
 
 const { access } = await import('node:fs/promises')
 const { detectFramework, FRAMEWORK_RULES } = await import(
-  '../../src/enhancements/framework-detect.js'
+  '../../src/enhancements/framework-detect.js',
 )
 
 const mockedAccess = vi.mocked(access)
@@ -33,7 +33,7 @@ beforeEach(() => {
   mockedAccess.mockRejectedValue(new Error('ENOENT'))
 })
 
-describe('FRAMEWORK_RULES', () => {
+describe('fRAMEWORK_RULES', () => {
   it('has rules for all 9 frameworks', () => {
     expect(FRAMEWORK_RULES).toHaveLength(9)
     const ids = FRAMEWORK_RULES.map(r => r.id)
@@ -90,15 +90,15 @@ describe('detectFramework()', () => {
   })
 
   it('detects React when react is in deps (no config file needed)', async () => {
-    const deps = { react: '^18.0.0', 'react-dom': '^18.0.0' }
+    const deps = { 'react': '^18.0.0', 'react-dom': '^18.0.0' }
 
     const result = await detectFramework(rootDir, deps, emptyPkg)
     expect(result.framework).toBe('react')
     expect(result.ambiguous).toEqual([])
   })
 
-  it('Next.js takes priority over React (both next and react present)', async () => {
-    const deps = { next: '^14.0.0', react: '^18.0.0', 'react-dom': '^18.0.0' }
+  it('next.js takes priority over React (both next and react present)', async () => {
+    const deps = { 'next': '^14.0.0', 'react': '^18.0.0', 'react-dom': '^18.0.0' }
     mockConfigFiles(['next.config.js'])
 
     // Both next (with config) and react (no config needed) are detected,
@@ -147,7 +147,7 @@ describe('detectFramework()', () => {
 
   it('returns ambiguous result when Vue and React both detected', async () => {
     // Vue needs config file confirmation, React doesn't
-    const deps = { vue: '^3.0.0', react: '^18.0.0', 'react-dom': '^18.0.0' }
+    const deps = { 'vue': '^3.0.0', 'react': '^18.0.0', 'react-dom': '^18.0.0' }
     mockConfigFiles(['vue.config.js'])
 
     const result = await detectFramework(rootDir, deps, emptyPkg)
@@ -204,7 +204,7 @@ describe('detectFramework()', () => {
   })
 
   it('detects Remix when @remix-run/react is in deps (no config needed)', async () => {
-    const deps = { '@remix-run/react': '^2.0.0', react: '^18.0.0', 'react-dom': '^18.0.0' }
+    const deps = { '@remix-run/react': '^2.0.0', 'react': '^18.0.0', 'react-dom': '^18.0.0' }
 
     const result = await detectFramework(rootDir, deps, emptyPkg)
     // Both remix and react are detected (neither needs config files)
@@ -214,7 +214,7 @@ describe('detectFramework()', () => {
   })
 
   it('detects Remix via react-router package (alternative detection)', async () => {
-    const deps = { 'react-router': '^7.0.0', react: '^18.0.0', 'react-dom': '^18.0.0' }
+    const deps = { 'react-router': '^7.0.0', 'react': '^18.0.0', 'react-dom': '^18.0.0' }
 
     const result = await detectFramework(rootDir, deps, emptyPkg)
     expect(result.ambiguous).toContain('remix')
@@ -247,7 +247,7 @@ describe('detectFramework()', () => {
   })
 
   it('does not detect Next.js when next in deps but no config file exists', async () => {
-    const deps = { next: '^14.0.0', react: '^18.0.0', 'react-dom': '^18.0.0' }
+    const deps = { 'next': '^14.0.0', 'react': '^18.0.0', 'react-dom': '^18.0.0' }
     // No config files exist -- next is not confirmed, but react still is (no config needed)
 
     const result = await detectFramework(rootDir, deps, emptyPkg)

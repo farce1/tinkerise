@@ -12,16 +12,18 @@
 import { defineScaffolder } from '@tinkerise/shared'
 
 /** Flutter prerequisite */
-export const flutterPrerequisite = (versionRange: string) => ({
-  command: 'flutter',
-  versionFlag: '--version',
-  versionRange,
-  installInstructions: {
-    darwin: 'brew install --cask flutter',
-    linux: 'snap install flutter --classic  # or https://docs.flutter.dev/get-started/install',
-    win32: 'winget install Google.Flutter',
-  },
-})
+export function flutterPrerequisite(versionRange: string) {
+  return {
+    command: 'flutter',
+    versionFlag: '--version',
+    versionRange,
+    installInstructions: {
+      darwin: 'brew install --cask flutter',
+      linux: 'snap install flutter --classic  # or https://docs.flutter.dev/get-started/install',
+      win32: 'winget install Google.Flutter',
+    },
+  }
+}
 
 /**
  * Flutter scaffolder — delegates to flutter create.

@@ -19,10 +19,10 @@ vi.mock('../../src/enhancements/framework-detect.js', () => ({
 const { readFile } = await import('node:fs/promises')
 const { detectPackageManager } = await import('../../src/pm/detect.js')
 const { detectFramework } = await import(
-  '../../src/enhancements/framework-detect.js'
+  '../../src/enhancements/framework-detect.js',
 )
 const { buildProjectContext } = await import(
-  '../../src/enhancements/context.js'
+  '../../src/enhancements/context.js',
 )
 
 const mockedReadFile = vi.mocked(readFile)
@@ -33,7 +33,7 @@ const mockedDetectFW = vi.mocked(detectFramework)
 const samplePkg = {
   name: 'test-project',
   dependencies: {
-    react: '^18.0.0',
+    'react': '^18.0.0',
     'react-dom': '^18.0.0',
   },
   devDependencies: {
@@ -69,10 +69,10 @@ describe('buildProjectContext()', () => {
     const ctx = await buildProjectContext({ rootDir })
 
     expect(ctx.installedDeps).toEqual({
-      react: '^18.0.0',
+      'react': '^18.0.0',
       'react-dom': '^18.0.0',
-      typescript: '^5.0.0',
-      vitest: '^1.0.0',
+      'typescript': '^5.0.0',
+      'vitest': '^1.0.0',
     })
   })
 
@@ -184,10 +184,10 @@ describe('buildProjectContext()', () => {
     expect(mockedDetectFW).toHaveBeenCalledWith(
       rootDir,
       {
-        react: '^18.0.0',
+        'react': '^18.0.0',
         'react-dom': '^18.0.0',
-        typescript: '^5.0.0',
-        vitest: '^1.0.0',
+        'typescript': '^5.0.0',
+        'vitest': '^1.0.0',
       },
       samplePkg,
     )

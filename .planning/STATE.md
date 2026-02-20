@@ -2,19 +2,18 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-19)
+See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 21 — Polish & Metadata (v2.0 Quality & Robustness)
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 21 of 22 (Polish & Metadata)
-Plan: 2 of 2 in current phase
-Status: Verifying
-Last activity: 2026-02-19 — Plan 21-02 complete
+Phase: All complete through v2.0
+Status: Milestone v2.0 shipped
+Last activity: 2026-02-20 — v2.0 Quality & Robustness milestone completed
 
-Progress: [#######░░░] 67% (v2.0)
+Progress: [##########] 100% (v2.0)
 
 ## Performance Metrics
 
@@ -29,17 +28,24 @@ Progress: [#######░░░] 67% (v2.0)
 - Timeline: 3 days (2026-02-16 -> 2026-02-19)
 
 **v2.0 Summary:**
-- Total plans completed: 10
-- In progress since: 2026-02-19
+- Total plans completed: 13
+- Timeline: 1 day (2026-02-19 -> 2026-02-20)
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
+| 17-01 | ESLint fix all packages | - | - | 16+ |
+| 17-02 | Bun dependency caching | - | - | 2 |
+| 18-01 | Release pipeline fixes | - | 2 | 5 |
+| 18-02 | RELEASE.md documentation | - | 1 | 1 |
 | 19-01 | changelog + utils tests | 1min | 2 | 2 |
 | 19-02 | platform + version + shared tests | 2min | 2 | 3 |
 | 20-01 | update-check + install-method tests | 3min | 2 | 2 |
 | 20-02 | project-name + flow + update tests | 3min | 3 | 3 |
 | 21-01 | package metadata + URL fixes | 1min | 2 | 7 |
 | 21-02 | CODE_OF_CONDUCT + cleanup | 1min | 2 | 1 |
+| 22-01 | Harden tool installations | - | 2 | 1 |
+| 22-02 | GitHub Issue on drift | - | 1 | 1 |
+| 23-01 | lint regression fix | 2min | 2 | 7 |
 
 ## Accumulated Context
 
@@ -47,15 +53,7 @@ Progress: [#######░░░] 67% (v2.0)
 
 All v1.0 decisions archived in milestones/v1.0-ROADMAP.md.
 All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
-
-- Phase 17: Added 2 ESLint rule overrides (node/prefer-global/process off, no-console off) for Bun CLI compatibility
-- Phase 18: Exited changeset pre-release mode, fixed ci scripts, switched Homebrew version to jq, corrected all repo slugs to farce1/tinkerise, documented NPM_TOKEN and HOMEBREW_TAP_TOKEN setup in RELEASE.md
-- Phase 19-01: Both tasks committed together since they share the same test infrastructure pattern
-- Phase 19-02: Removed invalid displayName from Prerequisite tests, fixed versionedFlags schema shape from { minVersion, flag, native } to { versionRange, flags }
-- Phase 20-01: Used vi.resetModules + dynamic import for update-check per-test isolation; vi.doMock for import.meta.dirname Homebrew/npx tests
-- Phase 20-02: Used Commander exitOverride() + parseAsync for command testing; mocked p.group with sequential function executor
-- Phase 21-01: All metadata fields placed after version and before exports/bin for consistent layout across packages
-- Phase 21-02: Used Contributor Covenant v2.1 verbatim; .gitignore and TinkeriseConfig already clean from prior phases
+All v2.0 decisions archived in milestones/v2.0-ROADMAP.md.
 
 ### Pending Todos
 
@@ -63,10 +61,10 @@ None.
 
 ### Blockers/Concerns
 
-None. (Phase 18 resolved all prior blockers: HOMEBREW_TAP_TOKEN docs, NPM_TOKEN docs, pre-release mode)
+None.
 
 ## Session Continuity
 
-Last session: 2026-02-19
-Stopped at: Phase 21 execution complete, verifying
+Last session: 2026-02-20
+Stopped at: Completed v2.0 milestone archival
 Resume file: None

@@ -3,8 +3,8 @@
  * with version-aware resolution (REG-02, REG-05).
  */
 
-import semver from 'semver'
 import type { FlagMapping, ScaffolderEntry } from '@tinkerise/shared'
+import semver from 'semver'
 
 export interface ResolveFlagsOptions {
   /** Registry entry for the scaffolder */
@@ -54,13 +54,15 @@ export function resolveFlags(options: ResolveFlagsOptions): ResolveFlagsResult {
 
     if (userValue === false && flagDef.nativeDisable) {
       // User explicitly disabled (e.g., --no-typescript)
-      if (flagDef.nativeDisable) args.push(...flagDef.nativeDisable.split(/\s+/))
+      if (flagDef.nativeDisable)
+        args.push(...flagDef.nativeDisable.split(/\s+/))
     }
     else if (userValue === true) {
       // Split on whitespace to handle multi-word native flags
       // e.g., '--add tailwindcss' -> ['--add', 'tailwindcss']
       // Empty string sentinel (silent/no-op flags) produces no args
-      if (flagDef.native) args.push(...flagDef.native.split(/\s+/))
+      if (flagDef.native)
+        args.push(...flagDef.native.split(/\s+/))
     }
     else if (typeof userValue === 'string' && flagDef.valueMap) {
       // Value flag with mapping (e.g., --package-manager pnpm)

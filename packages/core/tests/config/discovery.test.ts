@@ -1,6 +1,6 @@
-import { rm, mkdir, writeFile } from 'node:fs/promises'
-import path from 'node:path'
+import { mkdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
+import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { discoverNpmPresets, loadNpmPreset } from '../../src/config/discovery'
 
@@ -69,10 +69,10 @@ describe('discoverNpmPresets()', () => {
 
   it('returns empty array when no matching deps found', async () => {
     await writePackageJson(tmpDir, {
-      'react': '^18.0.0',
-      'typescript': '^5.0.0',
+      react: '^18.0.0',
+      typescript: '^5.0.0',
     }, {
-      'vitest': '^1.0.0',
+      vitest: '^1.0.0',
     })
 
     const presets = await discoverNpmPresets(tmpDir)

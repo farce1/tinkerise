@@ -7,12 +7,12 @@
  * Always uses Vitest regardless of framework (per locked decision).
  */
 
+import type { ProjectContext } from '../types.js'
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
 import { defineEnhancement } from '../define.js'
 import { dependencyVersionMap } from '../version-map.js'
-import type { ProjectContext } from '../types.js'
-import { installPackages, writeConfigFile, addScript } from './_utils.js'
+import { addScript, installPackages, writeConfigFile } from './_utils.js'
 
 /** Test config file patterns to check */
 const VITEST_CONFIG_FILES = [
@@ -75,7 +75,7 @@ export const testingModule = defineEnhancement({
     const filesModified: string[] = []
 
     // Step 1: Install vitest
-    const version = dependencyVersionMap['vitest']
+    const version = dependencyVersionMap.vitest
     const versionedPackages = [`vitest@${version}`]
 
     await installPackages(versionedPackages, {

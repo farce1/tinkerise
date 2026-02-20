@@ -3,8 +3,8 @@
  * Mirrors the defineScaffolder() pattern from the scaffolder registry.
  */
 
-import { EnhancementModuleSchema } from './schemas.js'
 import type { EnhancementModule } from './types.js'
+import { EnhancementModuleSchema } from './schemas.js'
 
 /**
  * Define an enhancement module with full type safety.

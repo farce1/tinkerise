@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { editorconfigModule } from '../../../src/enhancements/modules/editorconfig.js'
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockWriteFile = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
@@ -10,8 +12,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { editorconfigModule } from '../../../src/enhancements/modules/editorconfig.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -41,7 +41,8 @@ describe('editorconfigModule', () => {
 
     it('returns true when .editorconfig exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.editorconfig') return undefined
+        if (path === '/tmp/test-project/.editorconfig')
+          return undefined
         throw new Error('ENOENT')
       })
 

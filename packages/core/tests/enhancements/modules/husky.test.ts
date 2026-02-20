@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { huskyModule } from '../../../src/enhancements/modules/husky.js'
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -17,8 +19,6 @@ vi.mock('node:fs/promises', () => ({
   writeFile: mockWriteFile,
   mkdir: mockMkdir,
 }))
-
-import { huskyModule } from '../../../src/enhancements/modules/husky.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -55,7 +55,8 @@ describe('huskyModule', () => {
 
     it('returns installed when .husky exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.husky') return undefined
+        if (path === '/tmp/test-project/.husky')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -84,7 +85,8 @@ describe('huskyModule', () => {
     it('creates pre-commit hook with lint-staged', async () => {
       // .git exists
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -100,7 +102,8 @@ describe('huskyModule', () => {
 
     it('lint-staged config includes eslint when eslint installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
       mockReadFile.mockResolvedValue(JSON.stringify({
@@ -121,14 +124,15 @@ describe('huskyModule', () => {
 
       expect(parsed['lint-staged']).toBeDefined()
       const config = parsed['lint-staged'] as Record<string, string[]>
-      const codeGlob = Object.keys(config).find((k) => k.includes('js'))
+      const codeGlob = Object.keys(config).find(k => k.includes('js'))
       expect(codeGlob).toBeDefined()
       expect(config[codeGlob!]).toContain('eslint --fix')
     })
 
     it('lint-staged config includes prettier when prettier installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
       mockReadFile.mockResolvedValue(JSON.stringify({
@@ -147,14 +151,15 @@ describe('huskyModule', () => {
       const parsed = JSON.parse(lastPkgWrite[1] as string)
 
       const config = parsed['lint-staged'] as Record<string, string[]>
-      const formatGlob = Object.keys(config).find((k) => k.includes('json'))
+      const formatGlob = Object.keys(config).find(k => k.includes('json'))
       expect(formatGlob).toBeDefined()
       expect(config[formatGlob!]).toContain('prettier --write')
     })
 
     it('lint-staged config includes both when both installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
       mockReadFile.mockResolvedValue(JSON.stringify({
@@ -178,7 +183,8 @@ describe('huskyModule', () => {
 
     it('lint-staged config is empty when neither installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -196,7 +202,8 @@ describe('huskyModule', () => {
 
     it('adds prepare script', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git') return undefined
+        if (path === '/tmp/test-project/.git')
+          return undefined
         throw new Error('ENOENT')
       })
 

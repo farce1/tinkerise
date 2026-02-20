@@ -1,13 +1,13 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { readFile, writeFile } from 'node:fs/promises'
-import { runEnhancements } from '../../src/enhancements/executor.js'
-import type { EnhancementExecutorOptions, ExecutionSummary } from '../../src/enhancements/executor.js'
+import type { EnhancementExecutorOptions } from '../../src/enhancements/executor.js'
 import type {
   DetectionResult,
   EnhancementModule,
   InstallResult,
   ProjectContext,
 } from '../../src/enhancements/types.js'
+import { readFile, writeFile } from 'node:fs/promises'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { runEnhancements } from '../../src/enhancements/executor.js'
 
 // Suppress console.log from tinkeriseLog during tests
 vi.mock('../../src/executor/framing.js', () => ({
@@ -210,7 +210,7 @@ describe('runEnhancements()', () => {
       dependsOn: ['eslint'], // eslint not in current batch
     })
 
-    const approvalCalled: Array<{ id: string; deps: string[] }> = []
+    const approvalCalled: Array<{ id: string, deps: string[] }> = []
     const opts = makeOpts([mod], {
       onDependencyApproval: async (id, deps) => {
         approvalCalled.push({ id, deps })

@@ -3,8 +3,8 @@
  * is available in PATH using `which`.
  */
 
-import which from 'which'
 import type { PackageManager } from './detect.js'
+import which from 'which'
 
 /**
  * Verify that a package manager binary exists in PATH.

@@ -7,7 +7,7 @@
  */
 
 import { mkdir, writeFile } from 'node:fs/promises'
-import { join, dirname, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { execa } from 'execa'
 import pc from 'picocolors'
 

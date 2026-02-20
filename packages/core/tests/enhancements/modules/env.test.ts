@@ -1,5 +1,7 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { envModule } from '../../../src/enhancements/modules/env.js'
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -18,8 +20,6 @@ const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stder
 vi.mock('execa', () => ({
   execa: mockExeca,
 }))
-
-import { envModule } from '../../../src/enhancements/modules/env.js'
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
@@ -50,7 +50,8 @@ describe('envModule', () => {
 
     it('returns installed when .env.example exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.env.example') return undefined
+        if (path === '/tmp/test-project/.env.example')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -61,7 +62,8 @@ describe('envModule', () => {
 
     it('returns installed when .env exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.env') return undefined
+        if (path === '/tmp/test-project/.env')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -71,7 +73,8 @@ describe('envModule', () => {
 
     it('returns installed when src/env.ts exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/src/env.ts') return undefined
+        if (path === '/tmp/test-project/src/env.ts')
+          return undefined
         throw new Error('ENOENT')
       })
 
@@ -188,7 +191,8 @@ describe('envModule', () => {
 
     it('places env.ts in src/ when src/ directory exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/src') return undefined
+        if (path === '/tmp/test-project/src')
+          return undefined
         throw new Error('ENOENT')
       })
 

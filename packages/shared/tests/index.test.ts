@@ -1,4 +1,4 @@
-import type { ScaffolderCategory, TinkeriseConfig } from '../src/index'
+import type { ScaffolderCategory, TinkeriseUserConfig } from '../src/index'
 import { describe, expect, it } from 'vitest'
 import { VERSION } from '../src/index'
 
@@ -13,15 +13,17 @@ describe('@tinkerise/shared', () => {
     })
   })
 
-  describe('tinkeriseConfig', () => {
+  describe('tinkeriseUserConfig', () => {
     it('accepts a valid config object', () => {
-      const config: TinkeriseConfig = { name: 'my-project' }
-      expect(config.name).toBe('my-project')
+      const config: TinkeriseUserConfig = { packageManager: 'npm' }
+      expect(config.packageManager).toBe('npm')
     })
 
-    it('accepts optional packageManager', () => {
-      const config: TinkeriseConfig = { name: 'test', packageManager: 'bun' }
+    it('accepts optional fields', () => {
+      const config: TinkeriseUserConfig = { packageManager: 'bun', typescript: true, defaultCategory: 'web' }
       expect(config.packageManager).toBe('bun')
+      expect(config.typescript).toBe(true)
+      expect(config.defaultCategory).toBe('web')
     })
   })
 
