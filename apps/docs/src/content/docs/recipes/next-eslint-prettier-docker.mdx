@@ -1,0 +1,68 @@
+---
+title: Next.js App with ESLint, Prettier, and Docker
+description: Scaffold a Next.js app, layer quality tooling, and containerize it for consistent local and CI usage.
+---
+
+## Goal
+
+Create a production-ready Next.js project with linting, formatting, and Docker support using only supported `tinkerise` scaffolders and enhancements.
+
+## Prerequisites
+
+- Node.js 20.11+
+- `tinkerise` installed (`npm i -g tinkerise`)
+- Docker Desktop or Docker Engine
+
+## Step 1: Scaffold the application
+
+```bash
+tinkerise web next docs-next-app --typescript --tailwind --eslint
+cd docs-next-app
+```
+
+Expected output includes a generated Next.js app with TypeScript and Tailwind files.
+
+## Step 2: Add formatting and container enhancements
+
+```bash
+tinkerise add prettier docker
+```
+
+This applies enhancement modules on top of the generated app.
+
+## Step 3: Install and run checks
+
+```bash
+npm install
+npm run lint
+```
+
+Expected result: ESLint passes with no errors for a fresh scaffold.
+
+## Step 4: Build and run the Docker image
+
+```bash
+docker build -t docs-next-app .
+docker run --rm -p 3000:3000 docs-next-app
+```
+
+Open `http://localhost:3000` and verify the app renders.
+
+## Expected generated artifacts
+
+- `package.json` scripts from Next.js scaffold
+- `prettier` config artifacts from enhancement
+- `Dockerfile` and `.dockerignore` from Docker enhancement
+
+## Next steps
+
+1. Add CI checks with `tinkerise add ci`.
+2. Add commit quality gates with `tinkerise add husky commitlint`.
+3. Review framework details in the [Next.js guide](/guides/scaffolders/next/).
+
+## Related guides
+
+- [Next.js scaffolder guide](/guides/scaffolders/next/)
+- [ESLint enhancement guide](/guides/enhancements/eslint/)
+- [Prettier enhancement guide](/guides/enhancements/prettier/)
+- [Docker enhancement guide](/guides/enhancements/docker/)

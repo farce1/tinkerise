@@ -1,0 +1,80 @@
+---
+title: Team Preset for Repeatable Full-Stack Setup
+description: Capture a shared baseline as a preset and reuse it to scaffold new projects consistently across a team.
+---
+
+## Goal
+
+Create and reuse a team preset so every new project starts with the same defaults and enhancement stack.
+
+## Prerequisites
+
+- Node.js 20.11+
+- `tinkerise` installed
+- One existing project where you want to capture defaults
+
+## Step 1: Prepare a baseline project
+
+```bash
+tinkerise web next team-template --typescript --tailwind --eslint
+cd team-template
+tinkerise add prettier husky ci docker env
+```
+
+Expected result: a configured baseline project with common workflow enhancements.
+
+## Step 2: Create project defaults
+
+```bash
+tinkerise config set packageManager pnpm --project
+tinkerise config set defaultCategory web --project
+tinkerise config set typescript true --project
+```
+
+This writes a project config that the preset can capture.
+
+## Step 3: Save the preset
+
+```bash
+tinkerise preset save team-fullstack --framework next --category web --description "Team standard full-stack starter"
+```
+
+Expected output: confirmation that `team-fullstack` was saved.
+
+## Step 4: Apply the preset in a new project
+
+```bash
+mkdir ../team-product
+cd ../team-product
+tinkerise preset use team-fullstack
+```
+
+Expected result: enhancement modules from the preset are applied in the new repo.
+
+## Step 5: Verify and inspect
+
+```bash
+tinkerise preset list
+tinkerise config list --project
+```
+
+Confirm the preset is discoverable and project defaults are visible.
+
+## Expected generated artifacts
+
+- Local preset JSON in the tinkerise presets directory
+- `tinkerise.config.ts` in project root (when project config is used)
+- Enhancement-generated files such as Docker/CI/Husky config files
+
+## Next steps
+
+1. Publish a shared preset package for wider reuse.
+2. Add testing defaults with `tinkerise add testing`.
+3. Review config and preset behavior in [Configuration](/guides/configuration/) and [Presets](/guides/presets/).
+
+## Related guides
+
+- [Configuration guide](/guides/configuration/)
+- [Presets guide](/guides/presets/)
+- [CI enhancement guide](/guides/enhancements/ci/)
+- [Env enhancement guide](/guides/enhancements/env/)

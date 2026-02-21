@@ -1,0 +1,72 @@
+---
+title: Turborepo Monorepo Workflow from Day Zero
+description: Create a Turborepo monorepo and establish a repeatable quality workflow for multi-package development.
+---
+
+## Goal
+
+Bootstrap a Turborepo monorepo and apply common tooling enhancements that help teams ship and maintain packages consistently.
+
+## Prerequisites
+
+- Node.js 20.11+
+- `tinkerise` installed
+
+## Step 1: Scaffold the monorepo
+
+```bash
+tinkerise monorepo acme-platform --package-manager pnpm
+cd acme-platform
+```
+
+Expected result: a Turborepo workspace with apps/packages structure and turbo tasks.
+
+## Step 2: Add repository workflow enhancements
+
+```bash
+tinkerise add prettier husky commitlint ci editorconfig
+```
+
+These enhancements set formatting defaults, commit checks, and CI automation for the monorepo.
+
+## Step 3: Install and run workspace tasks
+
+```bash
+pnpm install
+pnpm turbo run lint
+pnpm turbo run test
+```
+
+Expected result: all packages run lint and test tasks through Turborepo.
+
+## Step 4: Verify local developer flow
+
+```bash
+pnpm turbo run dev --filter=./apps/*
+```
+
+Expected result: app workspaces start in watch mode with Turborepo orchestration.
+
+## Step 5: Validate generated standards
+
+Check that commit hooks and CI files were generated and are tracked by git.
+
+## Expected generated artifacts
+
+- Turborepo workspace files (`turbo.json`, workspace manifests, app/package skeletons)
+- `.husky/` hooks and commitlint config
+- `.github/workflows/ci.yml`
+- `.editorconfig` and Prettier config files
+
+## Next steps
+
+1. Add language-specific packages (CLI, library, or backend service).
+2. Introduce dependency update automation with `tinkerise add renovate`.
+3. Reference command behavior in the [Turbo scaffolder guide](/guides/scaffolders/turbo/).
+
+## Related guides
+
+- [Turbo scaffolder guide](/guides/scaffolders/turbo/)
+- [Commitlint enhancement guide](/guides/enhancements/commitlint/)
+- [CI enhancement guide](/guides/enhancements/ci/)
+- [EditorConfig enhancement guide](/guides/enhancements/editorconfig/)
