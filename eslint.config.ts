@@ -11,6 +11,7 @@ export default antfu({
     '**/node_modules/**',
     '**/.turbo/**',
     'templates/**',
+    'apps/docs/**',
   ],
   rules: {
     // process is always globally available in Node.js/Bun CLI context

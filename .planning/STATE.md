@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 24 -- Error Handling & CLI Polish
+**Current focus:** Phase 25 -- Docs Site Infrastructure
 
 ## Current Position
 
-Phase: 24 of 29 (Error Handling & CLI Polish)
-Plan: 3 of 3 complete
-Status: Phase Complete
-Last activity: 2026-02-20 -- Completed 24-02 (error boundary & CLI integration)
+Phase: 25 of 29 (Docs Site Infrastructure)
+Plan: 1 of 2 complete
+Status: In Progress
+Last activity: 2026-02-21 -- Completed 25-01 (Starlight docs site scaffold)
 
-Progress: [██████████████████████████░░░░] 81% (68/~75 plans across all milestones)
+Progress: [███████████████████████████░░░] 82% (69/~75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Progress: [███████████████████████
 | 24-01 | error hierarchy + fuzzy match | 5min | 2 | 9 |
 | 24-02 | error boundary & throws | 8min | 2 | 14 |
 | 24-03 | subcommand help examples | 7min | 2 | 7 |
+| 25-01 | Starlight docs site scaffold | 5min | 2 | 10 |
 
 ## Accumulated Context
 
@@ -67,6 +68,10 @@ Recent decisions (v3.0):
 - Single error boundary via handleError() at program.parseAsync().catch() level
 - Commander exitOverride to throw CommanderError instead of process.exit for central handling
 - User cancellations (process.exit(0)) left as-is -- not errors
+- Added zod@3 to docs workspace to isolate from monorepo zod@4 (Astro requires Zod 3 APIs)
+- Teal/cyan accent palette (#2bb4d4 dark, #0e7f9b light) with slate gray neutrals for docs site
+- SVG logo uses currentColor for automatic dark/light theme adaptation
+- Astro tsconfig base instead of repo tsconfig.base.json for .astro file support
 
 ### Pending Todos
 
@@ -78,6 +83,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-20
-Stopped at: Completed 24-02-PLAN.md (error boundary & CLI integration) -- Phase 24 complete
+Last session: 2026-02-21
+Stopped at: Completed 25-01-PLAN.md (Starlight docs site scaffold)
 Resume file: None
