@@ -1,0 +1,127 @@
+---
+title: Configuration
+description: Configure tinkerise defaults with global, project, preset, and CLI layers.
+---
+
+Use configuration to set sane defaults for package manager, TypeScript, and default category.
+
+## Quick start
+
+Initialize global config:
+
+```bash
+tinkerise config init
+```
+
+List active values:
+
+```bash
+tinkerise config list
+```
+
+## Supported keys
+
+`tinkerise config` manages three keys:
+
+- `packageManager`: `npm | pnpm | yarn | bun`
+- `typescript`: `true | false`
+- `defaultCategory`: `web | backend | mobile`
+
+## Config scopes
+
+### Global scope (default)
+
+Global config is stored in your user config directory and applies everywhere unless overridden.
+
+Common commands:
+
+```bash
+tinkerise config list
+tinkerise config get packageManager
+tinkerise config set packageManager pnpm
+```
+
+### Project scope
+
+Project config lives in `tinkerise.config.ts` inside your current project and overrides global values.
+
+Use `--project` with config commands:
+
+```bash
+tinkerise config init --project
+tinkerise config list --project
+tinkerise config set typescript true --project
+```
+
+The generated file shape is:
+
+```ts
+import { defineConfig } from '@tinkerise/shared'
+
+export default defineConfig({
+  packageManager: 'pnpm',
+  typescript: true,
+  defaultCategory: 'web',
+})
+```
+
+## Exact merge precedence
+
+Final config is resolved with this order:
+
+1. `preset` (lowest priority)
+2. `global`
+3. `project`
+4. `CLI flags` (highest priority)
+
+In source, `resolveConfig()` loads layers then calls:
+
+```ts
+mergeConfigChain(presetConfig, globalConfig, projectConfig, cliFlags)
+```
+
+`mergeConfigChain()` merges left to right, so later layers override earlier layers.
+
+## Precedence examples
+
+### Example A: project overrides global
+
+- Global: `packageManager = npm`
+- Project: `packageManager = pnpm`
+- CLI: not provided
+
+Final value: `pnpm`
+
+### Example B: CLI overrides project
+
+- Preset: `defaultCategory = web`
+- Global: `defaultCategory = backend`
+- Project: `defaultCategory = mobile`
+- CLI run: `tinkerise --category web`
+
+Final value: `web`
+
+### Example C: only preset present
+
+- Preset provides `typescript = true`
+- No global/project/CLI value
+
+Final value: `true`
+
+## Practical workflow
+
+1. Set personal defaults globally (`config set ...`)
+2. Set team or repo defaults in `tinkerise.config.ts`
+3. Use presets for reusable stack bundles
+4. Use CLI flags for one-off overrides
+
+## Troubleshooting
+
+- If a value is not what you expect, check all four layers in precedence order.
+- `config list --project` only shows project values, not merged output.
+- CLI flags always win for that single command invocation.
+
+## Related docs
+
+- [`/guides/presets/`](/guides/presets/)
+- [`/reference/commands/`](/reference/commands/)
