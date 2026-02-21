@@ -1,0 +1,59 @@
+---
+title: Astro
+description: Scaffold an Astro project through create-astro.
+---
+
+## Quick start
+
+```bash
+tinkerise web astro my-astro-site --tailwind
+```
+
+```bash
+tinkerise web astro my-astro-site --no-git --no-install
+```
+
+## When to use
+
+Use `astro` when you want:
+
+- Content-focused sites with strong performance defaults
+- Island architecture for selective client-side interactivity
+- First-class Markdown and MDX workflows
+
+## Prerequisites
+
+- Node.js `>=18.17.1`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-astro flag | Notes |
+| --- | --- | --- |
+| `--typescript` | _(none)_ | Astro uses strict TypeScript defaults |
+| `--tailwind` | `--add tailwindcss` | Adds Tailwind integration during scaffold |
+| `--no-git` | `--no-git` | Skips git initialization |
+| `--no-install` | `--no-install` | Skips dependency install |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `create-astro`.
+- Astro TypeScript mode is effectively always on in current versions.
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official Astro project scaffold, including:
+
+- `src/pages` routes and content-ready project structure
+- Astro configuration and package scripts
+- Optional Tailwind integration when `--tailwind` is selected
+
+## Related enhancements
+
+- `tinkerise add prettier`
+- `tinkerise add husky`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

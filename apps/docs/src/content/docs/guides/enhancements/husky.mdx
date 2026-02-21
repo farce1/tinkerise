@@ -1,0 +1,35 @@
+---
+title: Husky + lint-staged
+description: Add pre-commit hooks for staged linting and formatting.
+---
+
+## Quick start
+
+```bash
+tinkerise add husky
+```
+
+## What it detects
+
+The `husky` module checks for an existing `.husky/` directory or `husky` dependency.
+
+## What it installs
+
+- `husky`
+- `lint-staged`
+
+## File and config changes
+
+- Requires a `.git` directory (otherwise install returns a warning)
+- Adds `prepare` script: `husky`
+- Creates `.husky/pre-commit` with `npx lint-staged`
+- Writes `lint-staged` config in `package.json`
+
+## Conflict handling
+
+If Husky is already detected, interactive execution can show diffs and allow accept/skip decisions before finalizing writes.
+
+## Related docs
+
+- [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)
+- [`/guides/enhancements/commitlint/`](/guides/enhancements/commitlint/)

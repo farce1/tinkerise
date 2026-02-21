@@ -1,0 +1,37 @@
+---
+title: ESLint
+description: Add an ESLint flat config with framework-aware defaults.
+---
+
+## Quick start
+
+```bash
+tinkerise add eslint
+```
+
+## What it detects
+
+The `eslint` module treats the enhancement as installed when it finds any ESLint config file or `eslintConfig` in `package.json`.
+
+## What it installs
+
+- `eslint`
+- `@eslint/js`
+- `globals`
+
+It also adds `typescript-eslint` when TypeScript is detected and adds framework plugin packages for supported frameworks.
+
+## File and config changes
+
+- Writes `eslint.config.js` for `"type": "module"` projects
+- Writes `eslint.config.mjs` for non-module projects
+- Adds a `lint` script: `eslint .`
+
+## Conflict handling
+
+If ESLint config already exists, the executor treats it as a conflict. Interactive runs can show a diff and let you accept or skip changes.
+
+## Related docs
+
+- [`/guides/enhancements/prettier/`](/guides/enhancements/prettier/)
+- [`/guides/enhancements/husky/`](/guides/enhancements/husky/)

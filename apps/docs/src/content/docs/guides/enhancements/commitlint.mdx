@@ -1,0 +1,34 @@
+---
+title: Commitlint
+description: Enforce Conventional Commit messages and optional Husky hook integration.
+---
+
+## Quick start
+
+```bash
+tinkerise add commitlint
+```
+
+## What it detects
+
+The `commitlint` module checks for commitlint config files or a `commitlint` key in `package.json`.
+
+## What it installs
+
+- `@commitlint/cli`
+- `@commitlint/config-conventional`
+
+## File and config changes
+
+- Writes `commitlint.config.js` for `"type": "module"` projects
+- Writes `commitlint.config.mjs` for non-module projects
+- Creates `.husky/commit-msg` when `.husky/` already exists
+
+## Conflict handling
+
+If commitlint config is already present, interactive runs can show diffs and let you accept or skip updates.
+
+## Related docs
+
+- [`/guides/enhancements/husky/`](/guides/enhancements/husky/)
+- [`/guides/enhancements/changelog/`](/guides/enhancements/changelog/)

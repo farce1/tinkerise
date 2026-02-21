@@ -1,0 +1,37 @@
+---
+title: Prettier
+description: Add project formatting scripts with optional Tailwind integration.
+---
+
+## Quick start
+
+```bash
+tinkerise add prettier
+```
+
+## What it detects
+
+The `prettier` module checks for existing Prettier config files, a `prettier` key in `package.json`, or an installed `prettier` dependency.
+
+## What it installs
+
+- `prettier`
+
+When `tailwindcss` is already installed, it also adds:
+
+- `prettier-plugin-tailwindcss`
+
+## File and config changes
+
+- Adds `format` script: `prettier --write .`
+- Adds `format:check` script: `prettier --check .`
+- Writes `.prettierrc` only when Tailwind is detected
+
+## Conflict handling
+
+If config already exists, the executor can treat that as a conflict in interactive runs and provide diff-based accept/skip choices.
+
+## Related docs
+
+- [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)
+- [`/guides/enhancements/husky/`](/guides/enhancements/husky/)

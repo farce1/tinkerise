@@ -1,0 +1,33 @@
+---
+title: Changelog
+description: Generate changelogs from Conventional Commits.
+---
+
+## Quick start
+
+```bash
+tinkerise add changelog
+```
+
+## What it detects
+
+The `changelog` module checks for existing changelog config files or installed changelog dependencies (`conventional-changelog-cli` or `standard-version`).
+
+## What it installs
+
+- `conventional-changelog-cli`
+
+## File and config changes
+
+- Writes `.changelogrc.json` with Conventional Commits preset sections
+- Adds `changelog` script
+- Adds `release` script
+
+## Conflict handling
+
+If changelog config already exists, interactive runs can show a diff and let you accept or skip generated updates.
+
+## Related docs
+
+- [`/guides/enhancements/commitlint/`](/guides/enhancements/commitlint/)
+- [`/guides/enhancements/ci/`](/guides/enhancements/ci/)

@@ -1,0 +1,58 @@
+---
+title: Vite
+description: Scaffold a Vite project through create-vite.
+---
+
+## Quick start
+
+```bash
+tinkerise web vite my-vite-app --template react
+```
+
+```bash
+tinkerise web vite my-vite-app --template react --typescript
+```
+
+## When to use
+
+Use `vite` when you want:
+
+- Fast dev startup and HMR for frontend projects
+- Flexible template-based scaffolding (React, Vue, Svelte, and more)
+- A lightweight foundation you can shape yourself
+
+## Prerequisites
+
+- Node.js `>=18.0.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-vite flag | Notes |
+| --- | --- | --- |
+| `--typescript` | _(resolved in template flow)_ | Vite TS variants come from template choice |
+| `--template <template>` | `--template <template>` | Common examples: `react`, `react-ts`, `vue-ts` |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `create-vite`.
+- Vite does not expose a single native TypeScript flag in registry mapping.
+- TypeScript behavior is controlled by template choice (`react-ts`, `vue-ts`, etc.).
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official Vite template output, including:
+
+- Template-specific source files and config
+- Vite scripts and dependencies in `package.json`
+- Optional TypeScript setup when using a `*-ts` template variant
+
+## Related enhancements
+
+- `tinkerise add eslint`
+- `tinkerise add prettier`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

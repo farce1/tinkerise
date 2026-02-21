@@ -1,0 +1,32 @@
+---
+title: EditorConfig
+description: Standardize formatting behavior across editors.
+---
+
+## Quick start
+
+```bash
+tinkerise add editorconfig
+```
+
+## What it detects
+
+The `editorconfig` module checks for an existing `.editorconfig` file.
+
+## What it installs
+
+`editorconfig` is a config-only enhancement. It does not install any npm packages.
+
+## File and config changes
+
+- Writes `.editorconfig` with standard JS/TS defaults
+- Adds markdown and Makefile-specific overrides
+
+## Conflict handling
+
+If `.editorconfig` already exists, interactive runs can show a diff and let you accept or skip the generated content.
+
+## Related docs
+
+- [`/guides/enhancements/prettier/`](/guides/enhancements/prettier/)
+- [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)

@@ -1,0 +1,60 @@
+---
+title: T3
+description: Scaffold a T3 stack app through create-t3-app.
+---
+
+## Quick start
+
+```bash
+tinkerise web t3 my-t3-app --tailwind --no-install
+```
+
+```bash
+tinkerise web t3 my-t3-app --no-git
+```
+
+## When to use
+
+Use `t3` when you want:
+
+- A TypeScript-first full-stack starter
+- Opinionated defaults for modern app tooling
+- A strong baseline for web products that move fast
+
+## Prerequisites
+
+- Node.js `>=18.17.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-t3-app flag | Notes |
+| --- | --- | --- |
+| `--typescript` | _(none)_ | T3 is TypeScript-first by default |
+| `--tailwind` | `--tailwind` | Enables Tailwind in scaffold setup |
+| `--eslint` | _(none)_ | T3 includes ESLint behavior by default |
+| `--no-git` | `--noGit` | CamelCase native flag |
+| `--no-install` | `--noInstall` | CamelCase native flag |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `create-t3-app`.
+- T3 uses camelCase native flags for no-git/no-install.
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official T3 scaffold output, including:
+
+- TypeScript-first app structure
+- T3 defaults for project tooling and scripts
+- Optional Tailwind setup when enabled with `--tailwind`
+
+## Related enhancements
+
+- `tinkerise add prettier`
+- `tinkerise add ci`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

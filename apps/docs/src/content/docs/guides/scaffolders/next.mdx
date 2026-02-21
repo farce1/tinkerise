@@ -1,0 +1,61 @@
+---
+title: Next.js
+description: Scaffold a Next.js app through create-next-app.
+---
+
+## Quick start
+
+```bash
+tinkerise web next my-next-app --typescript --tailwind --eslint
+```
+
+```bash
+tinkerise web next my-next-app --no-install --package-manager pnpm
+```
+
+## When to use
+
+Use `next` when you want:
+
+- React Server Components and file-based routing
+- Built-in API routes and full-stack patterns
+- A single framework for app UI and backend endpoints
+
+## Prerequisites
+
+- Node.js `>=18.17.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-next-app flag | Notes |
+| --- | --- | --- |
+| `--typescript` | `--typescript` or `--ts` | Mapping varies by create-next-app version |
+| `--tailwind` | `--tailwind` | Adds Tailwind setup in scaffold |
+| `--eslint` | `--eslint` | Enables linting setup in scaffold |
+| `--no-git` | `--skip-git` or `--disable-git` | Mapping varies by create-next-app version |
+| `--no-install` | `--skip-install` | Skips dependency install |
+| `--package-manager <pm>` | `--use-<pm>` | Supports `npm`, `pnpm`, `yarn`, `bun` |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `create-next-app`.
+- Registry version mappings handle create-next-app flag changes automatically.
+- Pass-through args are enabled, so native flags still work.
+
+## Generated output
+
+You get the official Next.js scaffold output, including:
+
+- `app/` or `src/app/` route structure (depending on options)
+- Next.js config, TypeScript config, and package scripts
+- Optional Tailwind and ESLint setup based on selected flags
+
+## Related enhancements
+
+- `tinkerise add prettier`
+- `tinkerise add husky`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)
