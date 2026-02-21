@@ -1,0 +1,42 @@
+---
+title: Rust (Axum)
+description: Scaffold a Rust web service through cargo-generate.
+---
+
+## Quick start
+
+```bash
+tinkerise backend rust my-rust-service --no-git
+```
+
+## When to use
+
+Use `rust` when you want a high-performance backend service scaffolded around Axum patterns.
+
+## Prerequisites
+
+- Rust `rustc >=1.78`
+- `cargo-generate` installed through `cargo install cargo-generate`
+
+## Unified flags
+
+- `--no-git` -> `--init`
+
+## Framework-specific behavior
+
+- tinkerise delegates to `cargo generate`.
+- Two-level prerequisite checks validate Rust runtime plus cargo-generate.
+- Passthrough args are supported.
+
+## Generated output
+
+You get a Rust service template generated through cargo-generate with starter app structure.
+
+## Related enhancements
+
+- `tinkerise add docker`
+- `tinkerise doctor`
+
+## See full command flags
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

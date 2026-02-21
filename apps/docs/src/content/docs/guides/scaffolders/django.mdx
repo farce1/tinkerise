@@ -1,0 +1,42 @@
+---
+title: Django
+description: Scaffold a Django project through django-admin.
+---
+
+## Quick start
+
+```bash
+tinkerise backend django my_django_service
+```
+
+## When to use
+
+Use `django` when you want a batteries-included Python web framework with admin and ORM.
+
+## Prerequisites
+
+- Python `>=3.10`
+- `django-admin` CLI (from `django` package)
+
+## Unified flags
+
+No unified flag mappings are defined for this scaffolder. Pass native args as needed.
+
+## Framework-specific behavior
+
+- tinkerise delegates to `django-admin startproject`.
+- Prerequisite checks cover both Python runtime and django-admin availability.
+- Passthrough args are supported.
+
+## Generated output
+
+You get a standard Django project with settings, URL routing, and app entrypoints.
+
+## Related enhancements
+
+- `tinkerise add docker`
+- `tinkerise doctor`
+
+## See full command flags
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

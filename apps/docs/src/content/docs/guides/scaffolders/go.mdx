@@ -1,0 +1,42 @@
+---
+title: Go
+description: Scaffold a Go service through go-blueprint.
+---
+
+## Quick start
+
+```bash
+tinkerise backend go my-go-service
+```
+
+## When to use
+
+Use `go` to bootstrap an HTTP service with an opinionated Go project structure.
+
+## Prerequisites
+
+- Go `>=1.22`
+- `go-blueprint` installed through `go install github.com/melkeydev/go-blueprint@latest`
+
+## Unified flags
+
+No unified flag mappings are defined for this scaffolder. Pass native args as needed.
+
+## Framework-specific behavior
+
+- tinkerise delegates to `go-blueprint create`.
+- This scaffolder has two-level prerequisites: runtime and scaffolder tool.
+- Passthrough args are supported.
+
+## Generated output
+
+You get a Go service scaffold from go-blueprint, including module setup and framework-specific starter structure.
+
+## Related enhancements
+
+- `tinkerise add docker`
+- `tinkerise doctor`
+
+## See full command flags
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

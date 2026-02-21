@@ -1,0 +1,41 @@
+---
+title: Flutter
+description: Scaffold a Flutter app through flutter create.
+---
+
+## Quick start
+
+```bash
+tinkerise mobile flutter my_flutter_app --platforms android,ios
+```
+
+## When to use
+
+Use `flutter` when you want one codebase targeting multiple mobile platforms.
+
+## Prerequisites
+
+- Flutter `>=3.10.0`
+
+## Unified flags
+
+- `--platforms <list>` -> `--platforms <list>`
+- `--no-install` -> `--no-pub`
+
+## Framework-specific behavior
+
+- tinkerise delegates to `flutter create`.
+- Runtime checks validate Flutter directly (separate Dart install is not required).
+- Passthrough args are supported.
+
+## Generated output
+
+You get a standard Flutter app skeleton with platform folders and Dart source layout.
+
+## Related enhancements
+
+- `tinkerise doctor`
+
+## See full command flags
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)
