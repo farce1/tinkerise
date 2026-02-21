@@ -1,0 +1,269 @@
+---
+title: Commands
+description: Generated reference for the complete tinkerise command surface.
+---
+
+This page is generated from live CLI help output to prevent command drift.
+Regenerate it any time with `bun run --filter @tinkerise/docs docs:reference`.
+
+## Root command
+
+Command: `tinkerise --help`
+
+```text
+Usage: tinkerise [options] [command] [category] [framework] [name]
+
+Scaffold any project with any stack
+
+Arguments:
+  category                         Project category (web, backend, mobile)
+  framework                        Framework name
+  name                             Project name
+
+Options:
+  -v, --version                    output the version number
+  --typescript                     Use TypeScript
+  --ts                             Use TypeScript (alias)
+  --tailwind                       Add Tailwind CSS
+  --eslint                         Add ESLint
+  --no-git                         Skip git initialization
+  --no-install                     Skip dependency installation
+  --package-manager <pm>           Package manager to use (npm, pnpm, yarn, bun)
+  --template <template>            Template to use (for Vite)
+  --preset <name>                  Apply a saved preset
+  --verbose                        Show detailed output
+  -h, --help                       display help for command
+
+Commands:
+  list [category]                  Show available scaffolders
+  monorepo [options] <name>        Create a Turborepo monorepo
+  add [options] [enhancements...]  Add enhancements to your project
+  doctor                           Check system for required tools and versions
+  config                           Manage tinkerise configuration
+  preset                           Manage configuration presets
+  mcp [options] <name>             Scaffold an MCP server
+  cli [options] <name>             Scaffold a CLI tool
+  lib [options] <name>             Scaffold an npm library
+  update                           Update tinkerise to the latest version
+
+Examples:
+  $ tinkerise                            Interactive guided flow
+  $ tinkerise web                        Select from web frameworks
+  $ tinkerise web next my-app            Create a Next.js project
+  $ tinkerise web vite my-app --ts       Create with TypeScript
+  $ tinkerise monorepo my-repo           Create a Turborepo monorepo
+  $ tinkerise list                       Show available scaffolders
+  $ tinkerise list web                   Show web scaffolders with details
+  $ tinkerise add eslint prettier        Add ESLint and Prettier
+  $ tinkerise doctor                     Check system tools
+  $ tinkerise config list                Show configuration
+  $ tinkerise config set packageManager pnpm  Set default PM
+  $ tinkerise config init                Interactive config setup
+  $ tinkerise preset save my-stack       Save current config as preset
+  $ tinkerise preset use my-stack        Apply a saved preset
+  $ tinkerise preset list                Show available presets
+  $ tinkerise preset delete my-stack     Remove a preset
+  $ tinkerise web next my-app --preset my-stack  Apply preset to scaffold
+  $ tinkerise mcp my-server              Scaffold an MCP server
+  $ tinkerise cli my-tool                Scaffold a CLI tool
+  $ tinkerise lib my-lib                 Scaffold an npm library
+  $ tinkerise update                     Update to latest version
+```
+## `list` command
+
+Command: `tinkerise list --help`
+
+```text
+Usage: tinkerise list [options] [category]
+
+Show all available scaffolders grouped by category. Pass a category name for
+details.
+
+Arguments:
+  category    Filter by category (web, backend, mobile)
+
+Options:
+  -h, --help  display help for command
+
+Examples:
+  $ tinkerise list                       Show all scaffolders, templates, and enhancements
+  $ tinkerise list web                   Show web scaffolders with details and flags
+```
+## `monorepo` command
+
+Command: `tinkerise monorepo --help`
+
+```text
+Usage: tinkerise monorepo [options] <name>
+
+Scaffold a new Turborepo monorepo project.
+
+Arguments:
+  name                    Project name
+
+Options:
+  --no-install            Skip dependency installation
+  --package-manager <pm>  Package manager (npm, pnpm, yarn, bun)
+  -h, --help              display help for command
+
+Examples:
+  $ tinkerise monorepo my-repo           Create a Turborepo monorepo
+  $ tinkerise monorepo my-repo --no-install  Create without installing dependencies
+```
+## `add` command
+
+Command: `tinkerise add --help`
+
+```text
+Usage: tinkerise add [options] [enhancements...]
+
+Add ESLint, Prettier, husky, GitHub Actions CI, Docker, env, commitlint,
+testing, Renovate, EditorConfig, and more to your project. Run without arguments
+for an interactive picker.
+
+Arguments:
+  enhancements  Enhancement names (eslint, prettier, husky, ci, docker, env,
+                commitlint, testing, renovate, editorconfig)
+
+Options:
+  --verbose     Show detailed output from package installation
+  -h, --help    display help for command
+
+Examples:
+  $ tinkerise add eslint                 Add ESLint to your project
+  $ tinkerise add eslint prettier husky  Add multiple enhancements
+  $ tinkerise add                        Interactive enhancement picker
+```
+## `doctor` command
+
+Command: `tinkerise doctor --help`
+
+```text
+Usage: tinkerise doctor [options]
+
+Check system for required tools and versions across all supported ecosystems.
+
+Options:
+  -h, --help  display help for command
+
+Examples:
+  $ tinkerise doctor                     Check all system tools and versions
+```
+## `config` command
+
+Command: `tinkerise config --help`
+
+```text
+Usage: tinkerise config [options] [command]
+
+Get, set, list, or initialize tinkerise configuration values. Defaults to global
+scope; use --project for project-level config.
+
+Options:
+  -h, --help                   display help for command
+
+Commands:
+  list [options]               Show current configuration values
+  get [options] <key>          Read a specific configuration value
+  set [options] <key> <value>  Set a configuration value
+  init [options]               Interactively create configuration
+  help [command]               display help for command
+```
+## `preset` command
+
+Command: `tinkerise preset --help`
+
+```text
+Usage: tinkerise preset [options] [command]
+
+Save, apply, list, and delete reusable configuration presets.
+
+Options:
+  -h, --help             display help for command
+
+Commands:
+  save [options] <name>  Save current config as a named preset
+  use <name>             Apply a saved preset
+  list                   Show available presets (local + npm)
+  delete <name>          Remove a local preset
+  help [command]         display help for command
+```
+## `mcp` command
+
+Command: `tinkerise mcp --help`
+
+```text
+Usage: tinkerise mcp [options] <name>
+
+Scaffold a new MCP server project with TypeScript and stdio transport.
+
+Arguments:
+  name                    Project name
+
+Options:
+  --package-manager <pm>  Package manager (npm, pnpm, yarn, bun)
+  --no-install            Skip dependency installation
+  -h, --help              display help for command
+
+Examples:
+  $ tinkerise mcp my-server              Scaffold an MCP server project
+  $ tinkerise mcp my-server --package-manager pnpm  Use pnpm
+```
+## `cli` command
+
+Command: `tinkerise cli --help`
+
+```text
+Usage: tinkerise cli [options] <name>
+
+Scaffold a new CLI tool with Commander.js, TypeScript, and tsup.
+
+Arguments:
+  name                    Project name
+
+Options:
+  --package-manager <pm>  Package manager (npm, pnpm, yarn, bun)
+  --no-install            Skip dependency installation
+  -h, --help              display help for command
+
+Examples:
+  $ tinkerise cli my-tool                Scaffold a CLI tool with Commander.js
+  $ tinkerise cli my-tool --no-install   Create without installing dependencies
+```
+## `lib` command
+
+Command: `tinkerise lib --help`
+
+```text
+Usage: tinkerise lib [options] <name>
+
+Scaffold a new npm library with TypeScript, tsup dual CJS/ESM build, Vitest, and
+publish-ready package.json.
+
+Arguments:
+  name                    Project name
+
+Options:
+  --package-manager <pm>  Package manager (npm, pnpm, yarn, bun)
+  --no-install            Skip dependency installation
+  -h, --help              display help for command
+
+Examples:
+  $ tinkerise lib my-lib                 Scaffold an npm library
+  $ tinkerise lib my-lib --package-manager pnpm  Use pnpm
+```
+## `update` command
+
+Command: `tinkerise update --help`
+
+```text
+Usage: tinkerise update [options]
+
+Detect installation method and run the appropriate update command.
+
+Options:
+  -h, --help  display help for command
+
+Examples:
+  $ tinkerise update                     Auto-detect install method and update
+```

@@ -70,7 +70,7 @@ function buildDocument() {
     '---',
     '',
     'This page is generated from live CLI help output to prevent command drift.',
-    'Regenerate it any time with `bun --filter @tinkerise/docs run docs:reference`.',
+    'Regenerate it any time with `bun run --filter @tinkerise/docs docs:reference`.',
     '',
     ...blocks,
     '',
