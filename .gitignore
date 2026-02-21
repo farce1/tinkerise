@@ -4,6 +4,7 @@ node_modules/
 # Build output
 dist/
 tsup.config.bundled_*.mjs
+.astro/
 
 # Turborepo
 .turbo/
