@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "docs:reference": "node ./scripts/generate-command-reference.mjs"
   },
   "dependencies": {
     "astro": "^5.5.0",
