@@ -1,0 +1,58 @@
+---
+title: Remix (React Router v7)
+description: Scaffold a Remix-compatible app through create-react-router.
+---
+
+## Quick start
+
+```bash
+tinkerise web remix my-remix-app --no-install
+```
+
+```bash
+tinkerise web remix my-remix-app --no-git
+```
+
+## When to use
+
+Use `remix` when you want:
+
+- Full-stack React with nested routing and data loaders/actions
+- A framework centered around web standards and route modules
+- The React Router v7 scaffolding flow via tinkerise
+
+## Prerequisites
+
+- Node.js `>=18.0.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-react-router flag | Notes |
+| --- | --- | --- |
+| `--typescript` | _(none)_ | React Router v7 defaults to TypeScript |
+| `--no-git` | `--no-git-init` | Skips git initialization |
+| `--no-install` | `--no-install` | Skips dependency install |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `create-react-router`.
+- The registry intentionally uses this command instead of legacy `create-remix`.
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official React Router v7 scaffold output, including:
+
+- Route-module project structure
+- Build and dev scripts with framework defaults
+- TypeScript-ready app skeleton files
+
+## Related enhancements
+
+- `tinkerise add eslint`
+- `tinkerise add prettier`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

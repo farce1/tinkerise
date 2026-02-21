@@ -1,0 +1,58 @@
+---
+title: TanStack Start
+description: Scaffold a TanStack Start app through @tanstack/cli.
+---
+
+## Quick start
+
+```bash
+tinkerise web tanstack my-start-app --tailwind --package-manager bun
+```
+
+```bash
+tinkerise web tanstack my-start-app --package-manager pnpm
+```
+
+## When to use
+
+Use `tanstack` when you want:
+
+- Full-stack React with a router-first architecture
+- TanStack Start conventions out of the box
+- Flexible package manager control during scaffolding
+
+## Prerequisites
+
+- Node.js `>=18.0.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native @tanstack/cli flag | Notes |
+| --- | --- | --- |
+| `--typescript` | _(none)_ | TanStack Start is TypeScript-first |
+| `--tailwind` | `--tailwind` | Adds Tailwind-enabled starter flow |
+| `--package-manager <pm>` | `--package-manager <pm>` | Supports `npm`, `pnpm`, `yarn`, `bun` |
+
+## Framework-specific behavior
+
+- tinkerise delegates to `@tanstack/cli create`.
+- The integration command is multi-word and resolved by registry mapping.
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official TanStack Start scaffold output, including:
+
+- Router-centric source structure
+- Project config and package scripts
+- Optional Tailwind integration based on selected flags
+
+## Related enhancements
+
+- `tinkerise add prettier`
+- `tinkerise add ci`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)

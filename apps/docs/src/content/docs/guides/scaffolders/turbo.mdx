@@ -1,0 +1,57 @@
+---
+title: Turborepo
+description: Scaffold a Turborepo monorepo through create-turbo.
+---
+
+## Quick start
+
+```bash
+tinkerise monorepo my-repo --package-manager pnpm
+```
+
+```bash
+tinkerise monorepo my-repo --no-install
+```
+
+## When to use
+
+Use `turbo` when you want:
+
+- A monorepo with shared apps/packages structure
+- Fast task orchestration and caching workflows
+- A scalable setup for teams managing multiple packages
+
+## Prerequisites
+
+- Node.js `>=18.0.0`
+- `npx` available in your Node install
+
+## Unified flags
+
+| tinkerise flag | Native create-turbo flag | Notes |
+| --- | --- | --- |
+| `--no-install` | `--skip-install` | Skips dependency install |
+| `--package-manager <pm>` | `-m <pm>` | Supports `npm`, `pnpm`, `yarn`, `bun` |
+
+## Framework-specific behavior
+
+- Registry category is `web`, but user-facing entrypoint is `tinkerise monorepo`.
+- tinkerise delegates to `create-turbo`.
+- Pass-through args are enabled.
+
+## Generated output
+
+You get the official Turborepo scaffold output, including:
+
+- Monorepo workspace layout with `apps/` and `packages/`
+- Turbo pipeline config and workspace scripts
+- Starter apps/packages based on selected package manager and defaults
+
+## Related enhancements
+
+- `tinkerise add eslint`
+- `tinkerise add ci`
+
+## Command reference
+
+See full CLI flags: [`/reference/commands/`](/reference/commands/)
