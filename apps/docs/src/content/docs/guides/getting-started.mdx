@@ -1,6 +1,105 @@
 ---
 title: Getting Started
-description: Install tinkerise and scaffold your first project.
+description: Go from install to your first generated project in minutes.
 ---
 
-Coming soon. This page will be populated in a future update.
+This guide takes you from a fresh machine to a running app scaffolded with `tinkerise`.
+
+## Prerequisites
+
+- Node.js 20.11 or newer
+- npm, pnpm, yarn, or bun available in your terminal
+
+You can confirm your setup with:
+
+```bash
+node --version
+```
+
+## 1) Install tinkerise
+
+```bash
+npm install -g tinkerise
+```
+
+Verify the CLI is available:
+
+```bash
+tinkerise --version
+```
+
+## 2) Create your first project
+
+Run the guided flow:
+
+```bash
+tinkerise
+```
+
+You will be prompted to pick a category and framework. For this walkthrough:
+
+- Category: `web`
+- Framework: `next`
+- Project name: `hello-tinkerise`
+- TypeScript: `yes`
+- Tailwind: `yes`
+- ESLint: `yes`
+
+Example session output (abbreviated):
+
+```text
+$ tinkerise
+? Select category › web
+? Select framework › next
+? Project name › hello-tinkerise
+? Use TypeScript? › yes
+? Add Tailwind CSS? › yes
+? Add ESLint? › yes
+
+Scaffolding Next.js project...
+Running create-next-app hello-tinkerise --ts --tailwind --eslint
+
+Project created successfully: hello-tinkerise
+Next steps:
+  cd hello-tinkerise
+  npm run dev
+```
+
+## 3) Start the generated app
+
+```bash
+cd hello-tinkerise
+npm run dev
+```
+
+Then open the local URL printed by your dev server (usually `http://localhost:3000`).
+
+## 4) What tinkerise generated
+
+After scaffolding, your project should include framework files created by the official tool, for example:
+
+```text
+hello-tinkerise/
+├── package.json
+├── next.config.*
+├── tsconfig.json
+├── src/
+└── public/
+```
+
+`tinkerise` delegates to official scaffolders, so generated structure and scripts stay familiar to each framework ecosystem.
+
+## 5) Add enhancements (optional)
+
+Inside your project, you can layer tooling like Prettier, Husky, Docker, or CI:
+
+```bash
+tinkerise add prettier husky
+```
+
+## 6) Where to go next
+
+- Browse framework guides in [`/guides/scaffolders/`](/guides/scaffolders/)
+- Explore enhancement modules in [`/guides/enhancements/`](/guides/enhancements/)
+- See every command and flag in [`/reference/commands/`](/reference/commands/)
+- Follow end-to-end setups in [`/recipes/`](/recipes/)
