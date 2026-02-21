@@ -18,6 +18,14 @@ Use `rust` when you want a high-performance backend service scaffolded around Ax
 - Rust `rustc >=1.78`
 - `cargo-generate` installed through `cargo install cargo-generate`
 
+## First run after scaffold
+
+```bash
+cd my-rust-service
+cargo check
+cargo run
+```
+
 ## Unified flags
 
 - `--no-git` -> `--init`
@@ -27,15 +35,23 @@ Use `rust` when you want a high-performance backend service scaffolded around Ax
 - tinkerise delegates to `cargo generate`.
 - Two-level prerequisite checks validate Rust runtime plus cargo-generate.
 - Passthrough args are supported.
+- `--no-git` maps to `cargo generate --init` when you want to avoid repository initialization.
+- You can pass template-specific native args directly to control generation details.
 
 ## Generated output
 
-You get a Rust service template generated through cargo-generate with starter app structure.
+You get a Rust web-service template (Axum-oriented) generated through cargo-generate, typically including:
+
+- `Cargo.toml` and lockfile-ready dependency setup
+- `src/` structure with router and server entrypoint files
+- Config and middleware starter patterns from the selected template
+- Project layout ready for `cargo check`, `cargo run`, and iterative development
 
 ## Related enhancements
 
-- `tinkerise add docker`
-- `tinkerise doctor`
+- Dockerized Rust services: [`/guides/enhancements/docker/`](/guides/enhancements/docker/)
+- Environment templates for service config: [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- CI checks for Rust builds: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 

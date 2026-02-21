@@ -17,6 +17,14 @@ Use `express` when you want a familiar Node.js API stack with TypeScript-first g
 
 - Node.js `>=18.0.0`
 
+## First run after scaffold
+
+```bash
+cd my-express-api
+bun install
+bun run dev
+```
+
 ## Unified flags
 
 No unified flag mappings are defined for this scaffolder. Pass native args as needed.
@@ -26,15 +34,23 @@ No unified flag mappings are defined for this scaffolder. Pass native args as ne
 - tinkerise delegates to `express-generator-typescript` via `npx`.
 - The command does not use a `create` subcommand; project name is positional.
 - Passthrough args are supported.
+- Because this is a Node ecosystem scaffolder, it follows your selected package manager and lockfile flow.
+- Native generator options can be passed through after the project name.
 
 ## Generated output
 
-You get a structured Express + TypeScript API scaffold with starter routes, config, and scripts.
+You get a structured Express + TypeScript API scaffold, typically including:
+
+- `src/` API structure with route/controller-style starter files
+- TypeScript configuration and build scripts
+- Package scripts for development and production runs
+- Starter middleware and app bootstrap wiring
 
 ## Related enhancements
 
-- `tinkerise add eslint`
-- `tinkerise add docker`
+- Linting defaults: [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)
+- Dockerized API setup: [`/guides/enhancements/docker/`](/guides/enhancements/docker/)
+- CI workflow automation: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 

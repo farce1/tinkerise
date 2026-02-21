@@ -17,6 +17,14 @@ Use `rn` when you want a React Native project with Expo managed workflow.
 
 - Node.js `>=18.0.0`
 
+## First run after scaffold
+
+```bash
+cd my-rn-app
+bun install
+bunx expo start
+```
+
 ## Unified flags
 
 - `--no-install` -> `--no-install`
@@ -27,15 +35,23 @@ Use `rn` when you want a React Native project with Expo managed workflow.
 - tinkerise delegates to `create-expo-app`.
 - The scaffolder ID is intentionally `rn` for short CLI usage.
 - Passthrough args are supported.
+- `--typescript` maps to Expo's `--template blank-typescript` starter.
+- `--no-install` maps directly to `create-expo-app --no-install`.
 
 ## Generated output
 
-You get a standard Expo app scaffold with React Native app entry, scripts, and platform-ready setup.
+You get a standard Expo-managed React Native scaffold, usually including:
+
+- App entry files (`App.tsx` or equivalent template output)
+- Expo config (`app.json` / `app.config.*`)
+- JavaScript/TypeScript project scripts for local and device testing
+- Mobile-ready project structure aligned with Expo workflow
 
 ## Related enhancements
 
-- `tinkerise add eslint`
-- `tinkerise add prettier`
+- Linting for RN projects: [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)
+- Environment file scaffolding: [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- CI checks for app workflows: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 

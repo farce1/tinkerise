@@ -18,6 +18,14 @@ Use `go` to bootstrap an HTTP service with an opinionated Go project structure.
 - Go `>=1.22`
 - `go-blueprint` installed through `go install github.com/melkeydev/go-blueprint@latest`
 
+## First run after scaffold
+
+```bash
+cd my-go-service
+go mod tidy
+go run .
+```
+
 ## Unified flags
 
 No unified flag mappings are defined for this scaffolder. Pass native args as needed.
@@ -27,15 +35,23 @@ No unified flag mappings are defined for this scaffolder. Pass native args as ne
 - tinkerise delegates to `go-blueprint create`.
 - This scaffolder has two-level prerequisites: runtime and scaffolder tool.
 - Passthrough args are supported.
+- Install `go-blueprint` with `go install ...@latest` after Go is installed; the tool itself depends on Go.
+- Framework choices (Chi, Gin, Fiber, Echo, and others) come from native go-blueprint prompts or flags.
 
 ## Generated output
 
-You get a Go service scaffold from go-blueprint, including module setup and framework-specific starter structure.
+You get a go-blueprint service layout, typically including:
+
+- `go.mod` with module initialization
+- Router/server bootstrap for your selected HTTP framework
+- Handler and package structure for API endpoints
+- Optional extras (for example Docker or CI) when chosen in native options
 
 ## Related enhancements
 
-- `tinkerise add docker`
-- `tinkerise doctor`
+- Dockerized service workflows: [`/guides/enhancements/docker/`](/guides/enhancements/docker/)
+- Environment variable templates: [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- CI pipelines for Go services: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 

@@ -17,6 +17,14 @@ Use `flutter` when you want one codebase targeting multiple mobile platforms.
 
 - Flutter `>=3.10.0`
 
+## First run after scaffold
+
+```bash
+cd my_flutter_app
+flutter pub get
+flutter run
+```
+
 ## Unified flags
 
 - `--platforms <list>` -> `--platforms <list>`
@@ -27,14 +35,22 @@ Use `flutter` when you want one codebase targeting multiple mobile platforms.
 - tinkerise delegates to `flutter create`.
 - Runtime checks validate Flutter directly (separate Dart install is not required).
 - Passthrough args are supported.
+- `--platforms` maps directly to Flutter's native platform targeting.
+- `--no-install` maps to `--no-pub` so dependency fetching can be deferred.
 
 ## Generated output
 
-You get a standard Flutter app skeleton with platform folders and Dart source layout.
+You get a standard Flutter app scaffold, including:
+
+- `lib/` Dart source entrypoint (`main.dart`)
+- Platform directories based on selected targets (`android/`, `ios/`, and others)
+- `pubspec.yaml` dependency manifest and project metadata
+- Test starter files and generated native host wrappers
 
 ## Related enhancements
 
-- `tinkerise doctor`
+- Environment templates for secrets/config: [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- CI automation for mobile build checks: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 

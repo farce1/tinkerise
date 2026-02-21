@@ -1,0 +1,116 @@
+---
+title: Presets
+description: Save, share, and apply reusable tinkerise project defaults.
+---
+
+Presets let you capture scaffold metadata, installed enhancements, and config overrides into a reusable bundle.
+
+## Quick start
+
+Save a preset from an existing project:
+
+```bash
+tinkerise preset save my-stack --framework next --category web --description "Team Next.js baseline"
+```
+
+Apply it later:
+
+```bash
+tinkerise preset use my-stack
+```
+
+## Preset lifecycle commands
+
+## 1) Save
+
+```bash
+tinkerise preset save <name>
+```
+
+Behavior:
+
+- Reads current project config (`tinkerise.config.ts`) when present
+- Detects installed enhancements by running module `detect()` checks
+- Stores a local JSON preset in your presets directory
+
+Optional flags:
+
+- `--description <desc>`
+- `--framework <fw>`
+- `--category <cat>`
+
+Expected outcome: `Preset "<name>" saved ...` and detected enhancement IDs printed when available.
+
+## 2) Use
+
+```bash
+tinkerise preset use <name>
+```
+
+Behavior:
+
+- Tries local preset first
+- Falls back to npm package name `tinkerise-preset-<name>`
+- Prints preset summary (framework, category, enhancements, config)
+- Applies included enhancements immediately
+
+If a preset references unknown enhancement IDs, they are skipped with a warning.
+
+Expected outcome: enhancement summaries plus `Preset "<name>" applied.`
+
+## 3) List
+
+```bash
+tinkerise preset list
+```
+
+Behavior:
+
+- Shows **Local presets** from your presets directory
+- Shows discoverable **npm presets** in current workspace context
+
+Expected outcome: two sections (`Local presets`, `npm presets`) with names or `(none)`.
+
+## 4) Delete
+
+```bash
+tinkerise preset delete <name>
+```
+
+Behavior:
+
+- Removes a local preset by name
+- Throws a not-found error when the preset does not exist
+
+Expected outcome: `Preset "<name>" deleted.`
+
+## Practical naming and versioning
+
+For teams, use a convention that communicates intent and evolution:
+
+- `web-next-baseline`
+- `api-fastapi-docker`
+- `mobile-rn-strict-ts`
+
+When preset behavior changes substantially, publish a new preset package or a new preset name rather than silently changing old behavior.
+
+## Team sharing workflow
+
+1. Create and validate preset locally with `preset save`
+2. Commit the corresponding scaffold/config conventions in your template repo
+3. Publish preset package using `tinkerise-preset-<name>` naming
+4. Team members run `tinkerise preset use <name>`
+5. Pair presets with project-level `tinkerise.config.ts` for repo-specific overrides
+
+## How presets interact with configuration
+
+Preset config is the lowest-priority layer in final resolution:
+
+`preset -> global -> project -> CLI`
+
+That means presets provide defaults, while user/global/project choices and command flags can override them.
+
+## Related docs
+
+- [`/guides/configuration/`](/guides/configuration/)
+- [`/reference/commands/`](/reference/commands/)

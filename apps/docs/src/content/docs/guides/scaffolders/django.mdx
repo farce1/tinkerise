@@ -18,6 +18,16 @@ Use `django` when you want a batteries-included Python web framework with admin 
 - Python `>=3.10`
 - `django-admin` CLI (from `django` package)
 
+## First run after scaffold
+
+```bash
+cd my_django_service
+python3 -m venv .venv
+source .venv/bin/activate
+pip install django
+python manage.py runserver
+```
+
 ## Unified flags
 
 No unified flag mappings are defined for this scaffolder. Pass native args as needed.
@@ -27,15 +37,23 @@ No unified flag mappings are defined for this scaffolder. Pass native args as ne
 - tinkerise delegates to `django-admin startproject`.
 - Prerequisite checks cover both Python runtime and django-admin availability.
 - Passthrough args are supported.
+- Native Django template flags (for example `--template`) can be passed through directly.
+- Keep your app inside a virtual environment to avoid Python package conflicts.
 
 ## Generated output
 
-You get a standard Django project with settings, URL routing, and app entrypoints.
+You get a standard Django project with:
+
+- `manage.py` command entrypoint
+- Project package containing `settings.py`, `urls.py`, `asgi.py`, and `wsgi.py`
+- Default app wiring ready for additional `startapp` modules
+- Built-in admin and ORM configuration foundations
 
 ## Related enhancements
 
-- `tinkerise add docker`
-- `tinkerise doctor`
+- Dockerized local runs: [`/guides/enhancements/docker/`](/guides/enhancements/docker/)
+- Environment template files: [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- CI checks for Django services: [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
 
 ## See full command flags
 
