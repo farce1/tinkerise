@@ -4,11 +4,12 @@ description: Go from install to your first generated project in minutes.
 ---
 
 This guide takes you from a fresh machine to a running app scaffolded with `tinkerise`.
+Follow it top to bottom once, and you will have a local project running.
 
 ## Prerequisites
 
 - Node.js 20.11 or newer
-- npm, pnpm, yarn, or bun available in your terminal
+- A package manager in your terminal (`npm`, `pnpm`, `yarn`, or `bun`)
 
 You can confirm your setup with:
 
@@ -28,7 +29,9 @@ Verify the CLI is available:
 tinkerise --version
 ```
 
-## 2) Create your first project
+If the command prints a version number, you are ready.
+
+## 2) Create your first project (guided flow)
 
 Run the guided flow:
 
@@ -36,7 +39,7 @@ Run the guided flow:
 tinkerise
 ```
 
-You will be prompted to pick a category and framework. For this walkthrough:
+For this walkthrough, use these choices when prompted:
 
 - Category: `web`
 - Framework: `next`
@@ -45,7 +48,7 @@ You will be prompted to pick a category and framework. For this walkthrough:
 - Tailwind: `yes`
 - ESLint: `yes`
 
-Example session output (abbreviated):
+Expected terminal output (abbreviated):
 
 ```text
 $ tinkerise
@@ -65,18 +68,12 @@ Next steps:
   npm run dev
 ```
 
-## 3) Start the generated app
+## 3) Understand what just happened
 
-```bash
-cd hello-tinkerise
-npm run dev
-```
+`tinkerise` delegated project creation to the official Next.js scaffolder.
+That means your output looks familiar if you have used `create-next-app` before.
 
-Then open the local URL printed by your dev server (usually `http://localhost:3000`).
-
-## 4) What tinkerise generated
-
-After scaffolding, your project should include framework files created by the official tool, for example:
+You should now have a folder like this:
 
 ```text
 hello-tinkerise/
@@ -87,9 +84,28 @@ hello-tinkerise/
 └── public/
 ```
 
-`tinkerise` delegates to official scaffolders, so generated structure and scripts stay familiar to each framework ecosystem.
+## 4) Run the generated app
 
-## 5) Add enhancements (optional)
+```bash
+cd hello-tinkerise
+npm run dev
+```
+
+Then open the local URL printed by your dev server (usually `http://localhost:3000`).
+
+## 5) Try another framework (optional)
+
+When you run `tinkerise` again, you can pick another scaffolder.
+Common IDs you will see in prompts and docs:
+
+- `next`
+- `vite`
+- `astro`
+- `express`
+
+Each one delegates to its official tool, then returns you to the same tinkerise workflow.
+
+## 6) Add enhancements (optional)
 
 Inside your project, you can layer tooling like Prettier, Husky, Docker, or CI:
 
@@ -97,7 +113,7 @@ Inside your project, you can layer tooling like Prettier, Husky, Docker, or CI:
 tinkerise add prettier husky
 ```
 
-## 6) Where to go next
+## 7) Where to go next
 
 - Browse framework guides in [`/guides/scaffolders/`](/guides/scaffolders/)
 - Explore enhancement modules in [`/guides/enhancements/`](/guides/enhancements/)
