@@ -60,8 +60,8 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 
 **Milestone Goal:** Make tinkerise discoverable and polished with a comprehensive Starlight docs site, improved CLI UX, terminal demos, and updated project presentation.
 
-- [ ] **Phase 24: Error Handling & CLI Polish** - Structured errors, friendly messages, help text improvements
-- [ ] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks
+- [x] **Phase 24: Error Handling & CLI Polish** - Structured errors, friendly messages, help text improvements (completed 2026-02-20)
+- [x] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks (completed 2026-02-21)
 - [ ] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes
 - [ ] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows
 - [ ] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link
@@ -79,7 +79,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
   3. User sees usage examples in `--help` output for every command (scaffold, add, list, doctor, update)
   4. All error paths use structured TinkeriseError subclasses that carry error codes and user-facing messages
   5. A top-level error boundary around `program.parseAsync()` catches all unhandled errors and formats them consistently
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 24-01-PLAN.md — TinkeriseError hierarchy and fuzzy match utility in @tinkerise/core
@@ -95,10 +95,11 @@ Plans:
   2. User can search docs content via Pagefind search (built into Starlight, works in production build)
   3. User can see syntax-highlighted code examples in Expressive Code blocks on any content page
   4. The docs site builds successfully with `bun run build` in apps/docs/ (Bun as package manager, Node.js as Astro runtime)
-**Plans**: TBD
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 25-01: TBD
+- [ ] 25-01-PLAN.md -- Scaffold Starlight project with branding, theming, and landing page
+- [ ] 25-02-PLAN.md -- Monorepo integration, ESLint exclusion, and build verification
 
 ### Phase 26: Docs Content
 **Goal**: Users can learn everything about tinkerise from the documentation site -- from first install through advanced recipes
@@ -110,12 +111,15 @@ Plans:
   3. User can read preset and configuration guides that explain the 4-layer config merge chain with examples
   4. User can look up any CLI command, flag, and option in a generated Command Reference page (single source of truth from CLI help output)
   5. User can follow 3-5 recipe pages for common scenarios (e.g., "Next.js + ESLint + Docker", "Full-stack preset for teams")
-**Plans**: TBD
+**Plans**: 6 plans
 
 Plans:
-- [ ] 26-01: TBD
-- [ ] 26-02: TBD
-- [ ] 26-03: TBD
+- [ ] 26-01-PLAN.md -- Onboarding IA and complete Getting Started flow
+- [ ] 26-02-PLAN.md -- Web scaffolder guides with command-reference cross-links
+- [ ] 26-03-PLAN.md -- Quality/workflow enhancement guides (part 1)
+- [ ] 26-04-PLAN.md -- Generated command reference and recipe pages
+- [ ] 26-05-PLAN.md -- Backend/mobile scaffolder guides
+- [ ] 26-06-PLAN.md -- Remaining enhancements plus configuration and presets
 
 ### Phase 27: VHS Terminal Demos
 **Goal**: Reproducible terminal demo GIFs exist for key CLI workflows, generated from version-controlled tape files
@@ -187,9 +191,9 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 21. Polish & Metadata | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 22. Drift Detection Hardening | v2.0 | 2/2 | Complete | 2026-02-19 |
 | 23. Lint Regression Fix | v2.0 | 1/1 | Complete | 2026-02-19 |
-| 24. Error Handling & CLI Polish | v3.0 | 0/3 | Not started | - |
-| 25. Docs Site Infrastructure | v3.0 | 0/? | Not started | - |
-| 26. Docs Content | v3.0 | 0/? | Not started | - |
+| 24. Error Handling & CLI Polish | v3.0 | Complete    | 2026-02-20 | - |
+| 25. Docs Site Infrastructure | v3.0 | Complete    | 2026-02-21 | - |
+| 26. Docs Content | 5/6 | In Progress|  | - |
 | 27. VHS Terminal Demos | v3.0 | 0/? | Not started | - |
 | 28. README Overhaul | v3.0 | 0/? | Not started | - |
 | 29. Deployment & Release | v3.0 | 0/? | Not started | - |

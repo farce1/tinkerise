@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 25 -- Docs Site Infrastructure
+**Current focus:** Phase 26 -- Docs Content
 
 ## Current Position
 
-Phase: 25 of 29 (Docs Site Infrastructure)
-Plan: 2 of 2 complete
-Status: Phase Complete
-Last activity: 2026-02-21 -- Completed 25-02 (Monorepo integration)
+Phase: 26 of 29 (Docs Content)
+Plan: 5 of 6 complete
+Status: In Progress
+Last activity: 2026-02-21 -- Completed 26-01 (Onboarding IA and Getting Started flow)
 
-Progress: [████████████████████████████░░] 83% (70/~75 plans across all milestones)
+Progress: [██████████████████████████████░] 99% (74/~75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -52,6 +52,11 @@ Progress: [███████████████████████
 | 24-03 | subcommand help examples | 7min | 2 | 7 |
 | 25-01 | Starlight docs site scaffold | 5min | 2 | 10 |
 | 25-02 | Monorepo integration | 2min | 2 | 2 |
+| Phase 26 P01 | 2min | 3 tasks | 3 files |
+| Phase 26 P05 | 2 min | 2 tasks | 7 files |
+| Phase 26 P03 | 2 min | 2 tasks | 6 files |
+| Phase 26 P02 | 3 min | 2 tasks | 7 files |
+| Phase 26 P06 | 3 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -75,6 +80,16 @@ Recent decisions (v3.0):
 - Astro tsconfig base instead of repo tsconfig.base.json for .astro file support
 - No turbo.json changes needed for docs -- existing build/dev config covers Astro output and persistent dev server
 - ESLint ignores entire apps/docs/ rather than adding eslint-plugin-astro -- Astro build handles its own TS checking
+- [Phase 26]: Keep sidebar scalable via directory autogeneration for growing guide sections
+- [Phase 26]: Keep homepage concise and route users to canonical onboarding and reference pages
+- [Phase 26]: Added a dedicated 'See full command flags' section to all backend/mobile scaffolder pages for consistent command reference discoverability.
+- [Phase 26]: Added first-run command workflows and runtime caveats per ecosystem so generated backend/mobile projects are immediately runnable.
+- [Phase 26]: Use one strict section order for all web scaffolder pages to keep depth and scanability consistent.
+- [Phase 26]: Link related enhancement guides directly from each scaffolder page while keeping /reference/commands/ as the full flag source.
+- [Phase 26]: Use a consistent enhancement guide template aligned to existing CI/testing docs for scanability.
+- [Phase 26]: Document enhancement behavior only from module detect/install/package/file-change source facts.
+- [Phase 26]: Documented config precedence exactly as preset -> global -> project -> CLI from resolveConfig merge order
+- [Phase 26]: Presets guide follows command lifecycle semantics (save/use/list/delete) with expected outcomes and npm fallback
 
 ### Pending Todos
 
@@ -87,5 +102,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 25-02-PLAN.md (Monorepo integration) -- Phase 25 complete
+Stopped at: Completed 26-01-PLAN.md
 Resume file: None
