@@ -21,8 +21,16 @@ export default defineConfig({
       },
       defaultLocale: 'root',
       sidebar: [
-        { label: 'Guides', autogenerate: { directory: 'guides' } },
+        {
+          label: 'Guides',
+          items: [
+            { slug: 'guides/getting-started' },
+            { label: 'Scaffolders', autogenerate: { directory: 'guides/scaffolders' } },
+            { label: 'Enhancements', autogenerate: { directory: 'guides/enhancements' } },
+          ],
+        },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
+        { label: 'Recipes', autogenerate: { directory: 'recipes' } },
       ],
       customCss: ['./src/styles/custom.css'],
       expressiveCode: {
