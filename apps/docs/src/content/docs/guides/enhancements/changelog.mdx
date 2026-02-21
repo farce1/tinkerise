@@ -13,15 +13,39 @@ tinkerise add changelog
 
 The `changelog` module checks for existing changelog config files or installed changelog dependencies (`conventional-changelog-cli` or `standard-version`).
 
+Config detection includes:
+
+- `.changelogrc*`
+- `changelog.config.js|mjs`
+- `.versionrc*`
+
 ## What it installs
 
 - `conventional-changelog-cli`
 
+## Generated changelog behavior
+
+`changelog` writes `.changelogrc.json` with Conventional Commits sections:
+
+- `feat` -> Features
+- `fix` -> Bug Fixes
+- `perf` -> Performance
+- `refactor` -> Refactoring
+- `docs` -> Documentation
+- `chore`, `test`, `ci` hidden
+
+If commitlint is not detected, install adds a warning suggesting `tinkerise add commitlint` for commit message enforcement.
+
 ## File and config changes
 
 - Writes `.changelogrc.json` with Conventional Commits preset sections
-- Adds `changelog` script
-- Adds `release` script
+- Adds `changelog` script: `conventional-changelog -p conventionalcommits -i CHANGELOG.md -s`
+- Adds `release` script: `conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0`
+
+Expected outcome after `tinkerise add changelog`:
+
+- You can generate/update `CHANGELOG.md` from commit history
+- You can regenerate full release notes from the beginning of the repo
 
 ## Conflict handling
 

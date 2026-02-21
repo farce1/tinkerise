@@ -21,7 +21,7 @@ tinkerise preset use my-stack
 
 ## Preset lifecycle commands
 
-## 1) Save
+### 1) Save
 
 ```bash
 tinkerise preset save <name>
@@ -41,7 +41,7 @@ Optional flags:
 
 Expected outcome: `Preset "<name>" saved ...` and detected enhancement IDs printed when available.
 
-## 2) Use
+### 2) Use
 
 ```bash
 tinkerise preset use <name>
@@ -58,7 +58,7 @@ If a preset references unknown enhancement IDs, they are skipped with a warning.
 
 Expected outcome: enhancement summaries plus `Preset "<name>" applied.`
 
-## 3) List
+### 3) List
 
 ```bash
 tinkerise preset list
@@ -71,7 +71,7 @@ Behavior:
 
 Expected outcome: two sections (`Local presets`, `npm presets`) with names or `(none)`.
 
-## 4) Delete
+### 4) Delete
 
 ```bash
 tinkerise preset delete <name>

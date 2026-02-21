@@ -13,7 +13,14 @@ tinkerise add prettier
 
 The `prettier` module checks for existing Prettier config files, a `prettier` key in `package.json`, or an installed `prettier` dependency.
 
+Config detection covers:
+
+- `.prettierrc*` variants
+- `prettier.config.*` variants
+
 ## What it installs
+
+`prettier` always installs:
 
 - `prettier`
 
@@ -21,11 +28,24 @@ When `tailwindcss` is already installed, it also adds:
 
 - `prettier-plugin-tailwindcss`
 
+If only the `prettier` dependency exists (without config), detection marks the module as partially installed so you can standardize project scripts/config.
+
+## Generated config behavior
+
+- Without Tailwind: installs Prettier and scripts only
+- With Tailwind: also writes `.prettierrc` containing the Tailwind plugin
+
 ## File and config changes
 
 - Adds `format` script: `prettier --write .`
 - Adds `format:check` script: `prettier --check .`
 - Writes `.prettierrc` only when Tailwind is detected
+
+Expected outcome after `tinkerise add prettier`:
+
+- Formatting commands available in `package.json`
+- Prettier dev dependency installed
+- Tailwind class sorting enabled automatically when relevant
 
 ## Conflict handling
 

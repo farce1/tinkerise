@@ -11,21 +11,49 @@ tinkerise add eslint
 
 ## What it detects
 
-The `eslint` module treats the enhancement as installed when it finds any ESLint config file or `eslintConfig` in `package.json`.
+The `eslint` module treats the enhancement as installed when it finds any ESLint config file or an `eslintConfig` key in `package.json`.
+
+Detection includes both flat and legacy file names:
+
+- `eslint.config.js|mjs|cjs|ts`
+- `.eslintrc.js|cjs|json|yml|yaml`
 
 ## What it installs
+
+`eslint` always installs:
 
 - `eslint`
 - `@eslint/js`
 - `globals`
 
-It also adds `typescript-eslint` when TypeScript is detected and adds framework plugin packages for supported frameworks.
+It conditionally installs:
+
+- `typescript-eslint` when TypeScript is already present
+- `eslint-plugin-react` for `next`, `react`, and `remix`
+- `eslint-plugin-vue` for `vue` and `nuxt`
+- `eslint-plugin-svelte` for `svelte`
+- `eslint-plugin-astro` for `astro`
+
+## Generated config behavior
+
+The generated flat config is framework-aware and includes:
+
+- `@eslint/js` recommended rules
+- TypeScript rules when TypeScript is detected
+- Browser + Node globals from `globals`
+- Framework plugin config blocks when a supported framework is detected
 
 ## File and config changes
 
 - Writes `eslint.config.js` for `"type": "module"` projects
 - Writes `eslint.config.mjs` for non-module projects
 - Adds a `lint` script: `eslint .`
+
+Expected outcome after `tinkerise add eslint`:
+
+- ESLint config file at project root
+- New dev dependencies for your runtime/framework
+- `package.json` contains a working `lint` script
 
 ## Conflict handling
 

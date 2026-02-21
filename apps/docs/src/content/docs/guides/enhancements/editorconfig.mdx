@@ -17,10 +17,25 @@ The `editorconfig` module checks for an existing `.editorconfig` file.
 
 `editorconfig` is a config-only enhancement. It does not install any npm packages.
 
+The generated file uses JS/TS-oriented defaults:
+
+- UTF-8 encoding
+- LF line endings
+- 2-space indentation
+- Final newline enabled
+- Trailing whitespace trim (except Markdown)
+- Tab indentation for Makefiles
+
 ## File and config changes
 
 - Writes `.editorconfig` with standard JS/TS defaults
 - Adds markdown and Makefile-specific overrides
+
+Expected outcome after `tinkerise add editorconfig`:
+
+- Editors that support EditorConfig apply consistent formatting behavior
+- Markdown files keep intentional trailing spaces
+- Makefiles preserve tab indentation
 
 ## Conflict handling
 

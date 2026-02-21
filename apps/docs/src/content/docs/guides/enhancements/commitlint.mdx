@@ -13,16 +13,32 @@ tinkerise add commitlint
 
 The `commitlint` module checks for commitlint config files or a `commitlint` key in `package.json`.
 
+Detection includes:
+
+- `commitlint.config.js|mjs|cjs|ts`
+- `.commitlintrc*` variants
+
 ## What it installs
 
 - `@commitlint/cli`
 - `@commitlint/config-conventional`
+
+## Generated hook behavior
+
+- Generates a Conventional Commits config extending `@commitlint/config-conventional`
+- Integrates with Husky only when `.husky/` already exists
+- If Husky is missing, install still succeeds and returns a warning suggesting `tinkerise add husky`
 
 ## File and config changes
 
 - Writes `commitlint.config.js` for `"type": "module"` projects
 - Writes `commitlint.config.mjs` for non-module projects
 - Creates `.husky/commit-msg` when `.husky/` already exists
+
+Expected outcome after `tinkerise add commitlint`:
+
+- Conventional Commit rules available in your repo
+- Commit message hook enabled automatically when Husky is already configured
 
 ## Conflict handling
 
