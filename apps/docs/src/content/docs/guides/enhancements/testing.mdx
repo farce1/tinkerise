@@ -1,0 +1,48 @@
+---
+title: Vitest
+description: Add Vitest config, test scripts, and starter test files.
+---
+
+## Quick start
+
+```bash
+tinkerise add testing
+```
+
+## What it detects
+
+The `testing` module checks for existing test setup by looking for:
+
+- Vitest config files: `vitest.config.ts/js/mts/mjs`
+- Jest config files: `jest.config.js/ts/mjs/cjs`
+- Installed `vitest` or `jest` dependencies
+
+If any of these exist, the module is treated as already installed.
+
+## What it installs
+
+`testing` always standardizes on Vitest and performs all of the following:
+
+- Installs `vitest` as a dev dependency
+- Creates `vitest.config.ts`
+- Adds package scripts:
+  - `test`: `vitest`
+  - `test:run`: `vitest run`
+- Creates starter files:
+  - `tests/sum.ts`
+  - `tests/sum.test.ts`
+
+## File and config changes
+
+- `vitest.config.ts` includes `test.include` and `test.exclude` defaults
+- `package.json` gets/updates `test` and `test:run` scripts
+- `tests/` gets a working function and test so `bun run test` works immediately
+
+## Conflict handling
+
+If `vitest.config.*`, `jest.config.*`, or test tooling already exists, detection reports the enhancement as installed. For file-write conflicts in interactive runs, tinkerise shows a diff and allows replace/skip decisions.
+
+## Related docs
+
+- [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
+- [`/guides/enhancements/eslint/`](/guides/enhancements/eslint/)

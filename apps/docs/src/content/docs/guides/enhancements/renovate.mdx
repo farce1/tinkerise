@@ -1,0 +1,53 @@
+---
+title: Renovate
+description: Add a Renovate config for automated dependency update PRs.
+---
+
+## Quick start
+
+```bash
+tinkerise add renovate
+```
+
+## What it detects
+
+The `renovate` module checks for common Renovate config files:
+
+- `renovate.json`
+- `renovate.json5`
+- `.renovaterc`
+- `.renovaterc.json`
+- `.github/renovate.json`
+- `.github/renovate.json5`
+
+It also checks for a `renovate` key inside `package.json`.
+
+If any of these are present, the module is considered installed.
+
+## What it installs
+
+`renovate` is config-only and installs no packages.
+
+It writes one file:
+
+- `renovate.json`
+
+with:
+
+- `$schema`: `https://docs.renovatebot.com/renovate-schema.json`
+- `extends`: `['config:recommended']`
+
+## File and config changes
+
+- Creates `renovate.json`
+- Adds no runtime or dev dependencies
+- Leaves package scripts untouched
+
+## Conflict handling
+
+If Renovate config already exists, detection marks the module as installed. If a conflicting write is attempted during enhancement runs, tinkerise shows a diff and supports replace/skip choices.
+
+## Related docs
+
+- [`/guides/enhancements/ci/`](/guides/enhancements/ci/)
+- [`/guides/enhancements/changelog/`](/guides/enhancements/changelog/)

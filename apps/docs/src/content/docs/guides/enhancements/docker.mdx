@@ -1,0 +1,56 @@
+---
+title: Docker
+description: Generate a framework-aware Dockerfile and .dockerignore.
+---
+
+## Quick start
+
+```bash
+tinkerise add docker
+```
+
+## What it detects
+
+The `docker` module checks whether either of these files already exists:
+
+- `Dockerfile`
+- `.dockerignore`
+
+If one or both files are present, the enhancement is considered installed.
+
+## What it installs
+
+`docker` is config-only. It does not add packages.
+
+It writes:
+
+- `Dockerfile`
+- `.dockerignore`
+
+## Framework-aware behavior
+
+The module chooses a Docker template using project context and filesystem markers:
+
+- `next`/`remix` -> Next.js-style Node image flow
+- `react`/`vue`/`svelte`/`astro` -> Vite-style static build + nginx runtime
+- `requirements.txt` or `pyproject.toml` containing `fastapi`/`django` -> Python image flow
+- `go.mod` -> Go image flow
+- `Cargo.toml` -> Rust image flow
+- fallback -> generic Node.js image flow
+
+Each path gets a matching `.dockerignore` pattern set.
+
+## File and config changes
+
+- Creates multi-stage `Dockerfile` tuned to detected framework type
+- Creates `.dockerignore` with framework-appropriate ignores
+- Adds no new dependencies
+
+## Conflict handling
+
+When Docker files already exist, detection marks the module as installed. If writes conflict in interactive mode, tinkerise presents a diff and lets you choose replace or skip.
+
+## Related docs
+
+- [`/guides/enhancements/env/`](/guides/enhancements/env/)
+- [`/recipes/`](/recipes/)

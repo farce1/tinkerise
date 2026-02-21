@@ -1,0 +1,54 @@
+---
+title: GitHub Actions CI
+description: Add a CI workflow that runs lint, typecheck, test, and build when available.
+---
+
+## Quick start
+
+```bash
+tinkerise add ci
+```
+
+## What it detects
+
+The `ci` module is considered installed when any of these files already exist:
+
+- `.github/workflows/ci.yml`
+- `.github/workflows/ci.yaml`
+- `.github/workflows/test.yml`
+- `.github/workflows/test.yaml`
+
+## What it installs
+
+`ci` is a config-only enhancement. It does not install npm packages.
+
+It generates one workflow file:
+
+- `.github/workflows/ci.yml`
+
+## Generated workflow behavior
+
+The generated workflow is dynamic and adapts to your project:
+
+- Uses your detected package manager (`npm`, `pnpm`, `yarn`, or `bun`)
+- Runs `lint` only when lint tooling or scripts exist
+- Runs `typecheck` only when TypeScript is installed
+- Runs `test` only when test tooling/scripts exist
+- Runs `build` only when a `build` script exists
+- Uses Node matrix `20` and `22` for Node-based projects
+- Uses Bun setup action for Bun projects
+
+## File and config changes
+
+- Creates `.github/workflows/ci.yml`
+- Adds no runtime dependencies
+- Leaves your `package.json` unchanged
+
+## Conflict handling
+
+If your project already has CI workflow files, tinkerise marks the module as already installed during detection. If a write conflict occurs during enhancement runs, the CLI shows a diff and lets you accept or skip changes.
+
+## Related docs
+
+- [`/guides/enhancements/testing/`](/guides/enhancements/testing/)
+- [`/guides/enhancements/renovate/`](/guides/enhancements/renovate/)
