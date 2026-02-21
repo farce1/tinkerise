@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 25 of 29 (Docs Site Infrastructure)
-Plan: 1 of 2 complete
-Status: In Progress
-Last activity: 2026-02-21 -- Completed 25-01 (Starlight docs site scaffold)
+Plan: 2 of 2 complete
+Status: Phase Complete
+Last activity: 2026-02-21 -- Completed 25-02 (Monorepo integration)
 
-Progress: [███████████████████████████░░░] 82% (69/~75 plans across all milestones)
+Progress: [████████████████████████████░░] 83% (70/~75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [███████████████████████
 | 24-02 | error boundary & throws | 8min | 2 | 14 |
 | 24-03 | subcommand help examples | 7min | 2 | 7 |
 | 25-01 | Starlight docs site scaffold | 5min | 2 | 10 |
+| 25-02 | Monorepo integration | 2min | 2 | 2 |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Recent decisions (v3.0):
 - Teal/cyan accent palette (#2bb4d4 dark, #0e7f9b light) with slate gray neutrals for docs site
 - SVG logo uses currentColor for automatic dark/light theme adaptation
 - Astro tsconfig base instead of repo tsconfig.base.json for .astro file support
+- No turbo.json changes needed for docs -- existing build/dev config covers Astro output and persistent dev server
+- ESLint ignores entire apps/docs/ rather than adding eslint-plugin-astro -- Astro build handles its own TS checking
 
 ### Pending Todos
 
@@ -84,5 +87,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 25-01-PLAN.md (Starlight docs site scaffold)
+Stopped at: Completed 25-02-PLAN.md (Monorepo integration) -- Phase 25 complete
 Resume file: None

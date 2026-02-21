@@ -24,9 +24,9 @@ export default defineConfig({
         {
           label: 'Guides',
           items: [
-            { slug: 'guides/getting-started' },
-            { label: 'Scaffolders', autogenerate: { directory: 'guides/scaffolders' } },
-            { label: 'Enhancements', autogenerate: { directory: 'guides/enhancements' } },
+            { label: 'Getting Started', slug: 'guides/getting-started' },
+            { label: 'Scaffolder Guides', autogenerate: { directory: 'guides/scaffolders' } },
+            { label: 'Enhancement Guides', autogenerate: { directory: 'guides/enhancements' } },
           ],
         },
         { label: 'Reference', autogenerate: { directory: 'reference' } },
