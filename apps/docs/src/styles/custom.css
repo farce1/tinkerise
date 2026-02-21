@@ -1,1 +1,30 @@
-/* Placeholder - will be populated in Task 2 */
+/* Teal/cyan accent palette with neutral slate grays */
+/* Professional developer tool aesthetic for tinkerise docs */
+
+:root {
+  --sl-color-accent-low: #0e2f3b;
+  --sl-color-accent: #2bb4d4;
+  --sl-color-accent-high: #b3ecf8;
+
+  --sl-color-gray-1: #eceef2;
+  --sl-color-gray-2: #c0c2c7;
+  --sl-color-gray-3: #888b96;
+  --sl-color-gray-4: #545861;
+  --sl-color-gray-5: #353841;
+  --sl-color-gray-6: #24272f;
+  --sl-color-gray-7: #17181c;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #c9f0fa;
+  --sl-color-accent: #0e7f9b;
+  --sl-color-accent-high: #073d4b;
+
+  --sl-color-gray-1: #24272f;
+  --sl-color-gray-2: #353841;
+  --sl-color-gray-3: #545861;
+  --sl-color-gray-4: #888b96;
+  --sl-color-gray-5: #c0c2c7;
+  --sl-color-gray-6: #eceef2;
+  --sl-color-gray-7: #f5f6f8;
+}
