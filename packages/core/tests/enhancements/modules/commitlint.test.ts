@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { commitlintModule } from '../../../src/enhancements/modules/commitlint.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -22,7 +26,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -55,7 +59,7 @@ describe('commitlintModule', () => {
 
     it('returns installed when commitlint.config.js exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/commitlint.config.js')
+        if (path === projectPath('commitlint.config.js'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -73,7 +77,7 @@ describe('commitlintModule', () => {
 
     it('returns installed when .commitlintrc exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.commitlintrc')
+        if (path === projectPath('.commitlintrc'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -95,7 +99,7 @@ describe('commitlintModule', () => {
           expect.stringContaining('@commitlint/cli@'),
           expect.stringContaining('@commitlint/config-conventional@'),
         ]),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
     })
 
@@ -126,7 +130,7 @@ describe('commitlintModule', () => {
 
     it('adds commit-msg hook when .husky directory exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.husky')
+        if (path === projectPath('.husky'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -162,7 +166,7 @@ describe('commitlintModule', () => {
 
     it('does not include warning when husky is present', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.husky')
+        if (path === projectPath('.husky'))
           return undefined
         throw new Error('ENOENT')
       })

@@ -6,8 +6,12 @@ import type {
   ProjectContext,
 } from '../../src/enhancements/types.js'
 import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { runEnhancements } from '../../src/enhancements/executor.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 // Suppress console.log from tinkeriseLog during tests
 vi.mock('../../src/executor/framing.js', () => ({
@@ -26,7 +30,7 @@ const mockWriteFile = vi.mocked(writeFile)
 
 /** Default project context for testing */
 const ctx: ProjectContext = {
-  rootDir: '/tmp/test-project',
+  rootDir: TEST_ROOT,
   packageManager: 'npm',
   framework: null,
   packageJson: {},
@@ -121,7 +125,7 @@ describe('runEnhancements()', () => {
       id: 'eslint',
       detect: async () => ({
         installed: true,
-        configFiles: ['/tmp/test-project/.eslintrc.json'],
+        configFiles: [projectPath('.eslintrc.json')],
         partial: false,
       }),
     })
@@ -148,7 +152,7 @@ describe('runEnhancements()', () => {
       id: 'eslint',
       detect: async () => ({
         installed: true,
-        configFiles: ['/tmp/test-project/.eslintrc.json'],
+        configFiles: [projectPath('.eslintrc.json')],
         partial: false,
       }),
     })
@@ -187,7 +191,7 @@ describe('runEnhancements()', () => {
       id: 'eslint',
       detect: async () => ({
         installed: true,
-        configFiles: ['/tmp/.eslintrc.json'],
+        configFiles: [join('/', 'tmp', '.eslintrc.json')],
         partial: false,
       }),
     })

@@ -10,9 +10,13 @@
  * - printTemplateSummary uses 'npm run' for npm, bare PM for others
  */
 
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { printTemplateSummary, runInstall, writeProjectFile } from '../../src/templates/shared.js'
+
+const PROJECT_ROOT = join('/', 'tmp', 'project')
+const projectPath = (relativePath: string) => join(PROJECT_ROOT, ...relativePath.split('/'))
 
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
@@ -46,35 +50,35 @@ describe('shared template utilities', () => {
 
   describe('writeProjectFile', () => {
     it('writes content to the correct path', async () => {
-      await writeProjectFile('/tmp/project', 'src/index.ts', 'export {}')
+      await writeProjectFile(PROJECT_ROOT, 'src/index.ts', 'export {}')
 
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/project/src/index.ts',
+        projectPath('src/index.ts'),
         'export {}',
         'utf-8',
       )
     })
 
     it('creates intermediate directories with recursive: true', async () => {
-      await writeProjectFile('/tmp/project', 'src/lib/utils.ts', 'export {}')
+      await writeProjectFile(PROJECT_ROOT, 'src/lib/utils.ts', 'export {}')
 
       expect(mockMkdir).toHaveBeenCalledWith(
-        '/tmp/project/src/lib',
+        projectPath('src/lib'),
         { recursive: true },
       )
     })
 
     it('returns the absolute path of the written file', async () => {
-      const result = await writeProjectFile('/tmp/project', 'package.json', '{}')
+      const result = await writeProjectFile(PROJECT_ROOT, 'package.json', '{}')
 
-      expect(result).toBe('/tmp/project/package.json')
+      expect(result).toBe(projectPath('package.json'))
     })
 
     it('handles nested filenames correctly', async () => {
-      await writeProjectFile('/tmp/project', 'src/deep/nested/file.ts', 'code')
+      await writeProjectFile(PROJECT_ROOT, 'src/deep/nested/file.ts', 'code')
 
       expect(mockMkdir).toHaveBeenCalledWith(
-        '/tmp/project/src/deep/nested',
+        projectPath('src/deep/nested'),
         { recursive: true },
       )
     })
@@ -82,12 +86,12 @@ describe('shared template utilities', () => {
 
   describe('runInstall', () => {
     it('calls execa with the package manager and install arg', async () => {
-      await runInstall('/tmp/project', 'npm')
+      await runInstall(PROJECT_ROOT, 'npm')
 
       expect(mockExeca).toHaveBeenCalledWith(
         'npm',
         ['install'],
-        expect.objectContaining({ cwd: '/tmp/project', stdio: 'inherit' }),
+        expect.objectContaining({ cwd: PROJECT_ROOT, stdio: 'inherit' }),
       )
     })
 
@@ -102,7 +106,7 @@ describe('shared template utilities', () => {
     })
 
     it('uses stdio inherit', async () => {
-      await runInstall('/tmp/project', 'pnpm')
+      await runInstall(PROJECT_ROOT, 'pnpm')
 
       expect(mockExeca).toHaveBeenCalledWith(
         'pnpm',

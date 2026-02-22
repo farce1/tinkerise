@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { huskyModule } from '../../../src/enhancements/modules/husky.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -22,7 +26,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -55,7 +59,7 @@ describe('huskyModule', () => {
 
     it('returns installed when .husky exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.husky')
+        if (path === projectPath('.husky'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -85,7 +89,7 @@ describe('huskyModule', () => {
     it('creates pre-commit hook with lint-staged', async () => {
       // .git exists
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -102,7 +106,7 @@ describe('huskyModule', () => {
 
     it('lint-staged config includes eslint when eslint installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -131,7 +135,7 @@ describe('huskyModule', () => {
 
     it('lint-staged config includes prettier when prettier installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -158,7 +162,7 @@ describe('huskyModule', () => {
 
     it('lint-staged config includes both when both installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -183,7 +187,7 @@ describe('huskyModule', () => {
 
     it('lint-staged config is empty when neither installed', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -202,7 +206,7 @@ describe('huskyModule', () => {
 
     it('adds prepare script', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.git')
+        if (path === projectPath('.git'))
           return undefined
         throw new Error('ENOENT')
       })

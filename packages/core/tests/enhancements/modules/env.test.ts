@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { envModule } from '../../../src/enhancements/modules/env.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -23,7 +27,7 @@ vi.mock('execa', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -50,19 +54,19 @@ describe('envModule', () => {
 
     it('returns installed when .env.example exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.env.example')
+        if (path === projectPath('.env.example'))
           return undefined
         throw new Error('ENOENT')
       })
 
       const result = await envModule.detect(makeCtx())
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/.env.example')
+      expect(result.configFiles).toContain(projectPath('.env.example'))
     })
 
     it('returns installed when .env exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.env')
+        if (path === projectPath('.env'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -73,7 +77,7 @@ describe('envModule', () => {
 
     it('returns installed when src/env.ts exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/src/env.ts')
+        if (path === projectPath('src/env.ts'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -95,7 +99,7 @@ describe('envModule', () => {
           expect.stringContaining('@t3-oss/env-core'),
           expect.stringContaining('zod'),
         ]),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
       expect(result.packagesAdded).toHaveLength(2)
       expect(result.packagesAdded[0]).toContain('@t3-oss/env-core')
@@ -191,7 +195,7 @@ describe('envModule', () => {
 
     it('places env.ts in src/ when src/ directory exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/src')
+        if (path === projectPath('src'))
           return undefined
         throw new Error('ENOENT')
       })

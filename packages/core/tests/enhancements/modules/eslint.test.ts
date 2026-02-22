@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { eslintModule } from '../../../src/enhancements/modules/eslint.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 // Hoist mocks for vi.mock factories
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
@@ -24,7 +28,7 @@ vi.mock('node:fs/promises', () => ({
 /** Build a mock ProjectContext with overridable fields */
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -55,7 +59,7 @@ describe('eslintModule', () => {
 
     it('returns installed when eslint.config.js exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/eslint.config.js')
+        if (path === projectPath('eslint.config.js'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -64,12 +68,12 @@ describe('eslintModule', () => {
       const result = await eslintModule.detect(ctx)
 
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/eslint.config.js')
+      expect(result.configFiles).toContain(projectPath('eslint.config.js'))
     })
 
     it('returns installed when legacy .eslintrc.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.eslintrc.json')
+        if (path === projectPath('.eslintrc.json'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -99,7 +103,7 @@ describe('eslintModule', () => {
       expect(mockExeca).toHaveBeenCalledWith(
         'npm',
         expect.arrayContaining(['install', '--save-dev']),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
 
       const args = mockExeca.mock.calls[0][1] as string[]
@@ -109,14 +113,14 @@ describe('eslintModule', () => {
 
       // Should write eslint.config.js (type: module)
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/test-project/eslint.config.js',
+        projectPath('eslint.config.js'),
         expect.any(String),
         'utf-8',
       )
 
       // Should add lint script
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/test-project/package.json',
+        projectPath('package.json'),
         expect.stringContaining('"lint"'),
         'utf-8',
       )
@@ -169,7 +173,7 @@ describe('eslintModule', () => {
       await eslintModule.install(ctx)
 
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/test-project/eslint.config.mjs',
+        projectPath('eslint.config.mjs'),
         expect.any(String),
         'utf-8',
       )

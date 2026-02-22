@@ -14,9 +14,13 @@
  */
 
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { changelogModule } from '../../../src/enhancements/modules/changelog.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 // Hoist mocks for vi.mock factories
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
@@ -39,7 +43,7 @@ vi.mock('node:fs/promises', () => ({
 /** Build a mock ProjectContext with overridable fields */
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -70,7 +74,7 @@ describe('changelogModule', () => {
 
     it('returns installed when .changelogrc.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.changelogrc.json')
+        if (path === projectPath('.changelogrc.json'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -79,12 +83,12 @@ describe('changelogModule', () => {
       const result = await changelogModule.detect(ctx)
 
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/.changelogrc.json')
+      expect(result.configFiles).toContain(projectPath('.changelogrc.json'))
     })
 
     it('returns installed when .versionrc exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.versionrc')
+        if (path === projectPath('.versionrc'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -122,7 +126,7 @@ describe('changelogModule', () => {
       expect(mockExeca).toHaveBeenCalledWith(
         'npm',
         expect.arrayContaining(['install', '--save-dev']),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
 
       const args = mockExeca.mock.calls[0][1] as string[]
@@ -134,7 +138,7 @@ describe('changelogModule', () => {
       await changelogModule.install(ctx)
 
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/test-project/.changelogrc.json',
+        projectPath('.changelogrc.json'),
         expect.stringContaining('conventionalcommits'),
         'utf-8',
       )
@@ -167,7 +171,7 @@ describe('changelogModule', () => {
 
     it('does not warn about commitlint when commitlint config exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/commitlint.config.js')
+        if (path === projectPath('commitlint.config.js'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -200,7 +204,7 @@ describe('changelogModule', () => {
       const result = await changelogModule.install(ctx)
 
       expect(result.success).toBe(true)
-      expect(result.filesModified).toContain('/tmp/test-project/.changelogrc.json')
+      expect(result.filesModified).toContain(projectPath('.changelogrc.json'))
       expect(result.packagesAdded!.length).toBeGreaterThan(0)
     })
 
@@ -211,7 +215,7 @@ describe('changelogModule', () => {
       expect(mockExeca).toHaveBeenCalledWith(
         'bun',
         expect.arrayContaining(['add', '--dev']),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
     })
   })

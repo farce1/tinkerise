@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { dockerModule } from '../../../src/enhancements/modules/docker.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -17,7 +21,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -44,26 +48,26 @@ describe('dockerModule', () => {
 
     it('returns installed when Dockerfile exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/Dockerfile')
+        if (path === projectPath('Dockerfile'))
           return undefined
         throw new Error('ENOENT')
       })
 
       const result = await dockerModule.detect(makeCtx())
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/Dockerfile')
+      expect(result.configFiles).toContain(projectPath('Dockerfile'))
     })
 
     it('returns installed when .dockerignore exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.dockerignore')
+        if (path === projectPath('.dockerignore'))
           return undefined
         throw new Error('ENOENT')
       })
 
       const result = await dockerModule.detect(makeCtx())
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/.dockerignore')
+      expect(result.configFiles).toContain(projectPath('.dockerignore'))
     })
   })
 

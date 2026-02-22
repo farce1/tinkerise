@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ciModule } from '../../../src/enhancements/modules/ci.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -17,7 +21,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -49,7 +53,7 @@ describe('ciModule', () => {
 
     it('returns installed when ci.yml exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/workflows/ci.yml')
+        if (path === projectPath('.github/workflows/ci.yml'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -60,7 +64,7 @@ describe('ciModule', () => {
 
     it('returns installed when test.yml exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/workflows/test.yml')
+        if (path === projectPath('.github/workflows/test.yml'))
           return undefined
         throw new Error('ENOENT')
       })

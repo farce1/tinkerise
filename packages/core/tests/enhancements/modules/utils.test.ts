@@ -11,9 +11,13 @@
  * - readPackageJson returns parsed JSON from disk
  */
 
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { addScript, installPackages, readPackageJson, writeConfigFile } from '../../../src/enhancements/modules/_utils.js'
+
+const PROJECT_ROOT = join('/', 'tmp', 'project')
+const projectPath = (relativePath: string) => join(PROJECT_ROOT, ...relativePath.split('/'))
 
 // Hoist mocks for vi.mock factories
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
@@ -40,7 +44,7 @@ describe('enhancement _utils', () => {
   describe('installPackages', () => {
     it('returns empty array for empty package list', async () => {
       const result = await installPackages([], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'npm',
       })
 
@@ -50,59 +54,59 @@ describe('enhancement _utils', () => {
 
     it('calls npm with install --save-dev for npm', async () => {
       await installPackages(['pkg-a@1.0.0', 'pkg-b@2.0.0'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'npm',
       })
 
       expect(mockExeca).toHaveBeenCalledWith(
         'npm',
         ['install', '--save-dev', 'pkg-a@1.0.0', 'pkg-b@2.0.0'],
-        expect.objectContaining({ cwd: '/tmp/project' }),
+        expect.objectContaining({ cwd: PROJECT_ROOT }),
       )
     })
 
     it('calls bun with add --dev for bun', async () => {
       await installPackages(['pkg-a'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'bun',
       })
 
       expect(mockExeca).toHaveBeenCalledWith(
         'bun',
         ['add', '--dev', 'pkg-a'],
-        expect.objectContaining({ cwd: '/tmp/project' }),
+        expect.objectContaining({ cwd: PROJECT_ROOT }),
       )
     })
 
     it('calls pnpm with add --save-dev for pnpm', async () => {
       await installPackages(['pkg-a'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'pnpm',
       })
 
       expect(mockExeca).toHaveBeenCalledWith(
         'pnpm',
         ['add', '--save-dev', 'pkg-a'],
-        expect.objectContaining({ cwd: '/tmp/project' }),
+        expect.objectContaining({ cwd: PROJECT_ROOT }),
       )
     })
 
     it('calls yarn with add --dev for yarn', async () => {
       await installPackages(['pkg-a'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'yarn',
       })
 
       expect(mockExeca).toHaveBeenCalledWith(
         'yarn',
         ['add', '--dev', 'pkg-a'],
-        expect.objectContaining({ cwd: '/tmp/project' }),
+        expect.objectContaining({ cwd: PROJECT_ROOT }),
       )
     })
 
     it('uses inherit stdio when verbose is true', async () => {
       await installPackages(['pkg-a'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'npm',
         verbose: true,
       })
@@ -116,7 +120,7 @@ describe('enhancement _utils', () => {
 
     it('uses pipe stdio when verbose is false', async () => {
       await installPackages(['pkg-a'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'npm',
         verbose: false,
       })
@@ -130,7 +134,7 @@ describe('enhancement _utils', () => {
 
     it('returns the package list for chaining', async () => {
       const result = await installPackages(['pkg-a', 'pkg-b'], {
-        cwd: '/tmp/project',
+        cwd: PROJECT_ROOT,
         packageManager: 'npm',
       })
 
@@ -140,28 +144,28 @@ describe('enhancement _utils', () => {
 
   describe('writeConfigFile', () => {
     it('writes content to the correct path', async () => {
-      await writeConfigFile('/tmp/project', '.eslintrc.json', '{"rules":{}}')
+      await writeConfigFile(PROJECT_ROOT, '.eslintrc.json', '{"rules":{}}')
 
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/project/.eslintrc.json',
+        projectPath('.eslintrc.json'),
         '{"rules":{}}',
         'utf-8',
       )
     })
 
     it('creates intermediate directories', async () => {
-      await writeConfigFile('/tmp/project', '.eslintrc.json', '{}')
+      await writeConfigFile(PROJECT_ROOT, '.eslintrc.json', '{}')
 
       expect(mockMkdir).toHaveBeenCalledWith(
-        '/tmp/project',
+        PROJECT_ROOT,
         { recursive: true },
       )
     })
 
     it('returns the absolute path of the written file', async () => {
-      const result = await writeConfigFile('/tmp/project', '.prettierrc', '{}')
+      const result = await writeConfigFile(PROJECT_ROOT, '.prettierrc', '{}')
 
-      expect(result).toBe('/tmp/project/.prettierrc')
+      expect(result).toBe(projectPath('.prettierrc'))
     })
   })
 
@@ -169,11 +173,11 @@ describe('enhancement _utils', () => {
     it('adds a new script to package.json', async () => {
       mockReadFile.mockResolvedValue(JSON.stringify({ name: 'test', scripts: {} }))
 
-      const result = await addScript('/tmp/project', 'lint', 'eslint .')
+      const result = await addScript(PROJECT_ROOT, 'lint', 'eslint .')
 
       expect(result).toBe(true)
       expect(mockWriteFile).toHaveBeenCalledWith(
-        '/tmp/project/package.json',
+        projectPath('package.json'),
         expect.stringContaining('"lint"'),
         'utf-8',
       )
@@ -185,7 +189,7 @@ describe('enhancement _utils', () => {
         scripts: { lint: 'eslint .' },
       }))
 
-      const result = await addScript('/tmp/project', 'lint', 'eslint --fix .')
+      const result = await addScript(PROJECT_ROOT, 'lint', 'eslint --fix .')
 
       expect(result).toBe(false)
       expect(mockWriteFile).not.toHaveBeenCalled()
@@ -197,7 +201,7 @@ describe('enhancement _utils', () => {
         scripts: { build: 'tsc' },
       }))
 
-      await addScript('/tmp/project', 'lint', 'eslint .')
+      await addScript(PROJECT_ROOT, 'lint', 'eslint .')
 
       const writtenContent = mockWriteFile.mock.calls[0][1] as string
       const parsed = JSON.parse(writtenContent)
@@ -208,7 +212,7 @@ describe('enhancement _utils', () => {
     it('creates scripts object when package.json has none', async () => {
       mockReadFile.mockResolvedValue(JSON.stringify({ name: 'test' }))
 
-      await addScript('/tmp/project', 'lint', 'eslint .')
+      await addScript(PROJECT_ROOT, 'lint', 'eslint .')
 
       const writtenContent = mockWriteFile.mock.calls[0][1] as string
       const parsed = JSON.parse(writtenContent)
@@ -223,7 +227,7 @@ describe('enhancement _utils', () => {
         version: '1.0.0',
       }))
 
-      const result = await readPackageJson('/tmp/project')
+      const result = await readPackageJson(PROJECT_ROOT)
 
       expect(result.name).toBe('my-package')
       expect(result.version).toBe('1.0.0')
@@ -232,10 +236,10 @@ describe('enhancement _utils', () => {
     it('reads from the correct path', async () => {
       mockReadFile.mockResolvedValue('{}')
 
-      await readPackageJson('/tmp/project')
+      await readPackageJson(PROJECT_ROOT)
 
       expect(mockReadFile).toHaveBeenCalledWith(
-        '/tmp/project/package.json',
+        projectPath('package.json'),
         'utf-8',
       )
     })

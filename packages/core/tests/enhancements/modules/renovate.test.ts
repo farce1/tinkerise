@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { renovateModule } from '../../../src/enhancements/modules/renovate.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -17,7 +21,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -43,19 +47,19 @@ describe('renovateModule', () => {
 
     it('returns true when renovate.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/renovate.json')
+        if (path === projectPath('renovate.json'))
           return undefined
         throw new Error('ENOENT')
       })
 
       const result = await renovateModule.detect(makeCtx())
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/renovate.json')
+      expect(result.configFiles).toContain(projectPath('renovate.json'))
     })
 
     it('returns true when .renovaterc exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.renovaterc')
+        if (path === projectPath('.renovaterc'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -66,7 +70,7 @@ describe('renovateModule', () => {
 
     it('returns true when .github/renovate.json exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/.github/renovate.json')
+        if (path === projectPath('.github/renovate.json'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -80,7 +84,7 @@ describe('renovateModule', () => {
         makeCtx({ packageJson: { type: 'module', renovate: {} } }),
       )
       expect(result.installed).toBe(true)
-      expect(result.configFiles).toContain('/tmp/test-project/package.json')
+      expect(result.configFiles).toContain(projectPath('package.json'))
     })
   })
 

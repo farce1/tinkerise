@@ -1,7 +1,11 @@
 import type { ProjectContext } from '../../../src/enhancements/types.js'
+import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { testingModule } from '../../../src/enhancements/modules/testing.js'
+
+const TEST_ROOT = join('/', 'tmp', 'test-project')
+const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -22,7 +26,7 @@ vi.mock('node:fs/promises', () => ({
 
 function makeCtx(overrides: Partial<ProjectContext> = {}): ProjectContext {
   return {
-    rootDir: '/tmp/test-project',
+    rootDir: TEST_ROOT,
     packageManager: 'npm',
     framework: null,
     packageJson: { type: 'module' },
@@ -55,7 +59,7 @@ describe('testingModule', () => {
 
     it('returns installed when vitest.config.ts exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/vitest.config.ts')
+        if (path === projectPath('vitest.config.ts'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -66,7 +70,7 @@ describe('testingModule', () => {
 
     it('returns installed when jest.config.js exists', async () => {
       mockAccess.mockImplementation(async (path: string) => {
-        if (path === '/tmp/test-project/jest.config.js')
+        if (path === projectPath('jest.config.js'))
           return undefined
         throw new Error('ENOENT')
       })
@@ -101,7 +105,7 @@ describe('testingModule', () => {
           '--save-dev',
           expect.stringContaining('vitest@'),
         ]),
-        expect.objectContaining({ cwd: '/tmp/test-project' }),
+        expect.objectContaining({ cwd: TEST_ROOT }),
       )
     })
 
