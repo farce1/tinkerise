@@ -198,4 +198,4 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
 | 27. VHS Terminal Demos | 2/2 | Complete    | 2026-02-22 | - |
 | 28. README Overhaul | 1/1 | Complete    | 2026-02-22 | - |
-| 29. Deployment & Release | 1/3 | In Progress|  | - |
+| 29. Deployment & Release | 2/3 | In Progress|  | - |

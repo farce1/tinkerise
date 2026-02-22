@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 29 of 29 (Deployment & Release)
-Plan: 02 of 03
+Plan: 03 of 03
 Status: In progress
-Last activity: 2026-02-22 -- Completed 29-01 docs deploy workflow plan
+Last activity: 2026-02-22 -- Completed 29-02 release note categorization plan
 
 Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
 
@@ -62,6 +62,7 @@ Progress: [███████████████████████
 | Phase 27 P02 | 1h 6m | 3 tasks | 7 files |
 | Phase 28 P01 | 2 min | 3 tasks | 1 files |
 | Phase 29 P01 | 1 min | 3 tasks | 1 files |
+| Phase 29 P02 | 2 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions (v3.0):
 - [Phase 28]: Anchor trust messaging to official-scaffolder wrapping with source-validated counts.
 - [Phase 29]: Use bun run docs:build from repository root to keep deployment scope locked to @tinkerise/docs
 - [Phase 29]: Include docs app paths, docs build inputs, and deploy/release workflow files in on.push.paths
+- [Phase 29]: Use .github/release.yml as deterministic category source with Maintenance catch-all.
+- [Phase 29]: Normalize published release bodies into Features/Fixes/Docs/Maintenance in a post-publish idempotent workflow step.
 
 ### Pending Todos
 
@@ -118,5 +121,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 29-01-PLAN.md
+Stopped at: Completed 29-02-PLAN.md
 Resume file: None
