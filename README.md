@@ -12,7 +12,7 @@ Wrap official framework scaffolders from one consistent CLI, then keep moving wi
 
 ```bash
 npx tinkerise
-tinkerise web next my-app --ts --tailwind --eslint
+npx tinkerise web next my-app --ts --tailwind --eslint
 ```
 
 Continue in the full docs: [https://farce1.github.io/tinkerise/](https://farce1.github.io/tinkerise/)
