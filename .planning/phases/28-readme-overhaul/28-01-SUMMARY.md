@@ -70,7 +70,7 @@ Each task was committed atomically:
 None - plan executed exactly as written.
 
 ## Issues Encountered
-None.
+- `gsd-tools state advance-plan` and `state record-session` could not parse the existing STATE.md format, so current-position/session fields were updated manually after running the other successful state/roadmap/requirements commands.
 
 ## User Setup Required
 
