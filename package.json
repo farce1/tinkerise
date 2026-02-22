@@ -13,6 +13,7 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "license-check": "bun scripts/license-check.ts",
+    "demos:render": "bash demos/vhs/scripts/render-all.sh",
     "prepare": "husky",
     "changeset": "changeset",
     "ci:version": "changeset version && bun install --frozen-lockfile",
