@@ -29,8 +29,8 @@ Requirements for documentation and polish milestone. Each maps to roadmap phases
 
 ### Visual Discovery
 
-- [ ] **VIS-01**: README leads with a hero GIF demonstrating the core scaffold workflow
-- [ ] **VIS-02**: README has a compelling value proposition, copy-paste quickstart, and link to docs site
+- [x] **VIS-01**: README leads with a hero GIF demonstrating the core scaffold workflow
+- [x] **VIS-02**: README has a compelling value proposition, copy-paste quickstart, and link to docs site
 - [x] **VIS-03**: VHS terminal demo `.tape` files exist for key workflows (scaffold, add, list, doctor)
 - [x] **VIS-04**: Generated GIFs are embedded in both README and documentation site
 
@@ -87,8 +87,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLI-03 | Phase 24 | Pending |
 | CLI-04 | Phase 24 | Pending |
 | CLI-05 | Phase 24 | Pending |
-| VIS-01 | Phase 28 | Pending |
-| VIS-02 | Phase 28 | Pending |
+| VIS-01 | Phase 28 | Complete |
+| VIS-02 | Phase 28 | Complete |
 | VIS-03 | Phase 27 | Complete |
 | VIS-04 | Phase 27 | Complete |
 | DIST-01 | Phase 29 | Pending |

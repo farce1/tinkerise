@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 27 -- VHS Terminal Demos
+**Current focus:** Phase 29 -- Deployment & Release
 
 ## Current Position
 
-Phase: 27 of 29 (VHS Terminal Demos)
-Plan: 2 of 2 complete
-Status: Complete
-Last activity: 2026-02-22 -- Completed 27-02 (Published GIF artifacts across README and docs)
+Phase: 29 of 29 (Deployment & Release)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-02-22 -- Completed Phase 28 Plan 01 (README conversion funnel)
 
-Progress: [███████████████████████████████] 100% (76/76 plans across all milestones)
+Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [███████████████████████
 | Phase 26 P04 | 3 min | 3 tasks | 7 files |
 | Phase 27 P01 | 21 min | 3 tasks | 7 files |
 | Phase 27 P02 | 1h 6m | 3 tasks | 7 files |
+| Phase 28 P01 | 2 min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -100,6 +101,8 @@ Recent decisions (v3.0):
 - [Phase 27]: Keep tapes deterministic with hidden setup/reset steps and single-take outcome-focused narratives.
 - [Phase 27]: Keep README scoped to one hero GIF while publishing the full workflow set in docs.
 - [Phase 27]: Use /media/demos/* docs paths with committed apps/docs/public/media/demos assets for stable rendering.
+- [Phase 28]: Keep README as a conversion hook, not a full reference manual.
+- [Phase 28]: Anchor trust messaging to official-scaffolder wrapping with source-validated counts.
 
 ### Pending Todos
 
@@ -112,5 +115,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 27-02-PLAN.md
+Stopped at: Completed 28-01-PLAN.md
 Resume file: None

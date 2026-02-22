@@ -64,7 +64,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks (completed 2026-02-21)
 - [x] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes (completed 2026-02-21)
 - [x] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows (completed 2026-02-22)
-- [ ] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link
+- [x] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link (completed 2026-02-22)
 - [ ] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page
 
 ## Phase Details
@@ -143,10 +143,10 @@ Plans:
   1. README leads with a hero GIF that demonstrates the core scaffold workflow in under 15 seconds
   2. README has a clear value proposition ("One command to scaffold any project"), a copy-paste quickstart command, and a prominent link to the full docs site
   3. README is concise -- details live in docs, README is the hook
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 28-01: TBD
+- [ ] 28-01-PLAN.md -- README conversion funnel rewrite with hero proof, quickstart path, and docs-forward detail compression
 
 ### Phase 29: Deployment & Release
 **Goal**: Documentation site auto-deploys to GitHub Pages and releases include categorized notes with a changelog page in docs
@@ -195,6 +195,6 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 24. Error Handling & CLI Polish | v3.0 | Complete    | 2026-02-20 | - |
 | 25. Docs Site Infrastructure | v3.0 | Complete    | 2026-02-21 | - |
 | 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
-| 27. VHS Terminal Demos | 2/2 | Complete   | 2026-02-22 | - |
-| 28. README Overhaul | v3.0 | 0/? | Not started | - |
+| 27. VHS Terminal Demos | 2/2 | Complete    | 2026-02-22 | - |
+| 28. README Overhaul | 1/1 | Complete   | 2026-02-22 | - |
 | 29. Deployment & Release | v3.0 | 0/? | Not started | - |
