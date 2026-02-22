@@ -1,0 +1,25 @@
+name: Docs Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - 'apps/docs/package.json'
+      - 'package.json'
+      - 'bun.lock'
+      - 'turbo.json'
+      - '.github/workflows/docs-deploy.yml'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: docs-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow scaffold
+        run: echo 'Docs deploy jobs will be configured in this workflow.'
