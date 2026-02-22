@@ -1,14 +1,26 @@
 # tinkerise
 
-Scaffold any project with any stack -- one CLI, every framework's official tool.
+One command to scaffold any project with any stack.
 
 [![CI](https://github.com/farce1/tinkerise/actions/workflows/ci.yml/badge.svg)](https://github.com/farce1/tinkerise/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/tinkerise)](https://www.npmjs.com/package/tinkerise) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Node](https://img.shields.io/badge/node-%3E%3D20.11.0-brightgreen)](https://nodejs.org)
 
-## Terminal Demo
-
-`tinkerise web next next-golden --ts --tailwind --eslint --no-install` scaffolds a production-ready baseline in one guided flow.
+Wrap official framework scaffolders from one consistent CLI, then keep moving with docs and guided add-ons.
 
 ![Terminal demo of tinkerise scaffolding a Next.js app with TypeScript, Tailwind, and ESLint](apps/docs/public/media/demos/scaffold-next-golden-path.gif)
+
+## Start in 30 seconds
+
+```bash
+npx tinkerise
+tinkerise web next my-app --ts --tailwind --eslint
+```
+
+Continue in the full docs: [https://farce1.github.io/tinkerise/](https://farce1.github.io/tinkerise/)
+
+### Alternative install paths
+
+- `npm install -g tinkerise`
+- `brew install farce1/tap/tinkerise`
 
 ## What is tinkerise?
 
