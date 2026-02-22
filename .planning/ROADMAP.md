@@ -63,7 +63,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 24: Error Handling & CLI Polish** - Structured errors, friendly messages, help text improvements (completed 2026-02-20)
 - [x] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks (completed 2026-02-21)
 - [x] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes (completed 2026-02-21)
-- [ ] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows
+- [x] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows (completed 2026-02-22)
 - [ ] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link
 - [ ] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page
 
@@ -195,6 +195,6 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 24. Error Handling & CLI Polish | v3.0 | Complete    | 2026-02-20 | - |
 | 25. Docs Site Infrastructure | v3.0 | Complete    | 2026-02-21 | - |
 | 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
-| 27. VHS Terminal Demos | 1/2 | In Progress|  | - |
+| 27. VHS Terminal Demos | 2/2 | Complete   | 2026-02-22 | - |
 | 28. README Overhaul | v3.0 | 0/? | Not started | - |
 | 29. Deployment & Release | v3.0 | 0/? | Not started | - |

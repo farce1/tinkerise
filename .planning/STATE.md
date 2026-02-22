@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 27 of 29 (VHS Terminal Demos)
-Plan: 1 of 2 complete
-Status: In Progress
-Last activity: 2026-02-22 -- Completed 27-01 (Created VHS source pipeline and render command)
+Plan: 2 of 2 complete
+Status: Complete
+Last activity: 2026-02-22 -- Completed 27-02 (Published GIF artifacts across README and docs)
 
-Progress: [███████████████████████████████] 100% (75/75 plans across all milestones)
+Progress: [███████████████████████████████] 100% (76/76 plans across all milestones)
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [███████████████████████
 | Phase 26 P06 | 3 min | 3 tasks | 7 files |
 | Phase 26 P04 | 3 min | 3 tasks | 7 files |
 | Phase 27 P01 | 21 min | 3 tasks | 7 files |
+| Phase 27 P02 | 1h 6m | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,8 @@ Recent decisions (v3.0):
 - [Phase 27]: Render all demo tapes through one canonical script exposed as bun run demos:render.
 - [Phase 27]: Use a shared 1280x720 Builtin Dark visual profile across every tape for consistent docs and README playback.
 - [Phase 27]: Keep tapes deterministic with hidden setup/reset steps and single-take outcome-focused narratives.
+- [Phase 27]: Keep README scoped to one hero GIF while publishing the full workflow set in docs.
+- [Phase 27]: Use /media/demos/* docs paths with committed apps/docs/public/media/demos assets for stable rendering.
 
 ### Pending Todos
 
@@ -109,5 +112,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 27-01-PLAN.md
-Resume file: .planning/phases/27-vhs-terminal-demos/27-02-PLAN.md
+Stopped at: Completed 27-02-PLAN.md
+Resume file: None
