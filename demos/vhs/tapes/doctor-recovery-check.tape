@@ -23,7 +23,7 @@ Show
 
 Type "echo '$ tinkerise doctor'"
 Enter
-Type "echo Python  x  3.9.0  required >=3.10"
+Type "echo 'Python  x  3.9.0  required >=3.10'"
 Enter
 Type "echo Install: brew install python@3.12"
 Enter
@@ -35,7 +35,7 @@ Sleep 500ms
 
 Type "echo '$ tinkerise doctor'"
 Enter
-Type "echo Python  check  3.14.0  required >=3.10"
+Type "echo 'Python  check  3.14.0  required >=3.10'"
 Enter
 Type "echo 3 of 10 checks passed"
 Enter
