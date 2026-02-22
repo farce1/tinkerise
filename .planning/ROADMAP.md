@@ -65,7 +65,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes (completed 2026-02-21)
 - [x] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows (completed 2026-02-22)
 - [x] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link (completed 2026-02-22)
-- [ ] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page
+- [x] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page (completed 2026-02-22)
 
 ## Phase Details
 
@@ -198,4 +198,4 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
 | 27. VHS Terminal Demos | 2/2 | Complete    | 2026-02-22 | - |
 | 28. README Overhaul | 1/1 | Complete    | 2026-02-22 | - |
-| 29. Deployment & Release | 2/3 | In Progress|  | - |
+| 29. Deployment & Release | 3/3 | Complete   | 2026-02-22 | - |

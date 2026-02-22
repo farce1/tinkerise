@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 
 Phase: 29 of 29 (Deployment & Release)
 Plan: 03 of 03
-Status: In progress
-Last activity: 2026-02-22 -- Completed 29-02 release note categorization plan
+Status: Complete
+Last activity: 2026-02-22 -- Completed 29-03 docs changelog generation plan
 
 Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
 
@@ -63,6 +63,7 @@ Progress: [███████████████████████
 | Phase 28 P01 | 2 min | 3 tasks | 1 files |
 | Phase 29 P01 | 1 min | 3 tasks | 1 files |
 | Phase 29 P02 | 2 min | 3 tasks | 4 files |
+| Phase 29 P03 | 9 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,9 @@ Recent decisions (v3.0):
 - [Phase 29]: Include docs app paths, docs build inputs, and deploy/release workflow files in on.push.paths
 - [Phase 29]: Use .github/release.yml as deterministic category source with Maintenance catch-all.
 - [Phase 29]: Normalize published release bodies into Features/Fixes/Docs/Maintenance in a post-publish idempotent workflow step.
+- [Phase 29]: Use deterministic build-time GitHub Releases ingestion for docs changelog data.
+- [Phase 29]: Render changelog statically from generated JSON with explicit empty-state fallback.
+- [Phase 29]: Run docs changelog generation before both local docs builds and docs deploy CI builds.
 
 ### Pending Todos
 
@@ -121,5 +125,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 29-02-PLAN.md
+Stopped at: Completed 29-03-PLAN.md
 Resume file: None
