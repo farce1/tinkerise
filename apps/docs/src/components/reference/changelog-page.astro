@@ -1,0 +1,74 @@
+---
+type ReleaseCategory = 'Features' | 'Fixes' | 'Docs' | 'Maintenance'
+
+interface ReleaseEntry {
+  version: string
+  publishedAt: string | null
+  url: string
+  sections: Record<ReleaseCategory, string[]>
+}
+
+const { releases = [] } = Astro.props as { releases: ReleaseEntry[] }
+
+const sortedReleases = [...releases].sort((a, b) => {
+  const left = new Date(a.publishedAt ?? 0).getTime()
+  const right = new Date(b.publishedAt ?? 0).getTime()
+  return right - left
+})
+
+const categoryOrder: ReleaseCategory[] = ['Features', 'Fixes', 'Docs', 'Maintenance']
+
+function formatDate(value: string | null | undefined) {
+  if (!value)
+    return 'Unknown'
+
+  return new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value))
+}
+---
+
+{
+  sortedReleases.length === 0
+    ? (
+        <>
+          <h2>No published releases yet</h2>
+          <p>Release history will appear here after the first GitHub Release is published.</p>
+          <p>
+            You can still follow updates on the releases page:
+            {' '}
+            <a href="https://github.com/farce1/tinkerise/releases">github.com/farce1/tinkerise/releases</a>
+          </p>
+        </>
+      )
+    : sortedReleases.map(release => (
+        <section>
+          <h3>{release.version}</h3>
+          <p><strong>Published:</strong> {formatDate(release.publishedAt)}</p>
+          <p>
+            <strong>GitHub Release:</strong>
+            {' '}
+            <a href={release.url}>View release</a>
+          </p>
+
+          {categoryOrder.map((category) => {
+            const items = release.sections?.[category] ?? []
+
+            if (items.length === 0)
+              return null
+
+            return (
+              <>
+                <h4>{category}</h4>
+                <ul>
+                  {items.map((item: string) => <li>{item}</li>)}
+                </ul>
+              </>
+            )
+          })}
+        </section>
+      ))
+}
