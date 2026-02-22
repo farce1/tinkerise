@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-20)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 26 -- Docs Content
+**Current focus:** Phase 27 -- VHS Terminal Demos
 
 ## Current Position
 
-Phase: 26 of 29 (Docs Content)
-Plan: 5 of 6 complete
+Phase: 27 of 29 (VHS Terminal Demos)
+Plan: 1 of 2 complete
 Status: In Progress
-Last activity: 2026-02-21 -- Completed 26-01 (Onboarding IA and Getting Started flow)
+Last activity: 2026-02-22 -- Completed 27-01 (Created VHS source pipeline and render command)
 
-Progress: [██████████████████████████████░] 99% (74/~75 plans across all milestones)
+Progress: [███████████████████████████████] 100% (75/75 plans across all milestones)
 
 ## Performance Metrics
 
@@ -57,6 +57,8 @@ Progress: [███████████████████████
 | Phase 26 P03 | 2 min | 2 tasks | 6 files |
 | Phase 26 P02 | 3 min | 2 tasks | 7 files |
 | Phase 26 P06 | 3 min | 3 tasks | 7 files |
+| Phase 26 P04 | 3 min | 3 tasks | 7 files |
+| Phase 27 P01 | 21 min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -90,6 +92,11 @@ Recent decisions (v3.0):
 - [Phase 26]: Document enhancement behavior only from module detect/install/package/file-change source facts.
 - [Phase 26]: Documented config precedence exactly as preset -> global -> project -> CLI from resolveConfig merge order
 - [Phase 26]: Presets guide follows command lifecycle semantics (save/use/list/delete) with expected outcomes and npm fallback
+- [Phase 26]: Generate commands docs from built CLI --help output to prevent docs drift.
+- [Phase 26]: Standardize recipes with goal, prerequisites, commands, artifacts, and guide links for executable workflows.
+- [Phase 27]: Render all demo tapes through one canonical script exposed as bun run demos:render.
+- [Phase 27]: Use a shared 1280x720 Builtin Dark visual profile across every tape for consistent docs and README playback.
+- [Phase 27]: Keep tapes deterministic with hidden setup/reset steps and single-take outcome-focused narratives.
 
 ### Pending Todos
 
@@ -101,6 +108,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Completed 26-01-PLAN.md
-Resume file: None
+Last session: 2026-02-22
+Stopped at: Completed 27-01-PLAN.md
+Resume file: .planning/phases/27-vhs-terminal-demos/27-02-PLAN.md

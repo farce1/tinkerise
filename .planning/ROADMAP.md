@@ -62,7 +62,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 
 - [x] **Phase 24: Error Handling & CLI Polish** - Structured errors, friendly messages, help text improvements (completed 2026-02-20)
 - [x] **Phase 25: Docs Site Infrastructure** - Starlight scaffold in apps/docs/ with search and code blocks (completed 2026-02-21)
-- [ ] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes
+- [x] **Phase 26: Docs Content** - Getting started, guides, reference, and recipes (completed 2026-02-21)
 - [ ] **Phase 27: VHS Terminal Demos** - Tape files and generated GIFs for key workflows
 - [ ] **Phase 28: README Overhaul** - Hero GIF, value proposition, quickstart, docs link
 - [ ] **Phase 29: Deployment & Release** - GitHub Pages auto-deploy, release notes, changelog page
@@ -129,10 +129,11 @@ Plans:
   1. VHS `.tape` files exist for at least 4 key workflows: scaffold, add, list, and doctor
   2. Generated GIF files are committed to the repository and render correctly in both README and docs site
   3. Tape files are reproducible -- running `vhs` on any tape produces a visually consistent recording
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 27-01: TBD
+- [ ] 27-01-PLAN.md -- VHS tape authoring pipeline and deterministic render orchestration
+- [ ] 27-02-PLAN.md -- Generate GIF artifacts and embed in README plus docs gallery
 
 ### Phase 28: README Overhaul
 **Goal**: The README serves as a compelling landing page that converts visitors into users within 30 seconds of reading
@@ -193,7 +194,7 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 23. Lint Regression Fix | v2.0 | 1/1 | Complete | 2026-02-19 |
 | 24. Error Handling & CLI Polish | v3.0 | Complete    | 2026-02-20 | - |
 | 25. Docs Site Infrastructure | v3.0 | Complete    | 2026-02-21 | - |
-| 26. Docs Content | 5/6 | In Progress|  | - |
-| 27. VHS Terminal Demos | v3.0 | 0/? | Not started | - |
+| 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
+| 27. VHS Terminal Demos | 1/2 | In Progress|  | - |
 | 28. README Overhaul | v3.0 | 0/? | Not started | - |
 | 29. Deployment & Release | v3.0 | 0/? | Not started | - |

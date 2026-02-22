@@ -14,8 +14,8 @@ Requirements for documentation and polish milestone. Each maps to roadmap phases
 - [x] **DOCS-03**: User can browse scaffolder guides explaining each of the 14 supported frameworks
 - [x] **DOCS-04**: User can browse enhancement guides explaining each of the 11 enhancement modules
 - [x] **DOCS-05**: User can read preset and configuration guides covering the 4-layer config system
-- [ ] **DOCS-06**: User can look up any CLI command, flag, and option in a generated Command Reference
-- [ ] **DOCS-07**: User can follow 3-5 recipe pages for common scaffolding scenarios (e.g., "Next.js + ESLint + Docker")
+- [x] **DOCS-06**: User can look up any CLI command, flag, and option in a generated Command Reference
+- [x] **DOCS-07**: User can follow 3-5 recipe pages for common scaffolding scenarios (e.g., "Next.js + ESLint + Docker")
 - [ ] **DOCS-08**: User can search docs content via built-in Pagefind search
 - [ ] **DOCS-09**: User can view syntax-highlighted code examples via Expressive Code blocks
 
@@ -31,7 +31,7 @@ Requirements for documentation and polish milestone. Each maps to roadmap phases
 
 - [ ] **VIS-01**: README leads with a hero GIF demonstrating the core scaffold workflow
 - [ ] **VIS-02**: README has a compelling value proposition, copy-paste quickstart, and link to docs site
-- [ ] **VIS-03**: VHS terminal demo `.tape` files exist for key workflows (scaffold, add, list, doctor)
+- [x] **VIS-03**: VHS terminal demo `.tape` files exist for key workflows (scaffold, add, list, doctor)
 - [ ] **VIS-04**: Generated GIFs are embedded in both README and documentation site
 
 ### Distribution Polish
@@ -78,8 +78,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOCS-03 | Phase 26 | Complete |
 | DOCS-04 | Phase 26 | Complete |
 | DOCS-05 | Phase 26 | Complete |
-| DOCS-06 | Phase 26 | Pending |
-| DOCS-07 | Phase 26 | Pending |
+| DOCS-06 | Phase 26 | Complete |
+| DOCS-07 | Phase 26 | Complete |
 | DOCS-08 | Phase 25 | Pending |
 | DOCS-09 | Phase 25 | Pending |
 | CLI-01 | Phase 24 | Pending |
@@ -89,7 +89,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLI-05 | Phase 24 | Pending |
 | VIS-01 | Phase 28 | Pending |
 | VIS-02 | Phase 28 | Pending |
-| VIS-03 | Phase 27 | Pending |
+| VIS-03 | Phase 27 | Complete |
 | VIS-04 | Phase 27 | Pending |
 | DIST-01 | Phase 29 | Pending |
 | DIST-02 | Phase 29 | Pending |
