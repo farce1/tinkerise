@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "bun run docs:changelog && astro build",
     "preview": "astro preview",
     "docs:reference": "node ./scripts/generate-command-reference.mjs",
     "docs:changelog": "node ./scripts/generate-changelog.mjs"
