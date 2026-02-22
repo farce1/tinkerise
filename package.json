@@ -18,6 +18,7 @@
     "changeset": "changeset",
     "ci:version": "changeset version && bun install --frozen-lockfile",
     "ci:publish": "changeset publish",
+    "ci:release:normalize": "node scripts/release/normalize-release-notes.mjs",
     "docs:dev": "turbo run dev --filter=@tinkerise/docs",
     "docs:build": "turbo run build --filter=@tinkerise/docs",
     "docs:preview": "turbo run preview --filter=@tinkerise/docs"
