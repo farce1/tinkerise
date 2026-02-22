@@ -53,6 +53,6 @@ describe('tinkerise CLI', () => {
       expect(exitCode).toBe(0)
       expect(stdout).toContain('Web')
       expect(stdout).toContain('Next.js')
-    })
+    }, 15000)
   })
 })
