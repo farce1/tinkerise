@@ -50,6 +50,13 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Normalize published release notes
+        if: steps.changesets.outputs.published == 'true'
+        run: bun run ci:release:normalize
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+
       - name: Trigger Homebrew tap update
         if: steps.changesets.outputs.published == 'true'
         run: |
