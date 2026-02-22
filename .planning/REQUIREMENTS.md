@@ -36,7 +36,7 @@ Requirements for documentation and polish milestone. Each maps to roadmap phases
 
 ### Distribution Polish
 
-- [ ] **DIST-01**: Documentation site auto-deploys to GitHub Pages on push to main (path-filtered)
+- [x] **DIST-01**: Documentation site auto-deploys to GitHub Pages on push to main (path-filtered)
 - [ ] **DIST-02**: GitHub Releases are created automatically with categorized release notes on publish
 - [ ] **DIST-03**: Documentation site includes a changelog page sourced from release history
 
@@ -91,7 +91,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VIS-02 | Phase 28 | Complete |
 | VIS-03 | Phase 27 | Complete |
 | VIS-04 | Phase 27 | Complete |
-| DIST-01 | Phase 29 | Pending |
+| DIST-01 | Phase 29 | Complete |
 | DIST-02 | Phase 29 | Pending |
 | DIST-03 | Phase 29 | Pending |
 

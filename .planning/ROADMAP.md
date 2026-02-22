@@ -156,11 +156,12 @@ Plans:
   1. Pushing docs changes to main automatically deploys the Starlight site to GitHub Pages (path-filtered workflow, no unnecessary builds)
   2. GitHub Releases are created automatically on publish with categorized release notes (features, fixes, docs, etc.)
   3. Documentation site includes a changelog page that reflects the project's release history
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 29-01: TBD
-- [ ] 29-02: TBD
+- [ ] 29-01-PLAN.md -- Path-filtered docs-only GitHub Pages deploy workflow with manual dispatch and concurrency cancellation
+- [ ] 29-02-PLAN.md -- Automatic release-note categorization pipeline wired into changesets publish flow
+- [ ] 29-03-PLAN.md -- Generated docs changelog page sourced from GitHub release history
 
 ## Progress
 
@@ -196,5 +197,5 @@ Phases execute in numeric order: 24 → 25 → 26 → 27 → 28 → 29
 | 25. Docs Site Infrastructure | v3.0 | Complete    | 2026-02-21 | - |
 | 26. Docs Content | 6/6 | Complete    | 2026-02-21 | - |
 | 27. VHS Terminal Demos | 2/2 | Complete    | 2026-02-22 | - |
-| 28. README Overhaul | 1/1 | Complete   | 2026-02-22 | - |
-| 29. Deployment & Release | v3.0 | 0/? | Not started | - |
+| 28. README Overhaul | 1/1 | Complete    | 2026-02-22 | - |
+| 29. Deployment & Release | 1/3 | In Progress|  | - |

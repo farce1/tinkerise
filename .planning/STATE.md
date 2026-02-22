@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-20)
 ## Current Position
 
 Phase: 29 of 29 (Deployment & Release)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-02-22 -- Completed Phase 28 Plan 01 (README conversion funnel)
+Plan: 02 of 03
+Status: In progress
+Last activity: 2026-02-22 -- Completed 29-01 docs deploy workflow plan
 
 Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
 
@@ -61,6 +61,7 @@ Progress: [███████████████████████
 | Phase 27 P01 | 21 min | 3 tasks | 7 files |
 | Phase 27 P02 | 1h 6m | 3 tasks | 7 files |
 | Phase 28 P01 | 2 min | 3 tasks | 1 files |
+| Phase 29 P01 | 1 min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,8 @@ Recent decisions (v3.0):
 - [Phase 27]: Use /media/demos/* docs paths with committed apps/docs/public/media/demos assets for stable rendering.
 - [Phase 28]: Keep README as a conversion hook, not a full reference manual.
 - [Phase 28]: Anchor trust messaging to official-scaffolder wrapping with source-validated counts.
+- [Phase 29]: Use bun run docs:build from repository root to keep deployment scope locked to @tinkerise/docs
+- [Phase 29]: Include docs app paths, docs build inputs, and deploy/release workflow files in on.push.paths
 
 ### Pending Todos
 
@@ -115,5 +118,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 28-01-PLAN.md
+Stopped at: Completed 29-01-PLAN.md
 Resume file: None
