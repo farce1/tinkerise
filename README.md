@@ -4,6 +4,12 @@ Scaffold any project with any stack -- one CLI, every framework's official tool.
 
 [![CI](https://github.com/farce1/tinkerise/actions/workflows/ci.yml/badge.svg)](https://github.com/farce1/tinkerise/actions/workflows/ci.yml) [![npm](https://img.shields.io/npm/v/tinkerise)](https://www.npmjs.com/package/tinkerise) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Node](https://img.shields.io/badge/node-%3E%3D20.11.0-brightgreen)](https://nodejs.org)
 
+## Terminal Demo
+
+`tinkerise web next next-golden --ts --tailwind --eslint --no-install` scaffolds a production-ready baseline in one guided flow.
+
+![Terminal demo of tinkerise scaffolding a Next.js app with TypeScript, Tailwind, and ESLint](apps/docs/public/media/demos/scaffold-next-golden-path.gif)
+
 ## What is tinkerise?
 
 tinkerise is a unified CLI that wraps official framework scaffolders (create-next-app, create-vite, create-astro, and more) rather than replacing them. You get a single interface with unified flags, an enhancement module system for post-scaffold setup, and multi-ecosystem support spanning web, backend, and mobile -- all while delegating the actual scaffolding to the tools developers already trust.
