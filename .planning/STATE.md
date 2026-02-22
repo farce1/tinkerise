@@ -2,17 +2,17 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-20)
+See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Phase 29 -- Deployment & Release
+**Current focus:** Milestone planning (v3.1 definition)
 
 ## Current Position
 
-Phase: 29 of 29 (Deployment & Release)
-Plan: 03 of 03
+Phase: 29 of 29 (v3.0 complete)
+Plan: N/A
 Status: Complete
-Last activity: 2026-02-22 -- Completed 29-03 docs changelog generation plan
+Last activity: 2026-02-22 -- Marked v3.0 milestone complete and archived planning artifacts
 
 Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
 
