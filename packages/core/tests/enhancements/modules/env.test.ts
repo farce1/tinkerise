@@ -6,6 +6,7 @@ import { envModule } from '../../../src/enhancements/modules/env.js'
 
 const TEST_ROOT = join('/', 'tmp', 'test-project')
 const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
+const normalizePath = (path: string) => path.replace(/\\/g, '/')
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -206,7 +207,7 @@ describe('envModule', () => {
         (c: unknown[]) => (c[0] as string).endsWith('env.ts'),
       )
       expect(envTsCall).toBeTruthy()
-      expect(envTsCall![0]).toContain('src/env.ts')
+      expect(normalizePath(envTsCall![0] as string)).toContain('src/env.ts')
     })
 
     it('places env.ts at root when no src/ directory', async () => {
@@ -219,7 +220,7 @@ describe('envModule', () => {
         (c: unknown[]) => (c[0] as string).endsWith('env.ts'),
       )
       expect(envTsCall).toBeTruthy()
-      expect(envTsCall![0]).not.toContain('src/')
+      expect(normalizePath(envTsCall![0] as string)).not.toContain('/src/')
     })
 
     it('returns success with all modified files', async () => {

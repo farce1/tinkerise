@@ -6,6 +6,7 @@ import { testingModule } from '../../../src/enhancements/modules/testing.js'
 
 const TEST_ROOT = join('/', 'tmp', 'test-project')
 const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
+const normalizePath = (path: string) => path.replace(/\\/g, '/')
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -148,7 +149,7 @@ describe('testingModule', () => {
 
       // Check that writeFile is called for tests/sum.ts
       const sumWrite = mockWriteFile.mock.calls.find(
-        (c: unknown[]) => (c[0] as string).includes('tests/sum.ts') && !(c[0] as string).includes('.test.'),
+        (c: unknown[]) => normalizePath(c[0] as string).includes('tests/sum.ts') && !(c[0] as string).includes('.test.'),
       )
       expect(sumWrite).toBeTruthy()
       const sumContent = sumWrite![1] as string
@@ -156,7 +157,7 @@ describe('testingModule', () => {
 
       // Check that writeFile is called for tests/sum.test.ts
       const testWrite = mockWriteFile.mock.calls.find(
-        (c: unknown[]) => (c[0] as string).includes('tests/sum.test.ts'),
+        (c: unknown[]) => normalizePath(c[0] as string).includes('tests/sum.test.ts'),
       )
       expect(testWrite).toBeTruthy()
       const testContent = testWrite![1] as string
@@ -174,7 +175,7 @@ describe('testingModule', () => {
       expect(result.packagesAdded).toEqual(
         expect.arrayContaining([expect.stringContaining('vitest@')]),
       )
-      expect(result.filesModified).toEqual(
+      expect(result.filesModified.map(normalizePath)).toEqual(
         expect.arrayContaining([
           expect.stringContaining('vitest.config.ts'),
           expect.stringContaining('tests/sum.ts'),

@@ -6,6 +6,7 @@ import { ciModule } from '../../../src/enhancements/modules/ci.js'
 
 const TEST_ROOT = join('/', 'tmp', 'test-project')
 const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
+const normalizePath = (path: string) => path.replace(/\\/g, '/')
 
 const mockAccess = vi.hoisted(() => vi.fn())
 const mockReadFile = vi.hoisted(() => vi.fn())
@@ -175,10 +176,11 @@ describe('ciModule', () => {
     it('creates .github/workflows directory', async () => {
       await ciModule.install(makeCtx())
 
-      expect(mockMkdir).toHaveBeenCalledWith(
-        expect.stringContaining('.github/workflows'),
-        { recursive: true },
+      const mkdirCall = mockMkdir.mock.calls.find(
+        (c: unknown[]) => normalizePath(c[0] as string).includes('.github/workflows'),
       )
+      expect(mkdirCall).toBeTruthy()
+      expect(mkdirCall![1]).toEqual({ recursive: true })
     })
   })
 })

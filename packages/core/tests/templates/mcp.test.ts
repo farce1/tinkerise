@@ -56,7 +56,11 @@ describe('generateMcpServer', () => {
 
   /** Helper: find a written file by partial path match */
   function findFile(partialPath: string): { path: string, content: string } | undefined {
-    return getWrittenFiles().find(f => f.path.includes(partialPath))
+    const normalizedPartialPath = partialPath.replace(/\\/g, '/')
+    return getWrittenFiles().find((f) => {
+      const normalizedPath = f.path.replace(/\\/g, '/')
+      return normalizedPath.includes(normalizedPartialPath)
+    })
   }
 
   it('creates project directory', async () => {

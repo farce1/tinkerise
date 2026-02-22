@@ -143,21 +143,22 @@ jobs:
           EXISTING=$(gh issue list --state open --search "in:title \"${TITLE_PREFIX}\"" --json number,title --jq ".[] | select(.title | startswith(\"${TITLE_PREFIX}\")) | .number" | head -1)
 
           # Build issue body
-          DIFF_CONTENT=$(cat drift-diff.txt | head -100)
-          BODY="## Drift Detected
-
-**Tool:** ${TOOL}
-**Date:** ${DATE}
-**Runner:** ${{ runner.os }} (${{ runner.arch }})
-**CI Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-### Diff
-
-\`\`\`diff
-${DIFF_CONTENT}
-\`\`\`
-
-> Review flag mappings in \`packages/core/src/registry/scaffolders/\`"
+          DIFF_CONTENT=$(head -100 drift-diff.txt)
+          BODY=$(printf '%s\n' \
+            "## Drift Detected" \
+            "" \
+            "**Tool:** ${TOOL}" \
+            "**Date:** ${DATE}" \
+            "**Runner:** ${{ runner.os }} (${{ runner.arch }})" \
+            "**CI Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "" \
+            "### Diff" \
+            "" \
+            "\`\`\`diff" \
+            "${DIFF_CONTENT}" \
+            "\`\`\`" \
+            "" \
+            "> Review flag mappings in \`packages/core/src/registry/scaffolders/\`")
 
           if [ -n "$EXISTING" ]; then
             # Add comment to existing issue instead of creating duplicate

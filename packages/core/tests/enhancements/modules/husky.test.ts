@@ -6,6 +6,7 @@ import { huskyModule } from '../../../src/enhancements/modules/husky.js'
 
 const TEST_ROOT = join('/', 'tmp', 'test-project')
 const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
+const normalizePath = (path: string) => path.replace(/\\/g, '/')
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -98,7 +99,7 @@ describe('huskyModule', () => {
 
       // Check that .husky/pre-commit was written
       const preCommitCall = mockWriteFile.mock.calls.find(
-        (c: unknown[]) => (c[0] as string).includes('.husky/pre-commit'),
+        (c: unknown[]) => normalizePath(c[0] as string).includes('.husky/pre-commit'),
       )
       expect(preCommitCall).toBeTruthy()
       expect(preCommitCall![1]).toBe('npx lint-staged\n')

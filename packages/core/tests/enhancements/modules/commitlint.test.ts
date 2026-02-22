@@ -6,6 +6,7 @@ import { commitlintModule } from '../../../src/enhancements/modules/commitlint.j
 
 const TEST_ROOT = join('/', 'tmp', 'test-project')
 const projectPath = (relativePath: string) => join(TEST_ROOT, ...relativePath.split('/'))
+const normalizePath = (path: string) => path.replace(/\\/g, '/')
 
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 const mockAccess = vi.hoisted(() => vi.fn())
@@ -138,13 +139,11 @@ describe('commitlintModule', () => {
       const result = await commitlintModule.install(makeCtx())
 
       const hookCall = mockWriteFile.mock.calls.find(
-        (c: unknown[]) => (c[0] as string).includes('.husky/commit-msg'),
+        (c: unknown[]) => normalizePath(c[0] as string).includes('.husky/commit-msg'),
       )
       expect(hookCall).toBeTruthy()
       expect(hookCall![1]).toBe('npx --no -- commitlint --edit $1\n')
-      expect(result.filesModified).toEqual(
-        expect.arrayContaining([expect.stringContaining('.husky/commit-msg')]),
-      )
+      expect(result.filesModified.some(path => normalizePath(path).includes('.husky/commit-msg'))).toBe(true)
     })
 
     it('does NOT write commit-msg hook when .husky directory is absent', async () => {
