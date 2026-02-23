@@ -35,7 +35,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ## Phases
 
-- [ ] **Phase 30: Docs Production Reliability Verification** - Verify deployed docs availability, search behavior, and code rendering with automated production smoke checks.
+- [x] **Phase 30: Docs Production Reliability Verification** - Verify deployed docs availability, search behavior, and code rendering with automated production smoke checks. (completed 2026-02-23)
 - [ ] **Phase 31: CLI Runtime Error UX Reliability** - Verify end-to-end CLI error UX contracts and failure conformance across representative runtime scenarios.
 - [ ] **Phase 32: Reliability Closure Evidence & CI Enforcement** - Produce auditable closure evidence and enforce reliability checks as required CI gates.
 
@@ -54,7 +54,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 Plans:
 - [x] 30-01-PLAN.md - Build fixture-driven production docs smoke runner for availability, search, and code rendering checks.
-- [ ] 30-02-PLAN.md - Integrate smoke runner into post-deploy Docs workflow with hard-gated evidence reporting.
+- [x] 30-02-PLAN.md - Integrate smoke runner into post-deploy Docs workflow with hard-gated evidence reporting.
 
 ### Phase 31: CLI Runtime Error UX Reliability
 **Goal**: Users receive consistent, actionable CLI failure UX and maintainers can verify it through a stable conformance matrix.
@@ -66,7 +66,13 @@ Plans:
   3. User sees practical command examples in `--help` output for each public command.
   4. User-facing failures follow a consistent structured error hierarchy and are rendered through one top-level runtime error boundary.
   5. Maintainer can run a conformance matrix that asserts representative failure UX output and exit-code behavior.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 31-01-PLAN.md - Enforce a shared 3-part CLI error UX contract in the top-level boundary with stable code visibility and debug-gated stack behavior.
+- [ ] 31-02-PLAN.md - Implement deterministic thresholded top-3 command typo suggestions with runnable correction guidance.
+- [ ] 31-03-PLAN.md - Normalize two-example minimum help output coverage across all public commands and subcommands with regression enforcement.
+- [ ] 31-04-PLAN.md - Add an auditable 8-scenario runtime error conformance matrix with hard-fail UX, channel, and exit-code assertions.
 
 ### Phase 32: Reliability Closure Evidence & CI Enforcement
 **Goal**: Maintainers can prove v3.1 reliability closure and prevent regressions via mandatory CI enforcement.
@@ -82,8 +88,8 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 30. Docs Production Reliability Verification | 1/2 | In Progress|  |
-| 31. CLI Runtime Error UX Reliability | 0/0 | Not started | - |
+| 30. Docs Production Reliability Verification | 2/2 | Complete    | 2026-02-23 |
+| 31. CLI Runtime Error UX Reliability | 1/4 | In Progress|  |
 | 32. Reliability Closure Evidence & CI Enforcement | 0/0 | Not started | - |
 
 </details>

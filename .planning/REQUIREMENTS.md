@@ -13,15 +13,15 @@ Requirements for the v3.1 reliability milestone. Each requirement maps to exactl
 - [x] **DOCS-01**: User can access the documentation site at the project's GitHub Pages URL in production.
 - [x] **DOCS-08**: User can search docs content on the deployed production docs site.
 - [x] **DOCS-09**: User can view syntax-highlighted code examples on the deployed production docs site.
-- [ ] **DOCS-13**: Maintainer can run an automated post-deploy smoke check that validates docs availability, search behavior, and code-block rendering in production.
+- [x] **DOCS-13**: Maintainer can run an automated post-deploy smoke check that validates docs availability, search behavior, and code-block rendering in production.
 
 ### CLI Runtime Error UX
 
-- [ ] **CLI-01**: User sees a friendly actionable error message (not a raw stack trace) for expected command failures.
+- [x] **CLI-01**: User sees a friendly actionable error message (not a raw stack trace) for expected command failures.
 - [ ] **CLI-02**: User sees a "Did you mean ..." suggestion when a command name is mistyped.
 - [ ] **CLI-03**: User sees practical usage examples in `--help` output for each public command.
-- [ ] **CLI-04**: User-facing error paths are backed by a consistent structured error hierarchy.
-- [ ] **CLI-05**: User sees graceful output from a top-level error boundary for unhandled runtime failures.
+- [x] **CLI-04**: User-facing error paths are backed by a consistent structured error hierarchy.
+- [x] **CLI-05**: User sees graceful output from a top-level error boundary for unhandled runtime failures.
 - [ ] **CLI-08**: Maintainer can run a conformance matrix for representative CLI failure scenarios with stable UX and exit-code assertions.
 
 ### Reliability Evidence & Enforcement
@@ -69,12 +69,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOCS-01 | Phase 30 | Complete |
 | DOCS-08 | Phase 30 | Complete |
 | DOCS-09 | Phase 30 | Complete |
-| DOCS-13 | Phase 30 | Pending |
-| CLI-01 | Phase 31 | Pending |
+| DOCS-13 | Phase 30 | Complete |
+| CLI-01 | Phase 31 | Complete |
 | CLI-02 | Phase 31 | Pending |
 | CLI-03 | Phase 31 | Pending |
-| CLI-04 | Phase 31 | Pending |
-| CLI-05 | Phase 31 | Pending |
+| CLI-04 | Phase 31 | Complete |
+| CLI-05 | Phase 31 | Complete |
 | CLI-08 | Phase 31 | Pending |
 | REL-01 | Phase 32 | Pending |
 | REL-02 | Phase 32 | Pending |

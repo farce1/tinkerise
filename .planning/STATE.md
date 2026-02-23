@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Milestone v3.1 Reliability Sweep (Phase 30 Plan 01 complete, Plan 02 next)
+**Current focus:** Milestone v3.1 Reliability Sweep (Phase 31 execution in progress)
 
 ## Current Position
 
-Phase: 30 (in progress)
-Plan: 02
-Status: Executing
-Last activity: 2026-02-23 -- Completed 30-01 production docs smoke runner
+Phase: 31 (in progress)
+Plan: 02 next
+Status: Executing phase plans
+Last activity: 2026-02-23 -- Completed 31-01 runtime error UX contract execution
 
-Progress: [■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□] 3% (1/32 plans complete)
+Progress: [■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□□] 9% (3/32 plans complete)
 
 ## Performance Metrics
 
@@ -65,6 +65,8 @@ Progress: [■□□□□□□□□□□□□□□□□□□□□□□
 | Phase 29 P02 | 2 min | 3 tasks | 4 files |
 | Phase 29 P03 | 9 min | 3 tasks | 6 files |
 | Phase 30 P01 | 7 min | 3 tasks | 4 files |
+| Phase 30 P02 | 1 min | 3 tasks | 1 files |
+| Phase 31 P01 | 4 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -117,10 +119,15 @@ Recent decisions (v3.0):
 - [Phase 30]: Run smoke checks against explicit targets with canonical fallback and CI deploy URL support.
 - [Phase 30]: Treat every required route/search/code fixture miss as hard-fail with non-zero exit status.
 - [Phase 30]: Emit requirement-tagged JSON evidence plus screenshots for failed checks.
+- [Phase 30]: Use deploy.outputs.page_url from actions/deploy-pages as the smoke target input.
+- [Phase 30]: Keep smoke gate in Docs Deploy workflow and enforce hard-fail semantics without workflow_run indirection.
+- [Phase 30]: Upload smoke report every run and upload screenshots/log evidence bundle only on failures.
+- [Phase 31]: Disable Commander default suggestion and error rendering so one boundary contract owns failure output.
+- [Phase 31]: Normalize all boundary error codes into a stable uppercase display format for user-visible consistency.
 
 ### Pending Todos
 
-- Execute `30-02-PLAN.md` to wire smoke checks into docs deploy workflow.
+- Execute `31-02-PLAN.md` for deterministic typo suggestion behavior.
 
 ### Blockers/Concerns
 
@@ -129,5 +136,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 30-01-PLAN.md
-Resume file: None
+Stopped at: Completed 31-01-PLAN.md
+Resume file: .planning/phases/31-cli-runtime-error-ux-reliability/31-02-PLAN.md
