@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 ## Current Position
 
 Phase: 31 (in progress)
-Plan: 02 next
+Plan: 04 next
 Status: Executing phase plans
-Last activity: 2026-02-23 -- Completed 31-03 help example coverage enforcement execution
+Last activity: 2026-02-23 -- Completed 31-02 deterministic typo suggestion execution
 
-Progress: [■■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□] 13% (4/32 plans complete)
+Progress: [■■■■■□□□□□□□□□□□□□□□□□□□□□□□□□□] 16% (5/32 plans complete)
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [■■■■□□□□□□□□□□□□□□□□□□□
 | Phase 30 P02 | 1 min | 3 tasks | 1 files |
 | Phase 31 P01 | 4 min | 3 tasks | 4 files |
 | Phase 31 P03 | 3 min | 2 tasks | 5 files |
+| Phase 31 P02 | 5 min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -127,10 +128,12 @@ Recent decisions (v3.0):
 - [Phase 31]: Normalize all boundary error codes into a stable uppercase display format for user-visible consistency.
 - [Phase 31]: Treat command groups (config/preset) as first-class public help surfaces under the two-example policy
 - [Phase 31]: Validate help examples through dist CLI command inventory tests instead of static snapshots
+- [Phase 31]: Use normalized edit-distance scoring with lightweight bonuses and deterministic tie-break ordering
+- [Phase 31]: Render Did you mean guidance only when confidence crosses threshold; otherwise show help/list fallback
 
 ### Pending Todos
 
-- Execute `31-02-PLAN.md` for deterministic typo suggestion behavior.
+- Execute `31-04-PLAN.md` for CLI error UX conformance matrix sign-off.
 
 ### Blockers/Concerns
 
@@ -139,5 +142,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 31-03-PLAN.md
-Resume file: .planning/phases/31-cli-runtime-error-ux-reliability/31-02-PLAN.md
+Stopped at: Completed 31-02-PLAN.md
+Resume file: .planning/phases/31-cli-runtime-error-ux-reliability/31-04-PLAN.md
