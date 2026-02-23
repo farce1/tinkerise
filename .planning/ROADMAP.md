@@ -36,7 +36,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 ## Phases
 
 - [x] **Phase 30: Docs Production Reliability Verification** - Verify deployed docs availability, search behavior, and code rendering with automated production smoke checks. (completed 2026-02-23)
-- [ ] **Phase 31: CLI Runtime Error UX Reliability** - Verify end-to-end CLI error UX contracts and failure conformance across representative runtime scenarios.
+- [x] **Phase 31: CLI Runtime Error UX Reliability** - Verify end-to-end CLI error UX contracts and failure conformance across representative runtime scenarios. (completed 2026-02-23)
 - [ ] **Phase 32: Reliability Closure Evidence & CI Enforcement** - Produce auditable closure evidence and enforce reliability checks as required CI gates.
 
 ## Phase Details
@@ -89,7 +89,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 30. Docs Production Reliability Verification | 2/2 | Complete    | 2026-02-23 |
-| 31. CLI Runtime Error UX Reliability | 3/4 | In Progress|  |
+| 31. CLI Runtime Error UX Reliability | 4/4 | Complete   | 2026-02-23 |
 | 32. Reliability Closure Evidence & CI Enforcement | 0/0 | Not started | - |
 
 </details>
