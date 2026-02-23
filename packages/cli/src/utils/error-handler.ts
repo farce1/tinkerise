@@ -1,65 +1,124 @@
-/**
- * Central error boundary for the tinkerise CLI.
- *
- * All errors flow through handleError(), which formats them consistently
- * using @clack/prompts, shows suggestions when available, and only reveals
- * stack traces in verbose mode (--verbose flag or DEBUG env var).
- */
-
-import * as p from '@clack/prompts'
+import { basename } from 'node:path'
 import { TinkeriseError } from '@tinkerise/core'
 import { CommanderError } from 'commander'
 import pc from 'picocolors'
+import { formatBoundaryError } from './error-ux-contract.js'
 
 const isVerbose = process.argv.includes('--verbose') || !!process.env.DEBUG
+const invokedAs = basename(process.argv[1] ?? 'tinkerise')
+const programName = invokedAs === 'tk' ? 'tk' : 'tinkerise'
+
+function toStableCode(input: string): string {
+  return input
+    .replace(/^commander\./, 'COMMANDER_')
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toUpperCase()
+}
+
+function renderAndExit(options: {
+  code: string
+  headline: string
+  cause: string
+  nextStep: string
+  stack?: string
+  exitCode: number
+}): never {
+  const formatted = formatBoundaryError({
+    content: {
+      code: options.code,
+      headline: options.headline,
+      cause: options.cause,
+      nextStep: options.nextStep,
+    },
+    stack: options.stack,
+    debug: isVerbose,
+  })
+
+  for (const [index, line] of formatted.lines.entries()) {
+    const styled = index === 0 ? pc.red(line) : pc.dim(line)
+    console.error(styled)
+  }
+
+  if (formatted.stack) {
+    console.error(pc.dim(`\n${formatted.stack}`))
+  }
+
+  process.exit(options.exitCode)
+}
+
+function nextStepForCommander(code: string): string {
+  if (code === 'commander.unknownCommand') {
+    return `Run '${programName} --help' to see available commands.`
+  }
+
+  if (code === 'commander.unknownOption') {
+    return `Run '${programName} --help' to review supported options.`
+  }
+
+  if (code === 'commander.missingArgument') {
+    return `Run '${programName} --help' to check required arguments.`
+  }
+
+  return `Run '${programName} --help' for usage guidance.`
+}
 
 export function handleError(error: unknown): never {
-  // Commander non-error exits (help displayed, version printed)
   if (error instanceof CommanderError) {
     if (error.code === 'commander.helpDisplayed'
       || error.code === 'commander.version') {
       process.exit(0)
     }
-    // Commander validation errors (unknown command, missing arg)
-    // Already formatted by configureOutput, just exit with its code
-    process.exit(error.exitCode)
+
+    renderAndExit({
+      code: toStableCode(error.code),
+      headline: 'Command input is invalid.',
+      cause: error.message.replace(/^error:\s*/i, ''),
+      nextStep: nextStepForCommander(error.code),
+      stack: error.stack,
+      exitCode: error.exitCode,
+    })
   }
 
-  // Known tinkerise errors — show friendly message + suggestion
   if (error instanceof TinkeriseError) {
-    p.log.error(pc.red(error.message))
-    if (error.suggestion) {
-      p.log.info(pc.dim(error.suggestion))
-    }
-    if (isVerbose && error.stack) {
-      console.error(pc.dim(`\n${error.stack}`))
-    }
-    process.exit(error.exitCode)
+    renderAndExit({
+      code: toStableCode(error.code),
+      headline: 'Command failed.',
+      cause: error.message,
+      nextStep: error.suggestion ?? `Run '${programName} --help' for command guidance.`,
+      stack: error.stack,
+      exitCode: error.exitCode,
+    })
   }
 
-  // Zod validation errors (config schema failures)
   if (error instanceof Error && error.name === 'ZodError') {
-    p.log.error(pc.red('Configuration validation failed.'))
-    p.log.info(pc.dim(error.message))
-    if (isVerbose && error.stack) {
-      console.error(pc.dim(`\n${error.stack}`))
-    }
-    process.exit(1)
+    renderAndExit({
+      code: 'CONFIG_VALIDATION',
+      headline: 'Configuration is invalid.',
+      cause: error.message,
+      nextStep: `Run '${programName} config list' to review current configuration values.`,
+      stack: error.stack,
+      exitCode: 1,
+    })
   }
 
-  // Unknown/unexpected errors
-  p.log.error(pc.red('An unexpected error occurred.'))
   if (error instanceof Error) {
-    p.log.info(pc.dim(error.message))
-    if (isVerbose) {
-      console.error(pc.dim(`\n${error.stack}`))
-    }
+    renderAndExit({
+      code: 'UNEXPECTED_RUNTIME',
+      headline: 'Unexpected runtime failure.',
+      cause: error.message,
+      nextStep: `Retry with '--verbose'. If the issue persists, open an issue at https://github.com/farce1/tinkerise/issues.`,
+      stack: error.stack,
+      exitCode: 1,
+    })
   }
-  else if (isVerbose) {
-    console.error(error)
-  }
-  if (!isVerbose) {
-    p.log.info(pc.dim('Run with --verbose for more details.'))
-  }
-  process.exit(1)
+
+  renderAndExit({
+    code: 'UNEXPECTED_RUNTIME',
+    headline: 'Unexpected runtime failure.',
+    cause: 'A non-error value was thrown during command execution.',
+    nextStep: `Retry with '--verbose'. If the issue persists, open an issue at https://github.com/farce1/tinkerise/issues.`,
+    stack: String(error),
+    exitCode: 1,
+  })
 }

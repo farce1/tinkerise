@@ -12,7 +12,6 @@
 import { createRequire } from 'node:module'
 import { basename } from 'node:path'
 import { Command } from 'commander'
-import pc from 'picocolors'
 import { runAddCommand } from './commands/add.js'
 import { registerCliToolCommand } from './commands/cli-tool.js'
 import { registerConfigCommand } from './commands/config.js'
@@ -42,17 +41,15 @@ const program = new Command()
 // Convert Commander's internal process.exit() calls into thrown CommanderError exceptions
 program.exitOverride()
 
-// Enable built-in "Did you mean X?" suggestions for mistyped commands/options
-program.showSuggestionAfterError(true)
+// Disable built-in suggestions; deterministic suggestion UX is handled separately.
+program.showSuggestionAfterError(false)
 
 // Show a pointer to --help after usage errors (not the full help dump)
 program.showHelpAfterError('(run with --help for usage information)')
 
-// Customize Commander's error output to use our formatting
+// Suppress Commander default error output so all failures flow through handleError.
 program.configureOutput({
-  outputError: (str, write) => {
-    write(pc.red(str.replace(/^error:\s*/i, '')))
-  },
+  outputError: () => {},
 })
 
 program
