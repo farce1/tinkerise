@@ -89,7 +89,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 30. Docs Production Reliability Verification | 2/2 | Complete    | 2026-02-23 |
-| 31. CLI Runtime Error UX Reliability | 1/4 | In Progress|  |
+| 31. CLI Runtime Error UX Reliability | 2/4 | In Progress|  |
 | 32. Reliability Closure Evidence & CI Enforcement | 0/0 | Not started | - |
 
 </details>

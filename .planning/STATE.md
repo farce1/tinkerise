@@ -12,9 +12,9 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 Phase: 31 (in progress)
 Plan: 02 next
 Status: Executing phase plans
-Last activity: 2026-02-23 -- Completed 31-01 runtime error UX contract execution
+Last activity: 2026-02-23 -- Completed 31-03 help example coverage enforcement execution
 
-Progress: [■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□□] 9% (3/32 plans complete)
+Progress: [■■■■□□□□□□□□□□□□□□□□□□□□□□□□□□□] 13% (4/32 plans complete)
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [■■■□□□□□□□□□□□□□□□□□□□□
 | Phase 30 P01 | 7 min | 3 tasks | 4 files |
 | Phase 30 P02 | 1 min | 3 tasks | 1 files |
 | Phase 31 P01 | 4 min | 3 tasks | 4 files |
+| Phase 31 P03 | 3 min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,8 @@ Recent decisions (v3.0):
 - [Phase 30]: Upload smoke report every run and upload screenshots/log evidence bundle only on failures.
 - [Phase 31]: Disable Commander default suggestion and error rendering so one boundary contract owns failure output.
 - [Phase 31]: Normalize all boundary error codes into a stable uppercase display format for user-visible consistency.
+- [Phase 31]: Treat command groups (config/preset) as first-class public help surfaces under the two-example policy
+- [Phase 31]: Validate help examples through dist CLI command inventory tests instead of static snapshots
 
 ### Pending Todos
 
@@ -136,5 +139,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 31-01-PLAN.md
+Stopped at: Completed 31-03-PLAN.md
 Resume file: .planning/phases/31-cli-runtime-error-ux-reliability/31-02-PLAN.md

@@ -19,7 +19,7 @@ Requirements for the v3.1 reliability milestone. Each requirement maps to exactl
 
 - [x] **CLI-01**: User sees a friendly actionable error message (not a raw stack trace) for expected command failures.
 - [ ] **CLI-02**: User sees a "Did you mean ..." suggestion when a command name is mistyped.
-- [ ] **CLI-03**: User sees practical usage examples in `--help` output for each public command.
+- [x] **CLI-03**: User sees practical usage examples in `--help` output for each public command.
 - [x] **CLI-04**: User-facing error paths are backed by a consistent structured error hierarchy.
 - [x] **CLI-05**: User sees graceful output from a top-level error boundary for unhandled runtime failures.
 - [ ] **CLI-08**: Maintainer can run a conformance matrix for representative CLI failure scenarios with stable UX and exit-code assertions.
@@ -72,7 +72,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOCS-13 | Phase 30 | Complete |
 | CLI-01 | Phase 31 | Complete |
 | CLI-02 | Phase 31 | Pending |
-| CLI-03 | Phase 31 | Pending |
+| CLI-03 | Phase 31 | Complete |
 | CLI-04 | Phase 31 | Complete |
 | CLI-05 | Phase 31 | Complete |
 | CLI-08 | Phase 31 | Pending |
