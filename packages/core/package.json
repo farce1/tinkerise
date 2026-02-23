@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tinkerise/shared": "workspace:*",
+    "@tinkerise/shared": "^0.1.0",
     "ci-info": "^4.4.0",
     "deepmerge-ts": "^7.1.5",
     "diff": "^8.0.3",
