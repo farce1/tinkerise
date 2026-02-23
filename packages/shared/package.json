@@ -1,7 +1,7 @@
 {
   "name": "@tinkerise/shared",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared types, Zod schemas, and constants for the tinkerise monorepo",
   "license": "MIT",
   "homepage": "https://github.com/farce1/tinkerise",
@@ -13,7 +13,13 @@
   "bugs": {
     "url": "https://github.com/farce1/tinkerise/issues"
   },
-  "keywords": ["tinkerise", "shared", "types", "schemas", "utilities"],
+  "keywords": [
+    "tinkerise",
+    "shared",
+    "types",
+    "schemas",
+    "utilities"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

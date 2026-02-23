@@ -1,9 +1,17 @@
 {
   "name": "tinkerise",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "description": "Scaffold any project with any stack",
-  "keywords": ["tinkerise", "scaffold", "cli", "project-generator", "create-app", "framework", "boilerplate"],
+  "keywords": [
+    "tinkerise",
+    "scaffold",
+    "cli",
+    "project-generator",
+    "create-app",
+    "framework",
+    "boilerplate"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -21,7 +29,10 @@
   "dependencies": {
     "@tinkerise/cli": "workspace:*"
   },
-  "files": ["bin.mjs", "postinstall.mjs"],
+  "files": [
+    "bin.mjs",
+    "postinstall.mjs"
+  ],
   "scripts": {
     "postinstall": "node postinstall.mjs"
   },
