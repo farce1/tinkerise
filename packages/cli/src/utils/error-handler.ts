@@ -4,9 +4,12 @@ import { CommanderError } from 'commander'
 import pc from 'picocolors'
 import { formatBoundaryError } from './error-ux-contract.js'
 
-const isVerbose = process.argv.includes('--verbose') || !!process.env.DEBUG
 const invokedAs = basename(process.argv[1] ?? 'tinkerise')
 const programName = invokedAs === 'tk' ? 'tk' : 'tinkerise'
+
+function isDebugEnabled(): boolean {
+  return process.argv.includes('--verbose') || !!process.env.DEBUG
+}
 
 function toStableCode(input: string): string {
   return input
@@ -24,6 +27,7 @@ function renderAndExit(options: {
   stack?: string
   exitCode: number
 }): never {
+  const debug = isDebugEnabled()
   const formatted = formatBoundaryError({
     content: {
       code: options.code,
@@ -32,7 +36,7 @@ function renderAndExit(options: {
       nextStep: options.nextStep,
     },
     stack: options.stack,
-    debug: isVerbose,
+    debug,
   })
 
   for (const [index, line] of formatted.lines.entries()) {
