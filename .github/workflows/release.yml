@@ -20,22 +20,65 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Determine whether release should run
+        id: release_gate
+        run: |
+          set -euo pipefail
+
+          pending_changesets=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
+
+          before_sha='${{ github.event.before }}'
+          if [ -z "$before_sha" ] || [ "$before_sha" = '0000000000000000000000000000000000000000' ]; then
+            changed_files=$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA")
+          else
+            changed_files=$(git diff --name-only "$before_sha" "$GITHUB_SHA")
+          fi
+
+          changelog_touched=false
+          if printf '%s\n' "$changed_files" | grep -E '^packages/[^/]+/CHANGELOG\.md$' >/dev/null; then
+            changelog_touched=true
+          fi
+
+          should_release=false
+          reason='no pending changesets and no package changelog updates in this push'
+
+          if [ "$pending_changesets" -gt 0 ]; then
+            should_release=true
+            reason="found ${pending_changesets} pending changeset(s)"
+          elif [ "$changelog_touched" = true ]; then
+            should_release=true
+            reason='package changelog changes detected in this push'
+          fi
+
+          echo "should_release=${should_release}" >> "$GITHUB_OUTPUT"
+          echo "reason=${reason}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip release on non-release pushes
+        if: steps.release_gate.outputs.should_release != 'true'
+        run: |
+          echo "Skipping release workflow: ${{ steps.release_gate.outputs.reason }}"
+
       - name: Setup Bun
+        if: steps.release_gate.outputs.should_release == 'true'
         uses: oven-sh/setup-bun@v2
 
       - name: Setup Node.js
+        if: steps.release_gate.outputs.should_release == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
+        if: steps.release_gate.outputs.should_release == 'true'
         run: bun install --frozen-lockfile
 
       - name: Build
+        if: steps.release_gate.outputs.should_release == 'true'
         run: bun run build
 
       - name: Validate publish preconditions
+        if: steps.release_gate.outputs.should_release == 'true'
         run: |
           set -euo pipefail
 
@@ -52,6 +95,7 @@ jobs:
           fi
 
       - name: Create Release PR or Publish
+        if: steps.release_gate.outputs.should_release == 'true'
         id: changesets
         uses: changesets/action@v1
         with:
@@ -65,14 +109,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Normalize published release notes
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.release_gate.outputs.should_release == 'true' && steps.changesets.outputs.published == 'true'
         run: bun run ci:release:normalize
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Trigger Homebrew tap update
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.release_gate.outputs.should_release == 'true' && steps.changesets.outputs.published == 'true'
         run: |
           VERSION=$(jq -r '.version' packages/tinkerise/package.json)
           gh workflow run update-formula.yml \
