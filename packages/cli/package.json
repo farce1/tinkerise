@@ -40,6 +40,7 @@
     "build": "tsup",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:conformance": "vitest run tests/conformance/runtime-error-matrix.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

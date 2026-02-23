@@ -207,6 +207,11 @@ describe('runtime error conformance matrix', () => {
         stdoutSnippet: compactTranscript(result.stdout),
         stderrSnippet: compactTranscript(result.stderr),
       })
+
+      if (process.env.TINKERISE_CONFORMANCE_FORCE_MISMATCH === '1' && records.length === 1) {
+        records[0]!.failures.push('forced mismatch for conformance failure-path verification')
+        records[0]!.status = 'fail'
+      }
     }
 
     const tableRows = records.map(record => ({
@@ -233,6 +238,9 @@ describe('runtime error conformance matrix', () => {
       },
     }
     await writeFile(REPORT_PATH, `${JSON.stringify(report, null, 2)}\n`, 'utf-8')
+    console.log(`runtime error conformance report: ${REPORT_PATH}`)
+
+    await rm(HARNESS_PATH, { force: true })
 
     for (const record of records) {
       expect(
@@ -248,7 +256,5 @@ describe('runtime error conformance matrix', () => {
 
     expect(records).toHaveLength(8)
     expect(records.every(record => record.status === 'pass')).toBe(true)
-
-    await rm(HARNESS_PATH, { force: true })
   })
 })
