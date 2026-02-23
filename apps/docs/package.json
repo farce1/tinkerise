@@ -8,11 +8,15 @@
     "build": "bun run docs:changelog && astro build",
     "preview": "astro preview",
     "docs:reference": "node ./scripts/generate-command-reference.mjs",
-    "docs:changelog": "node ./scripts/generate-changelog.mjs"
+    "docs:changelog": "node ./scripts/generate-changelog.mjs",
+    "docs:smoke": "node ./scripts/smoke-production-docs.mjs"
   },
   "dependencies": {
     "astro": "^5.5.0",
     "@astrojs/starlight": "^0.37.6",
     "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
   }
 }
