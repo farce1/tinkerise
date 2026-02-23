@@ -1,7 +1,7 @@
 {
   "name": "@tinkerise/core",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Core business logic for tinkerise — scaffolder registry, enhancement system, config, and presets",
   "license": "MIT",
   "homepage": "https://github.com/farce1/tinkerise",
@@ -13,7 +13,13 @@
   "bugs": {
     "url": "https://github.com/farce1/tinkerise/issues"
   },
-  "keywords": ["tinkerise", "scaffolding", "enhancements", "registry", "project-setup"],
+  "keywords": [
+    "tinkerise",
+    "scaffolding",
+    "enhancements",
+    "registry",
+    "project-setup"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
