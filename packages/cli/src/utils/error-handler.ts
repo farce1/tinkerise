@@ -2,6 +2,7 @@ import { basename } from 'node:path'
 import { TinkeriseError } from '@tinkerise/core'
 import { CommanderError } from 'commander'
 import pc from 'picocolors'
+import { CLI_COMMAND_CANDIDATES, getCommandSuggestions } from './command-suggestions.js'
 import { formatBoundaryError } from './error-ux-contract.js'
 
 const invokedAs = basename(process.argv[1] ?? 'tinkerise')
@@ -51,9 +52,48 @@ function renderAndExit(options: {
   process.exit(options.exitCode)
 }
 
-function nextStepForCommander(code: string): string {
+function extractUnknownCommand(message: string): string | undefined {
+  const singleQuoted = message.match(/unknown command '([^']+)'/i)
+  if (singleQuoted?.[1])
+    return singleQuoted[1]
+
+  const doubleQuoted = message.match(/unknown command "([^"]+)"/i)
+  if (doubleQuoted?.[1])
+    return doubleQuoted[1]
+
+  return undefined
+}
+
+function renderRankedSuggestions(commands: string[]): string {
+  if (commands.length === 1) {
+    return `'${commands[0]}'`
+  }
+
+  if (commands.length === 2) {
+    return `'${commands[0]}' or '${commands[1]}'`
+  }
+
+  return `'${commands[0]}', '${commands[1]}', or '${commands[2]}'`
+}
+
+function nextStepForCommander(code: string, message: string): string {
   if (code === 'commander.unknownCommand') {
-    return `Run '${programName} --help' to see available commands.`
+    const unknownCommand = extractUnknownCommand(message)
+    if (unknownCommand) {
+      const suggestions = getCommandSuggestions(unknownCommand, {
+        candidates: CLI_COMMAND_CANDIDATES,
+        maxSuggestions: 3,
+        commandName: programName,
+      })
+
+      if (suggestions.isHighConfidence && suggestions.suggestions.length > 0) {
+        const rankedCommands = suggestions.suggestions.map(item => item.command)
+        const correctedCommand = suggestions.suggestions[0]!.correctedCommand
+        return `Did you mean ${renderRankedSuggestions(rankedCommands)}? Try '${correctedCommand}'.`
+      }
+    }
+
+    return `Run '${programName} --help' or '${programName} list' to see available commands.`
   }
 
   if (code === 'commander.unknownOption') {
@@ -78,7 +118,7 @@ export function handleError(error: unknown): never {
       code: toStableCode(error.code),
       headline: 'Command input is invalid.',
       cause: error.message.replace(/^error:\s*/i, ''),
-      nextStep: nextStepForCommander(error.code),
+      nextStep: nextStepForCommander(error.code, error.message),
       stack: error.stack,
       exitCode: error.exitCode,
     })

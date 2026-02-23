@@ -85,8 +85,8 @@ describe('handleError contract', () => {
     const output = stripAnsi(logSpy.mock.calls.map(call => String(call[0])).join('\n'))
     expect(output).toContain('Error [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.')
     expect(output).toContain("Cause: unknown command 'lst'")
-    expect(output).toContain('Next step: Run')
-    expect(output).toContain('--help')
+    expect(output).toContain('Next step: Did you mean')
+    expect(output).toContain("Try 'tinkerise list'.")
   })
 
   it('keeps unknown runtime errors graceful without stack by default', () => {
