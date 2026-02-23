@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "suite": "runtime-error-matrix",
+  "description": "Phase 31 runtime error UX conformance contract",
+  "scenarios": [
+    {
+      "id": "unknown-command-high-confidence",
+      "name": "Unknown command with high-confidence ranked suggestions",
+      "requirements": ["CLI-02", "CLI-08"],
+      "entry": "dist",
+      "argv": ["config", "lset"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.",
+            "Cause: unknown command 'lset'",
+            "Next step: Did you mean",
+            "Try 'tinkerise list'."
+          ],
+          "forbidden": [
+            "Run 'tinkerise --help' or 'tinkerise list' to see available commands.",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "unknown-command-low-confidence",
+      "name": "Unknown command with low-confidence fallback guidance",
+      "requirements": ["CLI-02", "CLI-08"],
+      "entry": "dist",
+      "argv": ["config", "zzzz"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.",
+            "Cause: unknown command 'zzzz'",
+            "Run 'tinkerise --help' or 'tinkerise list' to see available commands."
+          ],
+          "forbidden": [
+            "Did you mean",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "unknown-option-contract",
+      "name": "Unknown option errors keep structured output contract",
+      "requirements": ["CLI-01", "CLI-05", "CLI-08"],
+      "entry": "dist",
+      "argv": ["list", "--bogus"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [COMMANDER_UNKNOWNOPTION] Command input is invalid.",
+            "Cause: unknown option '--bogus'",
+            "Run 'tinkerise --help' to review supported options."
+          ],
+          "forbidden": [
+            "error: unknown option",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "missing-argument-contract",
+      "name": "Missing required argument uses boundary contract",
+      "requirements": ["CLI-01", "CLI-05", "CLI-08"],
+      "entry": "dist",
+      "argv": ["monorepo"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [COMMANDER_MISSINGARGUMENT] Command input is invalid.",
+            "Cause: missing required argument 'name'",
+            "Run 'tinkerise --help' to check required arguments."
+          ],
+          "forbidden": [
+            "error: missing required argument",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "invalid-config-key-code-visible",
+      "name": "Invalid config key preserves stable structured error code",
+      "requirements": ["CLI-04", "CLI-05", "CLI-08"],
+      "entry": "dist",
+      "argv": ["config", "get", "wrongKey"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [INVALID_CONFIG_KEY] Command failed.",
+            "Cause: Unknown config key: 'wrongKey'",
+            "Next step: Valid keys: packageManager, typescript, defaultCategory"
+          ],
+          "forbidden": [
+            "TinkeriseError:",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "config-validation-code-visible",
+      "name": "Config validation failure preserves stable structured error code",
+      "requirements": ["CLI-04", "CLI-05", "CLI-08"],
+      "entry": "dist",
+      "argv": ["config", "set", "packageManager", "npmx"],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [CONFIG_VALIDATION] Command failed.",
+            "Cause: Invalid value 'npmx' for packageManager.",
+            "Next step: Valid values: npm, pnpm, yarn, bun"
+          ],
+          "forbidden": [
+            "TinkeriseError:",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    },
+    {
+      "id": "help-surface-has-examples",
+      "name": "Public help output includes practical examples",
+      "requirements": ["CLI-03", "CLI-08"],
+      "entry": "dist",
+      "argv": ["config", "--help"],
+      "expect": {
+        "exitCode": 0,
+        "channel": "stdout-only",
+        "stdout": {
+          "required": [
+            "Usage:",
+            "Examples:",
+            "config list",
+            "config set packageManager pnpm"
+          ],
+          "forbidden": [
+            "Error ["
+          ]
+        },
+        "stderr": {
+          "required": [],
+          "forbidden": ["\\S"]
+        }
+      }
+    },
+    {
+      "id": "unknown-runtime-fallback",
+      "name": "Unknown runtime failures fallback to graceful boundary output",
+      "requirements": ["CLI-05", "CLI-08"],
+      "entry": "harness-non-error",
+      "argv": [],
+      "expect": {
+        "exitCode": 1,
+        "channel": "stderr-only",
+        "stdout": {
+          "required": [],
+          "forbidden": ["\\S"]
+        },
+        "stderr": {
+          "required": [
+            "Error [UNEXPECTED_RUNTIME] Unexpected runtime failure.",
+            "Cause: A non-error value was thrown during command execution.",
+            "Next step: Retry with '--verbose'. If the issue persists, open an issue at https://github.com/farce1/tinkerise/issues."
+          ],
+          "forbidden": [
+            "conformance-non-error",
+            "\\bat\\s+.+:\\d+:\\d+"
+          ]
+        }
+      }
+    }
+  ]
+}
