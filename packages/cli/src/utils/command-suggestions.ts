@@ -168,7 +168,7 @@ export function getCommandSuggestions(inputValue: string, options: CommandSugges
     }
   }
 
-  const dynamicFloor = Math.max(DEFAULT_LOWEST_PLAUSIBLE_SCORE, confidence - 0.2)
+  const dynamicFloor = Math.max(DEFAULT_LOWEST_PLAUSIBLE_SCORE, confidence - 0.3)
   const suggestions = ranked
     .filter(candidate => candidate.score >= dynamicFloor)
     .slice(0, maxSuggestions)

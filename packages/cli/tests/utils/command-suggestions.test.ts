@@ -9,8 +9,8 @@ describe('getCommandSuggestions', () => {
     })
 
     expect(result.isHighConfidence).toBe(true)
-    expect(result.suggestions.length).toBeLessThanOrEqual(3)
-    expect(result.suggestions.map(item => item.command)).toEqual(['list', 'preset'])
+    expect(result.suggestions).toHaveLength(3)
+    expect(result.suggestions.map(item => item.command)).toEqual(['list', 'preset', 'lib'])
     expect(result.suggestions[0]?.correctedCommand).toBe('tinkerise list')
   })
 
@@ -32,5 +32,18 @@ describe('getCommandSuggestions', () => {
     })
 
     expect(result.suggestions.map(item => item.command)).toEqual(['caa', 'cab', 'cat'])
+  })
+
+  it('returns top-3 suggestions in ranked order when multiple candidates are plausible', () => {
+    const result = getCommandSuggestions('co', {
+      candidates: ['config', 'cli', 'mcp', 'list'],
+      commandName: 'tk',
+      threshold: 0.4,
+      maxSuggestions: 3,
+    })
+
+    expect(result.isHighConfidence).toBe(true)
+    expect(result.suggestions.map(item => item.command)).toEqual(['config', 'cli', 'mcp'])
+    expect(result.suggestions.map(item => item.correctedCommand)).toEqual(['tk config', 'tk cli', 'tk mcp'])
   })
 })
