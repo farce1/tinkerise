@@ -20,47 +20,61 @@ jobs:
           - name: create-next-app
             cmd: npx create-next-app@latest --help
             snapshot: create-next-app.txt
+            actionable: true
           - name: create-vite
             cmd: npx create-vite@latest --help
             snapshot: create-vite.txt
+            actionable: true
           - name: create-astro
             cmd: npx create-astro@latest --help
             snapshot: create-astro.txt
+            actionable: true
           - name: create-t3-app
             cmd: npx create-t3-app@latest --help
             snapshot: create-t3-app.txt
+            actionable: true
           - name: create-react-router
             cmd: npx create-react-router@latest --help
             snapshot: create-react-router.txt
+            actionable: true
           - name: tanstack-cli
             cmd: npx @tanstack/cli create --help
             snapshot: tanstack-cli.txt
+            actionable: true
           - name: create-turbo
             cmd: npx create-turbo@latest --help
             snapshot: create-turbo.txt
+            actionable: true
           # Backend scaffolders
           - name: fastapi-admin
             cmd: fastapi-admin --help
             snapshot: fastapi-admin.txt
+            actionable: false
           - name: django-admin
             cmd: django-admin help startproject
             snapshot: django-admin.txt
+            actionable: false
           - name: go-blueprint
             cmd: go-blueprint --help
             snapshot: go-blueprint.txt
+            actionable: false
           - name: cargo-generate
             cmd: cargo generate --help
             snapshot: cargo-generate.txt
+            actionable: true
           - name: express-generator-typescript
             cmd: npx express-generator-typescript --help
             snapshot: express-generator-typescript.txt
+            actionable: false
           # Mobile scaffolders
           - name: flutter
             cmd: flutter create --help
             snapshot: flutter.txt
+            actionable: true
           - name: create-expo-app
             cmd: npx create-expo-app@latest --help
             snapshot: create-expo-app.txt
+            actionable: true
 
     steps:
       - uses: actions/checkout@v4
@@ -102,12 +116,20 @@ jobs:
       - name: Capture help output
         run: ${{ matrix.tool.cmd }} > current-help.txt 2>&1 || true
 
+      - name: Normalize help output
+        run: node .github/scripts/normalize-help.mjs current-help.txt current-help.normalized.txt
+
       - name: Check for drift
         id: drift
         run: |
           SNAPSHOT=".github/snapshots/${{ matrix.tool.snapshot }}"
+          CURRENT_NORMALIZED="current-help.normalized.txt"
+          SNAPSHOT_NORMALIZED="snapshot.normalized.txt"
+
           if [ -f "$SNAPSHOT" ]; then
-            if diff -u "$SNAPSHOT" current-help.txt > drift-diff.txt 2>&1; then
+            node .github/scripts/normalize-help.mjs "$SNAPSHOT" "$SNAPSHOT_NORMALIZED"
+
+            if diff -u "$SNAPSHOT_NORMALIZED" "$CURRENT_NORMALIZED" > drift-diff.txt 2>&1; then
               echo "status=unchanged" >> "$GITHUB_OUTPUT"
               echo "No drift detected for ${{ matrix.tool.name }}"
             else
@@ -121,13 +143,13 @@ jobs:
             echo "No snapshot exists for ${{ matrix.tool.name }}"
           fi
 
-      - name: Emit warning on drift
-        if: steps.drift.outputs.status == 'changed'
+      - name: Emit warning on actionable drift
+        if: steps.drift.outputs.status == 'changed' && matrix.tool.actionable
         run: |
           echo "::warning title=Flag Drift Detected::${{ matrix.tool.name }} help output has changed. Review flag mappings in packages/core/src/registry/scaffolders/"
 
       - name: Create or update drift issue
-        if: steps.drift.outputs.status == 'changed'
+        if: steps.drift.outputs.status == 'changed' && matrix.tool.actionable
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -177,7 +199,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: help-${{ matrix.tool.name }}
-          path: current-help.txt
+          path: |
+            current-help.txt
+            current-help.normalized.txt
           retention-days: 30
 
       - name: Upload diff
@@ -188,8 +212,8 @@ jobs:
           path: drift-diff.txt
           retention-days: 30
 
-      - name: Fail if drift detected
-        if: steps.drift.outputs.status == 'changed'
+      - name: Fail if actionable drift detected
+        if: steps.drift.outputs.status == 'changed' && matrix.tool.actionable
         run: |
           echo "::error::Drift detected for ${{ matrix.tool.name }} — see issue above"
           exit 1

@@ -1,4 +1,3 @@
-npm warn exec The following package was not found and will be installed: @tanstack/cli@0.59.3
 Usage: tanstack create [options] [project-name]
 
 Create a new TanStack Start application
@@ -12,8 +11,12 @@ Options:
   --no-install                                     skip installing dependencies
   --package-manager <npm|yarn|pnpm|bun|deno>       Explicitly tell the CLI to use this package manager
   --dev-watch <path>                               Watch a framework directory for changes and auto-rebuild
-  --router-only                                    Deprecated: compatibility flag from create-tsrouter-app
+  --router-only                                    Use router-only compatibility mode (file-based routing without TanStack Start)
   --template <type>                                Deprecated: compatibility flag from create-tsrouter-app
+  --tailwind                                       Deprecated: compatibility flag; Tailwind is always enabled
+  --no-tailwind                                    Deprecated: compatibility flag; Tailwind opt-out is ignored
+  --examples                                       include demo/example pages
+  --no-examples                                    exclude demo/example pages
   --deployment <cloudflare|netlify|nitro|railway>  Explicitly tell the CLI to use this deployment adapter
   --toolchain <biome|eslint>                       Explicitly tell the CLI to use this toolchain
   --no-toolchain                                   skip toolchain selection
@@ -21,6 +24,7 @@ Options:
   --add-ons [...add-ons]                           pick from a list of available add-ons (comma separated list)
   --list-add-ons                                   list all available add-ons (default: false)
   --addon-details <addon-id>                       show detailed information about a specific add-on
+  --git                                            create a git repository
   --no-git                                         do not create a git repository
   --target-dir <path>                              the target directory for the application root
   --ui                                             Launch the UI for project creation

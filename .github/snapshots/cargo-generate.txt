@@ -1,31 +1,128 @@
-# Snapshot generated from CLI documentation — will be replaced by CI on first run
-# Tool: cargo-generate
-# Command: cargo install cargo-generate && cargo generate --help
+cargo, make me a project
 
-cargo-generate: Generate a new Cargo project from a given template
-
-Usage: cargo generate [OPTIONS] [git|path|favorite] [--] [template_values]...
+Usage: cargo generate [OPTIONS] [AUTO_PATH] [SUBFOLDER]
 
 Arguments:
-  [template_values]...  List of template values in the form `key=value`
+  [AUTO_PATH]
+          Auto attempt to use as either `--git` or `--favorite`. If either is specified explicitly,
+          use as subfolder
+
+  [SUBFOLDER]
+          Specifies the subfolder within the template repository to be used as the actual template
 
 Options:
-  -n, --name <NAME>                    Name of the project to generate
-  -f, --force                          Enforce to create a new project in an existing directory
-  -v, --verbose                        Enables verbose diagnostics
-  -t, --template-values-file <FILE>    Path to a file with template values
-  -s, --silent                         Don't prompt and use defaults
-  -l, --list-favorites                 List defined favorite templates
-      --vcs <VCS>                      Version control system to use [default: git] [possible values: none, git]
-      --lib                            Generates a library template
-      --bin                            Generates a binary template
-      --ssh-identity <FILE>            Use specific ssh identity
-  -d, --define <DEFINE>                Define a value for a template variable
-      --init                           Generate the template directly into the current dir
-      --destination <DESTINATION>      Generate the template into a target directory
-      --allow-commands                 Allow the template to run commands
-      --overwrite                      Skip the check for existing files
-      --skip-submodules                Skip git submodules when cloning
-      --other-branch <OTHER_BRANCH>    Use a different branch than the default
-  -h, --help                           Print help
-  -V, --version                        Print version
+      --test
+          Expand $CWD as a template, then run `cargo test` on the expansion (set
+          $CARGO_GENERATE_TEST_CMD to override test command). implies --verbose
+
+          Any arguments given after the `--test` argument, will be used as arguments for the test
+          command.
+
+      --list-favorites
+          List defined favorite templates from the config
+
+  -v, --verbose
+          Enables more verbose output
+
+  -q, --quiet
+          Opposite of verbose, suppresses errors & warning in output Conflicts with verbose, and
+          requires the use of --continue-on-error
+
+      --continue-on-error
+          Continue if errors in templates are encountered
+
+  -s, --silent
+          If silent mode is set all variables will be extracted from the template_values_file. If a
+          value is missing the project generation will fail
+
+  -c, --config <CONFIG>
+          Use specific configuration file. Defaults to $CARGO_HOME/cargo-generate or
+          $HOME/.cargo/cargo-generate
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+
+Template Selection:
+  -g, --git <GIT>
+          Git repository to clone template from. Can be a URL (like
+          `https://github.com/rust-cli/cli-template`), a path (relative or absolute), or an
+          `owner/repo` abbreviated GitHub URL (like `rust-cli/cli-template`).
+
+          Note that cargo generate will first attempt to interpret the `owner/repo` form as a
+          relative path and only try a GitHub URL if the local path doesn't exist.
+
+  -p, --path <PATH>
+          Local path to copy the template from. Can not be specified together with --git
+
+      --favorite <FAVORITE>
+          Generate a favorite template as defined in the config. In case the favorite is undefined,
+          use in place of the `--git` option, otherwise specifies the subfolder
+
+Git Parameters:
+  -b, --branch <BRANCH>
+          Branch to use when installing from git
+
+  -t, --tag <TAG>
+          Tag to use when installing from git
+
+  -r, --revision <REVISION>
+          Git revision to use when installing from git (e.g. a commit hash)
+
+  -i, --identity <IDENTITY>
+          Use a different ssh identity
+
+      --gitconfig <GITCONFIG_FILE>
+          Use a different gitconfig file, if omitted the usual $HOME/.gitconfig will be used
+
+      --skip-submodules
+          Skip downloading git submodules (if there are any)
+
+Output Parameters:
+  -n, --name <NAME>
+          Directory to create / project name; if the name isn't in kebab-case, it will be converted
+          to kebab-case unless `--force` is given
+
+  -f, --force
+          Don't convert the project name to kebab-case before creating the directory. Note that
+          cargo generate won't overwrite an existing directory, even if `--force` is given
+
+      --values-file <FILE>
+          Pass template values through a file. Values should be in the format `key=value`, one per
+          line
+
+      --vcs <VCS>
+          Specify the VCS used to initialize the generated template
+
+      --lib
+          Populates template variable `crate_type` with value `"lib"`
+
+      --bin
+          Populates a template variable `crate_type` with value `"bin"`
+
+  -d, --define <DEFINE>
+          Define a value for use during template expansion. E.g `--define foo=bar`
+
+      --init
+          Generate the template directly into the current dir. No subfolder will be created and no
+          vcs is initialized
+
+      --destination <PATH>
+          Generate the template directly at the given path
+
+      --force-git-init
+          Will enforce a fresh git init on the generated project
+
+  -a, --allow-commands
+          Allows running system commands without being prompted. Warning: Setting this flag will
+          enable the template to run arbitrary system commands without user confirmation. Use at
+          your own risk and be sure to review the template code beforehand
+
+  -o, --overwrite
+          Allow the template to overwrite existing files in the destination
+
+      --no-workspace
+          Skip automatic workspace member addition. When set, the generated project will not be
+          added to any parent Cargo.toml workspace members list
