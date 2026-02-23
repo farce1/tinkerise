@@ -65,7 +65,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy artifact
+      - name: Deploy artifact and capture page URL output
         id: deployment
         uses: actions/deploy-pages@v4
 
@@ -95,7 +95,8 @@ jobs:
           echo "Smoke checks run against the deployed URL from this workflow run."
           echo "Smoke checks also include canonical URL verification when configured by the script."
 
-      - name: Run docs smoke checks against deployed production targets (blocking)
+      # Required gate: any required smoke check failure must fail this workflow run.
+      - name: Run docs smoke checks against deployed production targets (hard-fail gate)
         run: |
           mkdir -p apps/docs/scripts/artifacts
           set -o pipefail
