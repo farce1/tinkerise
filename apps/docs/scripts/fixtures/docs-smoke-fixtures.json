@@ -1,0 +1,95 @@
+{
+  "metadata": {
+    "version": 1,
+    "requirementGroupMap": {
+      "requiredRoutes": [
+        "DOCS-01"
+      ],
+      "searchQueries": [
+        "DOCS-08"
+      ],
+      "codeRoutes": [
+        "DOCS-09"
+      ]
+    }
+  },
+  "requiredRoutes": [
+    {
+      "id": "docs-home",
+      "path": "/",
+      "description": "Docs landing page loads successfully.",
+      "requirementIds": [
+        "DOCS-01"
+      ]
+    },
+    {
+      "id": "guides-getting-started",
+      "path": "/guides/getting-started/",
+      "description": "Primary onboarding route stays reachable in production.",
+      "requirementIds": [
+        "DOCS-01"
+      ]
+    },
+    {
+      "id": "reference-commands",
+      "path": "/reference/commands/",
+      "description": "Core command reference route stays reachable in production.",
+      "requirementIds": [
+        "DOCS-01"
+      ]
+    }
+  ],
+  "searchQueries": [
+    {
+      "id": "search-getting-started",
+      "query": "hello-tinkerise",
+      "expected": {
+        "hrefContains": "/guides/getting-started/",
+        "textContains": "Getting Started"
+      },
+      "requirementIds": [
+        "DOCS-08"
+      ]
+    },
+    {
+      "id": "search-presets",
+      "query": "preset use my-stack",
+      "expected": {
+        "hrefContains": "/guides/presets/",
+        "textContains": "Presets"
+      },
+      "requirementIds": [
+        "DOCS-08"
+      ]
+    },
+    {
+      "id": "search-commands",
+      "query": "tinkerise doctor",
+      "expected": {
+        "hrefContains": "/reference/commands/",
+        "textContains": "Commands"
+      },
+      "requirementIds": [
+        "DOCS-08"
+      ]
+    }
+  ],
+  "codeRoutes": [
+    {
+      "id": "code-getting-started",
+      "path": "/guides/getting-started/",
+      "expectedLanguage": "bash",
+      "requirementIds": [
+        "DOCS-09"
+      ]
+    },
+    {
+      "id": "code-express-recipe",
+      "path": "/recipes/express-api-docker-ci/",
+      "expectedLanguage": "bash",
+      "requirementIds": [
+        "DOCS-09"
+      ]
+    }
+  ]
+}
