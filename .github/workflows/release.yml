@@ -37,6 +37,22 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Validate publish preconditions
+        run: |
+          set -euo pipefail
+
+          pending_changesets=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' | wc -l | tr -d ' ')
+          if [ "$pending_changesets" -gt 0 ]; then
+            echo "Found $pending_changesets pending changeset(s); changesets/action will open or update the version PR."
+            exit 0
+          fi
+
+          if grep -R --include='package.json' '"workspace:' packages/ >/dev/null; then
+            echo "::error title=Initial release blocked::No pending changesets were found, but workspace protocol dependencies are still present."
+            echo "::error::Create and merge an initial changeset version PR before publish so internal workspace dependencies are rewritten to concrete semver ranges."
+            exit 1
+          fi
+
       - name: Create Release PR or Publish
         id: changesets
         uses: changesets/action@v1
