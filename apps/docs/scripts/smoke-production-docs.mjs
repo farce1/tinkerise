@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const repoRoot = resolve(here, '../../..')
@@ -109,18 +109,25 @@ function toUrl(value) {
 }
 
 function toAbsoluteUrl(baseUrl, routePath) {
-  return new URL(routePath, `${baseUrl}/`).toString()
+  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+  const normalizedRoute = routePath.replace(/^\/+/, '')
+  return new URL(normalizedRoute, normalizedBase).toString()
+}
+
+function extractAstroString(content, key) {
+  const expression = new RegExp(`${key}\\s*:\\s*['\"]([^'\"]+)['\"]`)
+  const match = content.match(expression)
+  return match?.[1] ?? null
 }
 
 async function resolveCanonicalUrl(configuredCanonical) {
   if (configuredCanonical)
     return toUrl(configuredCanonical)
 
-  const astroConfigUrl = pathToFileURL(resolve(repoRoot, 'apps/docs/astro.config.mjs')).toString()
-  const mod = await import(astroConfigUrl)
-  const config = mod.default ?? {}
-  const site = config.site
-  const base = config.base ?? '/'
+  const astroConfigPath = resolve(repoRoot, 'apps/docs/astro.config.mjs')
+  const astroConfigContent = readFileSync(astroConfigPath, 'utf8')
+  const site = extractAstroString(astroConfigContent, 'site')
+  const base = extractAstroString(astroConfigContent, 'base') ?? '/'
 
   if (!site)
     throw new Error('Unable to resolve canonical URL from apps/docs/astro.config.mjs (missing site)')
