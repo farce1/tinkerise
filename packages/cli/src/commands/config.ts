@@ -82,6 +82,10 @@ export function registerConfigCommand(program: Command): void {
     .command('config')
     .summary('Manage tinkerise configuration')
     .description('Get, set, list, or initialize tinkerise configuration values. Defaults to global scope; use --project for project-level config.')
+    .addHelpText('after', `
+Examples:
+  $ ${name} config list                     Show all current configuration values
+  $ ${name} config set packageManager pnpm  Set and persist a default package manager`)
 
   // --- config list ---
   configCmd

@@ -47,6 +47,10 @@ export function registerPresetCommand(program: Command): void {
     .command('preset')
     .summary('Manage configuration presets')
     .description('Save, apply, list, and delete reusable configuration presets.')
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset list                Discover local and npm presets
+  $ ${programName} preset use team-defaults   Apply an existing preset to the current project`)
 
   // --- preset save <name> ---
   preset
