@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-22)
+See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Milestone planning (v3.1 definition)
+**Current focus:** Milestone v3.1 Reliability Sweep (Phase 30 Plan 01 complete, Plan 02 next)
 
 ## Current Position
 
-Phase: 29 of 29 (v3.0 complete)
-Plan: N/A
-Status: Complete
-Last activity: 2026-02-22 -- Marked v3.0 milestone complete and archived planning artifacts
+Phase: 30 (in progress)
+Plan: 02
+Status: Executing
+Last activity: 2026-02-23 -- Completed 30-01 production docs smoke runner
 
-Progress: [███████████████████████████████] 100% (77/77 plans across all milestones)
+Progress: [■□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□] 3% (1/32 plans complete)
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [███████████████████████
 | Phase 29 P01 | 1 min | 3 tasks | 1 files |
 | Phase 29 P02 | 2 min | 3 tasks | 4 files |
 | Phase 29 P03 | 9 min | 3 tasks | 6 files |
+| Phase 30 P01 | 7 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -113,10 +114,13 @@ Recent decisions (v3.0):
 - [Phase 29]: Use deterministic build-time GitHub Releases ingestion for docs changelog data.
 - [Phase 29]: Render changelog statically from generated JSON with explicit empty-state fallback.
 - [Phase 29]: Run docs changelog generation before both local docs builds and docs deploy CI builds.
+- [Phase 30]: Run smoke checks against explicit targets with canonical fallback and CI deploy URL support.
+- [Phase 30]: Treat every required route/search/code fixture miss as hard-fail with non-zero exit status.
+- [Phase 30]: Emit requirement-tagged JSON evidence plus screenshots for failed checks.
 
 ### Pending Todos
 
-None.
+- Execute `30-02-PLAN.md` to wire smoke checks into docs deploy workflow.
 
 ### Blockers/Concerns
 
@@ -124,6 +128,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Completed 29-03-PLAN.md
+Last session: 2026-02-23
+Stopped at: Completed 30-01-PLAN.md
 Resume file: None

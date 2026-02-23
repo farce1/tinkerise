@@ -6,7 +6,7 @@
 - ✅ **v1.1 Tech Debt** — Phases 13-16 (shipped 2026-02-19)
 - ✅ **v2.0 Quality & Robustness** — Phases 17-23 (shipped 2026-02-20)
 - ✅ **v3.0 Documentation & Polish** — Phases 24-29 (shipped 2026-02-22)
-- 📋 **v3.1 Next Milestone** — TBD (planned)
+- 📋 **v3.1 Reliability Sweep** — Phases 30-32 (planned)
 
 ## Phase Groups
 
@@ -27,6 +27,64 @@
 - [x] Phase 12: Retroactive Phase Verification (3/3 plans)
 
 Full details: `.planning/milestones/v1.0-ROADMAP.md`
+
+</details>
+
+<details open>
+<summary>📋 v3.1 Reliability Sweep (Phases 30-32) — PLANNED</summary>
+
+## Phases
+
+- [ ] **Phase 30: Docs Production Reliability Verification** - Verify deployed docs availability, search behavior, and code rendering with automated production smoke checks.
+- [ ] **Phase 31: CLI Runtime Error UX Reliability** - Verify end-to-end CLI error UX contracts and failure conformance across representative runtime scenarios.
+- [ ] **Phase 32: Reliability Closure Evidence & CI Enforcement** - Produce auditable closure evidence and enforce reliability checks as required CI gates.
+
+## Phase Details
+
+### Phase 30: Docs Production Reliability Verification
+**Goal**: Users and maintainers can trust that the production GitHub Pages docs site is reachable and functionally usable for search and code examples.
+**Depends on**: Phase 29
+**Requirements**: DOCS-01, DOCS-08, DOCS-09, DOCS-13
+**Success Criteria** (what must be TRUE):
+  1. User can open the production GitHub Pages docs URL and receive a successful page load.
+  2. User can run a search query on the deployed docs site and receive relevant content results.
+  3. User can view syntax-highlighted code blocks on deployed docs pages without broken rendering.
+  4. Maintainer can run one automated post-deploy smoke check that validates availability, search behavior, and code-block rendering in production.
+**Plans**: 2 plans
+
+Plans:
+- [x] 30-01-PLAN.md - Build fixture-driven production docs smoke runner for availability, search, and code rendering checks.
+- [ ] 30-02-PLAN.md - Integrate smoke runner into post-deploy Docs workflow with hard-gated evidence reporting.
+
+### Phase 31: CLI Runtime Error UX Reliability
+**Goal**: Users receive consistent, actionable CLI failure UX and maintainers can verify it through a stable conformance matrix.
+**Depends on**: Phase 29
+**Requirements**: CLI-01, CLI-02, CLI-03, CLI-04, CLI-05, CLI-08
+**Success Criteria** (what must be TRUE):
+  1. User sees friendly actionable failure messages for expected command errors instead of raw stack traces.
+  2. User who mistypes a command sees a "Did you mean ..." suggestion in CLI output.
+  3. User sees practical command examples in `--help` output for each public command.
+  4. User-facing failures follow a consistent structured error hierarchy and are rendered through one top-level runtime error boundary.
+  5. Maintainer can run a conformance matrix that asserts representative failure UX output and exit-code behavior.
+**Plans**: TBD
+
+### Phase 32: Reliability Closure Evidence & CI Enforcement
+**Goal**: Maintainers can prove v3.1 reliability closure and prevent regressions via mandatory CI enforcement.
+**Depends on**: Phase 30, Phase 31
+**Requirements**: REL-01, REL-02
+**Success Criteria** (what must be TRUE):
+  1. Maintainer can generate a requirement-to-evidence closure bundle covering all v3.1 requirements.
+  2. Maintainer can review objective artifacts (logs, transcripts, checklists) that trace each v3.1 requirement to passing verification evidence.
+  3. CI requires docs and CLI reliability verification checks to pass before merge/release workflows can complete.
+**Plans**: TBD
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 30. Docs Production Reliability Verification | 1/2 | In Progress|  |
+| 31. CLI Runtime Error UX Reliability | 0/0 | Not started | - |
+| 32. Reliability Closure Evidence & CI Enforcement | 0/0 | Not started | - |
 
 </details>
 
