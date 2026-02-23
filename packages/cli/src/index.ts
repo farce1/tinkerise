@@ -151,7 +151,8 @@ program
   })
   .addHelpText('after', `
 Examples:
-  $ ${programName} doctor                     Check all system tools and versions`)
+  $ ${programName} doctor                     Check all system tools and versions
+  $ ${programName} doctor | grep -i missing   Quickly surface missing tools`)
 
 // Config command — manage tinkerise configuration
 registerConfigCommand(program)

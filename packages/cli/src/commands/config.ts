@@ -145,7 +145,8 @@ Examples:
     .addHelpText('after', `
 Examples:
   $ ${name} config get packageManager  Get package manager setting
-  $ ${name} config get typescript      Get TypeScript default`)
+  $ ${name} config get typescript      Get TypeScript default
+  $ ${name} config list                Recover from invalid key by listing valid keys first`)
 
   // --- config set <key> <value> ---
   configCmd
@@ -199,7 +200,8 @@ Examples:
 Examples:
   $ ${name} config set packageManager pnpm   Set default package manager
   $ ${name} config set typescript true       Enable TypeScript by default
-  $ ${name} config set defaultCategory web   Set default category`)
+  $ ${name} config set defaultCategory web   Set default category
+  $ ${name} config list                       Verify updated values after setting`)
 
   // --- config init ---
   configCmd

@@ -295,7 +295,8 @@ Examples:
     })
     .addHelpText('after', `
 Examples:
-  $ ${programName} preset list                Show all local and npm presets`)
+  $ ${programName} preset list                Show all local and npm presets
+  $ ${programName} preset list | grep team    Filter presets to find team conventions quickly`)
 
   // --- preset delete <name> ---
   preset
@@ -313,5 +314,6 @@ Examples:
     })
     .addHelpText('after', `
 Examples:
-  $ ${programName} preset delete my-stack     Remove a local preset`)
+  $ ${programName} preset delete my-stack     Remove a local preset
+  $ ${programName} preset list                Recover from preset-not-found by discovering available names`)
 }
