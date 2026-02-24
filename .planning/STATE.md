@@ -1,14 +1,14 @@
 # Project State
 ## Project Reference
-See: .planning/PROJECT.md (updated 2026-02-23)
+See: .planning/PROJECT.md (updated 2026-02-24)
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Milestone v3.1 Reliability Sweep (Phase 32 complete)
+**Current focus:** Between milestones — define next milestone scope and requirements
 
 ## Current Position
-Phase: 32 (complete)
-Plan: Complete
-Status: Phase complete
-Last activity: 2026-02-24 -- Completed 32-03 required-check evidence closure and branch-protection enforcement record
+Phase: - (between milestones)
+Plan: n/a
+Status: Milestone v3.1 archived; ready for next milestone planning
+Last activity: 2026-02-24 -- Archived v3.1 milestone artifacts and prepared transition to next milestone
 
 Progress: [■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□] 28% (9/32 plans complete)
 
@@ -75,7 +75,7 @@ All v1.0 decisions archived in milestones/v1.0-ROADMAP.md.
 All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
 All v2.0 decisions archived in milestones/v2.0-ROADMAP.md.
 
-Recent decisions (v3.0):
+Recent decisions (v3.0-v3.1):
 - Centralized errors in errors/ module with re-exports from original modules for backward compatibility
 - Non-null assertions for TypeScript strict mode array access in Levenshtein DP matrix
 - Used program.name() in registered commands for dynamic help text name resolution
@@ -146,5 +146,5 @@ None.
 
 ## Session Continuity
 Last session: 2026-02-24
-Stopped at: Completed 32-03-PLAN.md
+Stopped at: Completed v3.1 milestone archival workflow
 Resume file: None
