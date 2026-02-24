@@ -22,7 +22,8 @@
     "docs:dev": "turbo run dev --filter=@tinkerise/docs",
     "docs:build": "turbo run build --filter=@tinkerise/docs",
     "docs:preview": "turbo run preview --filter=@tinkerise/docs",
-    "reliability:closure": "node scripts/reliability/build-v31-closure-bundle.mjs"
+    "reliability:closure": "node scripts/reliability/build-v31-closure-bundle.mjs",
+    "reliability:docs-preview-smoke": "node scripts/reliability/run-docs-smoke-preview.mjs"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^7.4.3",
