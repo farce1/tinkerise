@@ -37,7 +37,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [x] **Phase 30: Docs Production Reliability Verification** - Verify deployed docs availability, search behavior, and code rendering with automated production smoke checks. (completed 2026-02-23)
 - [x] **Phase 31: CLI Runtime Error UX Reliability** - Verify end-to-end CLI error UX contracts and failure conformance across representative runtime scenarios. (completed 2026-02-23)
-- [ ] **Phase 32: Reliability Closure Evidence & CI Enforcement** - Produce auditable closure evidence and enforce reliability checks as required CI gates.
+- [x] **Phase 32: Reliability Closure Evidence & CI Enforcement** - Produce auditable closure evidence and enforce reliability checks as required CI gates. (completed 2026-02-24)
 
 ## Phase Details
 
@@ -69,10 +69,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 31-01-PLAN.md - Enforce a shared 3-part CLI error UX contract in the top-level boundary with stable code visibility and debug-gated stack behavior.
-- [ ] 31-02-PLAN.md - Implement deterministic thresholded top-3 command typo suggestions with runnable correction guidance.
-- [ ] 31-03-PLAN.md - Normalize two-example minimum help output coverage across all public commands and subcommands with regression enforcement.
-- [ ] 31-04-PLAN.md - Add an auditable 8-scenario runtime error conformance matrix with hard-fail UX, channel, and exit-code assertions.
+- [x] 31-01-PLAN.md - Enforce a shared 3-part CLI error UX contract in the top-level boundary with stable code visibility and debug-gated stack behavior.
+- [x] 31-02-PLAN.md - Implement deterministic thresholded top-3 command typo suggestions with runnable correction guidance.
+- [x] 31-03-PLAN.md - Normalize two-example minimum help output coverage across all public commands and subcommands with regression enforcement.
+- [x] 31-04-PLAN.md - Add an auditable 8-scenario runtime error conformance matrix with hard-fail UX, channel, and exit-code assertions.
 
 ### Phase 32: Reliability Closure Evidence & CI Enforcement
 **Goal**: Maintainers can prove v3.1 reliability closure and prevent regressions via mandatory CI enforcement.
@@ -82,15 +82,19 @@ Plans:
   1. Maintainer can generate a requirement-to-evidence closure bundle covering all v3.1 requirements.
   2. Maintainer can review objective artifacts (logs, transcripts, checklists) that trace each v3.1 requirement to passing verification evidence.
   3. CI requires docs and CLI reliability verification checks to pass before merge/release workflows can complete.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [x] 32-01-PLAN.md - Build deterministic v3.1 requirement-to-evidence closure bundle generation from existing docs and CLI reliability reports.
+- [x] 32-02-PLAN.md - Enforce reliability verification as blocking CI/release gates and document required-check policy configuration.
 
 ## Progress Table
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 30. Docs Production Reliability Verification | 2/2 | Complete    | 2026-02-23 |
-| 31. CLI Runtime Error UX Reliability | 4/4 | Complete   | 2026-02-23 |
-| 32. Reliability Closure Evidence & CI Enforcement | 0/0 | Not started | - |
+| 31. CLI Runtime Error UX Reliability | 4/4 | Complete    | 2026-02-23 |
+| 32. Reliability Closure Evidence & CI Enforcement | 2/2 | Complete   | 2026-02-24 |
 
 </details>
 

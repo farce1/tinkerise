@@ -1,23 +1,20 @@
 # Project State
 
 ## Project Reference
-
 See: .planning/PROJECT.md (updated 2026-02-23)
 
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
-**Current focus:** Milestone v3.1 Reliability Sweep (Phase 31 complete, Phase 32 pending)
+**Current focus:** Milestone v3.1 Reliability Sweep (Phase 32 complete)
 
 ## Current Position
+Phase: 32 (complete)
+Plan: Complete
+Status: Phase complete
+Last activity: 2026-02-24 -- Completed 32-02 reliability gate enforcement and required-check policy record
 
-Phase: 32 (pending)
-Plan: 01 next
-Status: Ready for next phase execution
-Last activity: 2026-02-23 -- Completed 31-04 runtime error conformance matrix sign-off
-
-Progress: [■■■■■■□□□□□□□□□□□□□□□□□□□□□□□□□] 19% (6/32 plans complete)
+Progress: [■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□□] 25% (8/32 plans complete)
 
 ## Performance Metrics
-
 **v1.0 Summary:**
 - Total plans completed: 45
 - Average duration: ~4 min/plan
@@ -70,11 +67,11 @@ Progress: [■■■■■■□□□□□□□□□□□□□□□□□
 | Phase 31 P03 | 3 min | 2 tasks | 5 files |
 | Phase 31 P02 | 5 min | 3 tasks | 5 files |
 | Phase 31 P04 | 6 min | 3 tasks | 5 files |
+| Phase 32 P01 | 2 min | 2 tasks | 3 files |
+| Phase 32 P02 | 6 min | 3 tasks | 5 files |
 
 ## Accumulated Context
-
 ### Decisions
-
 All v1.0 decisions archived in milestones/v1.0-ROADMAP.md.
 All v1.1 decisions archived in milestones/v1.1-ROADMAP.md.
 All v2.0 decisions archived in milestones/v2.0-ROADMAP.md.
@@ -134,17 +131,20 @@ Recent decisions (v3.0):
 - [Phase 31]: Use a fixture-driven runtime error matrix with explicit required/forbidden transcript patterns and channel assertions.
 - [Phase 31]: Cover unknown non-Error fallback via a dedicated harness scenario inside the same conformance suite.
 - [Phase 31]: Expose test:conformance and a forced mismatch mode to validate non-zero gate behavior.
+- [Phase 32]: Mapped DOCS-13, REL-01, and REL-02 through closure metadata while sourcing objective inputs from docs and CLI reports
+- [Phase 32]: Enforced fail-fast behavior for unmapped docs/CLI evidence before writing closure outputs
+- [Phase 32]: Emitted both machine-readable index JSON and human-auditable markdown checklist under .artifacts/reliability/v3.1
+- [Phase 32]: Set stable Reliability Gates check naming for branch protection linkage
+- [Phase 32]: Gate release publish path on release-reliability-preflight checks
+- [Phase 32]: Track required-check policy in repo via RELIABILITY_REQUIRED_CHECKS.md
 
 ### Pending Todos
-
-- Start `32-01-PLAN.md` to build requirement-to-evidence reliability closure bundle.
+None.
 
 ### Blockers/Concerns
-
 None.
 
 ## Session Continuity
-
-Last session: 2026-02-23
-Stopped at: Completed 31-04-PLAN.md
+Last session: 2026-02-24
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None

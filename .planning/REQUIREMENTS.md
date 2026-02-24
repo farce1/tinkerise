@@ -26,8 +26,8 @@ Requirements for the v3.1 reliability milestone. Each requirement maps to exactl
 
 ### Reliability Evidence & Enforcement
 
-- [ ] **REL-01**: Maintainer can produce a requirement-to-evidence closure bundle (logs/transcripts/checklists) for all v3.1 requirements.
-- [ ] **REL-02**: Maintainer can enforce docs and CLI reliability verification checks as required CI gates.
+- [x] **REL-01**: Maintainer can produce a requirement-to-evidence closure bundle (logs/transcripts/checklists) for all v3.1 requirements.
+- [x] **REL-02**: Maintainer can enforce docs and CLI reliability verification checks as required CI gates.
 
 ## Future Requirements
 
@@ -76,8 +76,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLI-04 | Phase 31 | Complete |
 | CLI-05 | Phase 31 | Complete |
 | CLI-08 | Phase 31 | Complete |
-| REL-01 | Phase 32 | Pending |
-| REL-02 | Phase 32 | Pending |
+| REL-01 | Phase 32 | Complete |
+| REL-02 | Phase 32 | Complete |
 
 **Coverage:**
 - v3.1 requirements: 12 total
