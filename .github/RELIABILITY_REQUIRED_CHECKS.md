@@ -4,11 +4,12 @@ This record tracks required-check configuration for reliability enforcement on `
 
 ## Configuration Record
 
-- **Configuration location:** Ruleset
+- **Configuration location:** Branch protection (`repos/farce1/tinkerise/branches/main/protection`)
 - **Branch:** `main`
 - **Required check names:** `CI / Reliability Gates`
-- **Configured by:** `<your-github-handle>`
-- **Configured at (UTC):** `<current-utc-iso>`
+- **Configured by:** `farce1`
+- **Configured at (UTC):** `2026-02-24T11:44:33Z`
+- **Configuration evidence:** `gh api repos/farce1/tinkerise/branches/main/protection --jq '.required_status_checks.contexts'` returned `["CI / Reliability Gates"]`
 
 ## Verification Evidence
 
