@@ -1,8 +1,6 @@
 # Project State
-
 ## Project Reference
 See: .planning/PROJECT.md (updated 2026-02-23)
-
 **Core value:** One command to scaffold any project with any stack, delegating to official tools developers already trust
 **Current focus:** Milestone v3.1 Reliability Sweep (Phase 32 complete)
 
@@ -10,9 +8,9 @@ See: .planning/PROJECT.md (updated 2026-02-23)
 Phase: 32 (complete)
 Plan: Complete
 Status: Phase complete
-Last activity: 2026-02-24 -- Completed 32-02 reliability gate enforcement and required-check policy record
+Last activity: 2026-02-24 -- Completed 32-03 required-check evidence closure and branch-protection enforcement record
 
-Progress: [■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□□] 25% (8/32 plans complete)
+Progress: [■■■■■■■■■□□□□□□□□□□□□□□□□□□□□□□□] 28% (9/32 plans complete)
 
 ## Performance Metrics
 **v1.0 Summary:**
@@ -69,6 +67,7 @@ Progress: [■■■■■■■■□□□□□□□□□□□□□□□
 | Phase 31 P04 | 6 min | 3 tasks | 5 files |
 | Phase 32 P01 | 2 min | 2 tasks | 3 files |
 | Phase 32 P02 | 6 min | 3 tasks | 5 files |
+| Phase 32 P03 | 3 min | 2 tasks | 1 files |
 
 ## Accumulated Context
 ### Decisions
@@ -137,14 +136,15 @@ Recent decisions (v3.0):
 - [Phase 32]: Set stable Reliability Gates check naming for branch protection linkage
 - [Phase 32]: Gate release publish path on release-reliability-preflight checks
 - [Phase 32]: Track required-check policy in repo via RELIABILITY_REQUIRED_CHECKS.md
+- [Phase 32]: Configured required check enforcement via GitHub branch protection API for main to produce auditable REL-02 evidence.
+- [Phase 32]: Recorded failing and passing workflow-run proof URLs plus PR reference in RELIABILITY_REQUIRED_CHECKS.md to eliminate template placeholders.
 
 ### Pending Todos
 None.
-
 ### Blockers/Concerns
 None.
 
 ## Session Continuity
 Last session: 2026-02-24
-Stopped at: Completed 32-02-PLAN.md
+Stopped at: Completed 32-03-PLAN.md
 Resume file: None
