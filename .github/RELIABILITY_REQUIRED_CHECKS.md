@@ -13,8 +13,15 @@ This record tracks required-check configuration for reliability enforcement on `
 
 ## Verification Evidence
 
-- A pull request with a failing `CI / Reliability Gates` check is blocked from merge.
-- A pull request with a passing `CI / Reliability Gates` check is merge-eligible.
+- **Policy proof (required check configured on `main`):**
+  - Branch protection API: `https://api.github.com/repos/farce1/tinkerise/branches/main/protection`
+  - Required contexts response includes `CI / Reliability Gates`.
+- **Failing reliability evidence (blocks merge eligibility when required):**
+  - PR reference: `https://github.com/farce1/tinkerise/pull/12`
+  - Failing workflow run: `https://github.com/farce1/tinkerise/actions/runs/22309900770` (`conclusion: failure`)
+- **Passing reliability evidence (allows merge eligibility when required):**
+  - PR reference: `https://github.com/farce1/tinkerise/pull/12`
+  - Passing workflow run: `https://github.com/farce1/tinkerise/actions/runs/22310216264` (`conclusion: success`)
 
 ## Stability Note
 
