@@ -1,0 +1,65 @@
+{
+  "version": "3.1",
+  "requirements": [
+    {
+      "id": "DOCS-01",
+      "sourceType": "docs-smoke-report",
+      "minimumPassCondition": "At least one docs smoke check tagged DOCS-01 exists and every DOCS-01 check status is passed."
+    },
+    {
+      "id": "DOCS-08",
+      "sourceType": "docs-smoke-report",
+      "minimumPassCondition": "At least one docs smoke check tagged DOCS-08 exists and every DOCS-08 check status is passed."
+    },
+    {
+      "id": "DOCS-09",
+      "sourceType": "docs-smoke-report",
+      "minimumPassCondition": "At least one docs smoke check tagged DOCS-09 exists and every DOCS-09 check status is passed."
+    },
+    {
+      "id": "DOCS-13",
+      "sourceType": "closure-metadata",
+      "minimumPassCondition": "Docs smoke report summary is present and has zero failed checks."
+    },
+    {
+      "id": "CLI-01",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-01 exists and every CLI-01 scenario status is pass."
+    },
+    {
+      "id": "CLI-02",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-02 exists and every CLI-02 scenario status is pass."
+    },
+    {
+      "id": "CLI-03",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-03 exists and every CLI-03 scenario status is pass."
+    },
+    {
+      "id": "CLI-04",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-04 exists and every CLI-04 scenario status is pass."
+    },
+    {
+      "id": "CLI-05",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-05 exists and every CLI-05 scenario status is pass."
+    },
+    {
+      "id": "CLI-08",
+      "sourceType": "cli-conformance-report",
+      "minimumPassCondition": "At least one CLI scenario tagged CLI-08 exists and every CLI-08 scenario status is pass."
+    },
+    {
+      "id": "REL-01",
+      "sourceType": "closure-metadata",
+      "minimumPassCondition": "Closure index contains all 12 v3.1 requirements with mapped evidence and zero failed requirements."
+    },
+    {
+      "id": "REL-02",
+      "sourceType": "closure-metadata",
+      "minimumPassCondition": "Closure metadata confirms DOCS-13 and CLI-08 are passing, making docs and CLI reliability evidence gate-ready."
+    }
+  ]
+}
