@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 const CLI_PATH = resolve(import.meta.dirname, '../../dist/index.js')
 
-type HelpTarget = {
+interface HelpTarget {
   name: string
   args: string[]
 }

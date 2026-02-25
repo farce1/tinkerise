@@ -39,7 +39,7 @@ export function registerUpdateCommand(program: Command): void {
           break
       }
     })
-  .addHelpText('after', `
+    .addHelpText('after', `
 Examples:
   $ ${programName} update                     Auto-detect install method and update
   $ ${programName} update && ${programName} --version  Confirm upgrade completed successfully`)

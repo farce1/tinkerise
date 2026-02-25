@@ -15,7 +15,7 @@ function isDebugEnabled(): boolean {
 function toStableCode(input: string): string {
   return input
     .replace(/^commander\./, 'COMMANDER_')
-    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/[^a-z0-9]+/gi, '_')
     .replace(/^_+|_+$/g, '')
     .toUpperCase()
 }

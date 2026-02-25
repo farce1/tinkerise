@@ -1,3 +1,4 @@
+import { stripVTControlCharacters } from 'node:util'
 import { TinkeriseError } from '@tinkerise/core'
 import { CommanderError } from 'commander'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -10,7 +11,7 @@ class ExitSignal extends Error {
 }
 
 function stripAnsi(input: string): string {
-  return input.replace(/\u001B\[[0-9;]*m/g, '')
+  return stripVTControlCharacters(input)
 }
 
 describe('handleError contract', () => {
@@ -78,15 +79,15 @@ describe('handleError contract', () => {
       throw new ExitSignal(code)
     }) as never)
 
-    const commanderError = new CommanderError(1, 'commander.unknownCommand', "unknown command 'lst'")
+    const commanderError = new CommanderError(1, 'commander.unknownCommand', 'unknown command \'lst\'')
     expect(() => handleError(commanderError)).toThrowError(ExitSignal)
     expect(exitSpy).toHaveBeenCalledWith(1)
 
     const output = stripAnsi(logSpy.mock.calls.map(call => String(call[0])).join('\n'))
     expect(output).toContain('Error [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.')
-    expect(output).toContain("Cause: unknown command 'lst'")
+    expect(output).toContain('Cause: unknown command \'lst\'')
     expect(output).toContain('Next step: Did you mean')
-    expect(output).toContain("Try 'tinkerise list'.")
+    expect(output).toContain('Try \'tinkerise list\'.')
   })
 
   it('keeps unknown runtime errors graceful without stack by default', () => {

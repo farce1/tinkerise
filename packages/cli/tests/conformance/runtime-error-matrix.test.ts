@@ -1,5 +1,6 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
+import { stripVTControlCharacters } from 'node:util'
 import { execaNode } from 'execa'
 import { describe, expect, it } from 'vitest'
 
@@ -55,7 +56,7 @@ const REPORT_PATH = resolve(ARTIFACT_DIR, 'runtime-error-report.json')
 const HARNESS_PATH = resolve(ARTIFACT_DIR, 'runtime-error-harness.mjs')
 
 function stripAnsi(input: string): string {
-  return input.replace(/\u001B\[[0-9;]*m/g, '')
+  return stripVTControlCharacters(input)
 }
 
 function compactTranscript(input: string, maxLength = 220): string {

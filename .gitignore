@@ -20,3 +20,4 @@ tsup.config.bundled_*.mjs
 # GSD planning (local only)
 .planning
 .claude
+.opencode
