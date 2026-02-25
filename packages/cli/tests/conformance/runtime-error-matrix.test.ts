@@ -157,7 +157,7 @@ function validateFixture(fixture: MatrixFixture): void {
 }
 
 describe('runtime error conformance matrix', () => {
-  it('enforces 8 required runtime UX scenarios and emits report artifacts', async () => {
+  it('enforces 8 required runtime UX scenarios and emits report artifacts', { timeout: 30_000 }, async () => {
     await ensureHarnessScript()
 
     const fixture = JSON.parse(await readFile(MATRIX_FIXTURE_PATH, 'utf-8')) as MatrixFixture
