@@ -2,6 +2,10 @@
 
 ## 0.1.2
 
+### Patch Changes
+
+- Updated documentation URL
+
 ## 0.1.1
 
 ## 0.1.0
