@@ -1,7 +1,7 @@
 {
   "name": "@tinkerise/core",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core business logic for tinkerise — scaffolder registry, enhancement system, config, and presets",
   "license": "MIT",
   "homepage": "https://github.com/farce1/tinkerise",
@@ -39,7 +39,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tinkerise/shared": "^0.1.0",
+    "@tinkerise/shared": "^0.1.1",
     "ci-info": "^4.4.0",
     "deepmerge-ts": "^7.1.5",
     "diff": "^8.0.3",
