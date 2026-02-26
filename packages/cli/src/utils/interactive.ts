@@ -61,6 +61,12 @@ export function buildPreselectedOptions(cmd: Command): string[] {
   if (isOptionProvided(cmd, 'eslint') && cmd.opts().eslint) {
     preselected.push('eslint')
   }
+  if (isOptionProvided(cmd, 'biome') && cmd.opts().biome) {
+    preselected.push('biome')
+  }
+  if (isOptionProvided(cmd, 'appRouter') && cmd.opts().appRouter) {
+    preselected.push('app-router')
+  }
 
   // Deduplicate (in case both --ts and --typescript provided)
   return [...new Set(preselected)]

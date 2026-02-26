@@ -126,11 +126,11 @@ describe('selectT3Components', () => {
   })
 
   it('calls p.multiselect() when no preselected value', async () => {
-    mockMultiselect.mockResolvedValue(['trpc', 'appRouter'])
+    mockMultiselect.mockResolvedValue(['trpc', 'nextAuth'])
 
     const result = await selectT3Components()
 
-    expect(result).toEqual(['trpc', 'appRouter'])
+    expect(result).toEqual(['trpc', 'nextAuth'])
     expect(mockMultiselect).toHaveBeenCalledOnce()
   })
 

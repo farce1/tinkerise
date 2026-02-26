@@ -61,10 +61,19 @@ describe('web scaffolder registry', () => {
   it('next v15+ versionedFlags uses --disable-git instead of --skip-git (Pitfall 4)', () => {
     const entry = getScaffolder('next')!
     expect(entry.versionedFlags).toBeDefined()
-    const v15Flags = entry.versionedFlags![0]
+    // v16 entry comes first, v15 second (find() order matters)
+    const v15Flags = entry.versionedFlags!.find(vf => vf.versionRange === '>=15.0.0')!
     expect(v15Flags.versionRange).toBe('>=15.0.0')
     const noGitFlag = v15Flags.flags.find(f => f.unified === 'no-git')
     expect(noGitFlag?.native).toBe('--disable-git')
+  })
+
+  it('next v16+ versionedFlags includes --biome', () => {
+    const entry = getScaffolder('next')!
+    const v16Flags = entry.versionedFlags!.find(vf => vf.versionRange === '>=16.0.0')!
+    expect(v16Flags).toBeDefined()
+    const biomeFlag = v16Flags.flags.find(f => f.unified === 'biome')
+    expect(biomeFlag?.native).toBe('--biome')
   })
 
   it('turbo uses -m for package-manager flag', () => {

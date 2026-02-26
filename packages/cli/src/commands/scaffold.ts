@@ -38,13 +38,24 @@ export interface ScaffoldOptions {
   typescript?: boolean
   tailwind?: boolean
   eslint?: boolean
+  biome?: boolean
   /** Commander.js: --no-git sets git=false */
   git?: boolean
   /** Commander.js: --no-install sets install=false */
   install?: boolean
   packageManager?: string
-  /** Vite template name (bypasses template prompt) */
+  /** Template/starter name (Vite, Astro, Remix) */
   template?: string
+  /** Use src/ directory (Next.js) */
+  srcDir?: boolean
+  /** Import alias (e.g. @/*, ~/) */
+  importAlias?: string
+  /** Initialize with no starter content */
+  empty?: boolean
+  /** Overwrite existing directory */
+  overwrite?: boolean
+  /** Use App Router (Next.js, T3) */
+  appRouter?: boolean
   /** Apply a saved preset */
   preset?: string
   /** Show detailed output (config override messages) */
@@ -123,6 +134,22 @@ function buildUserFlags(
     flags.tailwind = true
   if (cliOptions.eslint)
     flags.eslint = true
+  if (cliOptions.biome)
+    flags.biome = true
+  if (cliOptions.srcDir)
+    flags['src-dir'] = true
+  if (cliOptions.empty)
+    flags.empty = true
+  if (cliOptions.overwrite)
+    flags.overwrite = true
+  if (cliOptions.appRouter)
+    flags['app-router'] = true
+
+  // String-value flags
+  if (cliOptions.importAlias)
+    flags['import-alias'] = cliOptions.importAlias
+  if (cliOptions.template)
+    flags.template = cliOptions.template
 
   // Add PM if not npm (npm is the default for upstream tools)
   if (pm !== 'npm') {
@@ -202,8 +229,9 @@ async function executePipeline(
     const base = await selectViteTemplate(cliOptions.template)
     const resolved = resolveViteTemplate(base, !!cliOptions.typescript)
     extraArgs = ['--template', resolved]
-    // Remove typescript from userFlags -- handled via template suffix
+    // Remove typescript and template from userFlags -- handled via template suffix / extraArgs
     delete userFlags.typescript
+    delete userFlags.template
   }
 
   if (framework === 't3') {

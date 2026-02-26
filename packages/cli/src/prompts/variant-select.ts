@@ -25,7 +25,7 @@ export const T3_COMPONENTS = [
   { value: 'prisma', label: 'Prisma' },
   { value: 'drizzle', label: 'Drizzle' },
   { value: 'nextAuth', label: 'NextAuth.js' },
-  { value: 'appRouter', label: 'App Router', hint: 'recommended' },
+  { value: 'betterAuth', label: 'Better Auth' },
 ] as const
 
 /**

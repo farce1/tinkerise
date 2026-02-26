@@ -13,12 +13,16 @@ export const FRAMEWORK_OPTIONS: Record<string, Array<{ value: string, label: str
     { value: 'typescript', label: 'TypeScript', hint: 'recommended' },
     { value: 'tailwind', label: 'Tailwind CSS' },
     { value: 'eslint', label: 'ESLint' },
+    { value: 'biome', label: 'Biome', hint: 'alternative to ESLint' },
   ],
   astro: [
     { value: 'tailwind', label: 'Tailwind CSS' },
   ],
   t3: [
     { value: 'tailwind', label: 'Tailwind CSS' },
+    { value: 'eslint', label: 'ESLint' },
+    { value: 'biome', label: 'Biome', hint: 'alternative to ESLint' },
+    { value: 'app-router', label: 'App Router', hint: 'recommended' },
   ],
   tanstack: [
     { value: 'tailwind', label: 'Tailwind CSS' },

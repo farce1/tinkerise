@@ -33,6 +33,51 @@ describe('web scaffolder flag resolution', () => {
       const result = resolveFlags({ entry, userFlags: { 'package-manager': 'bun' } })
       expect(result.args).toEqual(['--use-bun'])
     })
+
+    it('src-dir: true -> ["--src-dir"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'src-dir': true } })
+      expect(result.args).toEqual(['--src-dir'])
+    })
+
+    it('import-alias: "@/*" -> ["--import-alias", "@/*"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'import-alias': '@/*' } })
+      expect(result.args).toEqual(['--import-alias', '@/*'])
+    })
+
+    it('app-router: true -> ["--app"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'app-router': true } })
+      expect(result.args).toEqual(['--app'])
+    })
+
+    it('empty: true -> ["--empty"] with v15+', () => {
+      const result = resolveFlags({ entry, userFlags: { empty: true }, upstreamVersion: '15.1.0' })
+      expect(result.args).toEqual(['--empty'])
+      expect(result.versionUsed).toBe('>=15.0.0')
+    })
+
+    it('empty produces no args with v14 (not in base flags)', () => {
+      const result = resolveFlags({ entry, userFlags: { empty: true }, upstreamVersion: '14.2.0' })
+      expect(result.args).toEqual([])
+      expect(result.versionUsed).toBeNull()
+    })
+
+    it('biome: true -> ["--biome"] with v16+', () => {
+      const result = resolveFlags({ entry, userFlags: { biome: true }, upstreamVersion: '16.1.0' })
+      expect(result.args).toEqual(['--biome'])
+      expect(result.versionUsed).toBe('>=16.0.0')
+    })
+
+    it('v16 selects >=16.0.0 flags before >=15.0.0', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-git': true }, upstreamVersion: '16.0.0' })
+      expect(result.args).toEqual(['--disable-git'])
+      expect(result.versionUsed).toBe('>=16.0.0')
+    })
+
+    it('v15 selects >=15.0.0 flags (not >=16.0.0)', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-git': true }, upstreamVersion: '15.3.0' })
+      expect(result.args).toEqual(['--disable-git'])
+      expect(result.versionUsed).toBe('>=15.0.0')
+    })
   })
 
   describe('vite', () => {
@@ -66,6 +111,11 @@ describe('web scaffolder flag resolution', () => {
     it('package-manager throws FlagNotApplicableError', () => {
       expect(() => validateFlagApplicability(entry, { 'package-manager': 'pnpm' }))
         .toThrow(FlagNotApplicableError)
+    })
+
+    it('overwrite: true -> ["--overwrite"]', () => {
+      const result = resolveFlags({ entry, userFlags: { overwrite: true } })
+      expect(result.args).toEqual(['--overwrite'])
     })
   })
 
@@ -101,6 +151,11 @@ describe('web scaffolder flag resolution', () => {
       expect(() => validateFlagApplicability(entry, { 'package-manager': 'pnpm' }))
         .toThrow(FlagNotApplicableError)
     })
+
+    it('template: "blog" -> ["--template", "blog"]', () => {
+      const result = resolveFlags({ entry, userFlags: { template: 'blog' } })
+      expect(result.args).toEqual(['--template', 'blog'])
+    })
   })
 
   describe('t3', () => {
@@ -116,9 +171,24 @@ describe('web scaffolder flag resolution', () => {
       expect(result.args).toEqual(['--tailwind'])
     })
 
-    it('eslint: true -> [] (silent accept, always included)', () => {
+    it('eslint: true -> ["--eslint"]', () => {
       const result = resolveFlags({ entry, userFlags: { eslint: true } })
-      expect(result.args).toEqual([])
+      expect(result.args).toEqual(['--eslint'])
+    })
+
+    it('biome: true -> ["--biome"]', () => {
+      const result = resolveFlags({ entry, userFlags: { biome: true } })
+      expect(result.args).toEqual(['--biome'])
+    })
+
+    it('import-alias: "~/" -> ["--import-alias", "~/"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'import-alias': '~/' } })
+      expect(result.args).toEqual(['--import-alias', '~/'])
+    })
+
+    it('app-router: true -> ["--appRouter"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'app-router': true } })
+      expect(result.args).toEqual(['--appRouter'])
     })
 
     it('no-git: true -> ["--noGit"] (camelCase, Pitfall 3)', () => {
@@ -165,9 +235,19 @@ describe('web scaffolder flag resolution', () => {
         .toThrow(FlagNotApplicableError)
     })
 
-    it('package-manager throws FlagNotApplicableError', () => {
-      expect(() => validateFlagApplicability(entry, { 'package-manager': 'pnpm' }))
-        .toThrow(FlagNotApplicableError)
+    it('package-manager: "pnpm" -> ["--package-manager", "pnpm"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'package-manager': 'pnpm' } })
+      expect(result.args).toEqual(['--package-manager', 'pnpm'])
+    })
+
+    it('template: "my-template" -> ["--template", "my-template"]', () => {
+      const result = resolveFlags({ entry, userFlags: { template: 'my-template' } })
+      expect(result.args).toEqual(['--template', 'my-template'])
+    })
+
+    it('overwrite: true -> ["--overwrite"]', () => {
+      const result = resolveFlags({ entry, userFlags: { overwrite: true } })
+      expect(result.args).toEqual(['--overwrite'])
     })
   })
 
@@ -189,18 +269,28 @@ describe('web scaffolder flag resolution', () => {
       expect(result.args).toEqual(['--package-manager', 'pnpm'])
     })
 
+    it('no-git: true -> ["--no-git"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-git': true } })
+      expect(result.args).toEqual(['--no-git'])
+    })
+
+    it('no-install: true -> ["--no-install"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-install': true } })
+      expect(result.args).toEqual(['--no-install'])
+    })
+
+    it('empty: true -> ["--no-examples"]', () => {
+      const result = resolveFlags({ entry, userFlags: { empty: true } })
+      expect(result.args).toEqual(['--no-examples'])
+    })
+
+    it('overwrite: true -> ["--force"]', () => {
+      const result = resolveFlags({ entry, userFlags: { overwrite: true } })
+      expect(result.args).toEqual(['--force'])
+    })
+
     it('eslint throws FlagNotApplicableError', () => {
       expect(() => validateFlagApplicability(entry, { eslint: true }))
-        .toThrow(FlagNotApplicableError)
-    })
-
-    it('no-git throws FlagNotApplicableError', () => {
-      expect(() => validateFlagApplicability(entry, { 'no-git': true }))
-        .toThrow(FlagNotApplicableError)
-    })
-
-    it('no-install throws FlagNotApplicableError', () => {
-      expect(() => validateFlagApplicability(entry, { 'no-install': true }))
         .toThrow(FlagNotApplicableError)
     })
   })
@@ -218,6 +308,11 @@ describe('web scaffolder flag resolution', () => {
       expect(result.args).toEqual(['-m', 'pnpm'])
     })
 
+    it('no-git: true -> ["--no-git"]', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-git': true } })
+      expect(result.args).toEqual(['--no-git'])
+    })
+
     it('typescript throws FlagNotApplicableError', () => {
       expect(() => validateFlagApplicability(entry, { typescript: true }))
         .toThrow(FlagNotApplicableError)
@@ -230,11 +325,6 @@ describe('web scaffolder flag resolution', () => {
 
     it('eslint throws FlagNotApplicableError', () => {
       expect(() => validateFlagApplicability(entry, { eslint: true }))
-        .toThrow(FlagNotApplicableError)
-    })
-
-    it('no-git throws FlagNotApplicableError', () => {
-      expect(() => validateFlagApplicability(entry, { 'no-git': true }))
         .toThrow(FlagNotApplicableError)
     })
   })

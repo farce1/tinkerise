@@ -21,8 +21,16 @@ function nodePrerequisite(versionRange: string) {
   }
 }
 
+/** Shared package-manager valueMap for tools using --use-{pm} prefix style */
+const pmValueMap = { npm: 'npm', pnpm: 'pnpm', yarn: 'yarn', bun: 'bun' }
+
 /**
  * Next.js scaffolder — delegates to create-next-app.
+ *
+ * Version-aware flags:
+ * - v14 (base): --typescript, --skip-git
+ * - v15+: --ts, --disable-git, --empty
+ * - v16+: --biome
  */
 export const nextjs = defineScaffolder({
   name: 'next',
@@ -37,10 +45,31 @@ export const nextjs = defineScaffolder({
     { unified: 'eslint', native: '--eslint' },
     { unified: 'no-git', native: '--skip-git' },
     { unified: 'no-install', native: '--skip-install' },
-    { unified: 'package-manager', native: '--use-', valueMap: { npm: 'npm', pnpm: 'pnpm', yarn: 'yarn', bun: 'bun' } },
+    { unified: 'package-manager', native: '--use-', valueMap: pmValueMap },
+    { unified: 'src-dir', native: '--src-dir' },
+    { unified: 'import-alias', native: '--import-alias' },
+    { unified: 'app-router', native: '--app' },
   ],
   versionedFlags: [
     {
+      // v16+: adds --biome, keeps all v15 flags
+      versionRange: '>=16.0.0',
+      flags: [
+        { unified: 'typescript', native: '--ts' },
+        { unified: 'tailwind', native: '--tailwind' },
+        { unified: 'eslint', native: '--eslint' },
+        { unified: 'biome', native: '--biome' },
+        { unified: 'no-git', native: '--disable-git' },
+        { unified: 'no-install', native: '--skip-install' },
+        { unified: 'package-manager', native: '--use-', valueMap: pmValueMap },
+        { unified: 'src-dir', native: '--src-dir' },
+        { unified: 'import-alias', native: '--import-alias' },
+        { unified: 'app-router', native: '--app' },
+        { unified: 'empty', native: '--empty' },
+      ],
+    },
+    {
+      // v15+: --ts replaces --typescript, --disable-git replaces --skip-git, adds --empty
       versionRange: '>=15.0.0',
       flags: [
         { unified: 'typescript', native: '--ts' },
@@ -48,7 +77,11 @@ export const nextjs = defineScaffolder({
         { unified: 'eslint', native: '--eslint' },
         { unified: 'no-git', native: '--disable-git' },
         { unified: 'no-install', native: '--skip-install' },
-        { unified: 'package-manager', native: '--use-', valueMap: { npm: 'npm', pnpm: 'pnpm', yarn: 'yarn', bun: 'bun' } },
+        { unified: 'package-manager', native: '--use-', valueMap: pmValueMap },
+        { unified: 'src-dir', native: '--src-dir' },
+        { unified: 'import-alias', native: '--import-alias' },
+        { unified: 'app-router', native: '--app' },
+        { unified: 'empty', native: '--empty' },
       ],
     },
   ],
@@ -72,6 +105,7 @@ export const vite = defineScaffolder({
   prerequisites: [nodePrerequisite('>=18.0.0')],
   flags: [
     { unified: 'typescript', native: '' },
+    { unified: 'overwrite', native: '--overwrite' },
   ],
   passthroughArgs: true,
 })
@@ -95,6 +129,7 @@ export const astro = defineScaffolder({
     { unified: 'tailwind', native: '--add tailwindcss' },
     { unified: 'no-git', native: '--no-git' },
     { unified: 'no-install', native: '--no-install' },
+    { unified: 'template', native: '--template' },
   ],
   passthroughArgs: true,
 })
@@ -102,8 +137,8 @@ export const astro = defineScaffolder({
 /**
  * T3 scaffolder — delegates to create-t3-app.
  *
- * T3 is TypeScript-only and always includes ESLint.
- * Note camelCase native flags: --noGit, --noInstall (Pitfall 3).
+ * T3 is TypeScript-only. Supports ESLint or Biome for linting.
+ * Note camelCase native flags: --noGit, --noInstall, --appRouter (Pitfall 3).
  */
 export const t3 = defineScaffolder({
   name: 't3',
@@ -115,9 +150,12 @@ export const t3 = defineScaffolder({
   flags: [
     { unified: 'typescript', native: '' },
     { unified: 'tailwind', native: '--tailwind' },
-    { unified: 'eslint', native: '' },
+    { unified: 'eslint', native: '--eslint' },
+    { unified: 'biome', native: '--biome' },
     { unified: 'no-git', native: '--noGit' },
     { unified: 'no-install', native: '--noInstall' },
+    { unified: 'import-alias', native: '--import-alias' },
+    { unified: 'app-router', native: '--appRouter' },
   ],
   passthroughArgs: true,
 })
@@ -140,6 +178,9 @@ export const remix = defineScaffolder({
     { unified: 'typescript', native: '' },
     { unified: 'no-git', native: '--no-git-init' },
     { unified: 'no-install', native: '--no-install' },
+    { unified: 'package-manager', native: '--package-manager' },
+    { unified: 'template', native: '--template' },
+    { unified: 'overwrite', native: '--overwrite' },
   ],
   passthroughArgs: true,
 })
@@ -163,6 +204,10 @@ export const tanstack = defineScaffolder({
     { unified: 'typescript', native: '' },
     { unified: 'tailwind', native: '--tailwind' },
     { unified: 'package-manager', native: '--package-manager' },
+    { unified: 'no-git', native: '--no-git' },
+    { unified: 'no-install', native: '--no-install' },
+    { unified: 'empty', native: '--no-examples' },
+    { unified: 'overwrite', native: '--force' },
   ],
   passthroughArgs: true,
 })
@@ -183,6 +228,7 @@ export const turbo = defineScaffolder({
   flags: [
     { unified: 'no-install', native: '--skip-install' },
     { unified: 'package-manager', native: '-m' },
+    { unified: 'no-git', native: '--no-git' },
   ],
   passthroughArgs: true,
 })

@@ -101,15 +101,16 @@ describe('selectFrameworkOptions', () => {
     expect(result).toEqual(['typescript', 'eslint'])
   })
 
-  it('fRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint', () => {
+  it('fRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint, Biome', () => {
     const nextOptions = FRAMEWORK_OPTIONS.next
     expect(nextOptions).toBeDefined()
-    expect(nextOptions!.length).toBe(3)
+    expect(nextOptions!.length).toBe(4)
 
     const values = nextOptions!.map(o => o.value)
     expect(values).toContain('typescript')
     expect(values).toContain('tailwind')
     expect(values).toContain('eslint')
+    expect(values).toContain('biome')
   })
 
   it('typeScript option has hint "recommended"', () => {
