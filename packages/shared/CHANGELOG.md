@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- Updated documentation URL
+- Add README.md to all published packages
 
 ## 0.1.1
 
