@@ -6,7 +6,7 @@ One command to scaffold any project with any stack.
 
 Wrap official framework scaffolders from one consistent CLI, then keep moving with docs and guided add-ons.
 
-![Terminal demo of tinkerise scaffolding a Next.js app with TypeScript, Tailwind, and ESLint](apps/docs/public/media/demos/scaffold-next-golden-path.gif)
+![tinkerise demo](demos/demo.gif)
 
 ## Start in 30 seconds
 
