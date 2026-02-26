@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- [`d6523fb`](https://github.com/farce1/tinkerise/commit/d6523fb2300fc93e6b08ba8f0150151d4e761bd2) Thanks [@farce1](https://github.com/farce1)! - Fix documentation URL in README to point to GitHub Pages
+- Fix documentation URL in README to point to GitHub Pages
 
 - Updated dependencies []:
   - @tinkerise/cli@0.1.2
