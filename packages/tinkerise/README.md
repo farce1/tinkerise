@@ -121,7 +121,7 @@ tinkerise web next my-app --preset my-stack
 
 ## Documentation
 
-Full docs at [tinkerise.dev](https://tinkerise.dev)
+Full docs at [farce1.github.io/tinkerise](https://farce1.github.io/tinkerise/)
 
 ## License
 
