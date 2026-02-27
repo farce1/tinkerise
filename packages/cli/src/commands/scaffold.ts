@@ -56,6 +56,12 @@ export interface ScaffoldOptions {
   overwrite?: boolean
   /** Use App Router (Next.js, T3) */
   appRouter?: boolean
+  /** Enable React Compiler (Next.js v16+) */
+  reactCompiler?: boolean
+  /** Use Turbopack bundler (Next.js v16+) */
+  turbopack?: boolean
+  /** Headless API project (Next.js v16+) */
+  api?: boolean
   /** Apply a saved preset */
   preset?: string
   /** Show detailed output (config override messages) */
@@ -144,6 +150,12 @@ function buildUserFlags(
     flags.overwrite = true
   if (cliOptions.appRouter)
     flags['app-router'] = true
+  if (cliOptions.reactCompiler)
+    flags['react-compiler'] = true
+  if (cliOptions.turbopack)
+    flags.turbopack = true
+  if (cliOptions.api)
+    flags.api = true
 
   // String-value flags
   if (cliOptions.importAlias)
@@ -232,6 +244,11 @@ async function executePipeline(
     // Remove typescript and template from userFlags -- handled via template suffix / extraArgs
     delete userFlags.typescript
     delete userFlags.template
+  }
+
+  if (framework === 'next') {
+    // Suppress interactive prompts: --yes uses defaults for unprovided options
+    extraArgs.push('--yes')
   }
 
   if (framework === 't3') {

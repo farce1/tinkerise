@@ -73,6 +73,9 @@ program
   .option('--empty', 'Initialize with no starter content')
   .option('--overwrite', 'Overwrite existing directory')
   .option('--app-router', 'Use App Router')
+  .option('--react-compiler', 'Enable React Compiler')
+  .option('--turbopack', 'Use Turbopack bundler')
+  .option('--api', 'Headless API project')
   .option('--preset <name>', 'Apply a saved preset')
   .option('--verbose', 'Show detailed output')
 

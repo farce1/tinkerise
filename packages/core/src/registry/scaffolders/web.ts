@@ -52,7 +52,7 @@ export const nextjs = defineScaffolder({
   ],
   versionedFlags: [
     {
-      // v16+: adds --biome, keeps all v15 flags
+      // v16+: adds --biome, --react-compiler, --turbopack, --api, keeps all v15 flags
       versionRange: '>=16.0.0',
       flags: [
         { unified: 'typescript', native: '--ts' },
@@ -66,6 +66,9 @@ export const nextjs = defineScaffolder({
         { unified: 'import-alias', native: '--import-alias' },
         { unified: 'app-router', native: '--app' },
         { unified: 'empty', native: '--empty' },
+        { unified: 'react-compiler', native: '--react-compiler' },
+        { unified: 'turbopack', native: '--turbopack' },
+        { unified: 'api', native: '--api' },
       ],
     },
     {

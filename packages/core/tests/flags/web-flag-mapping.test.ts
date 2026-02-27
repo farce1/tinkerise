@@ -78,6 +78,24 @@ describe('web scaffolder flag resolution', () => {
       expect(result.args).toEqual(['--disable-git'])
       expect(result.versionUsed).toBe('>=15.0.0')
     })
+
+    it('react-compiler: true -> ["--react-compiler"] with v16+', () => {
+      const result = resolveFlags({ entry, userFlags: { 'react-compiler': true }, upstreamVersion: '16.1.0' })
+      expect(result.args).toEqual(['--react-compiler'])
+      expect(result.versionUsed).toBe('>=16.0.0')
+    })
+
+    it('turbopack: true -> ["--turbopack"] with v16+', () => {
+      const result = resolveFlags({ entry, userFlags: { turbopack: true }, upstreamVersion: '16.1.0' })
+      expect(result.args).toEqual(['--turbopack'])
+      expect(result.versionUsed).toBe('>=16.0.0')
+    })
+
+    it('api: true -> ["--api"] with v16+', () => {
+      const result = resolveFlags({ entry, userFlags: { api: true }, upstreamVersion: '16.1.0' })
+      expect(result.args).toEqual(['--api'])
+      expect(result.versionUsed).toBe('>=16.0.0')
+    })
   })
 
   describe('vite', () => {
