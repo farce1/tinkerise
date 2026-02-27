@@ -50,6 +50,16 @@ For the full guide catalog and recipes, visit [https://farce1.github.io/tinkeris
 - `packages/shared`: schemas, constants, and shared types
 - `packages/tinkerise`: thin npm wrapper that re-exports the scoped CLI package
 
+## Agent Skill
+
+tinkerise is available as an [agent skill](https://skills.sh) for AI coding agents (Claude Code, Cursor, GitHub Copilot, Gemini, and others):
+
+```bash
+npx skills add farce1/tinkerise
+```
+
+This gives your AI agent procedural knowledge of all 14 scaffolders, 11 enhancements, unified flags, presets, and configuration — so it can scaffold projects on your behalf.
+
 ## Contributing
 
 Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), then run the standard Bun scripts from the repository root.

@@ -1,5 +1,11 @@
 # @tinkerise/shared
 
+## 0.2.1
+
+### Patch Changes
+
+- Add agent skill for skills.sh integration
+
 ## 0.2.0
 
 ### Minor Changes

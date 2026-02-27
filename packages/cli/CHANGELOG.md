@@ -1,5 +1,15 @@
 # @tinkerise/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- Add agent skill for skills.sh integration
+
+- Updated dependencies []:
+  - @tinkerise/core@0.2.1
+  - @tinkerise/shared@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
