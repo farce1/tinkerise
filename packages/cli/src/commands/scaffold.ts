@@ -247,7 +247,7 @@ async function executePipeline(
   }
 
   // Suppress interactive prompts for frameworks that support it
-  if (framework === 'next' || framework === 'astro' || framework === 'remix') {
+  if (framework === 'next' || framework === 'astro' || framework === 'remix' || framework === 'rn') {
     extraArgs.push('--yes')
   }
   if (framework === 'vite') {
