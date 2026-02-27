@@ -34,6 +34,7 @@ Use `astro` when you want:
 | `--tailwind` | `--add tailwindcss` | Adds Tailwind integration during scaffold |
 | `--no-git` | `--no-git` | Skips git initialization |
 | `--no-install` | `--no-install` | Skips dependency install |
+| `--template <template>` | `--template` | Astro starter template (e.g. `starlight`) |
 
 ## Framework-specific behavior
 
@@ -41,10 +42,10 @@ Use `astro` when you want:
 - Astro TypeScript mode is effectively always on in current versions.
 - Pass-through args are enabled.
 
-Native pass-through example:
+Example with template:
 
 ```bash
-tinkerise web astro my-astro-site -- --template starlight
+tinkerise web astro my-astro-site --template starlight
 ```
 
 ## Generated output

@@ -33,6 +33,9 @@ Use `remix` when you want:
 | `--typescript` | _(none)_ | React Router v7 defaults to TypeScript |
 | `--no-git` | `--no-git-init` | Skips git initialization |
 | `--no-install` | `--no-install` | Skips dependency install |
+| `--package-manager <pm>` | `--package-manager` | Supports `npm`, `pnpm`, `yarn`, `bun` |
+| `--template <template>` | `--template` | Starter template name |
+| `--overwrite` | `--overwrite` | Overwrite existing directory |
 
 ## Framework-specific behavior
 
@@ -40,10 +43,10 @@ Use `remix` when you want:
 - The registry intentionally uses this command instead of legacy `create-remix`.
 - Pass-through args are enabled.
 
-Native pass-through example:
+Example with template:
 
 ```bash
-tinkerise web remix my-remix-app -- --template remix
+tinkerise web remix my-remix-app --template remix
 ```
 
 ## Generated output

@@ -33,20 +33,25 @@ Use `next` when you want:
 | `--typescript` | `--typescript` or `--ts` | Mapping varies by create-next-app version |
 | `--tailwind` | `--tailwind` | Adds Tailwind setup in scaffold |
 | `--eslint` | `--eslint` | Enables linting setup in scaffold |
+| `--biome` | `--biome` | Use Biome linter/formatter (v16+) |
 | `--no-git` | `--skip-git` or `--disable-git` | Mapping varies by create-next-app version |
 | `--no-install` | `--skip-install` | Skips dependency install |
 | `--package-manager <pm>` | `--use-<pm>` | Supports `npm`, `pnpm`, `yarn`, `bun` |
+| `--src-dir` | `--src-dir` | Use `src/` directory |
+| `--import-alias <alias>` | `--import-alias` | Import alias (e.g. `@/*`, `~/`) |
+| `--empty` | `--empty` | Initialize with no starter content (v15+) |
+| `--app-router` | `--app` | Use App Router |
 
 ## Framework-specific behavior
 
 - tinkerise delegates to `create-next-app`.
-- Registry version mappings handle create-next-app flag changes automatically.
+- Registry version mappings handle create-next-app flag changes automatically (v14, v15+, v16+).
 - Pass-through args are enabled, so native flags still work.
 
 Native pass-through example:
 
 ```bash
-tinkerise web next my-next-app -- --app --src-dir
+tinkerise web next my-next-app -- --turbopack
 ```
 
 ## Generated output

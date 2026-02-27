@@ -32,20 +32,23 @@ Use `t3` when you want:
 | --- | --- | --- |
 | `--typescript` | _(none)_ | T3 is TypeScript-first by default |
 | `--tailwind` | `--tailwind` | Enables Tailwind in scaffold setup |
-| `--eslint` | _(none)_ | T3 includes ESLint behavior by default |
+| `--eslint` | `--eslint` | Enables ESLint in scaffold |
+| `--biome` | `--biome` | Use Biome linter/formatter |
 | `--no-git` | `--noGit` | CamelCase native flag |
 | `--no-install` | `--noInstall` | CamelCase native flag |
+| `--import-alias <alias>` | `--import-alias` | Import alias (e.g. `@/*`, `~/`) |
+| `--app-router` | `--appRouter` | Use App Router |
 
 ## Framework-specific behavior
 
 - tinkerise delegates to `create-t3-app`.
-- T3 uses camelCase native flags for no-git/no-install.
+- T3 uses camelCase native flags for no-git/no-install/appRouter.
 - Pass-through args are enabled.
 
 Native pass-through example:
 
 ```bash
-tinkerise web t3 my-t3-app -- --noAppRouter
+tinkerise web t3 my-t3-app -- --drizzle
 ```
 
 ## Generated output

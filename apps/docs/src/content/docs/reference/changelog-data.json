@@ -1,1 +1,154 @@
-[]
+[
+  {
+    "version": "tinkerise@0.2.0",
+    "publishedAt": "2026-02-26T22:32:43Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/tinkerise%400.2.0",
+    "sections": {
+      "Features": [
+        "Add new unified flags for web scaffolders"
+      ],
+      "Fixes": [
+        "Updated dependencies \\[]:",
+        "@tinkerise/cli@0.2.0"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "@tinkerise/core@0.2.0",
+    "publishedAt": "2026-02-26T22:32:40Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/core%400.2.0",
+    "sections": {
+      "Features": [
+        "Add new unified flags for web scaffolders"
+      ],
+      "Fixes": [
+        "Updated dependencies \\[]:",
+        "@tinkerise/shared@0.2.0"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "@tinkerise/shared@0.2.0",
+    "publishedAt": "2026-02-26T22:32:37Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/shared%400.2.0",
+    "sections": {
+      "Features": [
+        "Add new unified flags for web scaffolders"
+      ],
+      "Fixes": [],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "@tinkerise/cli@0.2.0",
+    "publishedAt": "2026-02-26T22:32:34Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/cli%400.2.0",
+    "sections": {
+      "Features": [
+        "Add new unified flags for web scaffolders"
+      ],
+      "Fixes": [
+        "Updated dependencies \\[]:",
+        "@tinkerise/core@0.2.0",
+        "@tinkerise/shared@0.2.0"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "v0.2.0",
+    "publishedAt": "2026-02-26T22:31:14Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/v0.2.0",
+    "sections": {
+      "Features": [
+        "`--src-dir` — Use `src/` directory (Next.js)",
+        "`--import-alias <alias>` — Custom import alias, e.g. `@/*`, `~/` (Next.js, T3)",
+        "`--biome` — Use Biome linter/formatter (Next.js v16+, T3)",
+        "`--empty` — Initialize with no starter content (Next.js v15+, TanStack)",
+        "`--overwrite` — Overwrite existing directory (Vite, Remix, TanStack)",
+        "`--app-router` — Use App Router (Next.js, T3)",
+        "`--template <name>` — Project template/starter (Astro, Remix; Vite already supported)",
+        "Added `>=16.0.0` versioned flag set with `--biome` support",
+        "Added **Better Auth** to component selection"
+      ],
+      "Fixes": [
+        "**TanStack**: `--no-git` and `--no-install` now supported",
+        "**Remix**: `--package-manager` now supported",
+        "**Turborepo**: `--no-git` now supported"
+      ],
+      "Docs": [
+        "None"
+      ],
+      "Maintenance": [
+        "`--empty` available for v15+",
+        "ESLint/Biome now explicit linter choices (no longer always-ESLint)",
+        "**App Router** moved from component picker to options multiselect"
+      ]
+    }
+  },
+  {
+    "version": "@tinkerise/core@0.1.2",
+    "publishedAt": "2026-02-26T12:53:12Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/core%400.1.2",
+    "sections": {
+      "Features": [],
+      "Fixes": [
+        "Updated dependencies \\[]:",
+        "@tinkerise/shared@0.1.2"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "@tinkerise/shared@0.1.2",
+    "publishedAt": "2026-02-26T12:53:09Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/shared%400.1.2",
+    "sections": {
+      "Features": [],
+      "Fixes": [
+        "Add README.md to all published packages"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "tinkerise@0.1.2",
+    "publishedAt": "2026-02-26T12:53:06Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/tinkerise%400.1.2",
+    "sections": {
+      "Features": [
+        "None"
+      ],
+      "Fixes": [
+        "Fix documentation URL in README to point to GitHub Pages",
+        "Updated dependencies \\[]:",
+        "@tinkerise/cli@0.1.2"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
+    "version": "@tinkerise/cli@0.1.2",
+    "publishedAt": "2026-02-26T12:53:03Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/%40tinkerise/cli%400.1.2",
+    "sections": {
+      "Features": [],
+      "Fixes": [
+        "Updated dependencies \\[]:",
+        "@tinkerise/core@0.1.2",
+        "@tinkerise/shared@0.1.2"
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  }
+]

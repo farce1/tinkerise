@@ -26,10 +26,16 @@ Options:
   --ts                             Use TypeScript (alias)
   --tailwind                       Add Tailwind CSS
   --eslint                         Add ESLint
+  --biome                          Use Biome linter/formatter
   --no-git                         Skip git initialization
   --no-install                     Skip dependency installation
   --package-manager <pm>           Package manager to use (npm, pnpm, yarn, bun)
-  --template <template>            Template to use (for Vite)
+  --template <template>            Project template or starter name
+  --src-dir                        Use src/ directory
+  --import-alias <alias>           Import alias (e.g. @/*, ~/)
+  --empty                          Initialize with no starter content
+  --overwrite                      Overwrite existing directory
+  --app-router                     Use App Router
   --preset <name>                  Apply a saved preset
   --verbose                        Show detailed output
   -h, --help                       display help for command
@@ -148,6 +154,7 @@ Options:
 
 Examples:
   $ tinkerise doctor                     Check all system tools and versions
+  $ tinkerise doctor | grep -i missing   Quickly surface missing tools
 ```
 ## `config` command
 
@@ -168,6 +175,10 @@ Commands:
   set [options] <key> <value>  Set a configuration value
   init [options]               Interactively create configuration
   help [command]               display help for command
+
+Examples:
+  $ tinkerise config list                     Show all current configuration values
+  $ tinkerise config set packageManager pnpm  Set and persist a default package manager
 ```
 ## `preset` command
 
@@ -187,6 +198,10 @@ Commands:
   list                   Show available presets (local + npm)
   delete <name>          Remove a local preset
   help [command]         display help for command
+
+Examples:
+  $ tinkerise preset list                Discover local and npm presets
+  $ tinkerise preset use team-defaults   Apply an existing preset to the current project
 ```
 ## `mcp` command
 
@@ -266,4 +281,5 @@ Options:
 
 Examples:
   $ tinkerise update                     Auto-detect install method and update
+  $ tinkerise update && tinkerise --version  Confirm upgrade completed successfully
 ```
