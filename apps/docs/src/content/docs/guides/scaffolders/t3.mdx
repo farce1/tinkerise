@@ -42,6 +42,7 @@ Use `t3` when you want:
 ## Framework-specific behavior
 
 - tinkerise delegates to `create-t3-app`.
+- `--CI` is auto-injected when flags are present so all scaffolding runs non-interactively.
 - T3 uses camelCase native flags for no-git/no-install/appRouter.
 - Pass-through args are enabled.
 

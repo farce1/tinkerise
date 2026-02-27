@@ -41,18 +41,16 @@ Use `next` when you want:
 | `--import-alias <alias>` | `--import-alias` | Import alias (e.g. `@/*`, `~/`) |
 | `--empty` | `--empty` | Initialize with no starter content (v15+) |
 | `--app-router` | `--app` | Use App Router |
+| `--react-compiler` | `--react-compiler` | Enable React Compiler (v16+) |
+| `--turbopack` | `--turbopack` | Use Turbopack bundler (v16+) |
+| `--api` | `--api` | Headless API project (v16+) |
 
 ## Framework-specific behavior
 
 - tinkerise delegates to `create-next-app`.
+- `--yes` is auto-injected so all scaffolding runs non-interactively. Options not explicitly passed use create-next-app defaults.
 - Registry version mappings handle create-next-app flag changes automatically (v14, v15+, v16+).
 - Pass-through args are enabled, so native flags still work.
-
-Native pass-through example:
-
-```bash
-tinkerise web next my-next-app -- --turbopack
-```
 
 ## Generated output
 
