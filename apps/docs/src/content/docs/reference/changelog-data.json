@@ -1,5 +1,19 @@
 [
   {
+    "version": "v0.2.1",
+    "publishedAt": "2026-02-27T17:46:20Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/v0.2.1",
+    "sections": {
+      "Features": [
+        "**Agent skill for skills.sh** — Added `skills/tinkerise/SKILL.md` so AI coding agents (Claude Code, Cursor, GitHub Copilot, Gemini, etc.) can scaffold projects using tinkerise. Install with:",
+        "Updated README with agent skill installation instructions"
+      ],
+      "Fixes": [],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
     "version": "tinkerise@0.2.0",
     "publishedAt": "2026-02-26T22:32:43Z",
     "url": "https://github.com/farce1/tinkerise/releases/tag/tinkerise%400.2.0",

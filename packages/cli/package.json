@@ -1,7 +1,7 @@
 {
   "name": "@tinkerise/cli",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CLI entry point for tinkerise — commands, prompts, and user-facing output",
   "license": "MIT",
   "homepage": "https://github.com/farce1/tinkerise",
@@ -45,8 +45,8 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.0.1",
-    "@tinkerise/core": "^0.2.1",
-    "@tinkerise/shared": "^0.2.1",
+    "@tinkerise/core": "^0.2.2",
+    "@tinkerise/shared": "^0.2.2",
     "commander": "^13.0",
     "picocolors": "^1.1",
     "semver": "^7.7.4"

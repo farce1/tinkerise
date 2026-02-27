@@ -1,5 +1,14 @@
 # @tinkerise/core
 
+## 0.2.2
+
+### Patch Changes
+
+- [`f6cdf99`](https://github.com/farce1/tinkerise/commit/f6cdf995c668c9b3fa56f3f3658c7a67705eb703) Thanks [@farce1](https://github.com/farce1)! - Make all scaffolders fully non-interactive by auto-injecting prompt suppression flags. Adds `--yes` for Next.js, Astro, Remix, and Expo; `--no-interactive` for Vite. Also adds Next.js v16 flag mappings for `--react-compiler`, `--turbopack`, and `--api`.
+
+- Updated dependencies []:
+  - @tinkerise/shared@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes
