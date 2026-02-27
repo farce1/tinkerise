@@ -166,7 +166,7 @@ describe('variant prompt wiring', () => {
       expect(mockResolveViteTemplate).toHaveBeenCalledWith('react', true)
       expect(mockExecuteScaffolder).toHaveBeenCalledWith(
         expect.objectContaining({
-          extraArgs: ['--template', 'react-ts'],
+          extraArgs: ['--template', 'react-ts', '--no-interactive'],
         }),
       )
     })

@@ -246,9 +246,12 @@ async function executePipeline(
     delete userFlags.template
   }
 
-  if (framework === 'next') {
-    // Suppress interactive prompts: --yes uses defaults for unprovided options
+  // Suppress interactive prompts for frameworks that support it
+  if (framework === 'next' || framework === 'astro' || framework === 'remix') {
     extraArgs.push('--yes')
+  }
+  if (framework === 'vite') {
+    extraArgs.push('--no-interactive')
   }
 
   if (framework === 't3') {
