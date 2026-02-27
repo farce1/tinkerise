@@ -12,7 +12,7 @@ function parseArgs(argv) {
     output: null,
     repo: process.env.GITHUB_REPOSITORY ?? null,
     releaseId: process.env.RELEASE_ID ?? null,
-    token: process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null,
+    token: process.env.GH_PAT ?? process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null,
   }
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -67,7 +67,7 @@ Options:
   --output <file>      Write normalized body to a file
   --repo <owner/name>  Override repository (default: GITHUB_REPOSITORY)
   --release-id <id>    Normalize a specific release id
-  --token <token>      Override GitHub token (default: GITHUB_TOKEN/GH_TOKEN)
+  --token <token>      Override GitHub token (default: GH_PAT/GITHUB_TOKEN/GH_TOKEN)
 `)
 }
 

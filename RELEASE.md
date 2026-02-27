@@ -98,7 +98,7 @@ The NPM_TOKEN may have expired or lack publish access to the required packages. 
 ### Changesets action not creating a PR
 
 - Ensure there are pending changeset files in `.changeset/` (markdown files, not `config.json` or `README.md`)
-- Verify `GITHUB_TOKEN` has `contents: write` and `pull-requests: write` permissions (configured in the workflow)
+- Verify `GH_PAT` secret has `contents: write` and `pull-requests: write` permissions (configured in the workflow)
 
 ### Build failures before publish
 

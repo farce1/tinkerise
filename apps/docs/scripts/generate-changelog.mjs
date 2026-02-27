@@ -155,10 +155,10 @@ function writeOutput(entries) {
 }
 
 async function main() {
-  const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null
+  const token = process.env.GH_PAT ?? process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null
 
   if (!token)
-    console.warn('Warning: GITHUB_TOKEN is not set. Proceeding unauthenticated may hit GitHub API rate limits.')
+    console.warn('Warning: GH_PAT is not set. Proceeding unauthenticated may hit GitHub API rate limits.')
 
   try {
     const releases = await fetchReleases(token)
