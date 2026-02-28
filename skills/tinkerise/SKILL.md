@@ -23,16 +23,16 @@ Use tinkerise when the user wants to:
 
 | Goal | Command |
 |------|---------|
-| Interactive mode (guided) | `npx tinkerise` |
-| Scaffold by category | `npx tinkerise web` / `backend` / `mobile` |
-| Scaffold directly | `npx tinkerise web next my-app --typescript --tailwind` |
-| Create monorepo | `npx tinkerise monorepo my-mono` |
-| Add enhancements | `npx tinkerise add eslint prettier husky` |
-| List scaffolders | `npx tinkerise list` |
-| Check system tools | `npx tinkerise doctor` |
-| Save a preset | `npx tinkerise preset save my-stack` |
-| Use a preset | `npx tinkerise web next my-app --preset my-stack` |
-| Manage config | `npx tinkerise config list` |
+| Interactive mode (guided) | `npx tinkerise@0.2.3` |
+| Scaffold by category | `npx tinkerise@0.2.3 web` / `backend` / `mobile` |
+| Scaffold directly | `npx tinkerise@0.2.3 web next my-app --typescript --tailwind` |
+| Create monorepo | `npx tinkerise@0.2.3 monorepo my-mono` |
+| Add enhancements | `npx tinkerise@0.2.3 add eslint prettier husky` |
+| List scaffolders | `npx tinkerise@0.2.3 list` |
+| Check system tools | `npx tinkerise@0.2.3 doctor` |
+| Save a preset | `npx tinkerise@0.2.3 preset save my-stack` |
+| Use a preset | `npx tinkerise@0.2.3 web next my-app --preset my-stack` |
+| Manage config | `npx tinkerise@0.2.3 config list` |
 
 ## Step 1: Determine What to Scaffold
 
@@ -66,53 +66,53 @@ What is the user building?
 Use the direct execution form for non-interactive scaffolding:
 
 ```
-npx tinkerise <category> <framework> <project-name> [flags]
+npx tinkerise@0.2.3 <category> <framework> <project-name> [flags]
 ```
 
 **Examples:**
 
 ```bash
 # Next.js with TypeScript and Tailwind
-npx tinkerise web next my-app --typescript --tailwind
+npx tinkerise@0.2.3 web next my-app --typescript --tailwind
 
 # Vite React app (TypeScript via template)
-npx tinkerise web vite my-spa --template react-ts
+npx tinkerise@0.2.3 web vite my-spa --template react-ts
 
 # Astro with Tailwind
-npx tinkerise web astro my-site --tailwind
+npx tinkerise@0.2.3 web astro my-site --tailwind
 
 # T3 full-stack app
-npx tinkerise web t3 my-t3-app --tailwind
+npx tinkerise@0.2.3 web t3 my-t3-app --tailwind
 
 # Remix app
-npx tinkerise web remix my-remix-app
+npx tinkerise@0.2.3 web remix my-remix-app
 
 # TanStack Start app
-npx tinkerise web tanstack my-tanstack-app --tailwind
+npx tinkerise@0.2.3 web tanstack my-tanstack-app --tailwind
 
 # Turborepo monorepo
-npx tinkerise monorepo my-mono --package-manager pnpm
+npx tinkerise@0.2.3 monorepo my-mono --package-manager pnpm
 
 # FastAPI backend
-npx tinkerise backend fastapi my-api
+npx tinkerise@0.2.3 backend fastapi my-api
 
 # Django project
-npx tinkerise backend django myproject
+npx tinkerise@0.2.3 backend django myproject
 
 # Go service
-npx tinkerise backend go my-service
+npx tinkerise@0.2.3 backend go my-service
 
 # Rust Axum service
-npx tinkerise backend rust my-rust-api
+npx tinkerise@0.2.3 backend rust my-rust-api
 
 # Express TypeScript API
-npx tinkerise backend express my-express-api
+npx tinkerise@0.2.3 backend express my-express-api
 
 # Flutter app targeting iOS and Android
-npx tinkerise mobile flutter my-flutter-app --platforms ios,android
+npx tinkerise@0.2.3 mobile flutter my-flutter-app --platforms ios,android
 
 # React Native with Expo
-npx tinkerise mobile rn my-rn-app
+npx tinkerise@0.2.3 mobile rn my-rn-app
 ```
 
 ## Step 3: Add Enhancements
@@ -121,19 +121,19 @@ After scaffolding, add tooling with `tinkerise add`. Enhancements auto-detect th
 
 ```bash
 # Add specific enhancements
-npx tinkerise add eslint prettier husky commitlint
+npx tinkerise@0.2.3 add eslint prettier husky commitlint
 
 # Interactive picker (no args)
-npx tinkerise add
+npx tinkerise@0.2.3 add
 
 # Recommended combo for web projects
-npx tinkerise add eslint prettier husky commitlint ci testing
+npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing
 
 # Recommended combo for backend projects
-npx tinkerise add docker env ci
+npx tinkerise@0.2.3 add docker env ci
 
 # Full setup
-npx tinkerise add eslint prettier husky commitlint ci testing docker env renovate editorconfig changelog
+npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing docker env renovate editorconfig changelog
 ```
 
 **Recommended installation order**: eslint, prettier, husky, commitlint, changelog, ci, testing, docker, env, renovate, editorconfig. This ensures dependencies resolve correctly (e.g., commitlint integrates with husky if present).
@@ -214,16 +214,16 @@ Presets save a scaffold + enhancement combination for reuse.
 
 ```bash
 # Save current project setup as a preset
-npx tinkerise preset save my-stack --description "Our team's standard setup"
+npx tinkerise@0.2.3 preset save my-stack --description "Our team's standard setup"
 
 # List available presets
-npx tinkerise preset list
+npx tinkerise@0.2.3 preset list
 
 # Scaffold using a preset
-npx tinkerise web next my-app --preset my-stack
+npx tinkerise@0.2.3 web next my-app --preset my-stack
 
 # Delete a preset
-npx tinkerise preset delete my-stack
+npx tinkerise@0.2.3 preset delete my-stack
 ```
 
 A preset captures: framework, category, flags, enhancement list, and config (package manager, etc.). Presets are stored locally at `~/.tinkerise/presets/<name>.json` and can also be published to npm as `tinkerise-preset-<name>`.
@@ -234,18 +234,18 @@ tinkerise supports layered configuration with CLI flags taking highest priority.
 
 ```bash
 # Initialize config file
-npx tinkerise config init
+npx tinkerise@0.2.3 config init
 
 # Set defaults
-npx tinkerise config set packageManager pnpm
-npx tinkerise config set typescript true
-npx tinkerise config set defaultCategory web
+npx tinkerise@0.2.3 config set packageManager pnpm
+npx tinkerise@0.2.3 config set typescript true
+npx tinkerise@0.2.3 config set defaultCategory web
 
 # View current config
-npx tinkerise config list
+npx tinkerise@0.2.3 config list
 
 # Get a specific value
-npx tinkerise config get packageManager
+npx tinkerise@0.2.3 config get packageManager
 ```
 
 **Resolution order** (highest to lowest priority):
@@ -260,19 +260,19 @@ For scripting and CI, use the direct execution form with all flags specified to 
 
 ```bash
 # Full non-interactive Next.js scaffold with enhancements
-npx tinkerise web next my-app --typescript --tailwind --eslint --app-router --src-dir --no-git --no-install --package-manager pnpm
-cd my-app && npx tinkerise add eslint prettier husky commitlint ci testing
+npx tinkerise@0.2.3 web next my-app --typescript --tailwind --eslint --app-router --src-dir --no-git --no-install --package-manager pnpm
+cd my-app && npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing
 
 # Full non-interactive Vite scaffold
-npx tinkerise web vite my-spa --template react-ts --no-git --no-install
-cd my-spa && npx tinkerise add eslint prettier testing
+npx tinkerise@0.2.3 web vite my-spa --template react-ts --no-git --no-install
+cd my-spa && npx tinkerise@0.2.3 add eslint prettier testing
 
 # Full non-interactive FastAPI scaffold
-npx tinkerise backend fastapi my-api --no-git
-cd my-api && npx tinkerise add docker env ci
+npx tinkerise@0.2.3 backend fastapi my-api --no-git
+cd my-api && npx tinkerise@0.2.3 add docker env ci
 
 # Using a preset for repeatable scaffolding
-npx tinkerise web next my-app --preset team-standard --no-git --no-install
+npx tinkerise@0.2.3 web next my-app --preset team-standard --no-git --no-install
 ```
 
 ## Troubleshooting
@@ -280,7 +280,7 @@ npx tinkerise web next my-app --preset team-standard --no-git --no-install
 If scaffolding fails, run the doctor command to check system prerequisites:
 
 ```bash
-npx tinkerise doctor
+npx tinkerise@0.2.3 doctor
 ```
 
 This validates:
@@ -293,7 +293,7 @@ This validates:
 |---------|----------|
 | Backend scaffolder fails | Run `tinkerise doctor` — the framework's CLI tool may not be installed |
 | "command not found" for framework tool | Install the prerequisite (see Backend/Mobile tables above) |
-| Enhancement detection wrong | Run `npx tinkerise add` interactively to see what's already detected |
+| Enhancement detection wrong | Run `npx tinkerise@0.2.3 add` interactively to see what's already detected |
 | Flags ignored | That flag may not be supported by the chosen framework (see Unified Flags table) |
 | Package manager mismatch | Set explicitly with `--package-manager` or `tinkerise config set packageManager` |
 

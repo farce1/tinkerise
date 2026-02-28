@@ -1,5 +1,15 @@
 # @tinkerise/cli
 
+## 0.2.3
+
+### Patch Changes
+
+- fix: pin npx version in skill file to resolve Snyk WO12 security warning
+
+- Updated dependencies []:
+  - @tinkerise/core@0.2.3
+  - @tinkerise/shared@0.2.3
+
 ## 0.2.2
 
 ### Patch Changes
