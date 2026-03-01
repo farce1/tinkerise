@@ -1,4 +1,4 @@
-# tinkerise
+<img width="1536" height="1024" alt="ChatGPT Image 1 mar 2026, 21_44_17" src="https://github.com/user-attachments/assets/98096c1b-a14a-4fce-aa1f-f16a3bf1a50a" />
 
 One command to scaffold any project with any stack.
 
