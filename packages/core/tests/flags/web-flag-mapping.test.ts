@@ -287,6 +287,11 @@ describe('web scaffolder flag resolution', () => {
       expect(result.args).toEqual(['--package-manager', 'pnpm'])
     })
 
+    it('template: "react-start" -> ["--template", "react-start"]', () => {
+      const result = resolveFlags({ entry, userFlags: { template: 'react-start' } })
+      expect(result.args).toEqual(['--template', 'react-start'])
+    })
+
     it('no-git: true -> ["--no-git"]', () => {
       const result = resolveFlags({ entry, userFlags: { 'no-git': true } })
       expect(result.args).toEqual(['--no-git'])

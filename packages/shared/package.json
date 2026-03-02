@@ -1,7 +1,7 @@
 {
   "name": "@tinkerise/shared",
   "type": "module",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Shared types, Zod schemas, and constants for the tinkerise monorepo",
   "license": "MIT",
   "homepage": "https://github.com/farce1/tinkerise",

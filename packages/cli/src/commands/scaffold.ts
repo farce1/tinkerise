@@ -44,7 +44,7 @@ export interface ScaffoldOptions {
   /** Commander.js: --no-install sets install=false */
   install?: boolean
   packageManager?: string
-  /** Template/starter name (Vite, Astro, Remix) */
+  /** Template/starter name (Vite, Astro, Remix, TanStack) */
   template?: string
   /** Use src/ directory (Next.js) */
   srcDir?: boolean

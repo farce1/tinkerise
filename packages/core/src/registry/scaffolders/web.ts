@@ -207,6 +207,7 @@ export const tanstack = defineScaffolder({
     { unified: 'typescript', native: '' },
     { unified: 'tailwind', native: '--tailwind' },
     { unified: 'package-manager', native: '--package-manager' },
+    { unified: 'template', native: '--template' },
     { unified: 'no-git', native: '--no-git' },
     { unified: 'no-install', native: '--no-install' },
     { unified: 'empty', native: '--no-examples' },
