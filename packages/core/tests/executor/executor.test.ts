@@ -1,6 +1,6 @@
 import { defineScaffolder } from '@tinkerise/shared'
 import { describe, expect, it } from 'vitest'
-import { buildCommandArgs, ScaffolderNotFoundError } from '../../src/executor/index'
+import { buildCommandArgs, executeScaffolder, ScaffolderNotFoundError } from '../../src/executor/index'
 
 /** Test entry for buildCommandArgs */
 const delegateEntry = defineScaffolder({
@@ -59,5 +59,17 @@ describe('scaffolderNotFoundError', () => {
     const error = new ScaffolderNotFoundError('nonexistent')
     expect(error.message).toContain('nonexistent')
     expect(error.name).toBe('ScaffolderNotFoundError')
+  })
+})
+
+describe('executeScaffolder() input validation', () => {
+  it('rejects unsafe project names before scaffolder lookup/execution', async () => {
+    await expect(
+      executeScaffolder({
+        scaffolderName: 'next',
+        projectName: '../outside',
+        userFlags: {},
+      }),
+    ).rejects.toThrow('Invalid value')
   })
 })

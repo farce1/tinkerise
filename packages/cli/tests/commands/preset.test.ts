@@ -311,6 +311,13 @@ describe('preset save', () => {
       }),
     )
   })
+
+  it('rejects unsafe preset names', async () => {
+    await expect(
+      runPresetCommand(['preset', 'save', '../outside', '--framework', 'next', '--category', 'web']),
+    ).rejects.toThrow('Invalid value')
+    expect(mockSavePreset).not.toHaveBeenCalled()
+  })
 })
 
 describe('preset use', () => {
@@ -481,6 +488,14 @@ describe('preset use', () => {
       expect.stringContaining('Preset "minimal" applied'),
     )
   })
+
+  it('rejects unsafe preset names before lookup', async () => {
+    await expect(
+      runPresetCommand(['preset', 'use', '../outside']),
+    ).rejects.toThrow('Invalid value')
+    expect(mockLoadPreset).not.toHaveBeenCalled()
+    expect(mockLoadNpmPreset).not.toHaveBeenCalled()
+  })
 })
 
 describe('preset list', () => {
@@ -546,5 +561,12 @@ describe('preset delete', () => {
     await expect(
       runPresetCommand(['preset', 'delete', 'nonexistent']),
     ).rejects.toThrow('Preset not found')
+  })
+
+  it('rejects unsafe preset names before delete', async () => {
+    await expect(
+      runPresetCommand(['preset', 'delete', '../outside']),
+    ).rejects.toThrow('Invalid value')
+    expect(mockDeletePreset).not.toHaveBeenCalled()
   })
 })

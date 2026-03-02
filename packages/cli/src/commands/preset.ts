@@ -19,6 +19,7 @@ import * as p from '@clack/prompts'
 import {
   allEnhancementModules,
   buildProjectContext,
+  ConfigValidationError,
   deletePreset,
   discoverNpmPresets,
   ENHANCEMENT_NEXT_STEPS,
@@ -35,7 +36,16 @@ import {
   showEnhancementSummary,
   showPerEnhancementSummary,
 } from '@tinkerise/core'
+import { PresetNameSchema } from '@tinkerise/shared'
 import pc from 'picocolors'
+
+const PRESET_NAME_VALID_VALUES = 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars'
+
+function assertValidPresetName(name: string): void {
+  if (!PresetNameSchema.safeParse(name).success) {
+    throw new ConfigValidationError('presetName', name, PRESET_NAME_VALID_VALUES)
+  }
+}
 
 /**
  * Registers the `preset` command group on the given Commander program.
@@ -60,6 +70,8 @@ Examples:
     .option('--framework <fw>', 'Framework/scaffolder ID (e.g., next, vite)')
     .option('--category <cat>', 'Scaffolder category (web, backend, mobile)')
     .action(async (name: string, options: { description?: string, framework?: string, category?: string }) => {
+      assertValidPresetName(name)
+
       // Read project config for config overrides
       const projectConfig = await loadProjectConfig(process.cwd())
       const config: Partial<TinkeriseUserConfig> = projectConfig ?? {}
@@ -147,6 +159,8 @@ Examples:
     .command('use <name>')
     .description('Apply a saved preset')
     .action(async (name: string) => {
+      assertValidPresetName(name)
+
       // Try local first
       let presetData = await loadPreset(name)
 
@@ -307,6 +321,8 @@ Examples:
     .command('delete <name>')
     .description('Remove a local preset')
     .action(async (name: string) => {
+      assertValidPresetName(name)
+
       const deleted = await deletePreset(name)
 
       if (deleted) {

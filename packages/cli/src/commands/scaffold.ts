@@ -17,12 +17,12 @@ import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinke
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { detectPackageManager, executeScaffolder, findClosestMatch, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
-import { promptProjectName } from '../prompts/project-name.js'
+import { promptProjectName, validateProjectName } from '../prompts/project-name.js'
 import { resolveViteTemplate, selectT3Components, selectViteTemplate } from '../prompts/variant-select.js'
 import { showBanner } from '../utils/banner.js'
 import {
@@ -404,6 +404,10 @@ export async function runDirectExecution(
   const { config, preset } = await resolveConfigAndPreset(options)
 
   const projectName = name ?? await promptProjectName(framework)
+  const projectNameError = validateProjectName(projectName)
+  if (projectNameError) {
+    throw new ConfigValidationError('projectName', projectName, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
+  }
   const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
 
   const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))

@@ -19,6 +19,10 @@ export { defineConfig } from './config/define-config.js'
 
 export {
   PresetDataSchema,
+  PresetNameSchema,
+  ProjectNameSchema,
+  SAFE_NAME_REGEX,
+  SAFE_NAME_RULES,
   TinkeriseUserConfigSchema,
 } from './config/schemas.js'
 

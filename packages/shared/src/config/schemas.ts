@@ -8,6 +8,27 @@
 import { z } from 'zod'
 
 /**
+ * Safe identifier pattern for project and preset names.
+ *
+ * - lower-case alphanumeric first character
+ * - then lower-case alphanumeric / dot / underscore / hyphen
+ * - max length 64 to keep file and package names manageable
+ */
+export const SAFE_NAME_REGEX = /^[a-z0-9][a-z0-9._-]{0,63}$/
+export const SAFE_NAME_RULES
+  = 'Use lowercase letters, numbers, hyphens, dots, and underscores (must start with letter or number, max 64 chars)'
+
+/**
+ * Schema for project names used by scaffolding commands.
+ */
+export const ProjectNameSchema = z.string().regex(SAFE_NAME_REGEX, SAFE_NAME_RULES)
+
+/**
+ * Schema for preset names used in local preset file names.
+ */
+export const PresetNameSchema = z.string().regex(SAFE_NAME_REGEX, SAFE_NAME_RULES)
+
+/**
  * Schema for TinkeriseUserConfig — all fields optional.
  */
 export const TinkeriseUserConfigSchema = z.object({
@@ -26,7 +47,7 @@ export const PresetDataSchema = z.object({
   /** Schema version — must be 1 */
   version: z.literal(1),
   /** Human-readable preset name */
-  name: z.string(),
+  name: PresetNameSchema,
   /** Optional description */
   description: z.string().optional(),
   /** Scaffold configuration */

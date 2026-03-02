@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   defineConfig,
   PresetDataSchema,
+  PresetNameSchema,
+  ProjectNameSchema,
   TinkeriseUserConfigSchema,
 } from '../../src/index'
 
@@ -107,6 +109,29 @@ describe('presetDataSchema', () => {
         config: { packageManager: 'deno' },
       }),
     ).toThrow()
+  })
+
+  it('rejects unsafe preset names', () => {
+    expect(() =>
+      PresetDataSchema.parse({
+        ...validPreset,
+        name: '../outside-config',
+      }),
+    ).toThrow()
+  })
+})
+
+describe('name schemas', () => {
+  it('accepts safe project names', () => {
+    expect(ProjectNameSchema.parse('my-app_1.0')).toBe('my-app_1.0')
+  })
+
+  it('rejects unsafe project names', () => {
+    expect(() => ProjectNameSchema.parse('../tmp')).toThrow()
+  })
+
+  it('rejects unsafe preset names', () => {
+    expect(() => PresetNameSchema.parse('my preset')).toThrow()
   })
 })
 

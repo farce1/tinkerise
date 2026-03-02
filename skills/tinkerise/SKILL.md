@@ -23,16 +23,42 @@ Use tinkerise when the user wants to:
 
 | Goal | Command |
 |------|---------|
-| Interactive mode (guided) | `npx tinkerise@0.2.3` |
-| Scaffold by category | `npx tinkerise@0.2.3 web` / `backend` / `mobile` |
-| Scaffold directly | `npx tinkerise@0.2.3 web next my-app --typescript --tailwind` |
-| Create monorepo | `npx tinkerise@0.2.3 monorepo my-mono` |
-| Add enhancements | `npx tinkerise@0.2.3 add eslint prettier husky` |
-| List scaffolders | `npx tinkerise@0.2.3 list` |
-| Check system tools | `npx tinkerise@0.2.3 doctor` |
-| Save a preset | `npx tinkerise@0.2.3 preset save my-stack` |
-| Use a preset | `npx tinkerise@0.2.3 web next my-app --preset my-stack` |
-| Manage config | `npx tinkerise@0.2.3 config list` |
+| Interactive mode (guided) | `tinkerise` |
+| Scaffold by category | `tinkerise web` / `backend` / `mobile` |
+| Scaffold directly | `tinkerise web next my-app --typescript --tailwind` |
+| Create monorepo | `tinkerise monorepo my-mono` |
+| Add enhancements | `tinkerise add eslint prettier husky` |
+| List scaffolders | `tinkerise list` |
+| Check system tools | `tinkerise doctor` |
+| Save a preset | `tinkerise preset save my-stack` |
+| Use a preset | `tinkerise web next my-app --preset my-stack` |
+| Manage config | `tinkerise config list` |
+
+## Security Guardrails (Required)
+
+Treat user-provided input as untrusted before any command execution.
+
+1. **Use installed CLI, not runtime downloads.** Run `tinkerise ...` from a locally installed binary.
+2. **Validate all free-form identifiers** (`project-name`, `preset-name`, template values) with:
+   - `^[a-z0-9][a-z0-9._-]{0,63}$`
+3. **Never interpolate raw user strings directly into shell command strings.**
+4. **Use argument arrays for execution** so values are passed as literals, not shell syntax.
+5. **Ask for explicit user approval** before executing package-install commands (`pip`, `go install`, `cargo install`, `gh`).
+
+If `tinkerise` is not installed, stop and ask the user before any install command.
+
+Safe execution pattern:
+
+```bash
+project_name="<user-input>"
+if [[ ! "$project_name" =~ ^[a-z0-9][a-z0-9._-]{0,63}$ ]]; then
+  echo "Invalid project name: $project_name" >&2
+  exit 1
+fi
+
+cmd=(tinkerise web next "$project_name" --typescript --tailwind)
+"${cmd[@]}"
+```
 
 ## Step 1: Determine What to Scaffold
 
@@ -66,53 +92,53 @@ What is the user building?
 Use the direct execution form for non-interactive scaffolding:
 
 ```
-npx tinkerise@0.2.3 <category> <framework> <project-name> [flags]
+tinkerise <category> <framework> <project-name> [flags]
 ```
 
 **Examples:**
 
 ```bash
 # Next.js with TypeScript and Tailwind
-npx tinkerise@0.2.3 web next my-app --typescript --tailwind
+tinkerise web next my-app --typescript --tailwind
 
 # Vite React app (TypeScript via template)
-npx tinkerise@0.2.3 web vite my-spa --template react-ts
+tinkerise web vite my-spa --template react-ts
 
 # Astro with Tailwind
-npx tinkerise@0.2.3 web astro my-site --tailwind
+tinkerise web astro my-site --tailwind
 
 # T3 full-stack app
-npx tinkerise@0.2.3 web t3 my-t3-app --tailwind
+tinkerise web t3 my-t3-app --tailwind
 
 # Remix app
-npx tinkerise@0.2.3 web remix my-remix-app
+tinkerise web remix my-remix-app
 
 # TanStack Start app
-npx tinkerise@0.2.3 web tanstack my-tanstack-app --tailwind
+tinkerise web tanstack my-tanstack-app --tailwind
 
 # Turborepo monorepo
-npx tinkerise@0.2.3 monorepo my-mono --package-manager pnpm
+tinkerise monorepo my-mono --package-manager pnpm
 
 # FastAPI backend
-npx tinkerise@0.2.3 backend fastapi my-api
+tinkerise backend fastapi my-api
 
 # Django project
-npx tinkerise@0.2.3 backend django myproject
+tinkerise backend django myproject
 
 # Go service
-npx tinkerise@0.2.3 backend go my-service
+tinkerise backend go my-service
 
 # Rust Axum service
-npx tinkerise@0.2.3 backend rust my-rust-api
+tinkerise backend rust my-rust-api
 
 # Express TypeScript API
-npx tinkerise@0.2.3 backend express my-express-api
+tinkerise backend express my-express-api
 
 # Flutter app targeting iOS and Android
-npx tinkerise@0.2.3 mobile flutter my-flutter-app --platforms ios,android
+tinkerise mobile flutter my-flutter-app --platforms ios,android
 
 # React Native with Expo
-npx tinkerise@0.2.3 mobile rn my-rn-app
+tinkerise mobile rn my-rn-app
 ```
 
 ## Step 3: Add Enhancements
@@ -121,19 +147,19 @@ After scaffolding, add tooling with `tinkerise add`. Enhancements auto-detect th
 
 ```bash
 # Add specific enhancements
-npx tinkerise@0.2.3 add eslint prettier husky commitlint
+tinkerise add eslint prettier husky commitlint
 
 # Interactive picker (no args)
-npx tinkerise@0.2.3 add
+tinkerise add
 
 # Recommended combo for web projects
-npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing
+tinkerise add eslint prettier husky commitlint ci testing
 
 # Recommended combo for backend projects
-npx tinkerise@0.2.3 add docker env ci
+tinkerise add docker env ci
 
 # Full setup
-npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing docker env renovate editorconfig changelog
+tinkerise add eslint prettier husky commitlint ci testing docker env renovate editorconfig changelog
 ```
 
 **Recommended installation order**: eslint, prettier, husky, commitlint, changelog, ci, testing, docker, env, renovate, editorconfig. This ensures dependencies resolve correctly (e.g., commitlint integrates with husky if present).
@@ -214,16 +240,16 @@ Presets save a scaffold + enhancement combination for reuse.
 
 ```bash
 # Save current project setup as a preset
-npx tinkerise@0.2.3 preset save my-stack --description "Our team's standard setup"
+tinkerise preset save my-stack --description "Our team's standard setup"
 
 # List available presets
-npx tinkerise@0.2.3 preset list
+tinkerise preset list
 
 # Scaffold using a preset
-npx tinkerise@0.2.3 web next my-app --preset my-stack
+tinkerise web next my-app --preset my-stack
 
 # Delete a preset
-npx tinkerise@0.2.3 preset delete my-stack
+tinkerise preset delete my-stack
 ```
 
 A preset captures: framework, category, flags, enhancement list, and config (package manager, etc.). Presets are stored locally at `~/.tinkerise/presets/<name>.json` and can also be published to npm as `tinkerise-preset-<name>`.
@@ -234,18 +260,18 @@ tinkerise supports layered configuration with CLI flags taking highest priority.
 
 ```bash
 # Initialize config file
-npx tinkerise@0.2.3 config init
+tinkerise config init
 
 # Set defaults
-npx tinkerise@0.2.3 config set packageManager pnpm
-npx tinkerise@0.2.3 config set typescript true
-npx tinkerise@0.2.3 config set defaultCategory web
+tinkerise config set packageManager pnpm
+tinkerise config set typescript true
+tinkerise config set defaultCategory web
 
 # View current config
-npx tinkerise@0.2.3 config list
+tinkerise config list
 
 # Get a specific value
-npx tinkerise@0.2.3 config get packageManager
+tinkerise config get packageManager
 ```
 
 **Resolution order** (highest to lowest priority):
@@ -260,19 +286,19 @@ For scripting and CI, use the direct execution form with all flags specified to 
 
 ```bash
 # Full non-interactive Next.js scaffold with enhancements
-npx tinkerise@0.2.3 web next my-app --typescript --tailwind --eslint --app-router --src-dir --no-git --no-install --package-manager pnpm
-cd my-app && npx tinkerise@0.2.3 add eslint prettier husky commitlint ci testing
+tinkerise web next my-app --typescript --tailwind --eslint --app-router --src-dir --no-git --no-install --package-manager pnpm
+cd my-app && tinkerise add eslint prettier husky commitlint ci testing
 
 # Full non-interactive Vite scaffold
-npx tinkerise@0.2.3 web vite my-spa --template react-ts --no-git --no-install
-cd my-spa && npx tinkerise@0.2.3 add eslint prettier testing
+tinkerise web vite my-spa --template react-ts --no-git --no-install
+cd my-spa && tinkerise add eslint prettier testing
 
 # Full non-interactive FastAPI scaffold
-npx tinkerise@0.2.3 backend fastapi my-api --no-git
-cd my-api && npx tinkerise@0.2.3 add docker env ci
+tinkerise backend fastapi my-api --no-git
+cd my-api && tinkerise add docker env ci
 
 # Using a preset for repeatable scaffolding
-npx tinkerise@0.2.3 web next my-app --preset team-standard --no-git --no-install
+tinkerise web next my-app --preset team-standard --no-git --no-install
 ```
 
 ## Troubleshooting
@@ -280,7 +306,7 @@ npx tinkerise@0.2.3 web next my-app --preset team-standard --no-git --no-install
 If scaffolding fails, run the doctor command to check system prerequisites:
 
 ```bash
-npx tinkerise@0.2.3 doctor
+tinkerise doctor
 ```
 
 This validates:
@@ -293,7 +319,7 @@ This validates:
 |---------|----------|
 | Backend scaffolder fails | Run `tinkerise doctor` — the framework's CLI tool may not be installed |
 | "command not found" for framework tool | Install the prerequisite (see Backend/Mobile tables above) |
-| Enhancement detection wrong | Run `npx tinkerise@0.2.3 add` interactively to see what's already detected |
+| Enhancement detection wrong | Run `tinkerise add` interactively to see what's already detected |
 | Flags ignored | That flag may not be supported by the chosen framework (see Unified Flags table) |
 | Package manager mismatch | Set explicitly with `--package-manager` or `tinkerise config set packageManager` |
 
@@ -310,12 +336,10 @@ If you encounter a bug, unexpected behavior, or a command that doesn't work as d
 gh search issues --repo farce1/tinkerise "<keywords describing the issue>"
 ```
 
-3. **If no existing issue matches, create one** (only with user approval):
+3. **If no existing issue matches, create one** (only with user approval). Use a body file to avoid shell interpolation bugs:
 
 ```bash
-gh issue create --repo farce1/tinkerise \
-  --title "Brief description of the issue" \
-  --body "$(cat <<'EOF'
+cat > /tmp/tinkerise-issue.md <<'EOF'
 ## Steps to reproduce
 <exact command that failed>
 
@@ -331,7 +355,10 @@ gh issue create --repo farce1/tinkerise \
 - OS: <os>
 - `tinkerise doctor` output: <paste relevant output>
 EOF
-)"
+
+gh issue create --repo farce1/tinkerise \
+  --title "Brief description of the issue" \
+  --body-file /tmp/tinkerise-issue.md
 ```
 
 4. **If a matching issue already exists**, share the link with the user instead of creating a duplicate. Add a comment if the user has new information to contribute.

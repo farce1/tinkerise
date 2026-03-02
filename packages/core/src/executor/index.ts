@@ -6,7 +6,8 @@
  */
 
 import type { ScaffolderEntry } from '@tinkerise/shared'
-import { ScaffolderExitError, ScaffolderNotFoundError } from '../errors/index.js'
+import { ProjectNameSchema } from '@tinkerise/shared'
+import { ConfigValidationError, ScaffolderExitError, ScaffolderNotFoundError } from '../errors/index.js'
 import { resolveFlags } from '../flags/resolver.js'
 import { validateFlagApplicability } from '../flags/validator.js'
 import { checkPrerequisites } from '../prerequisites/checker.js'
@@ -37,6 +38,10 @@ export interface ExecuteOptions {
  */
 export async function executeScaffolder(options: ExecuteOptions): Promise<void> {
   const { scaffolderName, projectName, userFlags, passthroughArgs = [], extraArgs = [], cwd } = options
+  const parsedProjectName = ProjectNameSchema.safeParse(projectName)
+  if (!parsedProjectName.success) {
+    throw new ConfigValidationError('projectName', projectName, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
+  }
 
   // 1. Resolve scaffolder from registry
   const entry = getScaffolder(scaffolderName)
@@ -71,7 +76,7 @@ export async function executeScaffolder(options: ExecuteOptions): Promise<void> 
   // 6. Build final command args based on integration strategy (REG-04)
   // Merge nativeArgs with extraArgs (framework-specific like Vite template, T3 components)
   const allNativeArgs = [...nativeArgs, ...extraArgs]
-  const commandArgs = buildCommandArgs(entry, projectName, allNativeArgs, passthroughArgs)
+  const commandArgs = buildCommandArgs(entry, parsedProjectName.data, allNativeArgs, passthroughArgs)
 
   tinkeriseLog(`Running ${entry.command} ${commandArgs.join(' ')}`)
   tinkeriseBlankLine()

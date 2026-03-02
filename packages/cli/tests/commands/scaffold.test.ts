@@ -23,6 +23,7 @@ const {
   mockRunPromptFlow,
   mockPromptPackageManager,
   mockPromptProjectName,
+  mockValidateProjectName,
   mockDetectPackageManager,
   mockExecuteScaffolder,
   mockTinkeriseSummaryCard,
@@ -44,6 +45,7 @@ const {
   mockRunPromptFlow: vi.fn(),
   mockPromptPackageManager: vi.fn(),
   mockPromptProjectName: vi.fn(),
+  mockValidateProjectName: vi.fn(() => undefined),
   mockDetectPackageManager: vi.fn(),
   mockExecuteScaffolder: vi.fn(),
   mockTinkeriseSummaryCard: vi.fn(),
@@ -76,6 +78,7 @@ vi.mock('../../src/prompts/pm-select.js', () => ({
 
 vi.mock('../../src/prompts/project-name.js', () => ({
   promptProjectName: mockPromptProjectName,
+  validateProjectName: mockValidateProjectName,
 }))
 
 vi.mock('@tinkerise/core', async (importOriginal) => {
@@ -135,6 +138,7 @@ function createMockCommand(
 describe('runInteractiveFlow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockValidateProjectName.mockReturnValue(undefined)
     mockIsCI.value = false
     mockResolveConfig.mockResolvedValue({})
     mockLoadPreset.mockResolvedValue(null)
@@ -188,6 +192,7 @@ describe('runInteractiveFlow', () => {
 describe('runCategoryFlow', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockValidateProjectName.mockReturnValue(undefined)
     mockIsCI.value = false
     mockResolveConfig.mockResolvedValue({})
     mockLoadPreset.mockResolvedValue(null)
@@ -246,6 +251,7 @@ describe('runDirectExecution', () => {
     })
     mockExecuteScaffolder.mockResolvedValue(undefined)
     mockPromptProjectName.mockResolvedValue('my-app')
+    mockValidateProjectName.mockReturnValue(undefined)
     mockBuildPreselectedOptions.mockReturnValue([])
     mockMergePromptAndFlags.mockReturnValue({})
   })
@@ -304,11 +310,22 @@ describe('runDirectExecution', () => {
 
     expect(mockBuildPreselectedOptions).toHaveBeenCalledWith(cmd)
   })
+
+  it('rejects invalid direct project names before execution', async () => {
+    mockValidateProjectName.mockReturnValue('Invalid project name')
+    const cmd = createMockCommand()
+
+    await expect(
+      runDirectExecution('web', 'next', '../bad', cmd, {}),
+    ).rejects.toThrow('Invalid value')
+    expect(mockExecuteScaffolder).not.toHaveBeenCalled()
+  })
 })
 
 describe('pM detection integration', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockValidateProjectName.mockReturnValue(undefined)
     mockIsCI.value = false
     mockResolveConfig.mockResolvedValue({})
     mockLoadPreset.mockResolvedValue(null)
@@ -371,6 +388,7 @@ describe('pM detection integration', () => {
 describe('defaultCategory config wiring', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockValidateProjectName.mockReturnValue(undefined)
     mockIsCI.value = false
     mockLoadPreset.mockResolvedValue(null)
     mockRunPromptFlow.mockResolvedValue({

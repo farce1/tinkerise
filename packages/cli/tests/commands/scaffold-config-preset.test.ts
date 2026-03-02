@@ -27,6 +27,7 @@ const {
   mockRunPromptFlow,
   mockPromptPackageManager,
   mockPromptProjectName,
+  mockValidateProjectName,
   mockDetectPackageManager,
   mockExecuteScaffolder,
   mockTinkeriseSummaryCard,
@@ -46,6 +47,7 @@ const {
   mockRunPromptFlow: vi.fn(),
   mockPromptPackageManager: vi.fn(),
   mockPromptProjectName: vi.fn(),
+  mockValidateProjectName: vi.fn(() => undefined),
   mockDetectPackageManager: vi.fn(),
   mockExecuteScaffolder: vi.fn(),
   mockTinkeriseSummaryCard: vi.fn(),
@@ -76,6 +78,7 @@ vi.mock('../../src/prompts/pm-select.js', () => ({
 
 vi.mock('../../src/prompts/project-name.js', () => ({
   promptProjectName: mockPromptProjectName,
+  validateProjectName: mockValidateProjectName,
 }))
 
 vi.mock('@tinkerise/core', () => ({

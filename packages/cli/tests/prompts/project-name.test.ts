@@ -110,6 +110,13 @@ describe('validateProjectName', () => {
       expect(result).toBeDefined()
       expect(result).toContain('lowercase')
     })
+
+    it('rejects names longer than 64 characters', () => {
+      const longName = `a${'b'.repeat(64)}`
+      const result = validateProjectName(longName)
+      expect(result).toBeDefined()
+      expect(result).toContain('max 64 chars')
+    })
   })
 })
 

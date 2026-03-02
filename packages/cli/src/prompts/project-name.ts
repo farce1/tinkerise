@@ -3,6 +3,7 @@
  */
 
 import * as p from '@clack/prompts'
+import { ProjectNameSchema, SAFE_NAME_RULES } from '@tinkerise/shared'
 
 /**
  * Validate a project name.
@@ -16,8 +17,8 @@ export function validateProjectName(value: string | undefined): string | undefin
   if (!value || value.trim().length === 0) {
     return 'Project name is required'
   }
-  if (!/^[a-z0-9][a-z0-9._-]*$/.test(value)) {
-    return 'Use lowercase letters, numbers, hyphens, dots, and underscores (must start with letter or number)'
+  if (!ProjectNameSchema.safeParse(value).success) {
+    return SAFE_NAME_RULES
   }
   return undefined
 }

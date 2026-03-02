@@ -54,6 +54,11 @@ describe('savePreset()', () => {
     const invalid = { ...validPreset, version: 2 }
     await expect(savePreset(invalid as unknown as PresetData)).rejects.toThrow()
   })
+
+  it('rejects unsafe preset names (path traversal)', async () => {
+    const invalid = { ...validPreset, name: '../outside-config' }
+    await expect(savePreset(invalid as unknown as PresetData)).rejects.toThrow()
+  })
 })
 
 describe('loadPreset()', () => {
@@ -75,6 +80,11 @@ describe('loadPreset()', () => {
     await writeFile(path.join(presetsDir, 'bad.json'), 'not-json{{{', 'utf-8')
 
     const result = await loadPreset('bad')
+    expect(result).toBeNull()
+  })
+
+  it('returns null for unsafe preset names', async () => {
+    const result = await loadPreset('../outside-config')
     expect(result).toBeNull()
   })
 })
@@ -110,6 +120,11 @@ describe('deletePreset()', () => {
 
   it('returns false for nonexistent preset', async () => {
     const result = await deletePreset('nonexistent')
+    expect(result).toBe(false)
+  })
+
+  it('returns false for unsafe preset names', async () => {
+    const result = await deletePreset('../outside-config')
     expect(result).toBe(false)
   })
 })

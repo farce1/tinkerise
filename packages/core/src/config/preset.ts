@@ -6,7 +6,7 @@
 import type { PresetData } from '@tinkerise/shared'
 import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { PresetDataSchema } from '@tinkerise/shared'
+import { PresetDataSchema, PresetNameSchema } from '@tinkerise/shared'
 import { getConfigDir } from './global.js'
 
 /**
@@ -35,6 +35,10 @@ export async function savePreset(preset: PresetData): Promise<void> {
  * Returns null if the file doesn't exist, contains invalid JSON, or fails validation.
  */
 export async function loadPreset(name: string): Promise<PresetData | null> {
+  if (!PresetNameSchema.safeParse(name).success) {
+    return null
+  }
+
   try {
     const filePath = path.join(getPresetsDir(), `${name}.json`)
     const raw = await readFile(filePath, 'utf-8')
@@ -68,6 +72,10 @@ export async function listPresets(): Promise<string[]> {
  * Returns true on success, false if the file doesn't exist.
  */
 export async function deletePreset(name: string): Promise<boolean> {
+  if (!PresetNameSchema.safeParse(name).success) {
+    return false
+  }
+
   try {
     const filePath = path.join(getPresetsDir(), `${name}.json`)
     await unlink(filePath)
