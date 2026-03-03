@@ -43,9 +43,9 @@ Treat user-provided input as untrusted before any command execution.
    - `^[a-z0-9][a-z0-9._-]{0,63}$`
 3. **Never interpolate raw user strings directly into shell command strings.**
 4. **Use argument arrays for execution** so values are passed as literals, not shell syntax.
-5. **Ask for explicit user approval** before executing package-install commands (`pip`, `go install`, `cargo install`, `gh`).
+5. **Ask for explicit user approval** before executing any package-install commands (`pip`, `go install`, `cargo install`, `gh`). Never run install commands silently.
 
-If `tinkerise` is not installed, stop and ask the user before any install command.
+If `tinkerise` is not installed, stop and ask the user before any install command. Use `tinkerise doctor` to check prerequisites rather than running install commands directly.
 
 Safe execution pattern:
 
@@ -182,10 +182,10 @@ tinkerise add eslint prettier husky commitlint ci testing docker env renovate ed
 
 | ID | Framework | Description | Prerequisites |
 |----|-----------|-------------|---------------|
-| `fastapi` | FastAPI | Modern Python API with automatic OpenAPI docs | Python >= 3.10, `pip install fastapi-admin-cli` |
-| `django` | Django | Full-featured Python web framework with admin and ORM | Python >= 3.10, `pip install django` |
-| `go` | Go | Go HTTP service with framework choice (Chi, Gin, Fiber, Echo) | Go >= 1.22, `go install go-blueprint` |
-| `rust` | Rust (Axum) | Rust web service with Axum framework | Rust >= 1.78, `cargo install cargo-generate` |
+| `fastapi` | FastAPI | Modern Python API with automatic OpenAPI docs | Python >= 3.10, fastapi-admin-cli (run `tinkerise doctor` to check) |
+| `django` | Django | Full-featured Python web framework with admin and ORM | Python >= 3.10, django-admin (run `tinkerise doctor` to check) |
+| `go` | Go | Go HTTP service with framework choice (Chi, Gin, Fiber, Echo) | Go >= 1.22, go-blueprint (run `tinkerise doctor` to check) |
+| `rust` | Rust (Axum) | Rust web service with Axum framework | Rust >= 1.78, cargo-generate (run `tinkerise doctor` to check) |
 | `express` | Express | TypeScript Express.js API with structured CRUD template | Node >= 20.11.0 |
 
 ### Mobile
@@ -336,10 +336,12 @@ If you encounter a bug, unexpected behavior, or a command that doesn't work as d
 gh search issues --repo farce1/tinkerise "<keywords describing the issue>"
 ```
 
-3. **If no existing issue matches, create one** (only with user approval). Use a body file to avoid shell interpolation bugs:
+3. **If no existing issue matches, create one** (only with user approval):
 
 ```bash
-cat > /tmp/tinkerise-issue.md <<'EOF'
+gh issue create --repo farce1/tinkerise \
+  --title "Brief description of the issue" \
+  --body "$(cat <<'EOF'
 ## Steps to reproduce
 <exact command that failed>
 
@@ -353,12 +355,9 @@ cat > /tmp/tinkerise-issue.md <<'EOF'
 - tinkerise version: <version>
 - Node.js version: <version>
 - OS: <os>
-- `tinkerise doctor` output: <paste relevant output>
+- tinkerise doctor output: <paste relevant output>
 EOF
-
-gh issue create --repo farce1/tinkerise \
-  --title "Brief description of the issue" \
-  --body-file /tmp/tinkerise-issue.md
+)"
 ```
 
 4. **If a matching issue already exists**, share the link with the user instead of creating a duplicate. Add a comment if the user has new information to contribute.
