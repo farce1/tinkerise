@@ -36,6 +36,8 @@ Use tinkerise when the user wants to:
 
 ## Security Guardrails (Required)
 
+**Trust boundary**: tinkerise does not download or run remote code automatically. All external tool invocations require explicit user approval. The CLI executes only locally installed binaries and never fetches packages without consent.
+
 Treat user-provided input as untrusted before any command execution.
 
 1. **Use installed CLI, not runtime downloads.** Run `tinkerise ...` from a locally installed binary.
@@ -43,9 +45,9 @@ Treat user-provided input as untrusted before any command execution.
    - `^[a-z0-9][a-z0-9._-]{0,63}$`
 3. **Never interpolate raw user strings directly into shell command strings.**
 4. **Use argument arrays for execution** so values are passed as literals, not shell syntax.
-5. **Ask for explicit user approval** before executing any package-install commands (`pip`, `go install`, `cargo install`, `gh`). Never run install commands silently.
+5. **Ask for explicit user approval** before executing any third-party package manager or system tool command. Never run these commands silently.
 
-If `tinkerise` is not installed, stop and ask the user before any install command. Use `tinkerise doctor` to check prerequisites rather than running install commands directly.
+If `tinkerise` is not installed, stop and ask the user before proceeding. Use `tinkerise doctor` to check prerequisites rather than invoking package managers directly.
 
 Safe execution pattern:
 
@@ -162,7 +164,7 @@ tinkerise add docker env ci
 tinkerise add eslint prettier husky commitlint ci testing docker env renovate editorconfig changelog
 ```
 
-**Recommended installation order**: eslint, prettier, husky, commitlint, changelog, ci, testing, docker, env, renovate, editorconfig. This ensures dependencies resolve correctly (e.g., commitlint integrates with husky if present).
+**Recommended enhancement order**: eslint, prettier, husky, commitlint, changelog, ci, testing, docker, env, renovate, editorconfig. This ensures dependencies resolve correctly (e.g., commitlint integrates with husky if present).
 
 ## Available Scaffolders
 
@@ -252,7 +254,7 @@ tinkerise web next my-app --preset my-stack
 tinkerise preset delete my-stack
 ```
 
-A preset captures: framework, category, flags, enhancement list, and config (package manager, etc.). Presets are stored locally at `~/.tinkerise/presets/<name>.json` and can also be published to npm as `tinkerise-preset-<name>`.
+A preset captures: framework, category, flags, enhancement list, and config (package manager, etc.). Presets are stored locally at `~/.tinkerise/presets/<name>.json` and can also be shared as `tinkerise-preset-<name>` packages.
 
 ## Configuration
 
