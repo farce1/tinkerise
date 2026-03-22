@@ -55,7 +55,6 @@ export async function selectViteTemplate(preselected?: string): Promise<string> 
  * Handles edge cases:
  * - No TypeScript: return base unchanged
  * - Already has -ts suffix: return base (prevent double-suffix)
- * - react-swc special case: return react-swc-ts
  * - Default: append -ts
  *
  * Pure function, no prompts.
@@ -67,10 +66,6 @@ export function resolveViteTemplate(base: string, typescript: boolean): string {
 
   if (base.endsWith('-ts')) {
     return base
-  }
-
-  if (base === 'react-swc') {
-    return 'react-swc-ts'
   }
 
   return `${base}-ts`

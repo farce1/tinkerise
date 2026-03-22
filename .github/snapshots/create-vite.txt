@@ -7,7 +7,6 @@ When running in TTY, the CLI will start in interactive mode.
 Options:
   -t, --template NAME                   use a specific template
   -i, --immediate                       install dependencies and start dev
-  --rolldown / --no-rolldown            use / do not use rolldown-vite (Experimental)
   --interactive / --no-interactive      force interactive / non-interactive mode
 
 Available templates:
@@ -15,7 +14,6 @@ vanilla-ts          vanilla
 vue-ts              vue
 react-ts            react
 react-compiler-ts   react-compiler
-react-swc-ts        react-swc
 preact-ts           preact
 lit-ts              lit
 svelte-ts           svelte

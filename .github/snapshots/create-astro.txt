@@ -1,6 +1,6 @@
 
 
- create-astro   v4.13.2 Scaffold Astro projects.
+ create-astro   v5.0.0 Scaffold Astro projects.
 
 create-astro [dir] [...flags]
 

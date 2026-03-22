@@ -41,10 +41,6 @@ describe('resolveViteTemplate', () => {
     expect(resolveViteTemplate('react-ts', true)).toBe('react-ts')
   })
 
-  it('handles react-swc special case', () => {
-    expect(resolveViteTemplate('react-swc', true)).toBe('react-swc-ts')
-  })
-
   it('appends -ts to vue', () => {
     expect(resolveViteTemplate('vue', true)).toBe('vue-ts')
   })
