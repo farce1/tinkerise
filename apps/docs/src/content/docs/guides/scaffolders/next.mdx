@@ -23,7 +23,7 @@ Use `next` when you want:
 
 ## Prerequisites
 
-- Node.js `>=18.17.0`
+- Node.js `>=20.9.0`
 - `npx` available in your Node install
 
 ## Unified flags
@@ -42,14 +42,14 @@ Use `next` when you want:
 | `--empty` | `--empty` | Initialize with no starter content (v15+) |
 | `--app-router` | `--app` | Use App Router |
 | `--react-compiler` | `--react-compiler` | Enable React Compiler (v16+) |
-| `--turbopack` | `--turbopack` | Use Turbopack bundler (v16+) |
+| `--turbopack` | `--turbopack` or _(none)_ | Uses `--turbopack` on create-next-app v16.0-v16.1; v16.2+ already defaults to Turbopack |
 | `--api` | `--api` | Headless API project (v16+) |
 
 ## Framework-specific behavior
 
 - tinkerise delegates to `create-next-app`.
-- `--yes` is auto-injected so all scaffolding runs non-interactively. Options not explicitly passed use create-next-app defaults.
-- Registry version mappings handle create-next-app flag changes automatically (v14, v15+, v16+).
+- `--yes` is auto-injected so all scaffolding runs non-interactively. Options not explicitly passed use create-next-app defaults, including `AGENTS.md` in current v16.2+ releases.
+- Registry version mappings handle create-next-app flag changes automatically (v14, v15+, v16.0-v16.1, v16.2+).
 - Pass-through args are enabled, so native flags still work.
 
 ## Generated output

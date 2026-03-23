@@ -68,12 +68,31 @@ describe('web scaffolder registry', () => {
     expect(noGitFlag?.native).toBe('--disable-git')
   })
 
-  it('next v16+ versionedFlags includes --biome', () => {
+  it('next v16.2+ versionedFlags keeps --biome and makes turbopack a no-op', () => {
+    const entry = getScaffolder('next')!
+    const v162Flags = entry.versionedFlags!.find(vf => vf.versionRange === '>=16.2.0')!
+    expect(v162Flags).toBeDefined()
+    const biomeFlag = v162Flags.flags.find(f => f.unified === 'biome')
+    expect(biomeFlag?.native).toBe('--biome')
+    const turbopackFlag = v162Flags.flags.find(f => f.unified === 'turbopack')
+    expect(turbopackFlag?.native).toBe('')
+  })
+
+  it('next v16.0-v16.1 versionedFlags still uses native --turbopack', () => {
     const entry = getScaffolder('next')!
     const v16Flags = entry.versionedFlags!.find(vf => vf.versionRange === '>=16.0.0')!
     expect(v16Flags).toBeDefined()
-    const biomeFlag = v16Flags.flags.find(f => f.unified === 'biome')
-    expect(biomeFlag?.native).toBe('--biome')
+    const turbopackFlag = v16Flags.flags.find(f => f.unified === 'turbopack')
+    expect(turbopackFlag?.native).toBe('--turbopack')
+  })
+
+  it('next and astro prerequisites match current upstream Node engines', () => {
+    const next = getScaffolder('next')!
+    const astro = getScaffolder('astro')!
+    expect(next.prerequisites[0].versionRange).toBe('>=20.9.0')
+    expect(next.prerequisites[0].installInstructions.linux).toContain('setup_20.x')
+    expect(astro.prerequisites[0].versionRange).toBe('>=22.12.0')
+    expect(astro.prerequisites[0].installInstructions.linux).toContain('setup_22.x')
   })
 
   it('turbo uses -m for package-manager flag', () => {

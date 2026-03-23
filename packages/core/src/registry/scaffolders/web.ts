@@ -8,14 +8,14 @@
 import { defineScaffolder } from '@tinkerise/shared'
 
 /** Node.js prerequisite shared across all web scaffolders */
-function nodePrerequisite(versionRange: string) {
+function nodePrerequisite(versionRange: string, linuxNodeSourceMajor = '20') {
   return {
     command: 'node',
     versionFlag: '--version',
     versionRange,
     installInstructions: {
       darwin: 'brew install node',
-      linux: 'curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs',
+      linux: `curl -fsSL https://deb.nodesource.com/setup_${linuxNodeSourceMajor}.x | sudo -E bash - && sudo apt-get install -y nodejs`,
       win32: 'winget install OpenJS.NodeJS.LTS',
     },
   }
@@ -30,7 +30,8 @@ const pmValueMap = { npm: 'npm', pnpm: 'pnpm', yarn: 'yarn', bun: 'bun' }
  * Version-aware flags:
  * - v14 (base): --typescript, --skip-git
  * - v15+: --ts, --disable-git, --empty
- * - v16+: --biome
+ * - v16.0-v16.1: adds --biome, --react-compiler, --turbopack, --api
+ * - v16.2+: Turbopack is the default bundler, so --turbopack becomes a no-op
  */
 export const nextjs = defineScaffolder({
   name: 'next',
@@ -38,7 +39,7 @@ export const nextjs = defineScaffolder({
   command: 'npx',
   packageName: 'create-next-app',
   integration: { type: 'delegate', command: 'create-next-app' },
-  prerequisites: [nodePrerequisite('>=18.17.0')],
+  prerequisites: [nodePrerequisite('>=20.9.0')],
   flags: [
     { unified: 'typescript', native: '--typescript' },
     { unified: 'tailwind', native: '--tailwind' },
@@ -52,7 +53,27 @@ export const nextjs = defineScaffolder({
   ],
   versionedFlags: [
     {
-      // v16+: adds --biome, --react-compiler, --turbopack, --api, keeps all v15 flags
+      // v16.2+: Turbopack is the default bundler; keep unified flag as silent no-op
+      versionRange: '>=16.2.0',
+      flags: [
+        { unified: 'typescript', native: '--ts' },
+        { unified: 'tailwind', native: '--tailwind' },
+        { unified: 'eslint', native: '--eslint' },
+        { unified: 'biome', native: '--biome' },
+        { unified: 'no-git', native: '--disable-git' },
+        { unified: 'no-install', native: '--skip-install' },
+        { unified: 'package-manager', native: '--use-', valueMap: pmValueMap },
+        { unified: 'src-dir', native: '--src-dir' },
+        { unified: 'import-alias', native: '--import-alias' },
+        { unified: 'app-router', native: '--app' },
+        { unified: 'empty', native: '--empty' },
+        { unified: 'react-compiler', native: '--react-compiler' },
+        { unified: 'turbopack', native: '' },
+        { unified: 'api', native: '--api' },
+      ],
+    },
+    {
+      // v16.0-v16.1: adds --biome, --react-compiler, --turbopack, --api, keeps all v15 flags
       versionRange: '>=16.0.0',
       flags: [
         { unified: 'typescript', native: '--ts' },
@@ -126,7 +147,7 @@ export const astro = defineScaffolder({
   command: 'npx',
   packageName: 'create-astro',
   integration: { type: 'delegate', command: 'create-astro' },
-  prerequisites: [nodePrerequisite('>=18.17.1')],
+  prerequisites: [nodePrerequisite('>=22.12.0', '22')],
   flags: [
     { unified: 'typescript', native: '' },
     { unified: 'tailwind', native: '--add tailwindcss' },

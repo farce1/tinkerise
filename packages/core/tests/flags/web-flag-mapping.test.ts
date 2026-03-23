@@ -61,16 +61,22 @@ describe('web scaffolder flag resolution', () => {
       expect(result.versionUsed).toBeNull()
     })
 
-    it('biome: true -> ["--biome"] with v16+', () => {
+    it('biome: true -> ["--biome"] with v16.0-v16.1', () => {
       const result = resolveFlags({ entry, userFlags: { biome: true }, upstreamVersion: '16.1.0' })
       expect(result.args).toEqual(['--biome'])
       expect(result.versionUsed).toBe('>=16.0.0')
     })
 
-    it('v16 selects >=16.0.0 flags before >=15.0.0', () => {
+    it('v16.0 selects >=16.0.0 flags before >=15.0.0', () => {
       const result = resolveFlags({ entry, userFlags: { 'no-git': true }, upstreamVersion: '16.0.0' })
       expect(result.args).toEqual(['--disable-git'])
       expect(result.versionUsed).toBe('>=16.0.0')
+    })
+
+    it('v16.2 selects >=16.2.0 flags before >=16.0.0', () => {
+      const result = resolveFlags({ entry, userFlags: { 'no-git': true }, upstreamVersion: '16.2.0' })
+      expect(result.args).toEqual(['--disable-git'])
+      expect(result.versionUsed).toBe('>=16.2.0')
     })
 
     it('v15 selects >=15.0.0 flags (not >=16.0.0)', () => {
@@ -79,21 +85,33 @@ describe('web scaffolder flag resolution', () => {
       expect(result.versionUsed).toBe('>=15.0.0')
     })
 
-    it('react-compiler: true -> ["--react-compiler"] with v16+', () => {
-      const result = resolveFlags({ entry, userFlags: { 'react-compiler': true }, upstreamVersion: '16.1.0' })
+    it('react-compiler: true -> ["--react-compiler"] with v16.2+', () => {
+      const result = resolveFlags({ entry, userFlags: { 'react-compiler': true }, upstreamVersion: '16.2.1' })
       expect(result.args).toEqual(['--react-compiler'])
-      expect(result.versionUsed).toBe('>=16.0.0')
+      expect(result.versionUsed).toBe('>=16.2.0')
     })
 
-    it('turbopack: true -> ["--turbopack"] with v16+', () => {
+    it('turbopack: true -> ["--turbopack"] with v16.0-v16.1', () => {
       const result = resolveFlags({ entry, userFlags: { turbopack: true }, upstreamVersion: '16.1.0' })
       expect(result.args).toEqual(['--turbopack'])
       expect(result.versionUsed).toBe('>=16.0.0')
     })
 
-    it('api: true -> ["--api"] with v16+', () => {
-      const result = resolveFlags({ entry, userFlags: { api: true }, upstreamVersion: '16.1.0' })
+    it('turbopack: true -> [] with v16.2+ because Turbopack is already the default', () => {
+      const result = resolveFlags({ entry, userFlags: { turbopack: true }, upstreamVersion: '16.2.0' })
+      expect(result.args).toEqual([])
+      expect(result.versionUsed).toBe('>=16.2.0')
+    })
+
+    it('api: true -> ["--api"] with v16.2+', () => {
+      const result = resolveFlags({ entry, userFlags: { api: true }, upstreamVersion: '16.2.1' })
       expect(result.args).toEqual(['--api'])
+      expect(result.versionUsed).toBe('>=16.2.0')
+    })
+
+    it('react-compiler: true -> ["--react-compiler"] with v16.0-v16.1', () => {
+      const result = resolveFlags({ entry, userFlags: { 'react-compiler': true }, upstreamVersion: '16.1.0' })
+      expect(result.args).toEqual(['--react-compiler'])
       expect(result.versionUsed).toBe('>=16.0.0')
     })
   })
