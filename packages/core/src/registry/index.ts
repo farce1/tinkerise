@@ -30,23 +30,26 @@ function register(...entries: ScaffolderEntry[]): void {
 // Register all built-in scaffolders
 register(nextjs, vite, astro, t3, remix, tanstack, turbo, fastapi, django, go, rust, express, flutter, reactnative)
 
+// Seal the registry — no more modifications allowed after initialization
+const frozenRegistry: ReadonlyMap<string, ScaffolderEntry> = registry
+
 /**
  * Look up a scaffolder by name.
  */
 export function getScaffolder(name: string): ScaffolderEntry | undefined {
-  return registry.get(name)
+  return frozenRegistry.get(name)
 }
 
 /**
  * Get all registered scaffolders.
  */
 export function getAllScaffolders(): ScaffolderEntry[] {
-  return [...registry.values()]
+  return [...frozenRegistry.values()]
 }
 
 /**
  * Get scaffolders filtered by category.
  */
 export function getScaffoldersByCategory(category: ScaffolderCategory): ScaffolderEntry[] {
-  return [...registry.values()].filter(s => s.category === category)
+  return [...frozenRegistry.values()].filter(s => s.category === category)
 }

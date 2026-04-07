@@ -26,12 +26,8 @@ async function checkPrereqStatus(entry: ScaffolderEntry): Promise<boolean> {
   if (entry.prerequisites.length === 0)
     return true
   try {
-    for (const prereq of entry.prerequisites) {
-      const result = await checkPrerequisite(prereq)
-      if (!result.ok)
-        return false
-    }
-    return true
+    const results = await Promise.all(entry.prerequisites.map(checkPrerequisite))
+    return results.every(r => r.ok)
   }
   catch {
     return false
@@ -73,8 +69,14 @@ export async function listScaffolders(filterCategory?: string): Promise<void> {
     const label = CATEGORY_LABELS[cat] ?? cat
     console.log(`\n${pc.bold(label)}`)
 
-    for (const item of items) {
-      const prereqOk = await checkPrereqStatus(item)
+    const prereqResults = await Promise.all(
+      items.map(async item => ({
+        item,
+        ok: await checkPrereqStatus(item),
+      })),
+    )
+
+    for (const { item, ok: prereqOk } of prereqResults) {
       const icon = prereqOk ? pc.green('\u2713') : pc.red('\u2717')
       const metadata = getScaffolderMetadata(item.name)
       const displayName = metadata?.displayName ?? item.name

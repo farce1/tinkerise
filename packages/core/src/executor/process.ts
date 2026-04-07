@@ -32,5 +32,6 @@ export async function spawnScaffolder(
     reject: false,
   })
 
+  // Use ?? (not ||) to preserve exitCode 0 — only fallback when null/undefined
   return { exitCode: result.exitCode ?? 1 }
 }

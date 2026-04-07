@@ -1,5 +1,18 @@
 [
   {
+    "version": "v0.2.3",
+    "publishedAt": "2026-02-28T10:46:48Z",
+    "url": "https://github.com/farce1/tinkerise/releases/tag/v0.2.3",
+    "sections": {
+      "Features": [],
+      "Fixes": [
+        "**fix**: Pin `npx tinkerise` to exact version `@0.2.3` in skill file to resolve Snyk WO12 medium-risk finding (\"Unverifiable external dependency detected\"). All `npx tinkerise` commands in `SKILL.md` now reference a specific, auditable package version instead of fetching arbitrary latest code at runtime."
+      ],
+      "Docs": [],
+      "Maintenance": []
+    }
+  },
+  {
     "version": "v0.2.1",
     "publishedAt": "2026-02-27T17:46:20Z",
     "url": "https://github.com/farce1/tinkerise/releases/tag/v0.2.1",

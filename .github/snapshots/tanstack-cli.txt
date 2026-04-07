@@ -23,6 +23,8 @@ Options:
   --toolchain <biome|eslint>                       Explicitly tell the CLI to use this toolchain
   --no-toolchain                                   skip toolchain selection
   --interactive                                    interactive mode (default: false)
+  --non-interactive                                skip prompts and use defaults (default: false)
+  -y, --yes                                        accept defaults and skip prompts (default: false)
   --add-ons [...add-ons]                           pick from a list of available add-ons (comma separated list)
   --list-add-ons                                   list all available add-ons (default: false)
   --addon-details <addon-id>                       show detailed information about a specific add-on

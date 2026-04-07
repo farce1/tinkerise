@@ -18,12 +18,18 @@ import { allEnhancementModules } from '@tinkerise/core'
 export async function showEnhancementPicker(
   ctx: ProjectContext,
 ): Promise<EnhancementModule[]> {
-  // Run detect() on all modules in parallel
+  // Run detect() on all modules in parallel with timeout protection
+  const DETECT_TIMEOUT_MS = 5000
   const detections = await Promise.all(
-    allEnhancementModules.map(async mod => ({
-      mod,
-      detection: await mod.detect(ctx),
-    })),
+    allEnhancementModules.map(async (mod) => {
+      const detection = await Promise.race([
+        mod.detect(ctx),
+        new Promise<{ installed: false }>((_, reject) =>
+          setTimeout(() => reject(new Error(`detect() timed out for ${mod.id}`)), DETECT_TIMEOUT_MS),
+        ),
+      ]).catch(() => ({ installed: false as const }))
+      return { mod, detection }
+    }),
   )
 
   const options = detections.map(({ mod, detection }) => ({

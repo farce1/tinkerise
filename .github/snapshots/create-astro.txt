@@ -2,7 +2,7 @@
 npm warn exec The following package was not found and will be installed: create-astro@5.0.3
 
 
- create-astro   v5.0.3 Scaffold Astro projects.
+ create-astro   v5.0.4 Scaffold Astro projects.
 
 create-astro [dir] [...flags]
 
