@@ -466,21 +466,33 @@ describe('resolveConfig is called in all entry modes', () => {
     })
   })
 
-  it('calls resolveConfig in interactive flow', async () => {
+  it('calls resolveConfig in interactive flow without project config loading', async () => {
     const cmd = createMockCommand()
     await runInteractiveFlow(cmd, {})
     expect(mockResolveConfig).toHaveBeenCalledOnce()
+    expect(mockResolveConfig).toHaveBeenCalledWith({
+      presetName: undefined,
+      includeProjectConfig: false,
+    })
   })
 
-  it('calls resolveConfig in category flow', async () => {
+  it('calls resolveConfig in category flow without project config loading', async () => {
     const cmd = createMockCommand()
     await runCategoryFlow('web', cmd, {})
     expect(mockResolveConfig).toHaveBeenCalledOnce()
+    expect(mockResolveConfig).toHaveBeenCalledWith({
+      presetName: undefined,
+      includeProjectConfig: false,
+    })
   })
 
-  it('calls resolveConfig in direct execution', async () => {
+  it('calls resolveConfig in direct execution without project config loading', async () => {
     const cmd = createMockCommand()
     await runDirectExecution('web', 'next', 'my-app', cmd, {})
     expect(mockResolveConfig).toHaveBeenCalledOnce()
+    expect(mockResolveConfig).toHaveBeenCalledWith({
+      presetName: undefined,
+      includeProjectConfig: false,
+    })
   })
 })

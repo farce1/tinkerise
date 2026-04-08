@@ -164,6 +164,27 @@ describe('resolveConfig()', () => {
     })
   })
 
+  it('skips project config when includeProjectConfig is false', async () => {
+    mockLoadProject.mockClear()
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'test-preset',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: { typescript: false },
+    })
+    mockLoadGlobal.mockResolvedValue({ packageManager: 'pnpm' })
+
+    const result = await resolveConfig({
+      presetName: 'test-preset',
+      includeProjectConfig: false,
+      cliFlags: { typescript: true },
+    })
+
+    expect(mockLoadProject).not.toHaveBeenCalled()
+    expect(result).toEqual({ packageManager: 'pnpm', typescript: true })
+  })
+
   it('preset name that does not exist is silently ignored', async () => {
     mockLoadPreset.mockResolvedValue(null)
     mockLoadGlobal.mockResolvedValue({ packageManager: 'npm' })
