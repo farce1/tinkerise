@@ -164,8 +164,6 @@ describe('resolveConfig()', () => {
     })
   })
 
-
-
   it('skips project config when includeProjectConfig is false', async () => {
     mockLoadPreset.mockResolvedValue({
       version: 1,
