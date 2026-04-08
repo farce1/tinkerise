@@ -22,6 +22,8 @@ export interface ResolveConfigOptions {
   cliFlags?: Partial<TinkeriseUserConfig>
   /** Active preset name — loaded and used as lowest priority layer */
   presetName?: string
+  /** Whether to load executable project config (tinkerise.config.ts). Default: true */
+  includeProjectConfig?: boolean
 }
 
 /**
@@ -31,6 +33,7 @@ export interface ResolveConfigOptions {
  * 1. Preset config (lowest priority) — loaded by name if presetName provided
  * 2. Global config (~/.config/tinkerise/config.json) — overrides preset
  * 3. Project config (tinkerise.config.ts in projectDir) — overrides global
+ *    (skipped when includeProjectConfig is false)
  * 4. CLI flags — highest priority, overrides everything
  *
  * Missing sources are silently skipped. Returns `{}` if no config found.
@@ -46,7 +49,9 @@ export async function resolveConfig(
   }
 
   const globalConfig = await loadGlobalConfig()
-  const projectConfig = await loadProjectConfig(options.projectDir ?? process.cwd())
+  const projectConfig = options.includeProjectConfig === false
+    ? null
+    : await loadProjectConfig(options.projectDir ?? process.cwd())
 
   return mergeConfigChain(presetConfig, globalConfig, projectConfig, options.cliFlags)
 }

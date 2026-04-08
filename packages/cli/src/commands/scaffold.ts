@@ -182,8 +182,8 @@ async function resolveConfigAndPreset(
   options: ScaffoldOptions,
 ): Promise<{ config: Partial<TinkeriseUserConfig>, preset: PresetData | null }> {
   const config = await resolveConfig({
-    projectDir: process.cwd(),
     presetName: options.preset,
+    includeProjectConfig: false,
   })
 
   const preset = options.preset ? await loadPreset(options.preset) : null
