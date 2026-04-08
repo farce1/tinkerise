@@ -165,6 +165,7 @@ describe('resolveConfig()', () => {
   })
 
   it('skips project config when includeProjectConfig is false', async () => {
+    mockLoadProject.mockClear()
     mockLoadPreset.mockResolvedValue({
       version: 1,
       name: 'test-preset',
@@ -174,15 +175,13 @@ describe('resolveConfig()', () => {
     })
     mockLoadGlobal.mockResolvedValue({ packageManager: 'pnpm' })
 
-    const callsBefore = mockLoadProject.mock.calls.length
-
     const result = await resolveConfig({
       presetName: 'test-preset',
       includeProjectConfig: false,
       cliFlags: { typescript: true },
     })
 
-    expect(mockLoadProject.mock.calls.length).toBe(callsBefore)
+    expect(mockLoadProject).not.toHaveBeenCalled()
     expect(result).toEqual({ packageManager: 'pnpm', typescript: true })
   })
 
