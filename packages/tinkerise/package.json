@@ -30,15 +30,12 @@
     "@tinkerise/cli": "^0.2.4"
   },
   "files": [
-    "bin.mjs",
-    "postinstall.mjs"
+    "bin.mjs"
   ],
-  "scripts": {
-    "postinstall": "node postinstall.mjs"
-  },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
   },
   "engines": {
     "node": ">=20.11.0"

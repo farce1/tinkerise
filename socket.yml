@@ -1,0 +1,70 @@
+version: 2
+
+# Socket.dev security configuration for tinkerise
+# https://docs.socket.dev/docs/socket-yml
+
+projectType: library
+
+issueRules:
+  # Install scripts - we have none in any published package
+  hasInstallScripts:
+    action: error
+
+  # Network access - only optional npm registry version check
+  networkAccess:
+    action: warn
+
+  # Shell access - we use execa with argument arrays (safe)
+  shellAccess:
+    action: warn
+
+  # No eval or dynamic code execution
+  usesEval:
+    action: error
+
+  # No obfuscated code
+  obfuscatedCode:
+    action: error
+
+  # No telemetry
+  telemetry:
+    action: error
+
+  # No native code
+  nativeCode:
+    action: warn
+
+  # License compliance - MIT, Apache-2.0, BSD, ISC only
+  nonPermissiveLicense:
+    action: error
+
+  # No deprecated or unmaintained dependencies
+  deprecated:
+    action: warn
+
+  unmaintained:
+    action: warn
+
+  # No known vulnerabilities
+  knownMalware:
+    action: error
+
+  criticalCVE:
+    action: error
+
+  highCVE:
+    action: error
+
+  mediumCVE:
+    action: warn
+
+  # No trivial/empty packages
+  emptyPackage:
+    action: error
+
+  # Filesystem and environment access awareness
+  filesystemAccess:
+    action: warn
+
+  environmentVariableAccess:
+    action: warn

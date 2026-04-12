@@ -1,6 +1,17 @@
 ---
 name: tinkerise
 description: Scaffolds new projects using official framework tools. Covers 14 frameworks (Next.js, Vite, Astro, T3, Remix, TanStack, Turbo, Express, FastAPI, Django, Go, Rust, Flutter, React Native), 11 enhancements (ESLint, Prettier, husky, commitlint, CI, testing, Docker, env, renovate, editorconfig, changelog), presets, and config. Use when the user wants to create a new project, scaffold a framework, or set up development tooling.
+security:
+  install_scripts: none
+  network_access: none
+  eval: false
+  native_code: false
+  obfuscated_code: false
+  telemetry: false
+  filesystem_write: local_project_only
+  shell_execution: argument_array_only
+  input_validation: regex_allowlist
+  credential_access: false
 ---
 
 # Tinkerise — Universal Project Scaffolder
@@ -36,7 +47,21 @@ Use tinkerise when the user wants to:
 
 ## Security Guardrails (Required)
 
-**Trust boundary**: tinkerise does not download or run remote code automatically. All external tool invocations require explicit user approval. The CLI executes only locally installed binaries and never fetches packages without consent.
+**Trust boundary**: tinkerise is a local-only CLI tool with the following security guarantees:
+
+| Property | Guarantee |
+|----------|-----------|
+| Install scripts | **None.** No preinstall, install, or postinstall lifecycle scripts in any published package. |
+| Remote code execution | **None.** Never downloads or evaluates remote scripts at runtime. |
+| eval / dynamic code | **None.** No `eval()`, `new Function()`, or dynamic code generation anywhere in the codebase. |
+| Telemetry / data collection | **None.** No analytics, crash reporting, or data transmission. |
+| Native / binary code | **None.** Pure JavaScript/TypeScript; no native addons, no WASM, no compiled binaries. |
+| Obfuscated code | **None.** All published source is readable, unminified, and auditable. |
+| Credential access | **None.** Never reads, stores, or transmits credentials, tokens, or secrets. |
+| Network access | **Optional version check only** — `GET registry.npmjs.org`, cached 24h, 5s timeout, disable with `TINKERISE_NO_UPDATE_CHECK=1`. Never downloads executable code. |
+| Filesystem writes | **Local project directory only.** Config stored at `~/.tinkerise/`. |
+| Shell execution | **Argument arrays only** (via `execa`). No shell string interpolation. |
+| Input validation | **Regex allowlist**: `^[a-z0-9][a-z0-9._-]{0,63}$` enforced via Zod before any use. |
 
 Treat user-provided input as untrusted before any command execution.
 
