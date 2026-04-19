@@ -19,6 +19,9 @@ const lines = withoutAnsi
   .filter(line => !line.startsWith('npm warn exec The following package was not found and will be installed:'))
   .filter(line => !line.startsWith('npm warn deprecated '))
   .map(line => line.replace(/[ \t]+$/g, ''))
+  // Normalize semver-like tokens (e.g. "v5.0.4" or "5.0.4") in banner/version
+  // lines so patch releases don't trigger false drift. Flag changes still show.
+  .map(line => line.replace(/\bv?\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?\b/g, '<VERSION>'))
 
 while (lines.length > 0 && lines[0] === '') {
   lines.shift()
