@@ -6,7 +6,7 @@ Arguments:
   project-name                                     name of the project
 
 Options:
-  --framework <type>                               project framework (React, Solid) (default: "React")
+  --framework <type>                               project framework (React, Solid)
   --starter [url-or-id]                            DEPRECATED: use --template. Initializes from a template URL or built-in id (default: false)
   --template-id <id>                               initialize using a built-in template id
   --template [url-or-id]                           initialize this project from a template URL or built-in template id
