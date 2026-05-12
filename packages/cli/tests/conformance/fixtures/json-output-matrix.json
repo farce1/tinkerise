@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "suite": "json-output-matrix",
+  "description": "Phase 33 --json structured output contract",
+  "scenarios": [
+    {
+      "id": "list-json-default",
+      "name": "tinkerise list --json emits full scaffolder/template/enhancement payload",
+      "requirements": ["CLI-12", "CLI-15"],
+      "entry": "dist",
+      "argv": ["list", "--json"],
+      "expect": {
+        "exitCode": 0,
+        "schema": "list",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "list-json-filtered",
+      "name": "tinkerise list web --json yields only web scaffolders with empty templates/enhancements arrays (D-21)",
+      "requirements": ["CLI-12", "CLI-15"],
+      "entry": "dist",
+      "argv": ["list", "web", "--json"],
+      "expect": {
+        "exitCode": 0,
+        "schema": "list",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "dataAssert": "data.templates.length === 0 && data.enhancements.length === 0 && data.scaffolders.every(s => s.category === 'web')",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "list-json-invalid-category",
+      "name": "tinkerise list bogus --json surfaces INVALID_CATEGORY error envelope (D-05)",
+      "requirements": ["CLI-12", "CLI-15"],
+      "entry": "dist",
+      "argv": ["list", "bogus", "--json"],
+      "expect": {
+        "exitCode": 1,
+        "schema": "list",
+        "envelopeKind": "error",
+        "expectedErrorCode": "INVALID_CATEGORY",
+        "stdoutShape": "single-json-object",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "doctor-json-pass",
+      "name": "tinkerise doctor --json on Node.js-installed host emits data envelope with requiredFailed=0, exit 0 (D-23, D-24)",
+      "requirements": ["CLI-13", "CLI-15"],
+      "entry": "dist",
+      "argv": ["doctor", "--json"],
+      "expect": {
+        "exitCode": 0,
+        "schema": "doctor",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "dataAssert": "data.summary.requiredFailed === 0 && typeof data.summary.optionalFailed === 'number' && data.checks.some(c => c.tool === 'Node.js' && c.required === true)",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "doctor-json-required-fail",
+      "name": "doctor JSON with injected required failure emits DATA envelope (not error envelope) + exit 1 (D-23, D-24) — uses runDoctorChecks seam",
+      "requirements": ["CLI-13", "CLI-15"],
+      "entry": "harness",
+      "harness": "doctor-required-fail-harness.mjs",
+      "expect": {
+        "exitCode": 1,
+        "schema": "doctor",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "dataAssert": "data.summary.requiredFailed >= 1 && typeof data.summary.optionalFailed === 'number' && data.checks.some(c => c.required === true && c.ok === false)",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "preset-list-json-empty",
+      "name": "tinkerise preset list --json with no local/npm presets emits empty arrays (D-21)",
+      "requirements": ["CLI-14", "CLI-15"],
+      "entry": "dist",
+      "argv": ["preset", "list", "--json"],
+      "envOverride": { "HOME": "__USE_TMPDIR__", "XDG_CONFIG_HOME": "__USE_TMPDIR__" },
+      "expect": {
+        "exitCode": 0,
+        "schema": "preset-list",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "dataAssert": "Array.isArray(data.local) && Array.isArray(data.npm) && data.local.length === 0 && data.npm.length === 0",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "preset-show-json-found",
+      "name": "tinkerise preset show <name> --json with a pre-seeded local preset emits full payload",
+      "requirements": ["CLI-14", "CLI-15"],
+      "entry": "dist",
+      "argv": ["preset", "show", "phase33-fixture-preset", "--json"],
+      "preSeed": "phase33-fixture-preset",
+      "expect": {
+        "exitCode": 0,
+        "schema": "preset-show",
+        "envelopeKind": "data",
+        "stdoutShape": "single-json-object",
+        "dataAssert": "data.name === 'phase33-fixture-preset' && data.source === 'local' && typeof data.filePath === 'string'",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    },
+    {
+      "id": "preset-show-json-not-found",
+      "name": "tinkerise preset show <missing> --json emits PRESET_NOT_FOUND error envelope, exit 1 (D-08)",
+      "requirements": ["CLI-14", "CLI-15"],
+      "entry": "dist",
+      "argv": ["preset", "show", "no-such-preset-phase33", "--json"],
+      "envOverride": { "HOME": "__USE_TMPDIR__", "XDG_CONFIG_HOME": "__USE_TMPDIR__" },
+      "expect": {
+        "exitCode": 1,
+        "schema": "preset-show",
+        "envelopeKind": "error",
+        "expectedErrorCode": "PRESET_NOT_FOUND",
+        "stdoutShape": "single-json-object",
+        "stderr": { "required": [], "forbidden": ["re:^\\s*\\{"] }
+      }
+    }
+  ]
+}
