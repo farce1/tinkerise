@@ -15,7 +15,7 @@
 import type { ConflictAction, EnhancementModule } from '@tinkerise/core'
 import type { PresetData, TinkeriseUserConfig } from '@tinkerise/shared'
 import type { Command } from 'commander'
-import * as p from '@clack/prompts'
+import path from 'node:path'
 import {
   allEnhancementModules,
   buildProjectContext,
@@ -36,8 +36,17 @@ import {
   showEnhancementSummary,
   showPerEnhancementSummary,
 } from '@tinkerise/core'
-import { PresetNameSchema } from '@tinkerise/shared'
+import { PresetListEnvelopeV1Schema, PresetNameSchema, PresetShowEnvelopeV1Schema } from '@tinkerise/shared'
 import pc from 'picocolors'
+import {
+  cancel,
+  confirm,
+  isCancel,
+  log,
+  select,
+  text,
+} from '../utils/clack-output.js'
+import { emitJson, isJsonMode } from '../utils/output-mode.js'
 
 const PRESET_NAME_VALID_VALUES = 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars'
 
@@ -45,6 +54,33 @@ function assertValidPresetName(name: string): void {
   if (!PresetNameSchema.safeParse(name).success) {
     throw new ConfigValidationError('presetName', name, PRESET_NAME_VALID_VALUES)
   }
+}
+
+/**
+ * Build the JSON payload for `tinkerise preset list --json` (CLI-14).
+ *
+ * Mirrors the data the human path consumes (local presets via listPresets
+ * + loadPreset for descriptions, npm presets via discoverNpmPresets) but
+ * reshaped to PresetListPayloadV1. D-21: empty arrays preserved. D-22:
+ * `description` omitted when absent.
+ */
+async function buildPresetListPayload(): Promise<{
+  local: Array<{ name: string, description?: string }>
+  npm: Array<{ package: string }>
+}> {
+  const localNames = await listPresets()
+  const npmPackages = await discoverNpmPresets(process.cwd())
+
+  const local = await Promise.all(localNames.map(async (name): Promise<{ name: string, description?: string }> => {
+    const data = await loadPreset(name)
+    if (data?.description) {
+      return { name, description: data.description }
+    }
+    return { name }
+  }))
+  const npm = npmPackages.map(pkg => ({ package: pkg }))
+
+  return { local, npm }
 }
 
 /**
@@ -81,19 +117,19 @@ Examples:
       let category = options.category
 
       if (!framework) {
-        const result = await p.text({
+        const result = await text({
           message: 'Framework/scaffolder ID (e.g., next, vite, astro):',
           validate: v => (!v || v.length === 0 ? 'Framework is required' : undefined),
         })
-        if (p.isCancel(result)) {
-          p.cancel('Cancelled.')
+        if (isCancel(result)) {
+          cancel('Cancelled.')
           process.exit(0)
         }
         framework = result
       }
 
       if (!category) {
-        const result = await p.select({
+        const result = await select({
           message: 'Scaffolder category:',
           options: [
             { value: 'web', label: 'web' },
@@ -101,8 +137,8 @@ Examples:
             { value: 'mobile', label: 'mobile' },
           ],
         })
-        if (p.isCancel(result)) {
-          p.cancel('Cancelled.')
+        if (isCancel(result)) {
+          cancel('Cancelled.')
           process.exit(0)
         }
         category = result as string
@@ -144,9 +180,9 @@ Examples:
       await savePreset(presetData)
 
       const presetsDir = getPresetsDir()
-      p.log.success(`Preset "${name}" saved to ${presetsDir}/${name}.json`)
+      log.success(`Preset "${name}" saved to ${presetsDir}/${name}.json`)
       if (installedEnhancements.length > 0) {
-        p.log.info(`  Enhancements: ${installedEnhancements.join(', ')}`)
+        log.info(`  Enhancements: ${installedEnhancements.join(', ')}`)
       }
     })
     .addHelpText('after', `
@@ -174,19 +210,19 @@ Examples:
       }
 
       // Apply directly without confirmation (per user decision)
-      p.log.info(`Applying preset "${presetData.name}"${presetData.description ? ` — ${presetData.description}` : ''}`)
-      p.log.info(`  Framework: ${presetData.scaffold.framework} (${presetData.scaffold.category})`)
+      log.info(`Applying preset "${presetData.name}"${presetData.description ? ` — ${presetData.description}` : ''}`)
+      log.info(`  Framework: ${presetData.scaffold.framework} (${presetData.scaffold.category})`)
       if (presetData.enhancements.length > 0) {
-        p.log.info(`  Enhancements: ${presetData.enhancements.join(', ')}`)
+        log.info(`  Enhancements: ${presetData.enhancements.join(', ')}`)
       }
       if (Object.keys(presetData.config).length > 0) {
-        p.log.info(`  Config: ${JSON.stringify(presetData.config)}`)
+        log.info(`  Config: ${JSON.stringify(presetData.config)}`)
       }
 
       // Apply enhancements if the preset has any
       if (presetData.enhancements.length > 0) {
-        p.log.info('')
-        p.log.info(pc.bold('Applying enhancements...'))
+        log.info('')
+        log.info(pc.bold('Applying enhancements...'))
 
         // Build project context for enhancement execution
         const ctx = await buildProjectContext({
@@ -210,7 +246,7 @@ Examples:
 
         // Warn about unknown enhancements (may be from a newer version)
         if (unknownEnhancements.length > 0) {
-          p.log.warn(pc.yellow(`Unknown enhancements (skipped): ${unknownEnhancements.join(', ')}`))
+          log.warn(pc.yellow(`Unknown enhancements (skipped): ${unknownEnhancements.join(', ')}`))
         }
 
         if (modules.length > 0) {
@@ -222,15 +258,15 @@ Examples:
               if (isCI)
                 return 'skip'
               console.log(diff)
-              const action = await p.select({
+              const action = await select({
                 message: 'Config file already exists. What would you like to do?',
                 options: [
                   { value: 'replace', label: 'Accept', hint: 'Apply the new config' },
                   { value: 'skip', label: 'Skip', hint: 'Keep existing config' },
                 ],
               })
-              if (p.isCancel(action)) {
-                p.cancel('Cancelled.')
+              if (isCancel(action)) {
+                cancel('Cancelled.')
                 process.exit(0)
               }
               return action as ConflictAction
@@ -238,11 +274,11 @@ Examples:
             onDependencyApproval: async (_moduleId, deps): Promise<boolean> => {
               if (isCI)
                 return true
-              const result = await p.confirm({
+              const result = await confirm({
                 message: `Missing dependencies: ${deps.join(', ')}. Continue anyway?`,
               })
-              if (p.isCancel(result)) {
-                p.cancel('Cancelled.')
+              if (isCancel(result)) {
+                cancel('Cancelled.')
                 process.exit(0)
               }
               return result as boolean
@@ -274,7 +310,7 @@ Examples:
         }
       }
 
-      p.log.success(`Preset "${name}" applied.`)
+      log.success(`Preset "${name}" applied.`)
     })
     .addHelpText('after', `
 Examples:
@@ -286,35 +322,112 @@ Examples:
     .command('list')
     .description('Show available presets (local + npm)')
     .action(async () => {
+      // JSON mode (CLI-14): emit one validated envelope and return early
+      // (D-12 — no clack log output runs in this branch).
+      if (isJsonMode()) {
+        const data = await buildPresetListPayload()
+        const envelope = PresetListEnvelopeV1Schema.parse({ schemaVersion: 1, command: 'preset.list', data })
+        emitJson(envelope)
+        return
+      }
+
       const locals = await listPresets()
       const npms = await discoverNpmPresets(process.cwd())
 
-      p.log.info(pc.bold('Local presets:'))
+      log.info(pc.bold('Local presets:'))
       if (locals.length > 0) {
         for (const name of locals) {
           const data = await loadPreset(name)
           const desc = data?.description ? ` — ${data.description}` : ''
-          p.log.info(`  ${name}${desc}`)
+          log.info(`  ${name}${desc}`)
         }
       }
       else {
-        p.log.info('  (none)')
+        log.info('  (none)')
       }
 
-      p.log.info(pc.bold('npm presets:'))
+      log.info(pc.bold('npm presets:'))
       if (npms.length > 0) {
         for (const pkg of npms) {
-          p.log.info(`  ${pkg}`)
+          log.info(`  ${pkg}`)
         }
       }
       else {
-        p.log.info('  (none)')
+        log.info('  (none)')
       }
     })
     .addHelpText('after', `
 Examples:
   $ ${programName} preset list                Show all local and npm presets
   $ ${programName} preset list | grep team    Filter presets to find team conventions quickly`)
+
+  // --- preset show <name> ---
+  preset
+    .command('show <name>')
+    .description('Show full preset details (scaffold, enhancements, config)')
+    .action(async (name: string) => {
+      // Validate the name BEFORE any filesystem lookup — prevents path
+      // traversal via crafted names (threat T-33-10 mitigation).
+      assertValidPresetName(name)
+
+      // Try local first, then fall back to npm. `getPresetsDir()` from
+      // @tinkerise/core owns the directory location — no hardcoded path.
+      let presetData = await loadPreset(name)
+      let source: 'local' | 'npm' = 'local'
+      let filePath: string | undefined
+
+      if (presetData) {
+        filePath = path.join(getPresetsDir(), `${name}.json`)
+      }
+      else {
+        presetData = await loadNpmPreset(`tinkerise-preset-${name}`)
+        source = 'npm'
+      }
+
+      if (!presetData) {
+        throw new PresetNotFoundError(name) // D-08 -> handleError JSON envelope
+      }
+
+      if (isJsonMode()) {
+        const data = {
+          name: presetData.name,
+          ...(presetData.description ? { description: presetData.description } : {}),
+          source,
+          ...(source === 'local' && filePath ? { filePath } : {}),
+          scaffold: {
+            framework: presetData.scaffold.framework,
+            category: presetData.scaffold.category,
+            flags: presetData.scaffold.flags,
+          },
+          enhancements: presetData.enhancements,
+          config: presetData.config ?? {},
+        }
+        const envelope = PresetShowEnvelopeV1Schema.parse({ schemaVersion: 1, command: 'preset.show', data })
+        emitJson(envelope)
+        return
+      }
+
+      // Human path — routes through the clack-output wrapper (D-13).
+      log.info(pc.bold(`Preset: ${presetData.name}`))
+      if (presetData.description) {
+        log.info(`  ${presetData.description}`)
+      }
+      log.info(`  source: ${source}`)
+      if (filePath) {
+        log.info(`  path: ${filePath}`)
+      }
+      log.info(`  framework: ${presetData.scaffold.framework} (${presetData.scaffold.category})`)
+      if (presetData.enhancements.length > 0) {
+        log.info(`  enhancements: ${presetData.enhancements.join(', ')}`)
+      }
+      if (Object.keys(presetData.config).length > 0) {
+        log.info(`  config: ${JSON.stringify(presetData.config)}`)
+      }
+    })
+    .addHelpText('after', `
+Examples:
+  $ ${programName} preset show team-defaults             Show full details for a local preset
+  $ ${programName} preset show team-defaults --json      Same, machine-readable`)
 
   // --- preset delete <name> ---
   preset
@@ -326,7 +439,7 @@ Examples:
       const deleted = await deletePreset(name)
 
       if (deleted) {
-        p.log.success(`Preset "${name}" deleted.`)
+        log.success(`Preset "${name}" deleted.`)
       }
       else {
         throw new PresetNotFoundError(name)

@@ -56,4 +56,4 @@ export const log = {
   },
 }
 
-export { cancel, intro, isCancel, note, outro, spinner } from '@clack/prompts'
+export { cancel, confirm, intro, isCancel, note, outro, select, spinner, text } from '@clack/prompts'

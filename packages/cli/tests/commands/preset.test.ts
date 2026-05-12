@@ -179,6 +179,10 @@ vi.stubGlobal('process', {
 async function runPresetCommand(args: string[]): Promise<void> {
   const program = new Command()
   program.exitOverride()
+  // Mirror the production CLI: --json is a global option registered by
+  // packages/cli/src/index.ts. Subcommands inherit it for help symmetry
+  // and rely on isJsonMode() (driven by argv) to switch branches.
+  program.option('--json', 'Emit machine-readable JSON output')
   registerPresetCommand(program)
   await program.parseAsync(['node', 'tinkerise', ...args])
 }
