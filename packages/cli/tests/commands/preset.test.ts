@@ -19,7 +19,7 @@
 
 import { Command } from 'commander'
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { registerPresetCommand } from '../../src/commands/preset.js'
 
 // vi.hoisted mock fns for @tinkerise/core
@@ -568,5 +568,278 @@ describe('preset delete', () => {
       runPresetCommand(['preset', 'delete', '../outside']),
     ).rejects.toThrow('Invalid value')
     expect(mockDeletePreset).not.toHaveBeenCalled()
+  })
+})
+
+describe('preset list --json (CLI-14)', () => {
+  let stdoutSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { __resetJsonModeForTests, detectJsonMode } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+    detectJsonMode(['node', 'tinkerise', 'preset', 'list', '--json'])
+    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+  })
+
+  afterEach(async () => {
+    stdoutSpy.mockRestore()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+  })
+
+  function readEnvelope(): { schemaVersion: number, command: string, data: { local: Array<Record<string, unknown>>, npm: Array<Record<string, unknown>> } } {
+    const calls = stdoutSpy.mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    return JSON.parse(String(calls[0]![0]))
+  }
+
+  it('emits envelope with schemaVersion 1 and command "preset.list"', async () => {
+    mockListPresets.mockResolvedValue([])
+    mockDiscoverNpmPresets.mockResolvedValue([])
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.schemaVersion).toBe(1)
+    expect(envelope.command).toBe('preset.list')
+  })
+
+  it('preserves empty arrays for local and npm when no presets exist (D-21)', async () => {
+    mockListPresets.mockResolvedValue([])
+    mockDiscoverNpmPresets.mockResolvedValue([])
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.local).toEqual([])
+    expect(envelope.data.npm).toEqual([])
+  })
+
+  it('emits local entries with description when present', async () => {
+    mockListPresets.mockResolvedValue(['my-stack'])
+    mockDiscoverNpmPresets.mockResolvedValue([])
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'my-stack',
+      description: 'My stack preset',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.local).toHaveLength(1)
+    expect(envelope.data.local[0]).toEqual({ name: 'my-stack', description: 'My stack preset' })
+  })
+
+  it('omits description from local entry when absent (D-22)', async () => {
+    mockListPresets.mockResolvedValue(['no-desc'])
+    mockDiscoverNpmPresets.mockResolvedValue([])
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'no-desc',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.local[0]).toEqual({ name: 'no-desc' })
+    expect(envelope.data.local[0]).not.toHaveProperty('description')
+  })
+
+  it('emits npm entries with package field', async () => {
+    mockListPresets.mockResolvedValue([])
+    mockDiscoverNpmPresets.mockResolvedValue(['tinkerise-preset-saas', 'tinkerise-preset-team'])
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.npm).toEqual([
+      { package: 'tinkerise-preset-saas' },
+      { package: 'tinkerise-preset-team' },
+    ])
+  })
+
+  it('emit is exactly one JSON object on stdout', async () => {
+    mockListPresets.mockResolvedValue([])
+    mockDiscoverNpmPresets.mockResolvedValue([])
+
+    await runPresetCommand(['preset', 'list', '--json'])
+
+    expect(stdoutSpy).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('preset show <name> (CLI-14, D-06)', () => {
+  let stdoutSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+  })
+
+  afterEach(async () => {
+    stdoutSpy.mockRestore()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+  })
+
+  it('throws PresetNotFoundError when preset not found in either source', async () => {
+    mockLoadPreset.mockResolvedValue(null)
+    mockLoadNpmPreset.mockResolvedValue(null)
+
+    await expect(
+      runPresetCommand(['preset', 'show', 'nope']),
+    ).rejects.toThrow('Preset not found')
+  })
+
+  it('rejects unsafe preset names', async () => {
+    await expect(
+      runPresetCommand(['preset', 'show', '../outside']),
+    ).rejects.toThrow('Invalid value')
+    expect(mockLoadPreset).not.toHaveBeenCalled()
+    expect(mockLoadNpmPreset).not.toHaveBeenCalled()
+  })
+
+  it('falls back to npm preset when local not found (human mode)', async () => {
+    mockLoadPreset.mockResolvedValue(null)
+    mockLoadNpmPreset.mockResolvedValue({
+      version: 1,
+      name: 'saas',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'show', 'saas'])
+
+    expect(mockLoadPreset).toHaveBeenCalledWith('saas')
+    expect(mockLoadNpmPreset).toHaveBeenCalledWith('tinkerise-preset-saas')
+  })
+})
+
+describe('preset show <name> --json (CLI-14, D-06/D-07/D-08)', () => {
+  let stdoutSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { __resetJsonModeForTests, detectJsonMode } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+    detectJsonMode(['node', 'tinkerise', 'preset', 'show', 'foo', '--json'])
+    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+  })
+
+  afterEach(async () => {
+    stdoutSpy.mockRestore()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+  })
+
+  function readEnvelope(): { schemaVersion: number, command: string, data: Record<string, unknown> } {
+    const calls = stdoutSpy.mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    return JSON.parse(String(calls[0]![0]))
+  }
+
+  it('emits envelope with schemaVersion 1 and command "preset.show" for local preset', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'my-stack',
+      description: 'My stack preset',
+      scaffold: { framework: 'next', category: 'web', flags: { typescript: true } },
+      enhancements: ['eslint', 'prettier'],
+      config: { packageManager: 'pnpm' },
+    })
+
+    await runPresetCommand(['preset', 'show', 'my-stack', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.schemaVersion).toBe(1)
+    expect(envelope.command).toBe('preset.show')
+    expect(envelope.data.name).toBe('my-stack')
+    expect(envelope.data.description).toBe('My stack preset')
+    expect(envelope.data.source).toBe('local')
+    expect(envelope.data.filePath).toBe('/home/user/.config/tinkerise/presets/my-stack.json')
+    expect(envelope.data.scaffold).toEqual({ framework: 'next', category: 'web', flags: { typescript: true } })
+    expect(envelope.data.enhancements).toEqual(['eslint', 'prettier'])
+    expect(envelope.data.config).toEqual({ packageManager: 'pnpm' })
+  })
+
+  it('omits filePath when source is npm (D-22)', async () => {
+    mockLoadPreset.mockResolvedValue(null)
+    mockLoadNpmPreset.mockResolvedValue({
+      version: 1,
+      name: 'saas',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'show', 'saas', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.source).toBe('npm')
+    expect(envelope.data).not.toHaveProperty('filePath')
+  })
+
+  it('preserves empty enhancements array (D-21)', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'minimal',
+      scaffold: { framework: 'vite', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'show', 'minimal', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data.enhancements).toEqual([])
+  })
+
+  it('omits description when absent (D-22)', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'no-desc',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'show', 'no-desc', '--json'])
+
+    const envelope = readEnvelope()
+    expect(envelope.data).not.toHaveProperty('description')
+  })
+
+  it('throws PresetNotFoundError (-> handleError JSON envelope) when preset missing in both sources (D-08)', async () => {
+    mockLoadPreset.mockResolvedValue(null)
+    mockLoadNpmPreset.mockResolvedValue(null)
+
+    await expect(
+      runPresetCommand(['preset', 'show', 'nope', '--json']),
+    ).rejects.toThrow('Preset not found')
+  })
+
+  it('emit is exactly one JSON object on stdout for found preset', async () => {
+    mockLoadPreset.mockResolvedValue({
+      version: 1,
+      name: 'one',
+      scaffold: { framework: 'next', category: 'web', flags: {} },
+      enhancements: [],
+      config: {},
+    })
+
+    await runPresetCommand(['preset', 'show', 'one', '--json'])
+
+    expect(stdoutSpy).toHaveBeenCalledTimes(1)
   })
 })
