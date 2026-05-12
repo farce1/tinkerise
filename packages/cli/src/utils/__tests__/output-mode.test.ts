@@ -145,14 +145,14 @@ describe('clack-output log wrapper', () => {
     expect(clackLogMocks.info).toHaveBeenCalledWith('hello', { output: process.stderr })
   })
 
-  it('passes empty options (no output override) in non-JSON mode', async () => {
+  it('omits the options object entirely in non-JSON mode (preserves pre-D-13 calling convention)', async () => {
     const { outputMode, clackOutput } = await freshModules()
     outputMode.detectJsonMode(['node', 'tinkerise', 'list'])
 
     clackOutput.log.info('hello')
 
     expect(clackLogMocks.info).toHaveBeenCalledTimes(1)
-    expect(clackLogMocks.info).toHaveBeenCalledWith('hello', {})
+    expect(clackLogMocks.info).toHaveBeenCalledWith('hello')
   })
 
   it('applies the stderr override to every log method when in JSON mode', async () => {

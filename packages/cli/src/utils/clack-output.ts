@@ -17,17 +17,43 @@ interface StreamOpts {
   output?: Writable
 }
 
-function streamOpts(): StreamOpts {
-  return isJsonMode() ? { output: process.stderr } : {}
+/**
+ * Returns the stderr-redirect options when in JSON mode, or `undefined`
+ * otherwise. Returning `undefined` (rather than `{}`) preserves the
+ * pre-D-13 human-path calling convention: `log.info(msg)` invokes
+ * `clack.log.info(msg)` with no second argument in non-JSON mode, which
+ * keeps existing call-site mocks (e.g., preset.test.ts) compatible with
+ * the wrapper migration.
+ */
+function streamOpts(): StreamOpts | undefined {
+  return isJsonMode() ? { output: process.stderr } : undefined
 }
 
 export const log = {
-  info: (msg: string) => clack.log.info(msg, streamOpts()),
-  success: (msg: string) => clack.log.success(msg, streamOpts()),
-  warn: (msg: string) => clack.log.warn(msg, streamOpts()),
-  error: (msg: string) => clack.log.error(msg, streamOpts()),
-  step: (msg: string) => clack.log.step(msg, streamOpts()),
-  message: (msg: string) => clack.log.message(msg, streamOpts()),
+  info: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.info(msg, opts) : clack.log.info(msg)
+  },
+  success: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.success(msg, opts) : clack.log.success(msg)
+  },
+  warn: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.warn(msg, opts) : clack.log.warn(msg)
+  },
+  error: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.error(msg, opts) : clack.log.error(msg)
+  },
+  step: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.step(msg, opts) : clack.log.step(msg)
+  },
+  message: (msg: string) => {
+    const opts = streamOpts()
+    return opts ? clack.log.message(msg, opts) : clack.log.message(msg)
+  },
 }
 
 export { cancel, intro, isCancel, note, outro, spinner } from '@clack/prompts'
