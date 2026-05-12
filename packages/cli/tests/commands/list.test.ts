@@ -199,3 +199,120 @@ describe('listScaffolders', () => {
     expect(output).not.toContain('Enhancements')
   })
 })
+
+describe('listScaffolders --json (CLI-12)', () => {
+  let stdoutSpy: ReturnType<typeof vi.spyOn>
+  let consoleSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { __resetJsonModeForTests, detectJsonMode } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+    detectJsonMode(['node', 'tinkerise', 'list', '--json'])
+    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    mockCheckPrerequisite.mockResolvedValue({ ok: true })
+    mockGetScaffolderMetadata.mockImplementation((name: string) => {
+      if (name === 'next')
+        return { displayName: 'Next.js', description: 'React framework', suggestions: [] }
+      if (name === 'vite')
+        return { displayName: 'Vite', description: 'Fast build tool', suggestions: [] }
+      return undefined
+    })
+  })
+
+  afterEach(async () => {
+    stdoutSpy.mockRestore()
+    consoleSpy.mockRestore()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+  })
+
+  function readEnvelope(): { schemaVersion: number, command: string, data: Record<string, unknown> } {
+    const calls = stdoutSpy.mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    const raw = String(calls[0]![0])
+    return JSON.parse(raw)
+  }
+
+  it('emits envelope with schemaVersion 1 and command "list"', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    const envelope = readEnvelope()
+    expect(envelope.schemaVersion).toBe(1)
+    expect(envelope.command).toBe('list')
+    expect(envelope.data).toBeDefined()
+  })
+
+  it('data.scaffolders contains entries with required fields', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    const envelope = readEnvelope()
+    const scaffolders = envelope.data.scaffolders as Array<Record<string, unknown>>
+    expect(scaffolders.length).toBe(2)
+
+    const next = scaffolders.find(s => s.name === 'next')!
+    expect(next.category).toBe('web')
+    expect(next.packageName).toBe('create-next-app')
+    expect(next.prereqOk).toBe(true)
+    expect(next.displayName).toBe('Next.js')
+    expect(next.description).toBe('React framework')
+    expect(next.supportedFlags).toEqual(['typescript', 'tailwind'])
+  })
+
+  it('omits displayName/description when metadata is absent (D-22)', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    mockGetScaffolderMetadata.mockReturnValue(undefined)
+    await listScaffolders()
+
+    const envelope = readEnvelope()
+    const scaffolders = envelope.data.scaffolders as Array<Record<string, unknown>>
+    for (const s of scaffolders) {
+      expect(s).not.toHaveProperty('displayName')
+      expect(s).not.toHaveProperty('description')
+    }
+  })
+
+  it('emits templates and enhancements arrays in default view', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    const envelope = readEnvelope()
+    expect(Array.isArray(envelope.data.templates)).toBe(true)
+    expect((envelope.data.templates as unknown[]).length).toBe(3)
+    expect(Array.isArray(envelope.data.enhancements)).toBe(true)
+    expect((envelope.data.enhancements as unknown[]).length).toBe(10)
+  })
+
+  it('preserves empty templates/enhancements arrays when category is filtered (D-21)', async () => {
+    mockGetScaffoldersByCategory.mockReturnValue(webEntries)
+    await listScaffolders('web')
+
+    const envelope = readEnvelope()
+    expect(envelope.data.templates).toEqual([])
+    expect(envelope.data.enhancements).toEqual([])
+  })
+
+  it('throws InvalidCategoryError for bogus category (flows through handleError)', async () => {
+    await expect(listScaffolders('bogus')).rejects.toThrow('Unknown category')
+  })
+
+  it('does NOT emit human console.log output in JSON mode', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    expect(consoleSpy).not.toHaveBeenCalled()
+  })
+
+  it('emit is exactly one JSON object on stdout with single trailing newline', async () => {
+    mockGetAllScaffolders.mockReturnValue(webEntries)
+    await listScaffolders()
+
+    expect(stdoutSpy).toHaveBeenCalledTimes(1)
+    const raw = String(stdoutSpy.mock.calls[0]![0])
+    expect(raw.endsWith('\n')).toBe(true)
+    expect(raw.match(/\n/g)?.length).toBe(1)
+  })
+})
