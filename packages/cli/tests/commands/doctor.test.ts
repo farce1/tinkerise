@@ -260,7 +260,7 @@ describe('runDoctor', () => {
 })
 
 describe('dOCTOR_CHECKS required field (D-11/D-24)', () => {
-  it('Node.js is required: true', () => {
+  it('node.js entry is required: true', () => {
     const node = DOCTOR_CHECKS.find(c => c.tool === 'Node.js')!
     expect(node.required).toBe(true)
   })
