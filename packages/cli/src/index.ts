@@ -24,10 +24,16 @@ import { registerPresetCommand } from './commands/preset.js'
 import { runCategoryFlow, runDirectExecution, runInteractiveFlow } from './commands/scaffold.js'
 import { registerUpdateCommand } from './commands/update.js'
 import { handleError } from './utils/error-handler.js'
+import { detectJsonMode, isJsonMode } from './utils/output-mode.js'
 import { checkForUpdate, printUpdateNudge } from './utils/update-check.js'
 
-// Fire update check asynchronously (non-blocking)
-const updateCheckPromise = checkForUpdate().catch(() => null)
+// Detect --json BEFORE the update-check so the banner is suppressed in JSON
+// mode (D-15). Commander's parseAsync runs later, so a preAction hook is too
+// late — we must inspect argv synchronously at module evaluation time.
+detectJsonMode()
+
+// Fire update check asynchronously (non-blocking) — suppressed in JSON mode (D-15)
+const updateCheckPromise = isJsonMode() ? Promise.resolve(null) : checkForUpdate().catch(() => null)
 
 const require = createRequire(import.meta.url)
 const { version } = require('../package.json')
@@ -78,6 +84,7 @@ program
   .option('--api', 'Headless API project')
   .option('--preset <name>', 'Apply a saved preset')
   .option('--verbose', 'Show detailed output')
+  .option('--json', 'Emit machine-readable JSON output (list, doctor, preset list/show)')
 
 // Default action with optional positional arguments
 program
@@ -229,6 +236,8 @@ catch (err) {
 
 program.parseAsync()
   .then(async () => {
+    if (isJsonMode())
+      return
     const latestVersion = await updateCheckPromise
     if (latestVersion) {
       printUpdateNudge(latestVersion)

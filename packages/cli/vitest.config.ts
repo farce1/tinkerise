@@ -12,6 +12,7 @@ export default defineConfig({
       'tests/integration/**/*.test.ts',
       'tests/conformance/**/*.test.ts',
       'tests/e2e/**/*.test.ts',
+      'src/**/__tests__/**/*.test.ts',
     ],
   },
 })

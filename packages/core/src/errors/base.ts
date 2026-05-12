@@ -215,3 +215,34 @@ export class CIRequiredArgsError extends TinkeriseError {
     this.name = 'CIRequiredArgsError'
   }
 }
+
+/**
+ * Thrown when a --json command would prompt the user interactively (D-14).
+ * --json implies non-interactive; the CLI must fail loudly rather than
+ * read from stdin.
+ */
+export class InteractivePromptBlockedError extends TinkeriseError {
+  constructor(commandName: string) {
+    super({
+      message: `Cannot prompt interactively in --json mode for '${commandName}'.`,
+      code: 'INTERACTIVE_PROMPT_BLOCKED',
+      suggestion: 'Provide all required values via flags, or omit --json to run interactively.',
+    })
+    this.name = 'InteractivePromptBlockedError'
+  }
+}
+
+/**
+ * Thrown when --json is passed to a command that does not implement a
+ * machine-readable contract in Phase 33 (e.g., add, scaffold, config).
+ */
+export class JsonUnsupportedCommandError extends TinkeriseError {
+  constructor(commandName: string) {
+    super({
+      message: `--json is not supported for '${commandName}'. Supported: list, doctor, preset list, preset show.`,
+      code: 'JSON_UNSUPPORTED_COMMAND',
+      suggestion: 'Re-run without --json, or use one of the supported read-only commands.',
+    })
+    this.name = 'JsonUnsupportedCommandError'
+  }
+}
