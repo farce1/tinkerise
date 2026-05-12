@@ -120,7 +120,7 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
   **Cross-cutting constraints:**
   - Stdout in `--json` mode: exactly one JSON object + single trailing newline (D-12); no clack/banner/log noise (D-13, D-15).
   - Wrapped envelope `{ schemaVersion: <int>, command: <string>, data | error }` — `data` and `error` mutually exclusive (D-03, D-05).
-  - `doctor --json` exit code: 0 when `summary.required_failed === 0`; 1 otherwise (D-11, D-23, D-24).
+  - `doctor --json` exit code: 0 when `summary.requiredFailed === 0`; 1 otherwise (D-11, D-23, D-24).
   - Schema source of truth: Zod 4 in `@tinkerise/shared/src/json-output/`; JSON Schema files generated at docs build time (D-16, D-17).
 
 ### Phase 34: Shell Completions
