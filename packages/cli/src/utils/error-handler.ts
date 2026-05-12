@@ -4,6 +4,7 @@ import { CommanderError } from 'commander'
 import pc from 'picocolors'
 import { CLI_COMMAND_CANDIDATES, getCommandSuggestions } from './command-suggestions.js'
 import { formatBoundaryError } from './error-ux-contract.js'
+import { emitJson, isJsonMode } from './output-mode.js'
 
 const invokedAs = basename(process.argv[1] ?? 'tinkerise')
 const programName = invokedAs === 'tk' ? 'tk' : 'tinkerise'
@@ -18,6 +19,24 @@ function toStableCode(input: string): string {
     .replace(/[^a-z0-9]+/gi, '_')
     .replace(/^_+|_+$/g, '')
     .toUpperCase()
+}
+
+/**
+ * Best-effort extraction of the invoked subcommand from process.argv for the
+ * JSON error envelope (D-05). Returns 'preset.list' / 'preset.show' for the
+ * compound commands, the first positional token otherwise, or 'unknown' when
+ * no positional argument is present.
+ */
+function inferCommandFromArgv(argv: readonly string[]): string {
+  // process.argv[0] = node, [1] = bin path, [2+] = user args
+  const userArgs = argv.slice(2).filter(a => !a.startsWith('-'))
+  if (userArgs.length === 0)
+    return 'unknown'
+  // Recognize 'preset list' / 'preset show' compound commands
+  if (userArgs[0] === 'preset' && (userArgs[1] === 'list' || userArgs[1] === 'show')) {
+    return `preset.${userArgs[1]}`
+  }
+  return userArgs[0]!
 }
 
 function renderAndExit(options: {
@@ -108,6 +127,30 @@ function nextStepForCommander(code: string, message: string): string {
 }
 
 export function handleError(error: unknown): never {
+  // JSON mode (D-05): emit error envelope to stdout, NOT stderr, and exit
+  // with a stable non-zero code derived from the error's exitCode if any.
+  // This branch MUST be the first statement so the human-mode renderer
+  // never runs in JSON mode (T-33-07).
+  if (isJsonMode()) {
+    const command = inferCommandFromArgv(process.argv)
+    const code = error instanceof TinkeriseError
+      ? error.code
+      : error instanceof CommanderError
+        ? toStableCode(error.code)
+        : 'UNEXPECTED_RUNTIME'
+    const message = error instanceof Error ? error.message : String(error)
+    emitJson({ schemaVersion: 1, command, error: { code, message } })
+    // TinkeriseError.exitCode is guaranteed by base.ts (readonly number,
+    // defaults to 1). CommanderError.exitCode is part of commander 13.x's
+    // public surface. Fall through to 1 otherwise.
+    const exitCode = error instanceof TinkeriseError
+      ? error.exitCode
+      : error instanceof CommanderError
+        ? error.exitCode
+        : 1
+    process.exit(exitCode)
+  }
+
   if (error instanceof CommanderError) {
     if (error.code === 'commander.helpDisplayed'
       || error.code === 'commander.version') {

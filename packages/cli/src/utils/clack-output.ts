@@ -9,11 +9,12 @@
  * (per D-13). Other commands (add, scaffold, update, config) are unchanged.
  */
 
+import type { Writable } from 'node:stream'
 import * as clack from '@clack/prompts'
 import { isJsonMode } from './output-mode.js'
 
 interface StreamOpts {
-  output?: NodeJS.WritableStream
+  output?: Writable
 }
 
 function streamOpts(): StreamOpts {

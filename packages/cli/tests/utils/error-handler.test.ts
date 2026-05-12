@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer'
 import { stripVTControlCharacters } from 'node:util'
 import { TinkeriseError } from '@tinkerise/core'
 import { CommanderError } from 'commander'
@@ -140,7 +141,7 @@ describe('handleError --json branch (D-05, D-12, D-15)', () => {
 
     const error = new TinkeriseError({
       code: 'PRESET_NOT_FOUND',
-      message: "Preset not found: 'missing'",
+      message: 'Preset not found: \'missing\'',
       exitCode: 1,
     })
 
@@ -155,7 +156,7 @@ describe('handleError --json branch (D-05, D-12, D-15)', () => {
       command: 'preset.show',
       error: {
         code: 'PRESET_NOT_FOUND',
-        message: "Preset not found: 'missing'",
+        message: 'Preset not found: \'missing\'',
       },
     })
     // stderr must NOT receive any JSON object
@@ -172,7 +173,7 @@ describe('handleError --json branch (D-05, D-12, D-15)', () => {
       throw new ExitSignal(code)
     }) as never)
 
-    const commanderError = new CommanderError(1, 'commander.unknownCommand', "unknown command 'bogus-cmd-xyz'")
+    const commanderError = new CommanderError(1, 'commander.unknownCommand', 'unknown command \'bogus-cmd-xyz\'')
     expect(() => handleError(commanderError)).toThrowError(ExitSignal)
     expect(exitSpy).toHaveBeenCalledWith(1)
 
