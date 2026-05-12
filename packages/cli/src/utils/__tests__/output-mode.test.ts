@@ -31,14 +31,17 @@ vi.mock('@clack/prompts', () => ({
   cancel: vi.fn(),
 }))
 
-async function freshOutputMode() {
+async function freshModules() {
   vi.resetModules()
-  return await import('../../src/utils/output-mode.js')
+  // Import output-mode first so clack-output picks up the same instance.
+  const outputMode = await import('../output-mode.js')
+  const clackOutput = await import('../clack-output.js')
+  return { outputMode, clackOutput }
 }
 
-async function freshClackOutput() {
-  vi.resetModules()
-  return await import('../../src/utils/clack-output.js')
+async function freshOutputMode() {
+  const { outputMode } = await freshModules()
+  return outputMode
 }
 
 describe('output-mode.detectJsonMode + isJsonMode', () => {
@@ -133,8 +136,7 @@ describe('clack-output log wrapper', () => {
   })
 
   it('routes log.info to stderr when in JSON mode (D-13)', async () => {
-    const outputMode = await freshOutputMode()
-    const clackOutput = await freshClackOutput()
+    const { outputMode, clackOutput } = await freshModules()
     outputMode.detectJsonMode(['node', 'tinkerise', '--json'])
 
     clackOutput.log.info('hello')
@@ -144,8 +146,7 @@ describe('clack-output log wrapper', () => {
   })
 
   it('passes empty options (no output override) in non-JSON mode', async () => {
-    const outputMode = await freshOutputMode()
-    const clackOutput = await freshClackOutput()
+    const { outputMode, clackOutput } = await freshModules()
     outputMode.detectJsonMode(['node', 'tinkerise', 'list'])
 
     clackOutput.log.info('hello')
@@ -155,8 +156,7 @@ describe('clack-output log wrapper', () => {
   })
 
   it('applies the stderr override to every log method when in JSON mode', async () => {
-    const outputMode = await freshOutputMode()
-    const clackOutput = await freshClackOutput()
+    const { outputMode, clackOutput } = await freshModules()
     outputMode.detectJsonMode(['node', 'tinkerise', '--json'])
 
     clackOutput.log.success('ok')
