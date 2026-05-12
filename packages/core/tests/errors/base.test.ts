@@ -9,8 +9,10 @@ import {
   ConfigValidationError,
   CyclicDependencyError,
   FlagNotApplicableError,
+  InteractivePromptBlockedError,
   InvalidCategoryError,
   InvalidConfigKeyError,
+  JsonUnsupportedCommandError,
   PrerequisiteError,
   PresetNotFoundError,
   ScaffolderExitError,
@@ -243,5 +245,62 @@ describe('ciRequiredArgsError', () => {
   it('includes CI name in message', () => {
     const err = new CIRequiredArgsError(['x'], 'GitLab CI')
     expect(err.message).toContain('GitLab CI')
+  })
+})
+
+describe('interactivePromptBlockedError', () => {
+  it('has correct code and name', () => {
+    const err = new InteractivePromptBlockedError('preset save')
+    expect(err.code).toBe('INTERACTIVE_PROMPT_BLOCKED')
+    expect(err.name).toBe('InteractivePromptBlockedError')
+  })
+
+  it('is instanceof TinkeriseError', () => {
+    const err = new InteractivePromptBlockedError('preset save')
+    expect(err).toBeInstanceOf(TinkeriseError)
+  })
+
+  it('includes the command name in the message', () => {
+    const err = new InteractivePromptBlockedError('preset save')
+    expect(err.message).toContain('preset save')
+    expect(err.message).toContain('--json')
+  })
+
+  it('suggests providing flags or removing --json', () => {
+    const err = new InteractivePromptBlockedError('add')
+    expect(err.suggestion).toBeDefined()
+    expect(err.suggestion).toContain('--json')
+  })
+})
+
+describe('jsonUnsupportedCommandError', () => {
+  it('has correct code and name', () => {
+    const err = new JsonUnsupportedCommandError('add')
+    expect(err.code).toBe('JSON_UNSUPPORTED_COMMAND')
+    expect(err.name).toBe('JsonUnsupportedCommandError')
+  })
+
+  it('is instanceof TinkeriseError', () => {
+    const err = new JsonUnsupportedCommandError('add')
+    expect(err).toBeInstanceOf(TinkeriseError)
+  })
+
+  it('includes the offending command in the message', () => {
+    const err = new JsonUnsupportedCommandError('add')
+    expect(err.message).toContain('add')
+  })
+
+  it('lists the supported commands in the message', () => {
+    const err = new JsonUnsupportedCommandError('scaffold')
+    expect(err.message).toContain('list')
+    expect(err.message).toContain('doctor')
+    expect(err.message).toContain('preset list')
+    expect(err.message).toContain('preset show')
+  })
+
+  it('suggests re-running without --json or using a supported command', () => {
+    const err = new JsonUnsupportedCommandError('scaffold')
+    expect(err.suggestion).toBeDefined()
+    expect(err.suggestion).toContain('--json')
   })
 })
