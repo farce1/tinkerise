@@ -32,6 +32,41 @@ export type {
 } from './config/types.js'
 
 /**
+ * JSON output — Zod 4 envelope and per-command schemas for `--json` mode (Phase 33).
+ */
+export {
+  DoctorCheckResultSchema,
+  DoctorEnvelopeV1Schema,
+  DoctorPayloadV1Schema,
+  DoctorSummarySchema,
+  ErrorPayloadSchema,
+  ListEnhancementEntrySchema,
+  ListEnvelopeV1Schema,
+  ListPayloadV1Schema,
+  ListScaffolderEntrySchema,
+  ListTemplateEntrySchema,
+  makeEnvelope,
+  PresetListEnvelopeV1Schema,
+  PresetListLocalEntrySchema,
+  PresetListNpmEntrySchema,
+  PresetListPayloadV1Schema,
+  PresetShowDataV1Schema,
+  PresetShowEnvelopeV1Schema,
+} from './json-output/index.js'
+
+export type {
+  DoctorEnvelopeV1,
+  DoctorPayloadV1,
+  ErrorPayload,
+  ListEnvelopeV1,
+  ListPayloadV1,
+  PresetListEnvelopeV1,
+  PresetListPayloadV1,
+  PresetShowEnvelopeV1,
+  PresetShowPayloadV1,
+} from './json-output/index.js'
+
+/**
  * Registry — schemas, types, and helpers for the scaffolder registry.
  */
 export {
