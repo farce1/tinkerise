@@ -258,3 +258,185 @@ describe('runDoctor', () => {
     expect(output).toContain('[bold]\ntinkerise doctor\n[/bold]')
   })
 })
+
+describe('dOCTOR_CHECKS required field (D-11/D-24)', () => {
+  it('node.js entry is required: true', () => {
+    const node = DOCTOR_CHECKS.find(c => c.tool === 'Node.js')!
+    expect(node.required).toBe(true)
+  })
+
+  it('every non-Node.js entry is required: false', () => {
+    const nonNode = DOCTOR_CHECKS.filter(c => c.tool !== 'Node.js')
+    expect(nonNode).toHaveLength(9)
+    for (const check of nonNode) {
+      expect(check.required).toBe(false)
+    }
+  })
+
+  it('every DOCTOR_CHECKS entry carries a required boolean', () => {
+    for (const check of DOCTOR_CHECKS) {
+      expect(typeof check.required).toBe('boolean')
+    }
+  })
+})
+
+describe('runDoctor --json (CLI-13)', () => {
+  let stdoutSpy: ReturnType<typeof vi.spyOn>
+  let consoleSpy: ReturnType<typeof vi.spyOn>
+  let exitSpy: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { __resetJsonModeForTests, detectJsonMode } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+    detectJsonMode(['node', 'tinkerise', 'doctor', '--json'])
+    stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+      throw new Error(`process.exit(${code}) called`)
+    }) as never)
+  })
+
+  afterEach(async () => {
+    stdoutSpy.mockRestore()
+    consoleSpy.mockRestore()
+    exitSpy.mockRestore()
+    const { __resetJsonModeForTests } = await import('../../src/utils/output-mode.js')
+    __resetJsonModeForTests()
+  })
+
+  function readEnvelope(): { schemaVersion: number, command: string, data: { checks: Array<Record<string, unknown>>, summary: Record<string, number> } } {
+    const calls = stdoutSpy.mock.calls
+    expect(calls.length).toBeGreaterThan(0)
+    return JSON.parse(String(calls[0]![0]))
+  }
+
+  it('emits envelope with schemaVersion 1 and command "doctor" when all pass', async () => {
+    mockCheckPrerequisite.mockResolvedValue({ ok: true, command: 'node', version: '20.11.0' })
+
+    await runDoctor()
+
+    const envelope = readEnvelope()
+    expect(envelope.schemaVersion).toBe(1)
+    expect(envelope.command).toBe('doctor')
+    expect(envelope.data.checks).toHaveLength(10)
+    expect(envelope.data.summary.total).toBe(10)
+    expect(envelope.data.summary.passed).toBe(10)
+    expect(envelope.data.summary.failed).toBe(0)
+    expect(envelope.data.summary.requiredFailed).toBe(0)
+    expect(envelope.data.summary.optionalFailed).toBe(0)
+  })
+
+  it('does not exit 1 when no required check fails (only optional fails)', async () => {
+    mockCheckPrerequisite.mockImplementation(async (prereq: { command: string }) => {
+      if (prereq.command === 'python3') {
+        return { ok: false, command: 'python3', error: 'not found', installInstructions: 'brew install python' }
+      }
+      return { ok: true, command: prereq.command, version: '1.0.0' }
+    })
+
+    await runDoctor()
+
+    const envelope = readEnvelope()
+    expect(envelope.data.summary.requiredFailed).toBe(0)
+    expect(envelope.data.summary.optionalFailed).toBe(1)
+    expect(envelope.data.summary.failed).toBe(1)
+    expect(exitSpy).not.toHaveBeenCalled()
+  })
+
+  it('exits 1 when Node.js (required) fails — still emits data envelope (D-23/D-24)', async () => {
+    mockCheckPrerequisite.mockImplementation(async (prereq: { command: string }) => {
+      if (prereq.command === 'node') {
+        return { ok: false, command: 'node', error: 'not found', installInstructions: 'brew install node' }
+      }
+      return { ok: true, command: prereq.command, version: '1.0.0' }
+    })
+
+    await expect(runDoctor()).rejects.toThrow('process.exit(1)')
+
+    // Envelope STILL emitted before exit (D-23)
+    const envelope = readEnvelope()
+    expect(envelope.data.summary.requiredFailed).toBe(1)
+    expect(envelope.data.summary.optionalFailed).toBe(0)
+    expect(exitSpy).toHaveBeenCalledWith(1)
+  })
+
+  it('summary uses snake_case requiredFailed and optionalFailed (D-24)', async () => {
+    mockCheckPrerequisite.mockResolvedValue({ ok: true, command: 'node', version: '20.11.0' })
+
+    await runDoctor()
+
+    const envelope = readEnvelope()
+    expect(envelope.data.summary).toHaveProperty('requiredFailed')
+    expect(envelope.data.summary).toHaveProperty('optionalFailed')
+    expect(typeof envelope.data.summary.requiredFailed).toBe('number')
+    expect(typeof envelope.data.summary.optionalFailed).toBe('number')
+  })
+
+  it('each check entry carries tool, command, category, required, ok', async () => {
+    mockCheckPrerequisite.mockResolvedValue({ ok: true, command: 'node', version: '20.11.0' })
+
+    await runDoctor()
+
+    const envelope = readEnvelope()
+    for (const entry of envelope.data.checks) {
+      expect(typeof entry.tool).toBe('string')
+      expect(typeof entry.command).toBe('string')
+      expect(typeof entry.category).toBe('string')
+      expect(typeof entry.required).toBe('boolean')
+      expect(typeof entry.ok).toBe('boolean')
+    }
+    const node = envelope.data.checks.find(c => c.tool === 'Node.js')!
+    expect(node.required).toBe(true)
+    expect(node.version).toBe('20.11.0')
+  })
+
+  it('version omitted on failure; error + installInstructions populated', async () => {
+    mockCheckPrerequisite.mockImplementation(async (prereq: { command: string }) => {
+      if (prereq.command === 'go') {
+        return { ok: false, command: 'go', error: '\'go\' not found in PATH', installInstructions: 'brew install go' }
+      }
+      return { ok: true, command: prereq.command, version: '1.0.0' }
+    })
+
+    await runDoctor()
+
+    const envelope = readEnvelope()
+    const go = envelope.data.checks.find(c => c.tool === 'Go')!
+    expect(go.ok).toBe(false)
+    expect(go.version).toBeUndefined()
+    expect(go.error).toContain('not found')
+    expect(go.installInstructions).toContain('brew install go')
+  })
+
+  it('does NOT emit human console.log in JSON mode', async () => {
+    mockCheckPrerequisite.mockResolvedValue({ ok: true, command: 'node', version: '20.11.0' })
+
+    await runDoctor()
+
+    expect(consoleSpy).not.toHaveBeenCalled()
+  })
+
+  it('exports runDoctorChecks as a deterministic test seam (I-09 option a)', async () => {
+    const mod = await import('../../src/commands/doctor.js')
+    expect(typeof mod.runDoctorChecks).toBe('function')
+
+    // Inject a minimal overrides array; verify the seam returns the same
+    // {check, result} structure the production path uses.
+    mockCheckPrerequisite.mockResolvedValue({ ok: true, command: 'node', version: '20.11.0' })
+    const result = await mod.runDoctorChecks([
+      {
+        tool: 'Node.js',
+        command: 'node',
+        versionFlag: '--version',
+        versionRange: '>=20.11.0',
+        category: 'Runtimes',
+        required: true,
+        installInstructions: { darwin: 'brew install node', linux: '', win32: '' },
+      },
+    ])
+    expect(result).toHaveLength(1)
+    expect(result[0]!.check.tool).toBe('Node.js')
+    expect(result[0]!.result.ok).toBe(true)
+  })
+})

@@ -10,7 +10,9 @@
 
 import type { ScaffolderCategory, ScaffolderEntry } from '@tinkerise/shared'
 import { allEnhancementModules, checkPrerequisite, findClosestMatch, getAllScaffolders, getScaffolderMetadata, getScaffoldersByCategory, InvalidCategoryError, TEMPLATE_METADATA } from '@tinkerise/core'
+import { ListEnvelopeV1Schema } from '@tinkerise/shared'
 import pc from 'picocolors'
+import { emitJson, isJsonMode } from '../utils/output-mode.js'
 
 const CATEGORY_ORDER: ScaffolderCategory[] = ['web', 'backend', 'mobile']
 const CATEGORY_LABELS: Record<string, string> = {
@@ -34,10 +36,93 @@ async function checkPrereqStatus(entry: ScaffolderEntry): Promise<boolean> {
   }
 }
 
+interface JsonScaffolderEntry {
+  name: string
+  category: string
+  displayName?: string
+  description?: string
+  packageName: string
+  prereqOk: boolean
+  supportedFlags: string[]
+}
+
+/**
+ * Build the JSON payload for `tinkerise list --json` (CLI-12).
+ *
+ * Mirrors the data the human path consumes (scaffolders by category +
+ * templates + enhancements) but reshaped to the ListPayloadV1 contract.
+ * D-21: when a category filter is applied, templates and enhancements
+ * are preserved as empty arrays. D-22: displayName/description omitted
+ * when scaffolder metadata is absent.
+ */
+async function buildListPayload(filterCategory?: string): Promise<{
+  scaffolders: JsonScaffolderEntry[]
+  templates: Array<{ id: string, command: string, displayName: string, description: string }>
+  enhancements: Array<{ id: string, name: string, description: string }>
+}> {
+  // Validate first so InvalidCategoryError flows through handleError -> JSON envelope (plan 33-02)
+  if (filterCategory && !CATEGORY_ORDER.includes(filterCategory as ScaffolderCategory)) {
+    const closest = findClosestMatch(filterCategory, [...CATEGORY_ORDER])
+    throw new InvalidCategoryError(filterCategory, closest)
+  }
+
+  const scaffolders = filterCategory
+    ? getScaffoldersByCategory(filterCategory as ScaffolderCategory)
+    : getAllScaffolders()
+
+  const mapped: JsonScaffolderEntry[] = await Promise.all(scaffolders.map(async (s) => {
+    const metadata = getScaffolderMetadata(s.name)
+    const prereqOk = await checkPrereqStatus(s)
+    const supportedFlags = s.flags
+      .filter(f => f.native !== '')
+      .map(f => f.unified)
+    return {
+      name: s.name,
+      category: s.category,
+      ...(metadata?.displayName ? { displayName: metadata.displayName } : {}),
+      ...(metadata?.description ? { description: metadata.description } : {}),
+      packageName: s.packageName,
+      prereqOk,
+      supportedFlags,
+    }
+  }))
+
+  // D-21: when a category filter is applied, templates and enhancements
+  // are preserved as empty arrays rather than omitted entirely.
+  const templates = filterCategory
+    ? []
+    : TEMPLATE_METADATA.map(t => ({
+        id: t.id,
+        command: t.command,
+        displayName: t.displayName,
+        description: t.description,
+      }))
+  const enhancements = filterCategory
+    ? []
+    : allEnhancementModules.map(e => ({
+        id: e.id,
+        name: e.name,
+        description: e.description,
+      }))
+
+  return { scaffolders: mapped, templates, enhancements }
+}
+
 /**
  * List all available scaffolders, optionally filtered by category.
  */
 export async function listScaffolders(filterCategory?: string): Promise<void> {
+  // JSON mode (CLI-12): emit one validated envelope and return early.
+  // Schema.parse provides defense-in-depth — bad payload throws BEFORE
+  // anything reaches stdout, where handleError converts it to an error
+  // envelope (plan 33-02). No console.log runs in this branch (D-12).
+  if (isJsonMode()) {
+    const data = await buildListPayload(filterCategory)
+    const envelope = ListEnvelopeV1Schema.parse({ schemaVersion: 1, command: 'list', data })
+    emitJson(envelope)
+    return
+  }
+
   // Validate category if provided
   if (filterCategory && !CATEGORY_ORDER.includes(filterCategory as ScaffolderCategory)) {
     const closest = findClosestMatch(filterCategory, [...CATEGORY_ORDER])
