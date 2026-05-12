@@ -5,10 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "bun run docs:changelog && astro build",
+    "build": "bun run docs:changelog && bun run docs:schemas && astro build",
     "preview": "astro preview",
     "docs:reference": "node ./scripts/generate-command-reference.mjs",
     "docs:changelog": "node ./scripts/generate-changelog.mjs",
+    "docs:schemas": "tsx ./scripts/generate-json-schemas.ts",
     "docs:smoke": "node ./scripts/smoke-production-docs.mjs"
   },
   "dependencies": {
@@ -17,6 +18,8 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@playwright/test": "^1.54.2"
+    "@playwright/test": "^1.54.2",
+    "@tinkerise/shared": "workspace:*",
+    "tsx": "^4.19.2"
   }
 }

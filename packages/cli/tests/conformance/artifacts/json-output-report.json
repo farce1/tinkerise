@@ -1,0 +1,132 @@
+{
+  "generatedAt": "2026-05-12T07:36:02.784Z",
+  "fixture": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-a670c8104cca0989c/packages/cli/tests/conformance/fixtures/json-output-matrix.json",
+  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-a670c8104cca0989c/packages/cli/tests/conformance/artifacts/json-output-report.json",
+  "scenarios": [
+    {
+      "id": "list-json-default",
+      "name": "tinkerise list --json emits full scaffolder/template/enhancement payload",
+      "requirements": [
+        "CLI-12",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "durationMs": 1065,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"data\":{\"scaffolders\":[{\"name\":\"next\",\"category\":\"web\",\"displayName\":\"Next.js\",\"description\":\"React framework with SSR, routing, and API routes\",\"packageName\":\"create-next-app\",\"pre...",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "list-json-filtered",
+      "name": "tinkerise list web --json yields only web scaffolders with empty templates/enhancements arrays (D-21)",
+      "requirements": [
+        "CLI-12",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "durationMs": 585,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"data\":{\"scaffolders\":[{\"name\":\"next\",\"category\":\"web\",\"displayName\":\"Next.js\",\"description\":\"React framework with SSR, routing, and API routes\",\"packageName\":\"create-next-app\",\"pre...",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "list-json-invalid-category",
+      "name": "tinkerise list bogus --json surfaces INVALID_CATEGORY error envelope (D-05)",
+      "requirements": [
+        "CLI-12",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 1,
+      "actualExitCode": 1,
+      "durationMs": 125,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"error\":{\"code\":\"INVALID_CATEGORY\",\"message\":\"Unknown category: 'bogus'. Valid categories: web, backend, mobile\"}}",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "doctor-json-pass",
+      "name": "tinkerise doctor --json on Node.js-installed host emits data envelope with requiredFailed=0, exit 0 (D-23, D-24)",
+      "requirements": [
+        "CLI-13",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "durationMs": 441,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"doctor\",\"data\":{\"checks\":[{\"tool\":\"Node.js\",\"command\":\"node\",\"category\":\"Runtimes\",\"required\":true,\"versionRange\":\">=20.11.0\",\"ok\":true,\"version\":\"24.4.1\"},{\"tool\":\"Python\",\"command\":\"pyt...",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "doctor-json-required-fail",
+      "name": "doctor JSON with injected required failure emits DATA envelope (not error envelope) + exit 1 (D-23, D-24) — uses runDoctorChecks seam",
+      "requirements": [
+        "CLI-13",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 1,
+      "actualExitCode": 1,
+      "durationMs": 227,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"doctor\",\"data\":{\"checks\":[{\"tool\":\"phase33-fake-required\",\"command\":\"phase33-bogus-cmd-never-installed\",\"category\":\"Runtimes\",\"required\":true,\"ok\":false,\"error\":\"'phase33-bogus-cmd-never-...",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "preset-list-json-empty",
+      "name": "tinkerise preset list --json with no local/npm presets emits empty arrays (D-21)",
+      "requirements": [
+        "CLI-14",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "durationMs": 134,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.list\",\"data\":{\"local\":[],\"npm\":[]}}",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "preset-show-json-found",
+      "name": "tinkerise preset show <name> --json with a pre-seeded local preset emits full payload",
+      "requirements": [
+        "CLI-14",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 0,
+      "actualExitCode": 0,
+      "durationMs": 454,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.show\",\"data\":{\"name\":\"phase33-fixture-preset\",\"description\":\"Phase 33 conformance fixture\",\"source\":\"local\",\"filePath\":\"/var/folders/4m/mfy443cd1qzgvt3k355w3hxw0000gn/T/tinkerise-c...",
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "preset-show-json-not-found",
+      "name": "tinkerise preset show <missing> --json emits PRESET_NOT_FOUND error envelope, exit 1 (D-08)",
+      "requirements": [
+        "CLI-14",
+        "CLI-15"
+      ],
+      "status": "pass",
+      "expectedExitCode": 1,
+      "actualExitCode": 1,
+      "durationMs": 327,
+      "failures": [],
+      "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.show\",\"error\":{\"code\":\"PRESET_NOT_FOUND\",\"message\":\"Preset not found: 'no-such-preset-phase33'\"}}",
+      "stderrSnippet": "(empty)"
+    }
+  ],
+  "totals": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0
+  }
+}
