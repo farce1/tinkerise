@@ -1,0 +1,214 @@
+---
+title: JSON Output
+description: Versioned, machine-readable --json contract for tinkerise read-only commands with schemaVersion policy and per-command JSON Schemas.
+---
+
+Scripts and CI integrations can consume `tinkerise` read-only commands as
+stable, versioned JSON via the `--json` flag. This page documents the
+envelope shape, versioning policy, and per-command payloads, with links to
+the canonical JSON Schema files.
+
+## Supported commands
+
+| Command | Schema file |
+|---------|-------------|
+| `tinkerise list --json` | [/tinkerise/schemas/list.v1.json](/tinkerise/schemas/list.v1.json) |
+| `tinkerise doctor --json` | [/tinkerise/schemas/doctor.v1.json](/tinkerise/schemas/doctor.v1.json) |
+| `tinkerise preset list --json` | [/tinkerise/schemas/preset-list.v1.json](/tinkerise/schemas/preset-list.v1.json) |
+| `tinkerise preset show <name> --json` | [/tinkerise/schemas/preset-show.v1.json](/tinkerise/schemas/preset-show.v1.json) |
+
+Write-mode commands (`scaffold`, `add`, `preset save`, `update`) do not
+support `--json` in this release. Passing `--json` to a non-supporting
+command emits the standard error envelope with `error.code:
+"JSON_UNSUPPORTED_COMMAND"`.
+
+## Envelope shape
+
+Every `--json` payload is one of two envelopes (D-03, D-05):
+
+```json
+{ "schemaVersion": 1, "command": "list", "data": { "scaffolders": [], "templates": [], "enhancements": [] } }
+```
+
+or, when the command fails:
+
+```json
+{ "schemaVersion": 1, "command": "preset.show", "error": { "code": "PRESET_NOT_FOUND", "message": "Preset not found: 'xyz'" } }
+```
+
+- `schemaVersion` is an integer pinned per command. Each command owns its
+  own version cadence — `list@v1` is independent of `doctor@v1`.
+- `command` is a string literal matching the table above
+  (`list` / `doctor` / `preset.list` / `preset.show`).
+- `data` and `error` are mutually exclusive; exactly one is present. The
+  Zod schemas use strict objects on each branch, so a payload carrying
+  both keys fails validation at the source.
+- On success the process exits `0`. On failure it exits non-zero. The
+  `error.code` is a stable `SCREAMING_SNAKE_CASE` identifier; the
+  `error.message` is human-readable and may change between minor versions.
+
+## Versioning policy
+
+`schemaVersion` increments **only on breaking changes** (D-04):
+
+- A field is removed.
+- A field is renamed.
+- A field's type changes.
+- A field's semantic meaning changes.
+
+Additive changes — new optional fields, new enum values, new commands — do
+**not** bump `schemaVersion`. Consumers should treat unknown fields as
+forward-compatible and ignore keys they do not recognise.
+
+When a breaking change is required, a new `schemaVersion: 2` envelope
+ships alongside `v1` and the `v1` JSON Schema URL continues to resolve so
+existing scripts keep working.
+
+## stdout discipline
+
+In `--json` mode the CLI guarantees a strict output contract (D-12, D-13,
+D-15):
+
+- `stdout` emits **exactly one** JSON object followed by a single trailing
+  newline. Nothing else — no banners, no progress, no prompts.
+- All human-readable log output from `@clack/prompts` is routed to
+  `stderr`.
+- The update-check nudge is suppressed entirely (not even on stderr); no
+  network probe runs.
+- Commands that would otherwise require an interactive prompt return the
+  standard error envelope with `error.code: "INTERACTIVE_PROMPT_BLOCKED"`
+  and exit non-zero.
+
+## Per-command payloads
+
+### `tinkerise list --json`
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "list",
+  "data": {
+    "scaffolders": [
+      {
+        "name": "next",
+        "category": "web",
+        "displayName": "Next.js",
+        "description": "React framework with file-based routing",
+        "packageName": "create-next-app",
+        "prereqOk": true,
+        "supportedFlags": ["typescript", "tailwind", "eslint", "app-router"]
+      }
+    ],
+    "templates": [
+      { "id": "mcp", "command": "mcp", "displayName": "MCP Server", "description": "MCP server with TypeScript" }
+    ],
+    "enhancements": [
+      { "id": "eslint", "name": "ESLint", "description": "Lint your code" }
+    ]
+  }
+}
+```
+
+When invoked with a category filter (`tinkerise list web --json`), only
+matching scaffolders are returned; `templates` and `enhancements` are
+empty arrays (never omitted — empty collections are meaningful, D-21).
+Unknown categories surface the `INVALID_CATEGORY` error envelope with
+exit code 1.
+
+### `tinkerise doctor --json`
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "doctor",
+  "data": {
+    "checks": [
+      { "tool": "Node.js", "command": "node", "category": "Runtimes", "required": true, "versionRange": ">=20.11.0", "ok": true, "version": "20.11.1" },
+      { "tool": "Rust", "command": "rustc", "category": "Runtimes", "required": false, "versionRange": ">=1.78", "ok": false, "error": "rustc not found in PATH", "installInstructions": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh" }
+    ],
+    "summary": { "total": 10, "passed": 7, "failed": 3, "requiredFailed": 0, "optionalFailed": 3 }
+  }
+}
+```
+
+**Exit code semantics (D-23, D-24):** when any check with
+`required: true` fails, `tinkerise doctor --json` exits with code 1. The
+data envelope is **always** emitted, including on the failure path — the
+per-check diagnostics are preserved so scripts can act on them. The error
+envelope is reserved for command-level failures (e.g., the doctor module
+itself cannot load).
+
+`summary.requiredFailed` and `summary.optionalFailed` are snake_case
+(camelCase identifiers spelled with internal capitals — the names are
+literally those two strings; both fields are always present). Scripts
+SHOULD pin against these exact names. Only `summary.requiredFailed > 0`
+drives the non-zero exit code; optional-only failures keep exit 0.
+
+Only `Node.js` is `required: true` in v1. All scaffolder-specific tools
+are optional (`required: false`); a missing optional tool is
+diagnostic-only.
+
+### `tinkerise preset list --json`
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "preset.list",
+  "data": {
+    "local": [
+      { "name": "team-defaults", "description": "Next.js stack" },
+      { "name": "minimal-cli" }
+    ],
+    "npm": [
+      { "package": "tinkerise-preset-acme-corp" }
+    ]
+  }
+}
+```
+
+Empty arrays are preserved (`data.local: []`, `data.npm: []`); the keys
+exist even when no presets are installed (D-21). Local entries omit
+`description` when the preset has none (D-22).
+
+### `tinkerise preset show <name> --json`
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "preset.show",
+  "data": {
+    "name": "team-defaults",
+    "description": "Our team's standard Next.js stack",
+    "source": "local",
+    "filePath": "/Users/x/.config/tinkerise/presets/team-defaults.json",
+    "scaffold": {
+      "framework": "next",
+      "category": "web",
+      "flags": { "typescript": true, "tailwind": true }
+    },
+    "enhancements": ["eslint", "prettier", "husky", "ci"],
+    "config": { "packageManager": "pnpm" }
+  }
+}
+```
+
+For npm-sourced presets, `source` is `"npm"` and `filePath` is omitted
+(D-22). When the named preset cannot be found, the error envelope is
+emitted with `error.code: "PRESET_NOT_FOUND"` and exit code 1 (D-08).
+
+## Error codes
+
+Stable, reusable across commands:
+
+| Code | When | Notes |
+|------|------|-------|
+| `PRESET_NOT_FOUND` | `preset show <name>` cannot locate the named preset | Reuses `PresetNotFoundError` from the core error hierarchy |
+| `INVALID_CATEGORY` | `list <bad-category> --json` | Reuses `InvalidCategoryError` |
+| `INTERACTIVE_PROMPT_BLOCKED` | A `--json` command would require user input | Run without `--json` instead |
+| `JSON_UNSUPPORTED_COMMAND` | `--json` passed to a command without machine-readable support | Re-run without `--json` |
+| `UNEXPECTED_RUNTIME` | Unhandled exception | Please file a bug report with stderr |
+| `COMMANDER_*` | Argument-parsing failures from Commander.js | Normalised via `toStableCode()` |
+
+Additional command-specific codes may be introduced additively; the
+existing taxonomy above does not change without a `schemaVersion` bump on
+the affected command.
