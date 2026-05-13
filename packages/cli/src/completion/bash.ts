@@ -127,6 +127,29 @@ export function generate(program: Command): string {
   lines.push('  fi')
   lines.push('')
 
+  // ---- Depth-2 root-positional dispatch (web/backend/mobile -> scaffolders:<category>) ----
+  // Categories are registered as `.argument('[category]')` on the root Commander
+  // command (not as .command()), so the walker doesn't see them. We emit the
+  // dispatch explicitly from POSITIONAL_ENUMS['']/DYNAMIC_POSITIONALS. (CR-01)
+  const rootPositionalCategories = POSITIONAL_ENUMS[''] ?? []
+  const categoriesWithDynamicKind = rootPositionalCategories.filter(c => DYNAMIC_POSITIONALS[c])
+  if (categoriesWithDynamicKind.length > 0) {
+    lines.push('  # Depth-2 root-positional completion: tinkerise <category> <TAB>')
+    lines.push('  if [[ $cword -eq 2 ]]; then')
+    lines.push('    case "${words[1]}" in')
+    for (const category of categoriesWithDynamicKind) {
+      const kind = DYNAMIC_POSITIONALS[category]!
+      lines.push(`      ${category})`)
+      lines.push(`        _items=$(tinkerise __complete ${kind} 2>/dev/null) || _items=""`)
+      lines.push('        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )')
+      lines.push('        return 0')
+      lines.push('        ;;')
+    }
+    lines.push('    esac')
+    lines.push('  fi')
+    lines.push('')
+  }
+
   // ---- Depth-2 completion: per top-level command ----
   lines.push('  # Depth-2 completion: per top-level command')
   lines.push('  local cmd1="${words[1]}"')

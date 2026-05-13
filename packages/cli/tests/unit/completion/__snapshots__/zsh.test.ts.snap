@@ -38,6 +38,27 @@ _tinkerise() {
     return
   fi
 
+  # Depth-2 root-positional completion: tinkerise <category> <TAB>
+  if (( CURRENT == 3 )); then
+    case "\${words[2]}" in
+      web)
+        _items=( \${(f)"$(tinkerise __complete scaffolders:web 2>/dev/null)"} )
+        _describe 'scaffolders:web' _items
+        return
+        ;;
+      backend)
+        _items=( \${(f)"$(tinkerise __complete scaffolders:backend 2>/dev/null)"} )
+        _describe 'scaffolders:backend' _items
+        return
+        ;;
+      mobile)
+        _items=( \${(f)"$(tinkerise __complete scaffolders:mobile 2>/dev/null)"} )
+        _describe 'scaffolders:mobile' _items
+        return
+        ;;
+    esac
+  fi
+
   # Depth-2 completion: per top-level command
   local cmd1="\${words[2]}"
   local cmd2="\${words[3]:-}"

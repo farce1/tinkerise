@@ -134,6 +134,27 @@ export function generate(program: Command): string {
   lines.push('  fi')
   lines.push('')
 
+  // ---- Depth-2 root-positional dispatch (web/backend/mobile -> scaffolders:<category>) ----
+  // Same rationale as bash.ts — categories are positional args, not subcommands. (CR-01)
+  const rootPositionalCategoriesZ = POSITIONAL_ENUMS[''] ?? []
+  const categoriesWithDynamicKindZ = rootPositionalCategoriesZ.filter(c => DYNAMIC_POSITIONALS[c])
+  if (categoriesWithDynamicKindZ.length > 0) {
+    lines.push('  # Depth-2 root-positional completion: tinkerise <category> <TAB>')
+    lines.push('  if (( CURRENT == 3 )); then')
+    lines.push('    case "${words[2]}" in')
+    for (const category of categoriesWithDynamicKindZ) {
+      const kind = DYNAMIC_POSITIONALS[category]!
+      lines.push(`      ${category})`)
+      lines.push(`        _items=( ${dynamicLookup(kind)} )`)
+      lines.push(`        _describe '${escapeSingle(kind)}' _items`)
+      lines.push('        return')
+      lines.push('        ;;')
+    }
+    lines.push('    esac')
+    lines.push('  fi')
+    lines.push('')
+  }
+
   // ---- Depth-2 completion: per top-level command ----
   lines.push('  # Depth-2 completion: per top-level command')
   lines.push('  local cmd1="${words[2]}"')

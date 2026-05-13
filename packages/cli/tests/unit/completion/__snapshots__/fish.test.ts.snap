@@ -7,6 +7,9 @@ exports[`completion/fish.generate > emits a stable script for the fixture Comman
 
 # --- Completions for tinkerise ---
 complete -c tinkerise -f -n '__fish_use_subcommand' -a 'web backend mobile list add install doctor completion'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from web' -a '(tinkerise __complete scaffolders:web 2>/dev/null; or true)'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from backend' -a '(tinkerise __complete scaffolders:backend 2>/dev/null; or true)'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from mobile' -a '(tinkerise __complete scaffolders:mobile 2>/dev/null; or true)'
 complete -c tinkerise -f -n '__fish_use_subcommand' -l 'package-manager'
 complete -c tinkerise -f -n '__fish_use_subcommand' -l 'preset'
 complete -c tinkerise -f -n '__fish_seen_argument -l package-manager' -a 'npm pnpm yarn bun'
@@ -18,6 +21,9 @@ complete -c tinkerise -f -n '__fish_seen_subcommand_from completion' -a 'bash zs
 
 # --- Completions for tk ---
 complete -c tk -f -n '__fish_use_subcommand' -a 'web backend mobile list add install doctor completion'
+complete -c tk -f -n '__fish_seen_subcommand_from web' -a '(tinkerise __complete scaffolders:web 2>/dev/null; or true)'
+complete -c tk -f -n '__fish_seen_subcommand_from backend' -a '(tinkerise __complete scaffolders:backend 2>/dev/null; or true)'
+complete -c tk -f -n '__fish_seen_subcommand_from mobile' -a '(tinkerise __complete scaffolders:mobile 2>/dev/null; or true)'
 complete -c tk -f -n '__fish_use_subcommand' -l 'package-manager'
 complete -c tk -f -n '__fish_use_subcommand' -l 'preset'
 complete -c tk -f -n '__fish_seen_argument -l package-manager' -a 'npm pnpm yarn bun'

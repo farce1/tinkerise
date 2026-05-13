@@ -48,4 +48,13 @@ describe('completion/zsh.generate', () => {
   it('emits dynamic-lookup snippet for --preset per D-09', () => {
     expect(generate(buildFixtureProgram())).toMatch(/tinkerise __complete presets 2>\/dev\/null/)
   })
+
+  it('emits root-positional dispatch for web/backend/mobile per CR-01 (34-06)', () => {
+    const out = generate(buildFixtureProgram())
+    // Dispatch case header that fires at CURRENT == 3 (zsh 1-based, words[2] is category)
+    expect(out).toMatch(/case "\$\{words\[2\]\}" in/)
+    expect(out).toMatch(/tinkerise __complete scaffolders:web 2>\/dev\/null/)
+    expect(out).toMatch(/tinkerise __complete scaffolders:backend 2>\/dev\/null/)
+    expect(out).toMatch(/tinkerise __complete scaffolders:mobile 2>\/dev\/null/)
+  })
 })
