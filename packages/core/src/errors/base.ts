@@ -246,3 +246,20 @@ export class JsonUnsupportedCommandError extends TinkeriseError {
     this.name = 'JsonUnsupportedCommandError'
   }
 }
+
+/**
+ * Error thrown when the user passes an unknown shell to
+ * `tinkerise completion <shell>` (D-04).
+ */
+export class UnknownShellError extends TinkeriseError {
+  constructor(shell: string, closestMatch?: string) {
+    super({
+      message: `Unknown shell: '${shell}'. Supported shells: bash, zsh, fish.`,
+      code: 'COMPLETION_UNKNOWN_SHELL',
+      suggestion: closestMatch
+        ? `Did you mean '${closestMatch}'?`
+        : 'Supported shells: bash, zsh, fish.',
+    })
+    this.name = 'UnknownShellError'
+  }
+}

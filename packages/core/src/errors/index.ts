@@ -17,6 +17,7 @@ export {
   ScaffolderNotFoundError,
   TinkeriseError,
   UnknownEnhancementError,
+  UnknownShellError,
 } from './base.js'
 
 export type { TinkeriseErrorOptions } from './base.js'

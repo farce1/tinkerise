@@ -105,6 +105,7 @@ export {
   PresetNotFoundError,
   TinkeriseError,
   UnknownEnhancementError,
+  UnknownShellError,
 } from './errors/index.js'
 export type { TinkeriseErrorOptions } from './errors/index.js'
 
