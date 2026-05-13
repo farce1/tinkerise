@@ -12,8 +12,10 @@
 import { createRequire } from 'node:module'
 import { basename } from 'node:path'
 import { Command } from 'commander'
+import { registerCompleteCommand } from './commands/__complete.js'
 import { runAddCommand } from './commands/add.js'
 import { registerCliToolCommand } from './commands/cli-tool.js'
+import { registerCompletionCommand } from './commands/completion.js'
 import { registerConfigCommand } from './commands/config.js'
 import { runDoctor } from './commands/doctor.js'
 import { buildScaffolderHelpText } from './commands/help.js'
@@ -188,6 +190,14 @@ registerLibCommand(program)
 // Update command — self-update with install-method detection
 registerUpdateCommand(program)
 
+// Hidden internal subcommand consumed by completion scripts (D-10).
+// Registered before `completion` so the program tree is complete
+// when the generator walks it.
+registerCompleteCommand(program)
+
+// Completion command — emit shell completion script (bash/zsh/fish).
+registerCompletionCommand(program)
+
 program.addHelpText('after', `
 Examples:
   $ ${programName}                            Interactive guided flow
@@ -210,7 +220,9 @@ Examples:
   $ ${programName} mcp my-server              Scaffold an MCP server
   $ ${programName} cli my-tool                Scaffold a CLI tool
   $ ${programName} lib my-lib                 Scaffold an npm library
-  $ ${programName} update                     Update to latest version`)
+  $ ${programName} update                     Update to latest version
+  $ ${programName} completion bash             Emit bash completion script
+  $ ${programName} completion zsh > "\${fpath[1]}/_tinkerise"  Install zsh completion`)
 
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
