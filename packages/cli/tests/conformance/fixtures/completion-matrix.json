@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "suite": "completion-matrix",
+  "description": "Phase 34 shell completion conformance",
+  "scenarios": [
+    {
+      "id": "bash-top-level-subcommand",
+      "name": "bash: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "bash-flag-name-at-depth",
+      "name": "bash: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise web next my-app --",
+      "expectedCandidatesInclude": ["--package-manager"],
+      "expectExitOk": true
+    },
+    {
+      "id": "bash-dynamic-value-presets",
+      "name": "bash: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidates": ["my-stack", "team-defaults"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": ["my-stack", "team-defaults"]
+        }
+      }
+    },
+    {
+      "id": "bash-static-enum-completion",
+      "name": "bash: tinkerise completion <TAB> emits static shell enum",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise completion ",
+      "expectedCandidates": ["bash", "zsh", "fish"],
+      "expectExitOk": true
+    },
+    {
+      "id": "bash-negative-unknown-command",
+      "name": "bash: tinkerise bogusbogusbogus <TAB> yields empty candidate set (no false positives)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise bogusbogusbogus ",
+      "expectedCandidates": [],
+      "expectExitOk": true
+    },
+    {
+      "id": "bash-tk-alias",
+      "name": "bash: tk <TAB> emits same top-level candidates as tinkerise (D-05 dual-binary)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tk ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "bash-failing-mockbin-preset",
+      "name": "bash: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidates": [],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": "FAIL"
+        }
+      }
+    },
+
+    {
+      "id": "zsh-top-level-subcommand",
+      "name": "zsh: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "zsh-flag-name-at-depth",
+      "name": "zsh: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise web next my-app --",
+      "expectedCandidatesInclude": ["--package-manager"],
+      "expectExitOk": true
+    },
+    {
+      "id": "zsh-dynamic-value-presets",
+      "name": "zsh: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidates": ["my-stack", "team-defaults"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": ["my-stack", "team-defaults"]
+        }
+      }
+    },
+    {
+      "id": "zsh-static-enum-completion",
+      "name": "zsh: tinkerise completion <TAB> emits static shell enum",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise completion ",
+      "expectedCandidates": ["bash", "zsh", "fish"],
+      "expectExitOk": true
+    },
+    {
+      "id": "zsh-negative-unknown-command",
+      "name": "zsh: tinkerise bogusbogusbogus <TAB> yields empty candidate set",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise bogusbogusbogus ",
+      "expectedCandidates": [],
+      "expectExitOk": true
+    },
+    {
+      "id": "zsh-tk-alias",
+      "name": "zsh: tk <TAB> emits same top-level candidates as tinkerise (D-05 #compdef tinkerise tk)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tk ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "zsh-failing-mockbin-preset",
+      "name": "zsh: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidates": [],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": "FAIL"
+        }
+      }
+    },
+
+    {
+      "id": "fish-top-level-subcommand",
+      "name": "fish: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "fish-flag-name-at-depth",
+      "name": "fish: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise web next my-app --",
+      "expectedCandidatesInclude": ["--package-manager"],
+      "expectExitOk": true
+    },
+    {
+      "id": "fish-dynamic-value-presets",
+      "name": "fish: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidatesInclude": ["my-stack", "team-defaults"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": ["my-stack", "team-defaults"]
+        }
+      }
+    },
+    {
+      "id": "fish-static-enum-completion",
+      "name": "fish: tinkerise completion <TAB> emits static shell enum",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise completion ",
+      "expectedCandidatesInclude": ["bash", "zsh", "fish"],
+      "expectExitOk": true
+    },
+    {
+      "id": "fish-negative-unknown-command",
+      "name": "fish: tinkerise bogusbogusbogus <TAB> yields empty candidate set",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise bogusbogusbogus ",
+      "expectedCandidates": [],
+      "expectExitOk": true
+    },
+    {
+      "id": "fish-tk-alias",
+      "name": "fish: tk <TAB> emits same top-level candidates as tinkerise (D-05 dual `complete -c` blocks)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tk ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    },
+    {
+      "id": "fish-failing-mockbin-preset",
+      "name": "fish: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise --preset ",
+      "expectedCandidates": [],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "presets": "FAIL"
+        }
+      }
+    }
+  ]
+}

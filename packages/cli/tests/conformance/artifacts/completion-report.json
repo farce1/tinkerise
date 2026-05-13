@@ -1,0 +1,425 @@
+{
+  "generatedAt": "2026-05-13T10:35:25.023Z",
+  "fixture": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/fixtures/completion-matrix.json",
+  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/artifacts/completion-report.json",
+  "records": [
+    {
+      "id": "bash-top-level-subcommand",
+      "name": "bash: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 390,
+      "failures": [],
+      "candidates": [
+        "web",
+        "backend",
+        "mobile",
+        "list",
+        "monorepo",
+        "add",
+        "doctor",
+        "config",
+        "preset",
+        "mcp",
+        "cli",
+        "lib",
+        "update",
+        "completion"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-flag-name-at-depth",
+      "name": "bash: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 219,
+      "failures": [],
+      "candidates": [
+        "--version",
+        "--typescript",
+        "--ts",
+        "--tailwind",
+        "--eslint",
+        "--biome",
+        "--no-git",
+        "--no-install",
+        "--package-manager",
+        "--template",
+        "--src-dir",
+        "--import-alias",
+        "--empty",
+        "--overwrite",
+        "--app-router",
+        "--react-compiler",
+        "--turbopack",
+        "--api",
+        "--preset",
+        "--verbose",
+        "--json"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-dynamic-value-presets",
+      "name": "bash: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 565,
+      "failures": [],
+      "candidates": [
+        "my-stack",
+        "team-defaults"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-static-enum-completion",
+      "name": "bash: tinkerise completion <TAB> emits static shell enum",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 244,
+      "failures": [],
+      "candidates": [
+        "bash",
+        "zsh",
+        "fish"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-negative-unknown-command",
+      "name": "bash: tinkerise bogusbogusbogus <TAB> yields empty candidate set (no false positives)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 221,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-tk-alias",
+      "name": "bash: tk <TAB> emits same top-level candidates as tinkerise (D-05 dual-binary)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 216,
+      "failures": [],
+      "candidates": [
+        "web",
+        "backend",
+        "mobile",
+        "list",
+        "monorepo",
+        "add",
+        "doctor",
+        "config",
+        "preset",
+        "mcp",
+        "cli",
+        "lib",
+        "update",
+        "completion"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-failing-mockbin-preset",
+      "name": "bash: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 432,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-top-level-subcommand",
+      "name": "zsh: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 325,
+      "failures": [],
+      "candidates": [
+        "web",
+        "backend",
+        "mobile",
+        "list",
+        "monorepo",
+        "add",
+        "doctor",
+        "config",
+        "preset",
+        "mcp",
+        "cli",
+        "lib",
+        "update",
+        "completion"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-flag-name-at-depth",
+      "name": "zsh: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 187,
+      "failures": [],
+      "candidates": [
+        "--version",
+        "--typescript",
+        "--ts",
+        "--tailwind",
+        "--eslint",
+        "--biome",
+        "--no-git",
+        "--no-install",
+        "--package-manager",
+        "--template",
+        "--src-dir",
+        "--import-alias",
+        "--empty",
+        "--overwrite",
+        "--app-router",
+        "--react-compiler",
+        "--turbopack",
+        "--api",
+        "--preset",
+        "--verbose",
+        "--json"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-dynamic-value-presets",
+      "name": "zsh: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 329,
+      "failures": [],
+      "candidates": [
+        "my-stack",
+        "team-defaults"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-static-enum-completion",
+      "name": "zsh: tinkerise completion <TAB> emits static shell enum",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 195,
+      "failures": [],
+      "candidates": [
+        "bash",
+        "zsh",
+        "fish"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-negative-unknown-command",
+      "name": "zsh: tinkerise bogusbogusbogus <TAB> yields empty candidate set",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 196,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-tk-alias",
+      "name": "zsh: tk <TAB> emits same top-level candidates as tinkerise (D-05 #compdef tinkerise tk)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 192,
+      "failures": [],
+      "candidates": [
+        "web",
+        "backend",
+        "mobile",
+        "list",
+        "monorepo",
+        "add",
+        "doctor",
+        "config",
+        "preset",
+        "mcp",
+        "cli",
+        "lib",
+        "update",
+        "completion"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-failing-mockbin-preset",
+      "name": "zsh: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 321,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "fish-top-level-subcommand",
+      "name": "fish: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 108,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-flag-name-at-depth",
+      "name": "fish: tinkerise web next my-app --<TAB> emits global flag names",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 108,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-dynamic-value-presets",
+      "name": "fish: tinkerise --preset <TAB> looks up presets via mocked __complete",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 106,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-static-enum-completion",
+      "name": "fish: tinkerise completion <TAB> emits static shell enum",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 107,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-negative-unknown-command",
+      "name": "fish: tinkerise bogusbogusbogus <TAB> yields empty candidate set",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 108,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-tk-alias",
+      "name": "fish: tk <TAB> emits same top-level candidates as tinkerise (D-05 dual `complete -c` blocks)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 105,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-failing-mockbin-preset",
+      "name": "fish: tinkerise --preset <TAB> with failing __complete yields empty candidates, no stderr leak (D-19)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 108,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
+    }
+  ],
+  "totals": {
+    "total": 21,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 7
+  }
+}

@@ -1,0 +1,79 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`completion/bash.generate > emits a stable script for the fixture Commander tree 1`] = `
+"# bash completion for tinkerise
+# Registers both \`tinkerise\` and \`tk\` (D-05).
+# Source via: eval "$(tinkerise completion bash)"
+
+_tinkerise() {
+  local cur prev words cword
+  _init_completion -n = 2>/dev/null || {
+    cur="\${COMP_WORDS[COMP_CWORD]}"
+    prev="\${COMP_WORDS[COMP_CWORD-1]}"
+    words=("\${COMP_WORDS[@]}")
+    cword=\${COMP_CWORD}
+  }
+
+  local _items=""
+
+  # Flag-value completion (static enums + dynamic lookups)
+  case "$prev" in
+    --package-manager)
+      COMPREPLY=( $(compgen -W "npm pnpm yarn bun" -- "$cur") )
+      return 0
+      ;;
+    --preset)
+      _items=$(tinkerise __complete presets 2>/dev/null) || _items=""
+      COMPREPLY=( $(compgen -W "$_items" -- "$cur") )
+      return 0
+      ;;
+  esac
+
+  # Positional completion at the first argument position
+  if [[ $cword -eq 1 ]]; then
+    if [[ "$cur" == -* ]]; then
+      COMPREPLY=( $(compgen -W "--package-manager --preset" -- "$cur") )
+      return 0
+    fi
+    COMPREPLY=( $(compgen -W "web backend mobile list add install doctor completion" -- "$cur") )
+    return 0
+  fi
+
+  # Depth-2 completion: per top-level command
+  local cmd1="\${words[1]}"
+  local cmd2="\${words[2]:-}"
+  case "$cmd1" in
+    list)
+      if [[ $cword -eq 2 ]]; then
+        COMPREPLY=( $(compgen -W "web backend mobile" -- "$cur") )
+        return 0
+      fi
+      ;;
+    add|install)
+      if [[ $cword -eq 2 ]]; then
+        _items=$(tinkerise __complete enhancements 2>/dev/null) || _items=""
+        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )
+        return 0
+      fi
+      ;;
+    doctor)
+      ;;
+    completion)
+      if [[ $cword -eq 2 ]]; then
+        COMPREPLY=( $(compgen -W "bash zsh fish" -- "$cur") )
+        return 0
+      fi
+      ;;
+  esac
+
+  if [[ "$cur" == -* ]]; then
+    COMPREPLY=( $(compgen -W "--package-manager --preset" -- "$cur") )
+    return 0
+  fi
+
+  return 0
+}
+
+complete -F _tinkerise tinkerise tk
+"
+`;

@@ -1,0 +1,78 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`completion/zsh.generate > emits a stable script for the fixture Commander tree 1`] = `
+"#compdef tinkerise tk
+# zsh completion for tinkerise
+# Registers both \`tinkerise\` and \`tk\` (D-05).
+# Install via: tinkerise completion zsh > "\${fpath[1]}/_tinkerise" && compinit
+
+_tinkerise() {
+  local -a _items _candidates
+  local prev cur
+  prev="\${words[CURRENT-1]}"
+  cur="\${words[CURRENT]}"
+
+  # Flag-value completion (static enums + dynamic lookups)
+  case "$prev" in
+    --package-manager)
+      _candidates=( npm pnpm yarn bun )
+      _describe '--package-manager values' _candidates
+      return
+      ;;
+    --preset)
+      _items=( \${(f)"$(tinkerise __complete presets 2>/dev/null)"} )
+      _describe 'presets' _items
+      return
+      ;;
+  esac
+
+  # Positional completion
+  if (( CURRENT == 2 )); then
+    if [[ "$cur" == -* ]]; then
+      _candidates=( --package-manager --preset )
+      _describe 'options' _candidates
+      return
+    fi
+    _candidates=( web backend mobile list add install doctor completion )
+    _describe 'commands' _candidates
+    return
+  fi
+
+  # Depth-2 completion: per top-level command
+  local cmd1="\${words[2]}"
+  local cmd2="\${words[3]:-}"
+  case "$cmd1" in
+    list)
+      if (( CURRENT == 3 )); then
+        _candidates=( web backend mobile )
+        _describe 'list values' _candidates
+        return
+      fi
+      ;;
+    add|install)
+      if (( CURRENT == 3 )); then
+        _items=( \${(f)"$(tinkerise __complete enhancements 2>/dev/null)"} )
+        _describe 'enhancements' _items
+        return
+      fi
+      ;;
+    doctor)
+      ;;
+    completion)
+      if (( CURRENT == 3 )); then
+        _candidates=( bash zsh fish )
+        _describe 'completion values' _candidates
+        return
+      fi
+      ;;
+  esac
+
+  if [[ "$cur" == -* ]]; then
+    _candidates=( --package-manager --preset )
+    _describe 'options' _candidates
+  fi
+}
+
+# #compdef directive above already registers tinkerise and tk.
+"
+`;
