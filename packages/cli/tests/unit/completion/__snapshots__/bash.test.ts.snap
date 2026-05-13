@@ -39,6 +39,27 @@ _tinkerise() {
     return 0
   fi
 
+  # Depth-2 root-positional completion: tinkerise <category> <TAB>
+  if [[ $cword -eq 2 ]]; then
+    case "\${words[1]}" in
+      web)
+        _items=$(tinkerise __complete scaffolders:web 2>/dev/null) || _items=""
+        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )
+        return 0
+        ;;
+      backend)
+        _items=$(tinkerise __complete scaffolders:backend 2>/dev/null) || _items=""
+        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )
+        return 0
+        ;;
+      mobile)
+        _items=$(tinkerise __complete scaffolders:mobile 2>/dev/null) || _items=""
+        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )
+        return 0
+        ;;
+    esac
+  fi
+
   # Depth-2 completion: per top-level command
   local cmd1="\${words[1]}"
   local cmd2="\${words[2]:-}"

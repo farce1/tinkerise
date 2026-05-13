@@ -78,6 +78,17 @@ function emitBlock(binary: 'tinkerise' | 'tk', root: CommandNode): string[] {
 
   lines.push(`complete -c ${binary} -f -n '__fish_use_subcommand' -a '${joinSpace(rootCandidates)}'`)
 
+  // Depth-2 root-positional completion: tinkerise <category> <TAB> -> scaffolders:<category>
+  // Categories are .argument()s on the root command, not subcommands; we emit a directive
+  // per category that matches once the category token has been seen. (CR-01)
+  const rootPositionalCategoriesF = POSITIONAL_ENUMS[''] ?? []
+  for (const category of rootPositionalCategoriesF) {
+    const dynKind = DYNAMIC_POSITIONALS[category]
+    if (!dynKind)
+      continue
+    lines.push(`complete -c ${binary} -f -n '__fish_seen_subcommand_from ${escapeSingle(category)}' -a '(tinkerise __complete ${dynKind} 2>/dev/null; or true)'`)
+  }
+
   // Top-level flag-name completion (with -- prefix)
   for (const flag of root.flags) {
     const flagName = flag.replace(/^--/, '')

@@ -76,6 +76,29 @@
         }
       }
     },
+    {
+      "id": "bash-dynamic-value-scaffolders-web",
+      "name": "bash: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise web ",
+      "expectedCandidates": ["next", "vite", "astro"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "scaffolders:web": ["next", "vite", "astro"]
+        }
+      }
+    },
+    {
+      "id": "bash-negative-unknown-category",
+      "name": "bash: tinkerise notacategory <TAB> yields empty candidates (root-positional dispatch only matches known categories)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise notacategory ",
+      "expectedCandidates": [],
+      "expectExitOk": true
+    },
 
     {
       "id": "zsh-top-level-subcommand",
@@ -150,6 +173,20 @@
         }
       }
     },
+    {
+      "id": "zsh-dynamic-value-scaffolders-web",
+      "name": "zsh: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "zsh",
+      "partialCommand": "tinkerise web ",
+      "expectedCandidates": ["next", "vite", "astro"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "scaffolders:web": ["next", "vite", "astro"]
+        }
+      }
+    },
 
     {
       "id": "fish-top-level-subcommand",
@@ -221,6 +258,20 @@
       "mockBin": {
         "__complete": {
           "presets": "FAIL"
+        }
+      }
+    },
+    {
+      "id": "fish-dynamic-value-scaffolders-web",
+      "name": "fish: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "fish",
+      "partialCommand": "tinkerise web ",
+      "expectedCandidatesInclude": ["next", "vite", "astro"],
+      "expectExitOk": true,
+      "mockBin": {
+        "__complete": {
+          "scaffolders:web": ["next", "vite", "astro"]
         }
       }
     }

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-12T07:36:02.784Z",
-  "fixture": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-a670c8104cca0989c/packages/cli/tests/conformance/fixtures/json-output-matrix.json",
-  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-a670c8104cca0989c/packages/cli/tests/conformance/artifacts/json-output-report.json",
+  "generatedAt": "2026-05-13T11:40:36.757Z",
+  "fixture": "tests/conformance/fixtures/json-output-matrix.json",
+  "reportPath": "tests/conformance/artifacts/json-output-report.json",
   "scenarios": [
     {
       "id": "list-json-default",
@@ -13,7 +13,7 @@
       "status": "pass",
       "expectedExitCode": 0,
       "actualExitCode": 0,
-      "durationMs": 1065,
+      "durationMs": 1230,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"data\":{\"scaffolders\":[{\"name\":\"next\",\"category\":\"web\",\"displayName\":\"Next.js\",\"description\":\"React framework with SSR, routing, and API routes\",\"packageName\":\"create-next-app\",\"pre...",
       "stderrSnippet": "(empty)"
@@ -28,7 +28,7 @@
       "status": "pass",
       "expectedExitCode": 0,
       "actualExitCode": 0,
-      "durationMs": 585,
+      "durationMs": 645,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"data\":{\"scaffolders\":[{\"name\":\"next\",\"category\":\"web\",\"displayName\":\"Next.js\",\"description\":\"React framework with SSR, routing, and API routes\",\"packageName\":\"create-next-app\",\"pre...",
       "stderrSnippet": "(empty)"
@@ -43,7 +43,7 @@
       "status": "pass",
       "expectedExitCode": 1,
       "actualExitCode": 1,
-      "durationMs": 125,
+      "durationMs": 196,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"list\",\"error\":{\"code\":\"INVALID_CATEGORY\",\"message\":\"Unknown category: 'bogus'. Valid categories: web, backend, mobile\"}}",
       "stderrSnippet": "(empty)"
@@ -58,7 +58,7 @@
       "status": "pass",
       "expectedExitCode": 0,
       "actualExitCode": 0,
-      "durationMs": 441,
+      "durationMs": 555,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"doctor\",\"data\":{\"checks\":[{\"tool\":\"Node.js\",\"command\":\"node\",\"category\":\"Runtimes\",\"required\":true,\"versionRange\":\">=20.11.0\",\"ok\":true,\"version\":\"24.4.1\"},{\"tool\":\"Python\",\"command\":\"pyt...",
       "stderrSnippet": "(empty)"
@@ -73,7 +73,7 @@
       "status": "pass",
       "expectedExitCode": 1,
       "actualExitCode": 1,
-      "durationMs": 227,
+      "durationMs": 272,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"doctor\",\"data\":{\"checks\":[{\"tool\":\"phase33-fake-required\",\"command\":\"phase33-bogus-cmd-never-installed\",\"category\":\"Runtimes\",\"required\":true,\"ok\":false,\"error\":\"'phase33-bogus-cmd-never-...",
       "stderrSnippet": "(empty)"
@@ -88,7 +88,7 @@
       "status": "pass",
       "expectedExitCode": 0,
       "actualExitCode": 0,
-      "durationMs": 134,
+      "durationMs": 138,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.list\",\"data\":{\"local\":[],\"npm\":[]}}",
       "stderrSnippet": "(empty)"
@@ -103,7 +103,7 @@
       "status": "pass",
       "expectedExitCode": 0,
       "actualExitCode": 0,
-      "durationMs": 454,
+      "durationMs": 118,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.show\",\"data\":{\"name\":\"phase33-fixture-preset\",\"description\":\"Phase 33 conformance fixture\",\"source\":\"local\",\"filePath\":\"/var/folders/4m/mfy443cd1qzgvt3k355w3hxw0000gn/T/tinkerise-c...",
       "stderrSnippet": "(empty)"
@@ -118,7 +118,7 @@
       "status": "pass",
       "expectedExitCode": 1,
       "actualExitCode": 1,
-      "durationMs": 327,
+      "durationMs": 128,
       "failures": [],
       "stdoutSnippet": "{\"schemaVersion\":1,\"command\":\"preset.show\",\"error\":{\"code\":\"PRESET_NOT_FOUND\",\"message\":\"Preset not found: 'no-such-preset-phase33'\"}}",
       "stderrSnippet": "(empty)"

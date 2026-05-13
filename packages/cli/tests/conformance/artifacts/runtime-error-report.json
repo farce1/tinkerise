@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-04-07T20:30:04.398Z",
-  "fixture": "/Users/impera/Documents/GitHub/tinkerise/packages/cli/tests/conformance/fixtures/runtime-error-matrix.json",
-  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/packages/cli/tests/conformance/artifacts/runtime-error-report.json",
+  "generatedAt": "2026-05-13T11:40:35.764Z",
+  "fixture": "tests/conformance/fixtures/runtime-error-matrix.json",
+  "reportPath": "tests/conformance/artifacts/runtime-error-report.json",
   "scenarios": [
     {
       "id": "unknown-command-high-confidence",
@@ -14,7 +14,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 285,
+      "durationMs": 238,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "(run with --help for usage information)\nError [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.\nCause: unknown command 'lset'\nNext step: Did you mean 'list', 'preset', or 'lib'? Try 'tinkerise list'."
@@ -30,7 +30,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 157,
+      "durationMs": 126,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "(run with --help for usage information)\nError [COMMANDER_UNKNOWNCOMMAND] Command input is invalid.\nCause: unknown command 'zzzz'\nNext step: Run 'tinkerise --help' or 'tinkerise list' to see available commands."
@@ -47,7 +47,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 112,
+      "durationMs": 964,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "(run with --help for usage information)\nError [COMMANDER_UNKNOWNOPTION] Command input is invalid.\nCause: unknown option '--bogus'\nNext step: Run 'tinkerise --help' to review supported options."
@@ -64,7 +64,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 111,
+      "durationMs": 115,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "(run with --help for usage information)\nError [COMMANDER_MISSINGARGUMENT] Command input is invalid.\nCause: missing required argument 'name'\nNext step: Run 'tinkerise --help' to check required arguments."
@@ -81,7 +81,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 117,
+      "durationMs": 123,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "Error [INVALID_CONFIG_KEY] Command failed.\nCause: Unknown config key: 'wrongKey'\nNext step: Valid keys: packageManager, typescript, defaultCategory"
@@ -98,7 +98,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 113,
+      "durationMs": 425,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "Error [CONFIG_VALIDATION] Command failed.\nCause: Invalid value 'npmx' for packageManager.\nNext step: Valid values: npm, pnpm, yarn, bun"
@@ -114,7 +114,7 @@
       "expectedExitCode": 0,
       "actualExitCode": 0,
       "channel": "stdout-only",
-      "durationMs": 117,
+      "durationMs": 119,
       "failures": [],
       "stdoutSnippet": "Usage: tinkerise config [options] [command]\n\nGet, set, list, or initialize tinkerise configuration values. Defaults to global\nscope; use --project for project-level config.\n\nOptions:\n  -h, --help                   dis...",
       "stderrSnippet": "(empty)"
@@ -130,7 +130,7 @@
       "expectedExitCode": 1,
       "actualExitCode": 1,
       "channel": "stderr-only",
-      "durationMs": 700,
+      "durationMs": 208,
       "failures": [],
       "stdoutSnippet": "(empty)",
       "stderrSnippet": "Error [UNEXPECTED_RUNTIME] Unexpected runtime failure.\nCause: A non-error value was thrown during command execution.\nNext step: Retry with '--verbose'. If the issue persists, open an issue at https://github.com/farce1..."

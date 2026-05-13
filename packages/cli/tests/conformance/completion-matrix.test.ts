@@ -15,7 +15,7 @@
 
 import { spawnSync } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 import { execaNode } from 'execa'
 import { describe, expect, it } from 'vitest'
@@ -218,8 +218,8 @@ describe.skipIf(process.platform === 'win32')('completion-matrix conformance', (
     await mkdir(ARTIFACT_DIR, { recursive: true })
     const report = {
       generatedAt: new Date().toISOString(),
-      fixture: FIXTURE_PATH,
-      reportPath: REPORT_PATH,
+      fixture: relative(process.cwd(), FIXTURE_PATH),
+      reportPath: relative(process.cwd(), REPORT_PATH),
       records,
       totals: {
         total: records.length,

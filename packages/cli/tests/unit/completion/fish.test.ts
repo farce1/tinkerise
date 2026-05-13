@@ -51,4 +51,16 @@ describe('completion/fish.generate', () => {
     const out = generate(buildFixtureProgram())
     expect(out).toMatch(/tinkerise __complete presets 2>\/dev\/null; or true/)
   })
+
+  it('emits root-positional dispatch for web/backend/mobile in both binaries per CR-01 / D-05 (34-06)', () => {
+    const out = generate(buildFixtureProgram())
+    // Each category directive must appear twice — once for `-c tinkerise`,
+    // once for `-c tk` — per the dual-binary contract (D-05).
+    for (const category of ['web', 'backend', 'mobile']) {
+      const tinkeriseRegex = new RegExp(`complete -c tinkerise -f -n '__fish_seen_subcommand_from ${category}' -a '\\(tinkerise __complete scaffolders:${category} 2>/dev/null; or true\\)'`)
+      const tkRegex = new RegExp(`complete -c tk -f -n '__fish_seen_subcommand_from ${category}' -a '\\(tinkerise __complete scaffolders:${category} 2>/dev/null; or true\\)'`)
+      expect(out).toMatch(tinkeriseRegex)
+      expect(out).toMatch(tkRegex)
+    }
+  })
 })
