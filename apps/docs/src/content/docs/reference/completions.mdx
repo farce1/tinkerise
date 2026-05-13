@@ -1,0 +1,173 @@
+---
+title: Shell Completions
+description: Generate bash, zsh, and fish tab-completion scripts for tinkerise and tk, covering subcommands, flags, and dynamic values (scaffolder/enhancement/preset names).
+---
+
+`tinkerise completion <shell>` emits a sourceable shell-completion script
+on stdout for `bash`, `zsh`, or `fish`. A single install per shell wires
+tab-completion for both the `tinkerise` binary and its short `tk` alias —
+one source line covers both invocations. Completion candidates cover
+subcommands, flag names, and flag values (static enums like
+`--package-manager npm|pnpm|yarn|bun` plus dynamic values such as
+scaffolder, enhancement, and preset names). Dynamic values stay current
+automatically because they query the live binary at tab time, not the
+script that was generated at install time. See the install one-liners
+below.
+
+## Supported shells
+
+| Shell | Install pattern |
+|-------|-----------------|
+| `bash` | runtime `eval` from `~/.bashrc` (auto-refreshes on every shell open) |
+| `zsh`  | filesystem snapshot under `${fpath[1]}/_tinkerise` (or runtime `eval` fallback) |
+| `fish` | filesystem snapshot under `~/.config/fish/completions/tinkerise.fish` |
+
+PowerShell and Nushell are out of scope for this release. Only `bash`,
+`zsh`, and `fish` are accepted; any other value is rejected with the
+`COMPLETION_UNKNOWN_SHELL` error envelope (see the table at the bottom of
+this page).
+
+## Install per shell
+
+### bash
+
+```bash
+echo 'eval "$(tinkerise completion bash)"' >> ~/.bashrc
+```
+
+On macOS, append to `~/.bash_profile` instead of `~/.bashrc` — interactive
+login shells (Terminal.app's default) source `~/.bash_profile`, not
+`~/.bashrc`.
+
+### zsh
+
+```bash
+tinkerise completion zsh > "${fpath[1]}/_tinkerise"
+compinit
+```
+
+If your `fpath[1]` is not writable (system-managed zsh installs, etc.),
+fall back to the runtime `eval` pattern by appending this to `~/.zshrc`:
+
+```bash
+eval "$(tinkerise completion zsh)"
+```
+
+### fish
+
+```bash
+tinkerise completion fish > ~/.config/fish/completions/tinkerise.fish
+```
+
+Fish auto-loads completion files from
+`~/.config/fish/completions/` on shell startup — no further wiring
+required.
+
+## Refresh after upgrade
+
+How completions update after `tinkerise update` depends on the install
+style you chose above:
+
+- **bash** via `eval "$(tinkerise completion bash)"` in `~/.bashrc` —
+  re-evaluates on every shell open, so the static surface (subcommand
+  structure, flag names, enum values) auto-refreshes after
+  `tinkerise update` with zero user action.
+- **zsh** filesystem install — the script under
+  `${fpath[1]}/_tinkerise` is a snapshot from install time. After
+  `tinkerise update`, re-run the install command to refresh the static
+  surface:
+
+  ```bash
+  tinkerise completion zsh > "${fpath[1]}/_tinkerise"
+  ```
+
+- **fish** filesystem install — same snapshot semantics. After
+  `tinkerise update`, re-run:
+
+  ```bash
+  tinkerise completion fish > ~/.config/fish/completions/tinkerise.fish
+  ```
+
+The **dynamic surface** (scaffolder, enhancement, and preset names) is
+always current regardless of install style, because the emitted scripts
+shell out to the live `tinkerise` binary at tab time rather than
+hard-coding the candidate list.
+
+## How completion works
+
+Completion fires at three depths, matching the patterns established by
+`gh`, `kubectl`, and `bun completions`:
+
+- **Subcommands.** Pressing tab after `tinkerise ` or `tk ` expands to
+  every registered top-level command (`list`, `add`, `doctor`, `config`,
+  `preset`, `mcp`, `cli`, `lib`, `monorepo`, `update`, `completion`) plus
+  the category positions `web`, `backend`, `mobile`.
+- **Flag names.** Pressing tab after `tinkerise web next my-app --`
+  expands to the union of global options and command-specific options
+  walked from the live Commander tree at script-generation time. New
+  flags added to the CLI surface flow into the next regenerated script
+  automatically.
+- **Flag values.** Static enums (`--package-manager npm|pnpm|yarn|bun`,
+  `tinkerise <category>`, `tinkerise completion <shell>`) and dynamic
+  values (scaffolder IDs for `tinkerise <category>`, enhancement IDs for
+  `tinkerise add`, preset names for `--preset`, `preset use`,
+  `preset show`, and `preset delete`) are both supported.
+
+Free-form value positions — project names, arbitrary file paths, free
+text strings — yield no completions and fall through to the shell's
+native filesystem completion, which is the correct default.
+
+## How dynamic completion works
+
+Dynamic candidates (scaffolder/enhancement/preset names) come from a
+hidden internal subcommand: `tinkerise __complete <kind>`. The emitted
+shell scripts call it at tab time and tokenize the newline-separated
+output into the shell's native candidate-set primitives (bash
+`COMPREPLY=( $(compgen -W ...) )`, zsh `_describe`, fish
+`complete -a '(...)'`).
+
+- Output is plain text, one candidate per line — no JSON parser
+  required on your system. There is no `jq` dependency.
+- Accepted `<kind>` values in this release: `scaffolders`,
+  `scaffolders:<category>`, `enhancements`, `presets`, `categories`.
+- The subcommand is hidden from `--help` and the docs surface — it is
+  consumed by the emitted scripts, not by users directly.
+- If the `tinkerise` binary is missing from `PATH` at tab time, or an
+  older pre-Phase-34 `tinkerise` is on `PATH`, the script returns an
+  empty candidate set silently — no stderr leak into the prompt, no
+  noisy error text. This graceful fallback is locked by the conformance
+  matrix.
+
+## --json behavior
+
+When invoked with `--json`, the failure path emits the standard JSON error envelope (see [JSON Output](/tinkerise/reference/json-output)) — the success path emits the shell script unchanged per D-06.
+
+Practical implication: piping `tinkerise completion bash --json` into a
+JSON parser succeeds only on the failure branch. On the success branch
+the output is a shell script, not JSON; scripts that consume completion
+output should special-case it accordingly.
+
+The failure-path envelope follows the Phase 33 shape exactly:
+
+```json
+{
+  "schemaVersion": 1,
+  "command": "completion",
+  "error": {
+    "code": "COMPLETION_UNKNOWN_SHELL",
+    "message": "Unknown shell: 'powershell'. Supported shells: bash, zsh, fish."
+  }
+}
+```
+
+## Error codes
+
+| Code | When |
+|------|------|
+| `COMPLETION_UNKNOWN_SHELL` | The `<shell>` argument is not one of `bash`, `zsh`, or `fish`. The CLI prints a "Did you mean ...?" suggestion when the typo is within fuzzy threshold (for example, `tinkerise completion bsh` suggests `bash`). Under `--json`, this code appears in the standard error envelope's `error.code` field. |
+
+## See also
+
+- [JSON Output](/tinkerise/reference/json-output) — machine-readable
+  `--json` contract for `list`, `doctor`, `preset list`, and
+  `preset show`.

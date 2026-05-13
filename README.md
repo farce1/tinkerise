@@ -22,6 +22,10 @@ Continue in the full docs: [https://farce1.github.io/tinkerise/](https://farce1.
 - `npm install -g tinkerise`
 - `brew install farce1/tap/tinkerise`
 
+### Tab completion
+
+Bash, zsh, and fish are supported. See [Shell Completions](https://farce1.github.io/tinkerise/reference/completions) for copy-paste install instructions per shell.
+
 ## What is tinkerise?
 
 tinkerise is a unified CLI that wraps official framework scaffolders instead of replacing them. You get one consistent command surface while still relying on the underlying tools maintainers and teams already trust.
