@@ -27,11 +27,11 @@
 | Option | Description | Selected |
 |--------|-------------|----------|
 | Snapshot at script emit time | Bake everything (scaffolders, presets, enhancements) into the script. User re-runs `tinkerise completion <shell>` to refresh after `preset save` or `tinkerise update`. Simple, no runtime CLI calls, but UX requires re-sourcing after every change. | |
-| Runtime lookup at tab time (everything) | Script invokes `tinkerise list --json` / `tinkerise preset list --json` on every tab. Always current. ~80-150ms cold-start latency. Couples completion to Phase 33 `--json` schemas. | |
-| Hybrid (bake static, look up dynamic) | Bake subcommands, flag names, and very-static enums (categories, PMs, shells); look up scaffolder/enhancement/preset names at tab time via Phase 33 `--json`. Matches `gh` and `kubectl`. | ✓ |
+| Runtime lookup via Phase 33 `--json` + `jq` | Script invokes `tinkerise list --json` / `tinkerise preset list --json` on every tab and parses with `jq`. Always current. Requires `jq` as soft-prereq (not default on macOS). Couples completion to public `--json` schema versioning. | |
+| Runtime lookup via hidden `__complete` subcommand | Script invokes `tinkerise __complete <kind>` (hidden subcommand emitting newline-separated values). Always current. Zero external prereqs. Decoupled from public `--json` schemas. Matches cobra (gh/kubectl) and clap_complete (deno). | ✓ |
 
-**Selection:** Hybrid.
-**Notes:** Pure-static forces re-sourcing after every `preset save` or version upgrade — bad UX. Pure-dynamic adds latency to flag-name completion for no benefit (flag names don't change between releases without code shipping). Hybrid is what `gh` and `kubectl` use. Static enum map lives in `packages/cli/src/completion/enums.ts` because Commander.js does not expose enum metadata on `.option()` calls (D-08); the set is small (~5 entries). `jq` is a soft prerequisite for dynamic completions (D-10) — matches `gh`/`kubectl` precedent; static completion still works without it. Graceful degradation on lookup failure (D-09): empty candidate set, no error spam in user's shell. No caching in v1 (D-11) — premature optimization.
+**Selection:** Hybrid bake-vs-lookup with the lookup path using a hidden `__complete` subcommand (NOT the public `--json` + `jq` route).
+**Notes:** Initial draft proposed `--json` + `jq`. On critical review, the `jq` soft-prereq was identified as a real UX hole — `jq` isn't installed by default on macOS and silent degradation on a clean Mac is poor industry practice. Cobra (gh/kubectl) and clap_complete (deno) both ship a hidden `__complete` subcommand that emits newline-separated values directly. Switching to that pattern: (a) eliminates the prereq, (b) is faster (no JSON formatting + no `jq` fork), (c) decouples the completion contract from public `--json` schema versioning so each can evolve independently. Static enum map still lives in `packages/cli/src/completion/enums.ts` (D-08). Graceful degradation on lookup failure (D-09): empty candidate set, no error spam — handles old pre-Phase-34 tinkerise on PATH automatically (Commander returns unknown-command, stderr suppressed, empty fallback). Shell-quoting safety (D-11b) explicit: `compgen -W` / zsh `_describe` / fish `complete -a` all tokenize candidates as data, never execute them. No caching in v1 (D-11) — premature optimization.
 
 ---
 
@@ -77,5 +77,5 @@
 - Completion for free-form value positions (project name suggestions, scaffolder-aware path templates) — bloats templates and tests; defer to a future "smart completions" phase.
 - Plugin/extension API for third-party completions — out of scope per PROJECT.md (no plugin surface).
 - Completion-driven help generation (auto-generate `--help` examples from enum maps) — tangential.
-- Bundling a tiny JSON parser to remove `jq` soft-prereq — possible (e.g., `dasel`) but adds maintenance surface for minor convenience; revisit if jq friction emerges.
+- ~~Bundling a tiny JSON parser to remove `jq` soft-prereq~~ — resolved during critical review: switched to a hidden `__complete` subcommand (D-10) so neither `jq` nor any other JSON parser is required on the user's system.
 - Completion telemetry / opt-in usage signals — post-v2 per PROJECT.md.

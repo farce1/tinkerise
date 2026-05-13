@@ -41,22 +41,28 @@ Ship `tinkerise completion <bash|zsh|fish>` — a new read-only subcommand that 
 - **D-06:** `tinkerise completion <shell> --json` is a silent no-op (`--json` is ignored for this command, output remains the shell script on stdout). Documented in the Phase 33 `reference/json-output.mdx` page as a "commands without `--json` support" footnote. Rationale: the output is a shell script, not data; wrapping it would defeat the purpose. No `--json` envelope is emitted on the failure path either — failures flow through `handleError` and use the same error format as other non-JSON commands.
 
 ### Dynamic value strategy
-- **D-07:** Hybrid bake-vs-lookup strategy modeled on `gh` and `kubectl`:
+- **D-07:** Hybrid bake-vs-lookup strategy modeled on cobra (gh/kubectl) and clap_complete (deno):
   - **Baked into the script at generation time** (static, version-bound to whatever ships):
     - Subcommand structure (walked from Commander tree).
     - Flag names per subcommand (walked from Commander tree).
     - Stable enum flag values: `--package-manager` → `npm pnpm yarn bun`; `tinkerise <category>` first-positional → `web backend mobile`; `tinkerise list <category>` first-positional → same; `tinkerise completion <shell>` → `bash zsh fish`.
-  - **Looked up at tab time** via the Phase 33 `--json` output (always current, no re-sourcing needed after upgrade or preset save):
-    - Framework names (`tinkerise <category> <framework>` second-positional) — parsed from `tinkerise list --json` `.data.scaffolders[].id` filtered by the typed category.
-    - Enhancement names for `tinkerise add <enhancement>` — parsed from `tinkerise list --json` `.data.enhancements[].id`.
-    - Preset names for `--preset <name>`, `tinkerise preset show <name>`, `tinkerise preset use <name>`, `tinkerise preset delete <name>` — parsed from `tinkerise preset list --json` `.data.presets[].name`.
+  - **Looked up at tab time** via a new hidden subcommand `tinkerise __complete <kind>` (always current, no re-sourcing needed after preset save):
+    - Framework names: `tinkerise __complete scaffolders` (or `scaffolders:<category>` for category-filtered) → newline-separated scaffolder IDs.
+    - Enhancement names for `tinkerise add <enhancement>`: `tinkerise __complete enhancements` → newline-separated enhancement IDs.
+    - Preset names for `--preset <name>`, `tinkerise preset show <name>`, `tinkerise preset use <name>`, `tinkerise preset delete <name>`: `tinkerise __complete presets` → newline-separated preset names.
 - **D-08:** Static enum map lives in `packages/cli/src/completion/enums.ts` — a small hand-maintained typed map of `{ optionFlag → string[] }` and `{ commandPosition → string[] }`. Acceptable to maintain by hand because Commander.js does not expose enum metadata on `.option()` calls, the set is small (~5 entries), and these enums change rarely (only when a new package manager or category is added — which is itself a guarded decision). Generator imports this map and inlines values into the per-shell script.
-- **D-09:** Dynamic lookups in the emitted scripts call the installed `tinkerise` binary directly (not `tk`, to avoid alias resolution edge cases), wrap in stderr suppression, and degrade gracefully on failure:
-  - bash/zsh template pattern: `local _items; _items=$(tinkerise list --json 2>/dev/null | jq -r '.data.scaffolders[].id' 2>/dev/null) || _items=""`
-  - fish equivalent uses `set -l` and `tinkerise list --json 2>/dev/null | jq -r ...` with `or true` fallback.
-  - If `jq` is missing OR the JSON call fails OR the schema is unexpected, completion returns an empty candidate set — never red error text mid-tab, never log noise.
-- **D-10:** `jq` is assumed present for dynamic parsing. Reasonable for the power-user audience this phase targets (anyone installing shell completions has likely already installed jq), and matches `gh` / `kubectl` precedent. The docs install page mentions jq as a soft prerequisite for dynamic completions. **Static completions (subcommands, flag names, enums) work without jq** — users without jq still get the bulk of the completion surface, they just lose framework/preset/enhancement value lookup. No bundled JSON parser; planner can revisit if user feedback shows this is friction.
-- **D-11:** No caching layer in v1. Phase 33 cold-start is ~80-150ms; users tab once or twice per command. Premature optimization. If perf evidence later surfaces, a future phase can add a `XDG_CACHE_HOME`-backed cache keyed by tinkerise version + a TTL.
+- **D-09:** Dynamic lookups in the emitted scripts call the installed `tinkerise` binary's `__complete` subcommand directly (not `tk`, to avoid alias resolution edge cases) and degrade gracefully on any failure path:
+  - bash/zsh template pattern: `local _items; _items=$(tinkerise __complete scaffolders 2>/dev/null) || _items=""`
+  - fish equivalent: `set -l _items (tinkerise __complete scaffolders 2>/dev/null; or true)`
+  - If the binary is missing from PATH, OR an older pre-Phase-34 tinkerise (no `__complete` registered) is on PATH, OR the subcommand exits non-zero, completion returns an empty candidate set — never red error text mid-tab, never log noise. Pre-Phase-34 binaries simply return Commander's "unknown command" error code on stderr (suppressed), and the empty-string fallback kicks in.
+- **D-10:** Hidden subcommand contract — `tinkerise __complete <kind>`:
+  - Registered alongside the other top-level commands in `packages/cli/src/index.ts` with Commander's `hidden: true` (or equivalent `.command(..., { hidden: true })` form) so it does NOT appear in `--help`, `--list`, or any docs surface. Generator's own tree-walk explicitly skips `__complete` to avoid advertising an internal contract or generating recursive completion entries.
+  - Output is plain text: one candidate per line, no banners, no formatting, no envelope. Stdout-only on success (exit 0); stderr + non-zero exit on unknown `kind` argument.
+  - `kind` values accepted in v1: `scaffolders`, `scaffolders:<category>`, `enhancements`, `presets`, `categories`. Set is closed and additive — planner adds new kinds as completion needs grow without renumbering or breaking the wire.
+  - Decoupled from the public Phase 33 `--json` schemas — `__complete` is a script-internal contract owned by Phase 34 generators, so the public `--json` envelope (`schemaVersion`, `data.scaffolders[].id`, etc.) can evolve under its own versioning policy without breaking completion.
+  - Zero external prereqs on the user's system: no `jq`, no `node -e`, no `python -c`. Pattern lifted from cobra's hidden `__complete` and clap_complete's runtime completion API — the dominant industry precedent.
+- **D-11:** No caching layer in v1. `__complete` is faster than `--json` (no JSON formatting, no Zod validation, no envelope wrapping) — typical tab response is ~70-120ms cold. Users tab once or twice per command, not constantly. Premature optimization. If perf evidence later surfaces, a future phase can add a `XDG_CACHE_HOME`-backed cache keyed by tinkerise version + a short TTL.
+- **D-11b (security/quoting):** Static enum values baked into the emitted scripts are hard-coded TypeScript string literals at generation time — zero injection surface. Dynamic values from `__complete` are consumed via the shells' native candidate-set primitives — bash `COMPREPLY=( $(compgen -W "$_items" -- "$cur") )`, zsh `_describe`, fish `complete -a "$_items"` — all of which tokenize on IFS whitespace and present candidates as data, NOT as commands to execute. Even a hypothetical preset name containing shell metacharacters would be rendered as a candidate string, not invoked. Preset names are further constrained at write-time by tinkerise's existing preset-naming validator (`packages/core/src/config/preset.ts`), so this is defense-in-depth rather than an active risk. The `__complete` output surface is fully owned by tinkerise — no third-party-controlled strings ever flow through it.
 
 ### Flag-value completion depth
 - **D-12:** Full three-depth completion matching `gh` and `kubectl`:
@@ -85,6 +91,10 @@ Ship `tinkerise completion <bash|zsh|fish>` — a new read-only subcommand that 
   - **zsh:** `tinkerise completion zsh > "${fpath[1]}/_tinkerise"` followed by `compinit` — filesystem pattern matching kubectl, with a fallback `eval "$(tinkerise completion zsh)"` for users whose `fpath` is non-writable.
   - **fish:** `tinkerise completion fish > ~/.config/fish/completions/tinkerise.fish` — filesystem pattern matching fish's standard completion discovery.
 - **D-22:** Cross-link from `apps/docs/src/content/docs/reference/commands.mdx` (under a "See also" section) and from the project README (one line under the existing install section). Sidebar order: completions sits next to `json-output` under `reference/` — they're both power-user contracts that ship together as the v3.2 scripting story.
+- **D-22b (refresh after upgrade):** Docs page calls out the two install styles and what they imply for upgrades:
+  - **bash via `eval "$(tinkerise completion bash)"` in `~/.bashrc`** — re-evaluates on every shell open, so static surface (subcommand structure, flag names, enums) auto-refreshes after `tinkerise update` with zero user action.
+  - **zsh/fish filesystem install (`tinkerise completion zsh > <path>`)** — captures a snapshot of the script, so the static surface only updates when the user re-runs the install command. Docs include a one-line "after `tinkerise update`, re-run `tinkerise completion <shell> > <path>`" note alongside each filesystem install snippet.
+  - Dynamic surface (scaffolders/enhancements/presets) is always current regardless of install style because it calls the live binary at tab time.
 
 ### Claude's Discretion (researcher/planner refines)
 - Exact Commander tree-walk implementation (how to recurse into subcommand groups like `preset` and its `save/use/list/delete/show` subcommands, including the new `show` from Phase 33). Likely a small `walkCommands(cmd, visitor)` helper but the exact API is for the planner.
@@ -150,7 +160,7 @@ Ship `tinkerise completion <bash|zsh|fish>` — a new read-only subcommand that 
 - **Conformance-matrix harness** (`packages/cli/tests/conformance/runtime-error-matrix.test.ts` and Phase 33's `json-output-matrix.test.ts`): fixture-driven, executes built dist via `execaNode`, writes a report artifact. Copy-paste-and-adapt for the completion matrix — same ScenarioRecord shape, same report writer.
 - **Error hierarchy** (`packages/core/src/errors/`): stable error codes and the `TinkeriseError` base. Reuse for `UnknownShellError` (code `COMPLETION_UNKNOWN_SHELL`).
 - **`handleError`** (`packages/cli/src/utils/error-handler.ts`): central error boundary set up in Phase 24/31. New errors flow through automatically — no change needed in the boundary.
-- **Phase 33 `--json` schemas** (`packages/shared/src/json-output/list.ts`, `preset-list.ts`): the wire-format contract the dynamic completion functions parse. Stable per D-04 (additive-only changes don't bump schemaVersion); fields `.data.scaffolders[].id`, `.data.enhancements[].id`, `.data.presets[].name` are guaranteed.
+- **`getAllScaffolders`, `getScaffoldersByCategory`, `allEnhancementModules`, preset list APIs** (from `@tinkerise/core`): the in-memory registry and on-disk preset list that the `__complete` subcommand reads from — same data path the human and `--json` commands already use. No separate data layer.
 - **`tk` alias detection** (`packages/cli/src/index.ts` §lines 42-43): `basename(process.argv[1])` is the existing pattern for `tinkerise` vs `tk` discrimination. Completion emits dual-binary registration so both invocations resolve to the same completion function — no per-invocation script branching needed.
 
 ### Established Patterns
@@ -161,9 +171,9 @@ Ship `tinkerise completion <bash|zsh|fish>` — a new read-only subcommand that 
 - **Conformance fixture report artifacts** — Phase 31 and Phase 33 conformance suites write JSON report files (e.g., `.artifacts/conformance/runtime-error-matrix.json`). The completion matrix follows the same convention so the existing CI artifact upload step picks it up.
 
 ### Integration Points
-- **CLI entry** (`packages/cli/src/index.ts`): the `completion` command is appended after `registerUpdateCommand(program)` and before the help-text addition. Must run AFTER all other commands are registered so the generator's tree-walk sees the full command surface.
-- **Per-shell scripts in user shells**: each shell has a stable, well-known completion file location (`fpath` for zsh, `~/.config/fish/completions/` for fish, runtime eval in `~/.bashrc` for bash). The docs page documents these locations explicitly.
-- **Phase 33 `--json` callers**: the emitted shell scripts call the user-installed `tinkerise` binary directly. If a user has an old version installed (pre-Phase 33), `tinkerise list --json` fails — the graceful-degradation rule (D-09) keeps that quiet. The docs page mentions the v3.2+ requirement for dynamic completions.
+- **CLI entry** (`packages/cli/src/index.ts`): the `completion` command and the hidden `__complete` command are both appended after `registerUpdateCommand(program)` and before the help-text addition. Must run AFTER all other commands are registered so `completion`'s tree-walk sees the full command surface. The generator's tree-walk explicitly skips `__complete` to avoid advertising an internal contract or producing recursive completion entries.
+- **Per-shell scripts in user shells**: each shell has a stable, well-known completion file location (`fpath` for zsh, `~/.config/fish/completions/` for fish, runtime eval in `~/.bashrc` for bash). The docs page documents these locations explicitly, plus the per-style refresh guidance per D-22b.
+- **`__complete` data sources**: the hidden subcommand reads from the same in-memory registry (`getAllScaffolders`, `allEnhancementModules`) and the same on-disk preset list (`packages/core/src/config/preset.ts`) that the human commands use — no separate data path, no parallel registry to drift against. If an older pre-Phase-34 tinkerise is on PATH when the completion script runs, the `__complete` subcommand simply doesn't exist, Commander returns its unknown-command error code, and D-09's empty-fallback handles it silently.
 
 </code_context>
 
@@ -184,7 +194,7 @@ Ship `tinkerise completion <bash|zsh|fish>` — a new read-only subcommand that 
 - **Completion for free-form value positions** (project name suggestions, scaffolder-aware path templates) — adds value but balloons template size and surface area for tests. Defer to a future "smart completions" phase if user feedback shows demand.
 - **Plugin/extension API for third-party completions** — out of scope per PROJECT.md ("Formal plugin API for community scaffolders — defer until community demand proven"). Mentioned only to confirm completion is not a hidden plugin surface.
 - **Completion-driven help generation** (auto-generate `--help` examples from completion enum maps) — interesting cross-pollination idea but tangential to this phase's goal.
-- **Bundling a tiny JSON parser to remove the `jq` soft-prereq** — possible (e.g., `dasel` or a hand-rolled grep-sed parser for the very narrow shapes we read), but adds maintenance surface for a minor convenience. Revisit if jq friction emerges as real-world feedback.
+- ~~Bundling a tiny JSON parser to remove the `jq` soft-prereq~~ — resolved during critical review: the hidden `__complete` subcommand (D-10) emits newline-separated values directly, so neither `jq` nor any other JSON parser is required on the user's system. Listed here for audit trail; no future work required.
 - **Completion telemetry / opt-in usage signals** — telemetry is post-v2 per PROJECT.md.
 
 </deferred>
