@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`completion/fish.generate > emits a stable script for the fixture Commander tree 1`] = `
+"# fish completion for tinkerise
+# Two parallel blocks register tinkerise and tk (D-05).
+# Install via: tinkerise completion fish > ~/.config/fish/completions/tinkerise.fish
+
+# --- Completions for tinkerise ---
+complete -c tinkerise -f -n '__fish_use_subcommand' -a 'web backend mobile list add install doctor completion'
+complete -c tinkerise -f -n '__fish_use_subcommand' -l 'package-manager'
+complete -c tinkerise -f -n '__fish_use_subcommand' -l 'preset'
+complete -c tinkerise -f -n '__fish_seen_argument -l package-manager' -a 'npm pnpm yarn bun'
+complete -c tinkerise -f -n '__fish_seen_argument -l preset' -a '(tinkerise __complete presets 2>/dev/null; or true)'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from list' -a 'web backend mobile'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from add' -a '(tinkerise __complete enhancements 2>/dev/null; or true)'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from install' -a '(tinkerise __complete enhancements 2>/dev/null; or true)'
+complete -c tinkerise -f -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'
+
+# --- Completions for tk ---
+complete -c tk -f -n '__fish_use_subcommand' -a 'web backend mobile list add install doctor completion'
+complete -c tk -f -n '__fish_use_subcommand' -l 'package-manager'
+complete -c tk -f -n '__fish_use_subcommand' -l 'preset'
+complete -c tk -f -n '__fish_seen_argument -l package-manager' -a 'npm pnpm yarn bun'
+complete -c tk -f -n '__fish_seen_argument -l preset' -a '(tinkerise __complete presets 2>/dev/null; or true)'
+complete -c tk -f -n '__fish_seen_subcommand_from list' -a 'web backend mobile'
+complete -c tk -f -n '__fish_seen_subcommand_from add' -a '(tinkerise __complete enhancements 2>/dev/null; or true)'
+complete -c tk -f -n '__fish_seen_subcommand_from install' -a '(tinkerise __complete enhancements 2>/dev/null; or true)'
+complete -c tk -f -n '__fish_seen_subcommand_from completion' -a 'bash zsh fish'
+"
+`;
