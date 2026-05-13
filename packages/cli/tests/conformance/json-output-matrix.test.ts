@@ -1,6 +1,6 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { join, relative, resolve } from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 import {
   DoctorEnvelopeV1Schema,
@@ -308,8 +308,8 @@ describe('--json output conformance matrix', () => {
     await mkdir(ARTIFACT_DIR, { recursive: true })
     const report = {
       generatedAt: new Date().toISOString(),
-      fixture: MATRIX_FIXTURE_PATH,
-      reportPath: REPORT_PATH,
+      fixture: relative(process.cwd(), MATRIX_FIXTURE_PATH),
+      reportPath: relative(process.cwd(), REPORT_PATH),
       scenarios: records,
       totals: {
         total: records.length,

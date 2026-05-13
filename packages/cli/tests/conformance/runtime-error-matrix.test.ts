@@ -1,5 +1,5 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { relative, resolve } from 'node:path'
 import { stripVTControlCharacters } from 'node:util'
 import { execaNode } from 'execa'
 import { describe, expect, it } from 'vitest'
@@ -229,8 +229,8 @@ describe('runtime error conformance matrix', () => {
     await mkdir(ARTIFACT_DIR, { recursive: true })
     const report = {
       generatedAt: new Date().toISOString(),
-      fixture: MATRIX_FIXTURE_PATH,
-      reportPath: REPORT_PATH,
+      fixture: relative(process.cwd(), MATRIX_FIXTURE_PATH),
+      reportPath: relative(process.cwd(), REPORT_PATH),
       scenarios: records,
       totals: {
         total: records.length,

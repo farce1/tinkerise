@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-05-13T10:35:25.023Z",
-  "fixture": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/fixtures/completion-matrix.json",
-  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/artifacts/completion-report.json",
+  "generatedAt": "2026-05-13T11:39:37.554Z",
+  "fixture": "tests/conformance/fixtures/completion-matrix.json",
+  "reportPath": "tests/conformance/artifacts/completion-report.json",
   "records": [
     {
       "id": "bash-top-level-subcommand",
@@ -12,7 +12,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 390,
+      "durationMs": 367,
       "failures": [],
       "candidates": [
         "web",
@@ -41,7 +41,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 219,
+      "durationMs": 865,
       "failures": [],
       "candidates": [
         "--version",
@@ -77,7 +77,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 565,
+      "durationMs": 788,
       "failures": [],
       "candidates": [
         "my-stack",
@@ -94,7 +94,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 244,
+      "durationMs": 238,
       "failures": [],
       "candidates": [
         "bash",
@@ -112,7 +112,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 221,
+      "durationMs": 319,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -126,7 +126,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 216,
+      "durationMs": 282,
       "failures": [],
       "candidates": [
         "web",
@@ -155,7 +155,39 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 432,
+      "durationMs": 357,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-dynamic-value-scaffolders-web",
+      "name": "bash: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 372,
+      "failures": [],
+      "candidates": [
+        "next",
+        "vite",
+        "astro"
+      ],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "bash-negative-unknown-category",
+      "name": "bash: tinkerise notacategory <TAB> yields empty candidates (root-positional dispatch only matches known categories)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 221,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -169,7 +201,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 325,
+      "durationMs": 307,
       "failures": [],
       "candidates": [
         "web",
@@ -234,7 +266,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 329,
+      "durationMs": 322,
       "failures": [],
       "candidates": [
         "my-stack",
@@ -251,7 +283,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 195,
+      "durationMs": 186,
       "failures": [],
       "candidates": [
         "bash",
@@ -269,7 +301,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 196,
+      "durationMs": 183,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -283,7 +315,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 192,
+      "durationMs": 197,
       "failures": [],
       "candidates": [
         "web",
@@ -312,9 +344,27 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 321,
+      "durationMs": 312,
       "failures": [],
       "candidates": [],
+      "stderrSnippet": "(empty)"
+    },
+    {
+      "id": "zsh-dynamic-value-scaffolders-web",
+      "name": "zsh: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "zsh",
+      "durationMs": 355,
+      "failures": [],
+      "candidates": [
+        "next",
+        "vite",
+        "astro"
+      ],
       "stderrSnippet": "(empty)"
     },
     {
@@ -326,7 +376,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 108,
+      "durationMs": 109,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -354,7 +404,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 106,
+      "durationMs": 113,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -368,7 +418,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 107,
+      "durationMs": 109,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -382,7 +432,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 108,
+      "durationMs": 110,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -396,7 +446,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 105,
+      "durationMs": 110,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -414,12 +464,26 @@
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
+    },
+    {
+      "id": "fish-dynamic-value-scaffolders-web",
+      "name": "fish: tinkerise web <TAB> looks up web scaffolders via mocked __complete (CR-01 closure)",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "skipped",
+      "shell": "fish",
+      "durationMs": 111,
+      "failures": [],
+      "candidates": [],
+      "stderrSnippet": "(skipped: fish not installed)"
     }
   ],
   "totals": {
-    "total": 21,
-    "passed": 14,
+    "total": 25,
+    "passed": 17,
     "failed": 0,
-    "skipped": 7
+    "skipped": 8
   }
 }
