@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-13T11:39:37.554Z",
+  "generatedAt": "2026-05-13T11:40:40.093Z",
   "fixture": "tests/conformance/fixtures/completion-matrix.json",
   "reportPath": "tests/conformance/artifacts/completion-report.json",
   "records": [
@@ -12,7 +12,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 367,
+      "durationMs": 379,
       "failures": [],
       "candidates": [
         "web",
@@ -41,7 +41,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 865,
+      "durationMs": 858,
       "failures": [],
       "candidates": [
         "--version",
@@ -77,7 +77,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 788,
+      "durationMs": 660,
       "failures": [],
       "candidates": [
         "my-stack",
@@ -94,7 +94,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 238,
+      "durationMs": 236,
       "failures": [],
       "candidates": [
         "bash",
@@ -112,7 +112,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 319,
+      "durationMs": 336,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -126,7 +126,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 282,
+      "durationMs": 283,
       "failures": [],
       "candidates": [
         "web",
@@ -155,7 +155,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 357,
+      "durationMs": 365,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -169,7 +169,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 372,
+      "durationMs": 369,
       "failures": [],
       "candidates": [
         "next",
@@ -187,7 +187,7 @@
       ],
       "status": "pass",
       "shell": "bash",
-      "durationMs": 221,
+      "durationMs": 223,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -201,7 +201,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 307,
+      "durationMs": 325,
       "failures": [],
       "candidates": [
         "web",
@@ -266,7 +266,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 322,
+      "durationMs": 335,
       "failures": [],
       "candidates": [
         "my-stack",
@@ -283,7 +283,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 186,
+      "durationMs": 189,
       "failures": [],
       "candidates": [
         "bash",
@@ -301,7 +301,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 183,
+      "durationMs": 185,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -315,7 +315,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 197,
+      "durationMs": 186,
       "failures": [],
       "candidates": [
         "web",
@@ -344,7 +344,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 312,
+      "durationMs": 337,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(empty)"
@@ -358,7 +358,7 @@
       ],
       "status": "pass",
       "shell": "zsh",
-      "durationMs": 355,
+      "durationMs": 333,
       "failures": [],
       "candidates": [
         "next",
@@ -376,7 +376,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 109,
+      "durationMs": 112,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -390,7 +390,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 108,
+      "durationMs": 109,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -404,7 +404,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 113,
+      "durationMs": 108,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -418,7 +418,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 109,
+      "durationMs": 103,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -432,7 +432,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 110,
+      "durationMs": 102,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -446,7 +446,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 110,
+      "durationMs": 102,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
@@ -460,7 +460,7 @@
       ],
       "status": "skipped",
       "shell": "fish",
-      "durationMs": 108,
+      "durationMs": 111,
       "failures": [],
       "candidates": [],
       "stderrSnippet": "(skipped: fish not installed)"
