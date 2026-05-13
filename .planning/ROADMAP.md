@@ -89,7 +89,7 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
 ## Phases
 
 - [x] **Phase 33: `--json` Structured Output Contract** - Ship versioned `--json` schema and emit machine-readable output from `list`, `doctor`, and `preset` commands so scripts and CI integrations can consume tinkerise deterministically. (completed 2026-05-12)
-- [ ] **Phase 34: Shell Completions** - Generate bash/zsh/fish completion scripts for `tinkerise` and `tk`, covering commands, flags, and dynamic values, with copy-paste install docs.
+- [x] **Phase 34: Shell Completions** - Generate bash/zsh/fish completion scripts for `tinkerise` and `tk`, covering commands, flags, and dynamic values, with copy-paste install docs. (completed 2026-05-13)
 - [ ] **Phase 35: Scheduled Docs Reliability Watch** - Run unfiltered docs verification on a weekly schedule and auto-open a GitHub Issue on failure so path-filter trigger gaps cannot hide regressions.
 - [ ] **Phase 36: CLI UX Refinements & Milestone Closeout** - Ship 1-2 evidence-backed CLI UX wins identified during planning, then prepare the v3.2 milestone audit.
 
@@ -132,7 +132,21 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
   2. User who sources the completion script can tab-complete subcommands, flags, scaffolder names, and preset names for both `tinkerise` and `tk` invocations.
   3. User can follow copy-paste install instructions on the docs site to wire completions into their shell startup file for each supported shell.
   4. Maintainer can run an automated test that exercises each completion script end-to-end so completion regressions fail CI.
-**Plans**: TBD
+**Plans**: 6 plans in 4 waves (all shipped)
+
+  **Wave 1** *(parallel-safe — disjoint package trees)*
+  - [x] 34-01-unknown-shell-error-PLAN.md — UnknownShellError class in @tinkerise/core (CLI-09)
+  - [x] 34-02-enums-and-complete-handler-PLAN.md — completion/enums.ts + hidden `__complete <kind>` subcommand (CLI-09, CLI-10)
+
+  **Wave 2** *(blocked on Wave 1)*
+  - [x] 34-03-generators-and-completion-command-PLAN.md — bash/zsh/fish generators + `tinkerise completion <shell>` command (CLI-09, CLI-10)
+
+  **Wave 3** *(blocked on Wave 2)*
+  - [x] 34-04-tests-and-conformance-PLAN.md — generator snapshot tests + 21-scenario conformance matrix + fish in CI (CLI-09, CLI-10)
+  - [x] 34-05-docs-and-cross-links-PLAN.md — completions.mdx reference page + cross-links from commands/json-output/README (CLI-11)
+
+  **Wave 4** *(gap-closure from 34-VERIFICATION.md and 34-REVIEW.md CR-01/CR-02)*
+  - [x] 34-06-root-positional-completion-PLAN.md — Root-positional dispatch for `tinkerise <category> <TAB>` in all 3 generators + 4 new conformance scenarios + relativize 3 conformance report writers (CLI-09, CLI-10)
 
 ### Phase 35: Scheduled Docs Reliability Watch
 **Goal**: Maintainers detect docs production regressions even when path-filter triggers fail to fire on the relevant commits.
@@ -159,7 +173,7 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 33. `--json` Structured Output Contract | 4/4 | Complete    | 2026-05-12 |
-| 34. Shell Completions | 0/0 | Not started | - |
+| 34. Shell Completions | 6/6 | Complete    | 2026-05-13 |
 | 35. Scheduled Docs Reliability Watch | 0/0 | Not started | - |
 | 36. CLI UX Refinements & Milestone Closeout | 0/0 | Not started | - |
 
