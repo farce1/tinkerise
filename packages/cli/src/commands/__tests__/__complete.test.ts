@@ -7,7 +7,7 @@
  * handleError() boundary owns the rendering.
  *
  * Hidden-from-help is asserted via Commander's public `helpInformation()`
- * (NOT the private `_hidden` field) so the test survives Commander
+ * (NOT any private hidden-flag field) so the test survives Commander
  * minor-version upgrades. Mirrors the assertion form Plan 03 Task 2
  * uses on `tinkerise --help`.
  */
@@ -39,7 +39,7 @@ describe('__complete subcommand', () => {
   }
 
   function collectStdout(): string {
-    return stdoutSpy.mock.calls.map(args => String(args[0])).join('')
+    return stdoutSpy.mock.calls.map((args: unknown[]) => String(args[0])).join('')
   }
 
   it('emits the closed category set on `__complete categories`', async () => {
@@ -97,8 +97,8 @@ describe('__complete subcommand', () => {
   it('hides __complete from --help per D-10 (public helpInformation API)', () => {
     // Stable end-state assertion: the rendered help text must not
     // mention __complete. This survives Commander upgrades because
-    // it asserts the public contract (helpInformation output), not a
-    // private field like `_hidden`.
+    // it asserts the public contract (helpInformation output), not any
+    // private hidden-flag field.
     const program = makeProgram()
     const help = program.helpInformation()
     expect(help).not.toContain('__complete')

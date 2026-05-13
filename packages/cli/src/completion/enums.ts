@@ -23,14 +23,14 @@
  * the top-level `tinkerise <category>` positional position (e.g.,
  * `tinkerise web <TAB>` looks up `scaffolders:web`).
  */
-export type CompleteKind =
-  | 'scaffolders'
-  | 'enhancements'
-  | 'presets'
-  | 'categories'
-  | 'scaffolders:web'
-  | 'scaffolders:backend'
-  | 'scaffolders:mobile'
+export type CompleteKind
+  = | 'scaffolders'
+    | 'enhancements'
+    | 'presets'
+    | 'categories'
+    | 'scaffolders:web'
+    | 'scaffolders:backend'
+    | 'scaffolders:mobile'
 
 /**
  * Stable enum values for option flags whose values are a known, small set.
