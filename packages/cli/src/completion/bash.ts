@@ -169,20 +169,25 @@ export function generate(program: Command): string {
       lines.push('      esac')
     }
     else {
-      // Top-level positional with possible static enum or dynamic lookup
+      // Top-level positional with possible static enum or dynamic lookup.
+      // Only emit the `if [[ $cword -eq 2 ]]; then ... fi` block when we
+      // actually have a candidate source for that position — bash treats
+      // an empty `if/fi` body as a syntax error.
       const dynKind = DYNAMIC_POSITIONALS[node.name]
       const staticEnum = POSITIONAL_ENUMS[node.name]
-      lines.push('      if [[ $cword -eq 2 ]]; then')
       if (staticEnum) {
+        lines.push('      if [[ $cword -eq 2 ]]; then')
         lines.push(`        COMPREPLY=( $(compgen -W "${joinSpace(staticEnum)}" -- "$cur") )`)
         lines.push('        return 0')
+        lines.push('      fi')
       }
       else if (dynKind) {
+        lines.push('      if [[ $cword -eq 2 ]]; then')
         lines.push(`        _items=$(tinkerise __complete ${dynKind} 2>/dev/null) || _items=""`)
         lines.push('        COMPREPLY=( $(compgen -W "$_items" -- "$cur") )')
         lines.push('        return 0')
+        lines.push('      fi')
       }
-      lines.push('      fi')
       // Flag-name completion for this command
       if (node.flags.length > 0) {
         lines.push(`      if [[ "$cur" == -* ]]; then`)

@@ -57,8 +57,6 @@ _tinkerise() {
       fi
       ;;
     doctor)
-      if (( CURRENT == 3 )); then
-      fi
       ;;
     completion)
       if (( CURRENT == 3 )); then

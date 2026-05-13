@@ -175,20 +175,25 @@ export function generate(program: Command): string {
       lines.push('      esac')
     }
     else {
+      // Only emit the `if (( CURRENT == 3 )); then ... fi` block when we
+      // actually have a candidate source for that position — zsh, like
+      // bash, treats an empty `if/fi` body as a syntax error.
       const dynKind = DYNAMIC_POSITIONALS[node.name]
       const staticEnum = POSITIONAL_ENUMS[node.name]
-      lines.push('      if (( CURRENT == 3 )); then')
       if (staticEnum) {
+        lines.push('      if (( CURRENT == 3 )); then')
         lines.push(`        _candidates=( ${joinSpace(staticEnum)} )`)
         lines.push(`        _describe '${escapeSingle(node.name)} values' _candidates`)
         lines.push('        return')
+        lines.push('      fi')
       }
       else if (dynKind) {
+        lines.push('      if (( CURRENT == 3 )); then')
         lines.push(`        _items=( ${dynamicLookup(dynKind)} )`)
         lines.push(`        _describe '${escapeSingle(dynKind)}' _items`)
         lines.push('        return')
+        lines.push('      fi')
       }
-      lines.push('      fi')
 
       if (node.flags.length > 0) {
         lines.push(`      if [[ "$cur" == -* ]]; then`)

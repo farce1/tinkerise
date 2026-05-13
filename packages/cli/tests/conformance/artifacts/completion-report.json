@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-05-13T10:32:20.882Z",
+  "fixture": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/fixtures/completion-matrix.json",
+  "reportPath": "/Users/impera/Documents/GitHub/tinkerise/.claude/worktrees/agent-ad16e73aabe6bc51f/packages/cli/tests/conformance/artifacts/completion-report.json",
+  "records": [
+    {
+      "id": "bash-top-level-subcommand",
+      "name": "bash: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": [
+        "CLI-09",
+        "CLI-10"
+      ],
+      "status": "pass",
+      "shell": "bash",
+      "durationMs": 397,
+      "failures": [],
+      "candidates": [
+        "web",
+        "backend",
+        "mobile",
+        "list",
+        "monorepo",
+        "add",
+        "doctor",
+        "config",
+        "preset",
+        "mcp",
+        "cli",
+        "lib",
+        "update",
+        "completion"
+      ],
+      "stderrSnippet": "(empty)"
+    }
+  ],
+  "totals": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0
+  }
+}

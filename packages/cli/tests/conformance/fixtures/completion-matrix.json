@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "suite": "completion-matrix",
+  "description": "Phase 34 shell completion conformance",
+  "scenarios": [
+    {
+      "id": "bash-top-level-subcommand",
+      "name": "bash: tinkerise <TAB> emits all top-level subcommands",
+      "requirements": ["CLI-09", "CLI-10"],
+      "shell": "bash",
+      "partialCommand": "tinkerise ",
+      "expectedCandidatesInclude": ["list", "add", "doctor", "completion"],
+      "expectExitOk": true
+    }
+  ]
+}
