@@ -22,6 +22,16 @@ support `--json` in this release. Passing `--json` to a non-supporting
 command emits the standard error envelope with `error.code:
 "JSON_UNSUPPORTED_COMMAND"`.
 
+`tinkerise completion <shell>` is a special case. On the **success path**,
+`--json` is a silent no-op — the shell script is emitted unchanged. Its
+output is a shell script, not data, so wrapping it in a JSON envelope
+would defeat the purpose. On the **failure path**
+(for example, `tinkerise completion powershell --json`), the standard
+JSON error envelope is emitted with
+`error.code: "COMPLETION_UNKNOWN_SHELL"`, consistent with how every
+other `TinkeriseError` flows through the boundary under `--json`. See
+[Shell Completions](/tinkerise/reference/completions) for full usage.
+
 ## Envelope shape
 
 Every `--json` payload is one of two envelopes (D-03, D-05):
