@@ -129,25 +129,83 @@ async function runBash(tempRoot, completionScript, partialCommand, env) {
 }
 
 /**
+ * Drive the emitted zsh completion script.
+ *
+ * The generator uses `_describe` to register candidates with zsh's
+ * completion system — by default those candidates are not printed to
+ * stdout. We override `_describe` with a stub that prints the named
+ * candidate array one element per line, then call `_tinkerise` with a
+ * synthesized `words` array and `CURRENT` position. This matches the
+ * runtime contract `_describe` honors at TAB time, but routes the result
+ * to stdout where the harness can capture it.
+ *
  * @param {string} _tempRoot Per-scenario scratch dir.
- * @param {string} _completionScript Emitted zsh completion script body.
- * @param {string} _partialCommand Argv string the user typed before TAB.
- * @param {NodeJS.ProcessEnv} _env Environment for the spawned shell.
- * @returns {Promise<RunResult>} Task 2b: captured candidates.
+ * @param {string} completionScript Emitted zsh completion script body.
+ * @param {string} partialCommand Argv string the user typed before TAB.
+ * @param {NodeJS.ProcessEnv} env Environment for the spawned shell.
+ * @returns {Promise<RunResult>} Captured candidates from `_tinkerise`.
  */
-async function runZsh(_tempRoot, _completionScript, _partialCommand, _env) {
-  throw new Error('not yet implemented - Task 2b')
+async function runZsh(_tempRoot, completionScript, partialCommand, env) {
+  const scriptPath = join(_tempRoot, 'completion.zsh')
+  await writeFile(scriptPath, completionScript, 'utf8')
+
+  const words = tokenize(partialCommand)
+  const wordsLiteral = words.map(w => quoteBashSingle(w)).join(' ')
+  const currentIndex = words.length // zsh CURRENT is 1-based, pointing at cursor
+
+  // _describe override: indirect array expansion via (@P) preserves the
+  // array structure; print -l writes one element per line.
+  const cmd = [
+    '_describe() { shift; local arrname="$1"; local -a items; items=("${(@P)arrname}"); print -l -- "${items[@]}"; }',
+    `source ${quoteBashSingle(scriptPath)}`,
+    `words=(${wordsLiteral})`,
+    `CURRENT=${currentIndex}`,
+    '_tinkerise',
+  ].join('; ')
+
+  // Equivalent of: `zsh -f -c '<cmd>'` (no rcs / global rc files).
+  return await spawnAndCollect('zsh', ['-f', '-c', cmd], env)
 }
 
 /**
+ * Drive the emitted fish completion script.
+ *
+ * Fish exposes a built-in dry-run API: `complete -C '<argv>'` returns
+ * one completion candidate per line on stdout, where each line is
+ * `candidate\tdescription`. We source the emitted completion file
+ * (which registers `complete -c tinkerise ...` directives) then invoke
+ * `complete -C '<partialCommand>'` and split on the first tab.
+ *
  * @param {string} _tempRoot Per-scenario scratch dir.
- * @param {string} _completionScript Emitted fish completion script body.
- * @param {string} _partialCommand Argv string the user typed before TAB.
- * @param {NodeJS.ProcessEnv} _env Environment for the spawned shell.
- * @returns {Promise<RunResult>} Task 2b: captured candidates.
+ * @param {string} completionScript Emitted fish completion script body.
+ * @param {string} partialCommand Argv string the user typed before TAB.
+ * @param {NodeJS.ProcessEnv} env Environment for the spawned shell.
+ * @returns {Promise<RunResult>} Captured candidates from `complete -C`.
  */
-async function runFish(_tempRoot, _completionScript, _partialCommand, _env) {
-  throw new Error('not yet implemented - Task 2b')
+async function runFish(_tempRoot, completionScript, partialCommand, env) {
+  const scriptPath = join(_tempRoot, 'completion.fish')
+  await writeFile(scriptPath, completionScript, 'utf8')
+
+  // Equivalent of: `fish --no-config -c '<cmd>'`.
+  const fishCmd = `source ${quoteFishSingle(scriptPath)}; complete -C ${quoteFishSingle(partialCommand)}`
+  const result = await spawnAndCollect('fish', ['--no-config', '-c', fishCmd], env)
+
+  // Fish emits one candidate per line, formatted as `<candidate>\t<description>`.
+  // Split on the first tab and keep only the candidate token.
+  const candidates = result.candidates.map((line) => {
+    const tabIdx = line.indexOf('\t')
+    return tabIdx >= 0 ? line.slice(0, tabIdx) : line
+  })
+  return { ...result, candidates }
+}
+
+/**
+ * @param {string} value String to embed inside a fish single-quoted token.
+ * @returns {string} The value wrapped in `'...'` with embedded single quotes escaped.
+ */
+function quoteFishSingle(value) {
+  // Fish single-quoting only requires escaping `'` and `\`.
+  return `'${value.replace(/\\/g, '\\\\').replace(/'/g, `\\'`)}'`
 }
 
 /**
