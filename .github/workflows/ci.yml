@@ -40,6 +40,10 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Install fish shell (for completion conformance per D-17)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y fish
+
       - name: Run CLI runtime conformance gate
         run: bun run --filter @tinkerise/cli test:conformance
 
