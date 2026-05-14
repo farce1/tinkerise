@@ -91,3 +91,127 @@ jobs:
             apps/docs/scripts/artifacts/screenshots/
           if-no-files-found: warn
           retention-days: 14
+
+      # Failure path step 1 of 3: determine report state and build issue body.
+      # FOUR branches per D-11 (priority order):
+      #   1. report missing entirely      → minimal "no report produced" body
+      #   2. report present but malformed → minimal "could not be parsed" body + artifact link
+      #   3. report parses, zero failures → minimal "job failed after smoke passed" body
+      #   4. report parses, >=1 failure   → full structured-summary body per D-10
+      #
+      # Multi-line output to $GITHUB_OUTPUT uses heredoc (echo body<<EOF ... EOF)
+      # per RESEARCH §Pitfall 1 — single-line echo body=... truncates at \n.
+      - name: Build issue body (failure path with three fallbacks)
+        if: failure() && github.repository == 'farce1/tinkerise'
+        id: body
+        run: |
+          REPORT="apps/docs/scripts/artifacts/docs-smoke-report.json"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          # Branch 1: file missing (pre-smoke failure: bun install / Playwright / crash)
+          if [ ! -f "$REPORT" ]; then
+            echo "state=missing" >> "$GITHUB_OUTPUT"
+            {
+              echo "body<<BODY_EOF"
+              echo "## Docs reliability watch — smoke runner did not produce a report"
+              echo ""
+              echo "**Run:** ${RUN_URL}"
+              echo "**State:** No \`docs-smoke-report.json\` was generated."
+              echo ""
+              echo "The smoke runner exited before writing its report. This usually means"
+              echo "\`bun install\`, Playwright install, or the runner crashed during"
+              echo "initialization. See run logs."
+              echo ""
+              echo "> See REL-04 in \`.planning/REQUIREMENTS.md\`."
+              echo "BODY_EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Branch 2: file exists but is not valid JSON. `jq empty` reads the entire
+          # input and exits 0 only if it parses; prints nothing. Canonical
+          # "is this valid JSON?" probe (per RESEARCH §Pitfall 3 / Anti-Patterns).
+          if ! jq empty "$REPORT" >/dev/null 2>&1; then
+            echo "state=malformed" >> "$GITHUB_OUTPUT"
+            {
+              echo "body<<BODY_EOF"
+              echo "## Docs reliability watch — smoke report could not be parsed"
+              echo ""
+              echo "**Run:** ${RUN_URL}"
+              echo "**State:** \`docs-smoke-report.json\` exists but is not valid JSON."
+              echo ""
+              echo "See run logs and the uploaded report artifact: \`docs-smoke-report-${{ github.run_id }}\`."
+              echo ""
+              echo "> See REL-04 in \`.planning/REQUIREMENTS.md\`."
+              echo "BODY_EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Branch 3: report parses but reports zero required failures while the
+          # job failed. `// 0` defaults missing/null to 0 (per RESEARCH §Pitfall 3).
+          FAILED=$(jq -r '.summary.failed // 0' "$REPORT")
+          if [ "$FAILED" -eq 0 ]; then
+            echo "state=job-failed-after-smoke-passed" >> "$GITHUB_OUTPUT"
+            {
+              echo "body<<BODY_EOF"
+              echo "## Docs reliability watch — job failed after smoke checks passed"
+              echo ""
+              echo "**Run:** ${RUN_URL}"
+              echo "**State:** \`docs-smoke-report.json\` reports zero required failures,"
+              echo "but the job failed at a later step (likely artifact upload or another"
+              echo "post-smoke step). The production docs themselves appear healthy."
+              echo ""
+              echo "See run logs for the actual failure."
+              echo ""
+              echo "> See REL-04 in \`.planning/REQUIREMENTS.md\`."
+              echo "BODY_EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Branch 4: structured summary (D-10). Render markdown table of failed
+          # required checks using jq + awk for column alignment.
+          echo "state=structured" >> "$GITHUB_OUTPUT"
+          DATE=$(date -u +%Y-%m-%d)
+          TARGET=$(jq -r '.targets[0] // "unknown"' "$REPORT")
+          STARTED=$(jq -r '.startedAt // "unknown"' "$REPORT")
+
+          FAILED_TABLE=$(jq -r '
+            .checks
+            | map(select(.status == "failed"))
+            | (["Category", "Check ID", "Requirement(s)", "Target", "Error"]),
+              (["---", "---", "---", "---", "---"]),
+              (.[] | [.category, .id, ((.requirementIds // []) | join(",")), .target, (.error // "—")])
+            | @tsv
+          ' "$REPORT" | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $0 " |"}')
+
+          {
+            echo "body<<BODY_EOF"
+            echo "## Docs reliability watch — scheduled smoke failed"
+            echo ""
+            echo "**Run:** ${RUN_URL}"
+            echo "**Date (UTC):** ${DATE}"
+            echo "**Target:** ${TARGET}"
+            echo "**Smoke started at:** ${STARTED}"
+            echo "**Commit on main:** ${{ github.sha }}"
+            echo ""
+            echo "### Failed required checks"
+            echo ""
+            echo "${FAILED_TABLE}"
+            echo ""
+            echo "### Why this matters"
+            echo ""
+            echo "This workflow runs the docs production smoke suite weekly on an"
+            echo "unfiltered schedule to catch regressions that the path-filtered"
+            echo "\`docs-deploy.yml\` smoke gate cannot. See REL-04 in"
+            echo "\`.planning/REQUIREMENTS.md\`."
+            echo ""
+            echo "### Artifacts"
+            echo ""
+            echo "- Report: \`docs-smoke-report-${{ github.run_id }}\`"
+            echo "- Failure evidence: \`docs-smoke-failure-evidence-${{ github.run_id }}\`"
+            echo ""
+            echo "Browse from the run page: ${RUN_URL}"
+            echo "BODY_EOF"
+          } >> "$GITHUB_OUTPUT"
