@@ -1,6 +1,6 @@
 {
   "name": "tinkerise",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "type": "module",
   "description": "Scaffold any project with any stack",
   "keywords": [
@@ -27,7 +27,7 @@
     "tk": "./bin.mjs"
   },
   "dependencies": {
-    "@tinkerise/cli": "^0.2.4"
+    "@tinkerise/cli": "^0.2.5"
   },
   "files": [
     "bin.mjs"

@@ -1,5 +1,14 @@
 # @tinkerise/core
 
+## 0.2.5
+
+### Patch Changes
+
+- [`a440be4`](https://github.com/farce1/tinkerise/commit/a440be463ebe3d994ac003d4c889e346dcdee15c) Thanks [@farce1](https://github.com/farce1)! - Remove install scripts, add SECURITY.md, socket.yml, npm provenance attestation, and structured security metadata for Socket/skills.sh compliance.
+
+- Updated dependencies [[`a440be4`](https://github.com/farce1/tinkerise/commit/a440be463ebe3d994ac003d4c889e346dcdee15c)]:
+  - @tinkerise/shared@0.2.5
+
 ## 0.2.4
 
 ### Patch Changes
