@@ -215,3 +215,90 @@ jobs:
             echo "Browse from the run page: ${RUN_URL}"
             echo "BODY_EOF"
           } >> "$GITHUB_OUTPUT"
+
+      # Failure path step 2 of 3: ensure label exists (idempotent).
+      # Failure path step 3 of 3: search for existing open issue with matching
+      # title prefix + docs-reliability label. Comment if found; create new
+      # otherwise. Both branches use the body computed by `id: body` (task 1).
+      #
+      # Per RESEARCH §Pitfall 2: --search "in:title" is fuzzy (token-based);
+      # the --jq client-side `startswith(...)` filter is the required exact
+      # post-filter. Double-narrow with --label docs-reliability.
+      - name: Create or update reliability-watch issue
+        if: failure() && github.repository == 'farce1/tinkerise'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Idempotent label create (swallow "label already exists" non-zero
+          # per RESEARCH §Pitfall 8 / upstream-drift.yml:157 pattern).
+          gh label create "docs-reliability" \
+            --description "Scheduled docs reliability watch detected a regression" \
+            --color "B60205" 2>/dev/null || true
+
+          DATE=$(date -u +%Y-%m-%d)
+          TITLE_PREFIX="Docs reliability watch: scheduled smoke failed"
+          TITLE="${TITLE_PREFIX} (${DATE})"
+          BODY=$(cat <<'BODY_EOF'
+          ${{ steps.body.outputs.body }}
+          BODY_EOF
+          )
+
+          # Dedupe: fuzzy `in:title` search narrowed by --label, then a strict
+          # client-side prefix filter. head -1 because at most one rolling
+          # issue is expected (multi-issue defense lives on the success path).
+          EXISTING=$(gh issue list \
+            --state open \
+            --label docs-reliability \
+            --search "in:title \"${TITLE_PREFIX}\"" \
+            --json number,title \
+            --jq ".[] | select(.title | startswith(\"${TITLE_PREFIX}\")) | .number" \
+            | head -1)
+
+          if [ -n "$EXISTING" ]; then
+            echo "Updating existing reliability-watch issue #${EXISTING}"
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            echo "Creating new reliability-watch issue"
+            gh issue create \
+              --title "$TITLE" \
+              --body "$BODY" \
+              --label "docs-reliability"
+          fi
+
+      # Success path: on a passing scheduled or dispatched run, enumerate ALL
+      # open issues matching the title prefix + docs-reliability label and
+      # close each with a "resolved by run #X" comment. Per D-04 defensive
+      # enumeration — close ALL matches, not just head -1 — so any historical
+      # duplicate (manual dupe / prior dedupe race) is cleaned up.
+      #
+      # Per RESEARCH §Pattern 2 anti-pattern: `gh issue close --comment ... --reason completed`
+      # is a SINGLE atomic API call. Do NOT split into `gh issue comment`
+      # followed by `gh issue close` — a transient API failure between the
+      # two would leave the issue commented-but-still-open.
+      - name: Auto-close any open reliability-watch issues
+        if: success() && github.repository == 'farce1/tinkerise'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE_PREFIX="Docs reliability watch: scheduled smoke failed"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          MATCHES=$(gh issue list \
+            --state open \
+            --label docs-reliability \
+            --search "in:title \"${TITLE_PREFIX}\"" \
+            --json number,title \
+            --jq ".[] | select(.title | startswith(\"${TITLE_PREFIX}\")) | .number")
+
+          if [ -z "$MATCHES" ]; then
+            echo "No open docs-reliability issues to close."
+            exit 0
+          fi
+
+          echo "$MATCHES" | while read -r N; do
+            [ -z "$N" ] && continue
+            echo "Closing issue #${N}"
+            gh issue close "$N" \
+              --comment "Resolved by passing scheduled smoke run: ${RUN_URL}" \
+              --reason completed
+          done
