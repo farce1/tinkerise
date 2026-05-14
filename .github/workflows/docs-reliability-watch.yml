@@ -1,0 +1,43 @@
+# Scheduled docs reliability watch.
+#
+# Runs the docs production smoke suite weekly on an unfiltered schedule to catch
+# regressions that the path-filtered docs-deploy.yml smoke gate cannot. On a
+# failed run this workflow opens (or updates) a GitHub Issue with label
+# `docs-reliability`. On a subsequent passing run it auto-closes every open
+# matching issue. See REL-04 in .planning/REQUIREMENTS.md.
+#
+# Manual rerun:   gh workflow run docs-reliability-watch.yml
+# Force failure:  gh workflow run docs-reliability-watch.yml -f force_failure=true
+name: Docs Reliability Watch
+
+on:
+  schedule:
+    # Thursday 09:00 UTC, weekly. Staggered from upstream-drift.yml's Monday
+    # 09:00 UTC to spread reliability-watch coverage across the week (per D-08).
+    - cron: '0 9 * * 4'
+  workflow_dispatch:
+    inputs:
+      force_failure:
+        description: 'Force a required-check failure for validation (Dimension 3/5)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  # Ref-agnostic, queue-not-cancel. Overlapping cron + manual dispatch QUEUE
+  # rather than race. Eliminates the dedupe race that defensive multi-issue
+  # auto-close (D-04, plan 02) is the secondary safety net for.
+  group: docs-reliability-watch
+  cancel-in-progress: false
+
+jobs:
+  scheduled-smoke:
+    name: Scheduled production docs smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
