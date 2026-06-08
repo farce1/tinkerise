@@ -42,7 +42,7 @@ Usage: flutter create <output directory>
           [package]              Generate a shareable Flutter project containing modular Dart code.
           [package_ffi]          Generate a shareable Dart/Flutter project containing an API in Dart code with a platform-specific implementation through dart:ffi for Android, iOS, Linux, macOS, and Windows.
           [plugin]               Generate a shareable Flutter project containing an API in Dart code with a platform-specific implementation through method channels for Android, iOS, Linux, macOS, Windows, web, or any combination of these.
-          [plugin_ffi]           Generate a shareable Flutter project containing an API in Dart code with a platform-specific implementation through dart:ffi for Android, iOS, Linux, macOS, Windows, or any combination of these.
+          [plugin_ffi]           (deprecated) Generate a shareable Flutter project containing an API in Dart code with a platform-specific implementation through dart:ffi for Android, iOS, Linux, macOS, Windows, or any combination of these. Use "package_ffi" instead.
           [skeleton]             Formerly generated a list view / detail view Flutter application that followed some community best practices. For up to date resources, see https://flutter.github.io/samples, https://docs.flutter.dev/codelabs, and community resources such as https://flutter-builder.app/.
 
 -e, --[no-]empty                 Specifies creating using an application template with a main.dart that is minimal, including no comments, as a starting point for a new application. Implies "--template=app".

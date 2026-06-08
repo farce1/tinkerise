@@ -31,6 +31,8 @@ Options:
   --json                                           output JSON for automation (default: false)
   --git                                            create a git repository
   --no-git                                         do not create a git repository
+  --intent                                         set up TanStack Intent skill mappings for coding agents
+  --no-intent                                      skip TanStack Intent setup
   --target-dir <path>                              the target directory for the application root
   --add-on-config <config>                         JSON string with add-on configuration options
   -f, --force                                      force project creation even if the target directory is not empty (default: false)

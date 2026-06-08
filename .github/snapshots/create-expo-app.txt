@@ -9,6 +9,7 @@ npm warn exec The following package was not found and will be installed: create-
   Options
     -y, --yes             Use the default options for creating a project
         --no-install      Skip installing npm packages or CocoaPods
+        --no-agents-md    Skip generating AGENTS.md, CLAUDE.md, and .claude/settings.json
     -t, --template [pkg]  NPM template to use: default, blank, blank-typescript, tabs, bare-minimum. Default: default
     -e, --example [name]  Example name from https://github.com/expo/examples.
     -v, --version         Version number
