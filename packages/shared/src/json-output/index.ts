@@ -39,3 +39,10 @@ export {
   PresetShowEnvelopeV1Schema,
 } from './preset-show.js'
 export type { PresetShowEnvelopeV1, PresetShowPayloadV1 } from './preset-show.js'
+export {
+  ScaffoldPlanEnvelopeV1Schema,
+  ScaffoldPlanFlagSchema,
+  ScaffoldPlanPayloadV1Schema,
+  ScaffoldPlanPrerequisiteSchema,
+} from './scaffold-plan.js'
+export type { ScaffoldPlanEnvelopeV1, ScaffoldPlanPayloadV1 } from './scaffold-plan.js'

@@ -7,6 +7,7 @@ import {
   makeEnvelope,
   PresetListEnvelopeV1Schema,
   PresetShowEnvelopeV1Schema,
+  ScaffoldPlanEnvelopeV1Schema,
 } from '../../src/index'
 
 describe('errorPayloadSchema', () => {
@@ -420,6 +421,84 @@ describe('presetShowEnvelopeV1Schema', () => {
         enhancements: [],
         config: {},
       },
+    }).success).toBe(false)
+  })
+})
+
+describe('scaffoldPlanEnvelopeV1Schema', () => {
+  const fullData = {
+    scaffolderName: 'next',
+    command: 'npx',
+    args: ['create-next-app@latest', 'my-app', '--typescript'],
+    resolvedFlags: [{ unified: 'typescript', native: ['--typescript'] }],
+    versionUsed: null,
+    upstreamVersion: '15.0.0',
+    prerequisites: [{ command: 'node', versionRange: '>=20.11.0' }],
+  }
+
+  it('parses a fully-populated plan payload', () => {
+    const result = ScaffoldPlanEnvelopeV1Schema.parse({
+      schemaVersion: 1,
+      command: 'scaffold.plan',
+      data: fullData,
+    })
+
+    expect('data' in result && result.data.command).toBe('npx')
+    expect('data' in result && result.data.resolvedFlags[0]?.native).toEqual(['--typescript'])
+  })
+
+  it('accepts empty flags/prereqs and null versions (D-21)', () => {
+    const result = ScaffoldPlanEnvelopeV1Schema.parse({
+      schemaVersion: 1,
+      command: 'scaffold.plan',
+      data: {
+        scaffolderName: 'go',
+        command: 'go-blueprint',
+        args: ['create', 'my-app'],
+        resolvedFlags: [],
+        versionUsed: null,
+        upstreamVersion: null,
+        prerequisites: [],
+      },
+    })
+
+    expect('data' in result && result.data.resolvedFlags).toEqual([])
+  })
+
+  it('accepts a prerequisite with omitted versionRange (D-22)', () => {
+    const result = ScaffoldPlanEnvelopeV1Schema.parse({
+      schemaVersion: 1,
+      command: 'scaffold.plan',
+      data: { ...fullData, prerequisites: [{ command: 'node' }] },
+    })
+
+    const data = 'data' in result ? result.data : undefined
+    expect(data?.prerequisites[0]?.versionRange).toBeUndefined()
+  })
+
+  it('accepts the error variant', () => {
+    const result = ScaffoldPlanEnvelopeV1Schema.parse({
+      schemaVersion: 1,
+      command: 'scaffold.plan',
+      error: { code: 'SCAFFOLDER_NOT_FOUND', message: 'no such scaffolder' },
+    })
+
+    expect('error' in result && result.error.code).toBe('SCAFFOLDER_NOT_FOUND')
+  })
+
+  it('rejects wrong command literal', () => {
+    expect(ScaffoldPlanEnvelopeV1Schema.safeParse({
+      schemaVersion: 1,
+      command: 'scaffold',
+      data: fullData,
+    }).success).toBe(false)
+  })
+
+  it('rejects wrong schemaVersion', () => {
+    expect(ScaffoldPlanEnvelopeV1Schema.safeParse({
+      schemaVersion: 2,
+      command: 'scaffold.plan',
+      data: fullData,
     }).success).toBe(false)
   })
 })

@@ -17,7 +17,7 @@ import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinke
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InteractivePromptBlockedError, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
@@ -25,14 +25,26 @@ import { promptPackageManager } from '../prompts/pm-select.js'
 import { promptProjectName, validateProjectName } from '../prompts/project-name.js'
 import { resolveViteTemplate, selectT3Components, selectViteTemplate } from '../prompts/variant-select.js'
 import { showBanner } from '../utils/banner.js'
+import { renderScaffoldPlan } from '../utils/dry-run.js'
 import {
   buildPreselectedOptions,
   ensureNonInteractive,
   mergePromptAndFlags,
 } from '../utils/interactive.js'
+import { isJsonMode } from '../utils/output-mode.js'
 
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
+
+function isDryRun(options: ScaffoldOptions): boolean {
+  return Boolean(options.dryRun || options.explain)
+}
+
+// --json output is non-interactive: any prompt would corrupt the envelope (D-14).
+function assertJsonNonInteractive(dryRun: boolean): void {
+  if (dryRun && isJsonMode())
+    throw new InteractivePromptBlockedError('scaffold')
+}
 
 export interface ScaffoldOptions {
   typescript?: boolean
@@ -66,6 +78,10 @@ export interface ScaffoldOptions {
   preset?: string
   /** Show detailed output (config override messages) */
   verbose?: boolean
+  /** Show the resolved command/plan without executing */
+  dryRun?: boolean
+  /** Explain flag mappings + prerequisites (implies dry-run) */
+  explain?: boolean
 }
 
 /**
@@ -81,10 +97,12 @@ async function resolvePackageManager(
   flagValue?: string,
   config?: Partial<TinkeriseUserConfig>,
   verbose?: boolean,
+  dryRun = false,
 ): Promise<PackageManager> {
   const pmResult = await detectPackageManager(cwd, flagValue)
 
   if (pmResult.source === 'binary-missing') {
+    assertJsonNonInteractive(dryRun)
     // Detected PM binary is not installed — warn and prompt
     p.log.warn(
       pc.yellow(`${pmResult.pm} was detected but is not installed. Choose a package manager:`),
@@ -99,6 +117,7 @@ async function resolvePackageManager(
   }
 
   if (pmResult.source === 'default') {
+    assertJsonNonInteractive(dryRun)
     // No lockfile or packageManager field found — prompt user to choose
     return promptPackageManager()
   }
@@ -232,8 +251,12 @@ async function executePipeline(
   config?: Partial<TinkeriseUserConfig>,
 ): Promise<void> {
   const userFlags = buildUserFlags(options, cmd, cliOptions, pm, config)
+  const dryRun = isDryRun(cliOptions)
 
-  // Framework-specific variant handling
+  // vite/t3 prompt for a variant; in --json dry-run that would corrupt output (D-14)
+  if (framework === 't3' || (framework === 'vite' && !cliOptions.template))
+    assertJsonNonInteractive(dryRun)
+
   let extraArgs: string[] = []
 
   if (framework === 'vite') {
@@ -266,19 +289,24 @@ async function executePipeline(
     }
   }
 
-  await executeScaffolder({
+  const plan = await executeScaffolder({
     scaffolderName: framework,
     projectName: name,
     userFlags,
     extraArgs,
+    dryRun,
   })
+
+  if (dryRun) {
+    renderScaffoldPlan(plan, { explain: Boolean(cliOptions.explain), json: isJsonMode() })
+    return
+  }
 
   // Persist session context for cross-process reuse (tinkerise add)
   const absProjectPath = join(process.cwd(), name)
   setSessionContext({ framework, packageManager: pm, projectDir: absProjectPath })
   await writeSessionFile(absProjectPath, { framework, packageManager: pm })
 
-  // Enhanced summary card instead of simple one-liner
   const activeFlags = Object.entries(userFlags)
     .filter(([, v]) => v === true)
     .map(([k]) => k)
@@ -302,6 +330,7 @@ export async function runInteractiveFlow(
     // if somehow all args were provided (shouldn't happen in this code path)
   }
 
+  assertJsonNonInteractive(isDryRun(options))
   showBanner()
 
   const { config, preset } = await resolveConfigAndPreset(options)
@@ -332,7 +361,7 @@ export async function runInteractiveFlow(
     preselectedOptions: preselected,
     filterCategory,
   })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
@@ -359,6 +388,7 @@ export async function runCategoryFlow(
     ensureNonInteractive(cmd, category)
   }
 
+  assertJsonNonInteractive(isDryRun(options))
   showBanner()
 
   const { config, preset } = await resolveConfigAndPreset(options)
@@ -377,7 +407,7 @@ export async function runCategoryFlow(
     framework: presetFramework,
     preselectedOptions: preselected,
   })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
@@ -403,12 +433,14 @@ export async function runDirectExecution(
 
   const { config, preset } = await resolveConfigAndPreset(options)
 
+  if (!name)
+    assertJsonNonInteractive(isDryRun(options))
   const projectName = name ?? await promptProjectName(framework)
   const projectNameError = validateProjectName(projectName)
   if (projectNameError) {
     throw new ConfigValidationError('projectName', projectName, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
   }
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
 

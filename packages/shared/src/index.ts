@@ -52,6 +52,10 @@ export {
   PresetListPayloadV1Schema,
   PresetShowDataV1Schema,
   PresetShowEnvelopeV1Schema,
+  ScaffoldPlanEnvelopeV1Schema,
+  ScaffoldPlanFlagSchema,
+  ScaffoldPlanPayloadV1Schema,
+  ScaffoldPlanPrerequisiteSchema,
 } from './json-output/index.js'
 
 export type {
@@ -64,6 +68,8 @@ export type {
   PresetListPayloadV1,
   PresetShowEnvelopeV1,
   PresetShowPayloadV1,
+  ScaffoldPlanEnvelopeV1,
+  ScaffoldPlanPayloadV1,
 } from './json-output/index.js'
 
 /**

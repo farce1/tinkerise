@@ -5,7 +5,8 @@
  *           detect version -> resolve flags -> spawn -> summary
  */
 
-import type { ScaffolderEntry } from '@tinkerise/shared'
+import type { Prerequisite, ScaffolderEntry } from '@tinkerise/shared'
+import type { ResolvedFlagMapping } from '../flags/resolver.js'
 import { ProjectNameSchema } from '@tinkerise/shared'
 import { ConfigValidationError, ScaffolderExitError, ScaffolderNotFoundError } from '../errors/index.js'
 import { resolveFlags } from '../flags/resolver.js'
@@ -31,13 +32,35 @@ export interface ExecuteOptions {
   extraArgs?: string[]
   /** Working directory */
   cwd?: string
+  /** When true, build the plan and return it without enforcing prereqs or spawning */
+  dryRun?: boolean
+}
+
+/**
+ * The fully-resolved scaffolding plan — what `executeScaffolder` would run.
+ * Returned for every invocation; in dry-run mode it is returned without side effects.
+ */
+export interface ScaffoldPlan {
+  scaffolderName: string
+  /** Executable to invoke, e.g. 'npx' */
+  command: string
+  /** Full argument vector passed to the executable */
+  args: string[]
+  /** Prerequisites that would be enforced before a real run */
+  prerequisites: Prerequisite[]
+  /** Per-flag unified→native attribution (for --explain) */
+  resolvedFlags: ResolvedFlagMapping[]
+  /** Version range whose flag mappings were used (null = base flags) */
+  versionUsed: string | null
+  /** Detected upstream tool version (null when undetected/absent) */
+  upstreamVersion: string | null
 }
 
 /**
  * Execute the full detect-map-execute pipeline.
  */
-export async function executeScaffolder(options: ExecuteOptions): Promise<void> {
-  const { scaffolderName, projectName, userFlags, passthroughArgs = [], extraArgs = [], cwd } = options
+export async function executeScaffolder(options: ExecuteOptions): Promise<ScaffoldPlan> {
+  const { scaffolderName, projectName, userFlags, passthroughArgs = [], extraArgs = [], cwd, dryRun = false } = options
   const parsedProjectName = ProjectNameSchema.safeParse(projectName)
   if (!parsedProjectName.success) {
     throw new ConfigValidationError('projectName', projectName, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
@@ -52,36 +75,52 @@ export async function executeScaffolder(options: ExecuteOptions): Promise<void> 
   // 2. Validate flags apply to this scaffolder
   validateFlagApplicability(entry, userFlags)
 
-  // 3. Check prerequisites
-  tinkeriseLog('Checking prerequisites...')
-  await checkPrerequisites(entry.prerequisites)
-
-  // 4. Detect upstream version (non-fatal)
+  // 3. Detect upstream version (non-fatal — null when the tool is absent)
   const upstreamVersion = await detectUpstreamVersion(entry)
-  if (upstreamVersion) {
-    tinkeriseLog(`Detected ${entry.packageName} v${upstreamVersion}`)
-  }
 
-  // 5. Resolve flags
-  const { args: nativeArgs, versionUsed } = resolveFlags({
+  // 4. Resolve flags (with per-flag breakdown for --explain)
+  const { args: nativeArgs, versionUsed, breakdown } = resolveFlags({
     entry,
     userFlags,
     upstreamVersion,
   })
 
-  if (versionUsed) {
-    tinkeriseLog(`Using flag mappings for version range ${versionUsed}`)
-  }
-
-  // 6. Build final command args based on integration strategy (REG-04)
+  // 5. Build final command args based on integration strategy (REG-04).
   // Merge nativeArgs with extraArgs (framework-specific like Vite template, T3 components)
   const allNativeArgs = [...nativeArgs, ...extraArgs]
   const commandArgs = buildCommandArgs(entry, parsedProjectName.data, allNativeArgs, passthroughArgs)
 
+  const plan: ScaffoldPlan = {
+    scaffolderName,
+    command: entry.command,
+    args: commandArgs,
+    prerequisites: entry.prerequisites,
+    resolvedFlags: breakdown,
+    versionUsed,
+    upstreamVersion,
+  }
+
+  // 6. Dry run: return the plan with zero side effects (no prereq enforcement, no spawn).
+  if (dryRun) {
+    return plan
+  }
+
+  // 7. Enforce prerequisites, then spawn with inherited stdio (UX-06).
+  // Version is detected earlier (needed to build the plan), but we keep the
+  // user-facing log order identical to the pre-dry-run behavior:
+  // prerequisites -> detected version -> flag mappings -> running.
+  tinkeriseLog('Checking prerequisites...')
+  await checkPrerequisites(entry.prerequisites)
+
+  if (upstreamVersion) {
+    tinkeriseLog(`Detected ${entry.packageName} v${upstreamVersion}`)
+  }
+  if (versionUsed) {
+    tinkeriseLog(`Using flag mappings for version range ${versionUsed}`)
+  }
   tinkeriseLog(`Running ${entry.command} ${commandArgs.join(' ')}`)
   tinkeriseBlankLine()
 
-  // 7. Spawn with inherited stdio (UX-06)
   const result = await spawnScaffolder(entry.command, commandArgs, { cwd })
 
   tinkeriseBlankLine()
@@ -92,6 +131,7 @@ export async function executeScaffolder(options: ExecuteOptions): Promise<void> 
 
   // Note: Summary output is handled by the CLI layer (tinkeriseSummaryCard)
   // for the enhanced post-scaffold experience.
+  return plan
 }
 
 /**
