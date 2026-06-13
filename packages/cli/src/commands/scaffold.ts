@@ -17,7 +17,7 @@ import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinke
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InteractivePromptBlockedError, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
@@ -25,11 +25,13 @@ import { promptPackageManager } from '../prompts/pm-select.js'
 import { promptProjectName, validateProjectName } from '../prompts/project-name.js'
 import { resolveViteTemplate, selectT3Components, selectViteTemplate } from '../prompts/variant-select.js'
 import { showBanner } from '../utils/banner.js'
+import { renderScaffoldPlan } from '../utils/dry-run.js'
 import {
   buildPreselectedOptions,
   ensureNonInteractive,
   mergePromptAndFlags,
 } from '../utils/interactive.js'
+import { isJsonMode } from '../utils/output-mode.js'
 
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
@@ -66,6 +68,10 @@ export interface ScaffoldOptions {
   preset?: string
   /** Show detailed output (config override messages) */
   verbose?: boolean
+  /** Show the resolved command/plan without executing */
+  dryRun?: boolean
+  /** Explain flag mappings + prerequisites (implies dry-run) */
+  explain?: boolean
 }
 
 /**
@@ -232,8 +238,13 @@ async function executePipeline(
   config?: Partial<TinkeriseUserConfig>,
 ): Promise<void> {
   const userFlags = buildUserFlags(options, cmd, cliOptions, pm, config)
+  const dryRun = Boolean(cliOptions.dryRun || cliOptions.explain)
 
-  // Framework-specific variant handling
+  // --json cannot prompt: a vite/t3 dry-run needing a variant prompt would corrupt output (D-14)
+  if (dryRun && isJsonMode() && (framework === 't3' || (framework === 'vite' && !cliOptions.template))) {
+    throw new InteractivePromptBlockedError('scaffold')
+  }
+
   let extraArgs: string[] = []
 
   if (framework === 'vite') {
@@ -266,19 +277,24 @@ async function executePipeline(
     }
   }
 
-  await executeScaffolder({
+  const plan = await executeScaffolder({
     scaffolderName: framework,
     projectName: name,
     userFlags,
     extraArgs,
+    dryRun,
   })
+
+  if (dryRun) {
+    renderScaffoldPlan(plan, { explain: Boolean(cliOptions.explain), json: isJsonMode() })
+    return
+  }
 
   // Persist session context for cross-process reuse (tinkerise add)
   const absProjectPath = join(process.cwd(), name)
   setSessionContext({ framework, packageManager: pm, projectDir: absProjectPath })
   await writeSessionFile(absProjectPath, { framework, packageManager: pm })
 
-  // Enhanced summary card instead of simple one-liner
   const activeFlags = Object.entries(userFlags)
     .filter(([, v]) => v === true)
     .map(([k]) => k)

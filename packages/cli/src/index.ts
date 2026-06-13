@@ -86,7 +86,9 @@ program
   .option('--api', 'Headless API project')
   .option('--preset <name>', 'Apply a saved preset')
   .option('--verbose', 'Show detailed output')
-  .option('--json', 'Emit machine-readable JSON output (list, doctor, preset list/show)')
+  .option('--json', 'Emit machine-readable JSON output (list, doctor, preset list/show, dry-run)')
+  .option('--dry-run', 'Show the command that would run without executing')
+  .option('--explain', 'Like --dry-run, plus flag and prerequisite details (implies --dry-run)')
 
 // Default action with optional positional arguments
 program
