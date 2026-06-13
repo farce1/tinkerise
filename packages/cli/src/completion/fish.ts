@@ -68,6 +68,8 @@ function emitBlock(binary: 'tinkerise' | 'tk', root: CommandNode): string[] {
   const topLevel = collectTopLevelCandidates(root)
 
   lines.push(`# --- Completions for ${binary} ---`)
+  // Disable file fallback so unknown/failed contexts yield no candidates (D-19)
+  lines.push(`complete -c ${binary} -f`)
 
   // Top-level subcommand + root-positional candidates (web/backend/mobile + subcommand names)
   const rootPositional = POSITIONAL_ENUMS['']
@@ -89,23 +91,29 @@ function emitBlock(binary: 'tinkerise' | 'tk', root: CommandNode): string[] {
     lines.push(`complete -c ${binary} -f -n '__fish_seen_subcommand_from ${escapeSingle(category)}' -a '(tinkerise __complete ${dynKind} 2>/dev/null; or true)'`)
   }
 
-  // Top-level flag-name completion (with -- prefix)
+  // Root flags are global (complete at any depth, like bash/zsh). Value flags use a
+  // single -r directive carrying their candidates so fish completes the value (not
+  // subcommands) and suppresses file fallback on a failed lookup (D-19); boolean flags
+  // only complete the name.
+  const valueFlagNames = new Set(
+    [...Object.keys(FLAG_ENUMS), ...Object.keys(DYNAMIC_FLAGS)].map(f => f.replace(/^--/, '')),
+  )
+
   for (const flag of root.flags) {
     const flagName = flag.replace(/^--/, '')
-    lines.push(`complete -c ${binary} -f -n '__fish_use_subcommand' -l '${escapeSingle(flagName)}'`)
+    if (!valueFlagNames.has(flagName))
+      lines.push(`complete -c ${binary} -f -l '${escapeSingle(flagName)}'`)
   }
 
-  // Flag-value completion: static enums
   for (const [flag, values] of Object.entries(FLAG_ENUMS)) {
     const flagName = flag.replace(/^--/, '')
-    lines.push(`complete -c ${binary} -f -n '__fish_seen_argument -l ${escapeSingle(flagName)}' -a '${joinSpace(values)}'`)
+    lines.push(`complete -c ${binary} -f -r -l '${escapeSingle(flagName)}' -a '${joinSpace(values)}'`)
   }
 
-  // Flag-value completion: dynamic lookups
   for (const flag of Object.keys(DYNAMIC_FLAGS)) {
     const kind = DYNAMIC_FLAGS[flag]!
     const flagName = flag.replace(/^--/, '')
-    lines.push(`complete -c ${binary} -f -n '__fish_seen_argument -l ${escapeSingle(flagName)}' -a '(tinkerise __complete ${kind} 2>/dev/null; or true)'`)
+    lines.push(`complete -c ${binary} -f -r -l '${escapeSingle(flagName)}' -a '(tinkerise __complete ${kind} 2>/dev/null; or true)'`)
   }
 
   // Per-subcommand completions
