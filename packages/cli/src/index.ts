@@ -90,26 +90,38 @@ program
   .option('--dry-run', 'Show the command that would run without executing')
   .option('--explain', 'Like --dry-run, plus flag and prerequisite details (implies --dry-run)')
 
+const VALID_CATEGORIES = ['web', 'backend', 'mobile']
+
 // Default action with optional positional arguments
 program
-  .argument('[category]', 'Project category (web, backend, mobile)')
-  .argument('[framework]', 'Framework name')
-  .argument('[name]', 'Project name')
-  .action(async (category: string | undefined, framework: string | undefined, name: string | undefined, options, command) => {
+  .argument('[category]', 'Project category (web, backend, mobile) — or first stack token')
+  .argument('[framework]', 'Framework name — or stack token')
+  .argument('[name]', 'Project name — or stack token')
+  .argument('[tokens...]', 'Additional natural-language stack tokens')
+  .action(async (category: string | undefined, framework: string | undefined, name: string | undefined, tokens: string[], options, command) => {
     // Merge --ts alias into --typescript
     if (options.ts) {
       options.typescript = true
     }
 
-    if (!category) {
-      await runInteractiveFlow(command, options)
+    // Existing positional contract: first arg is a known category.
+    if (!category || VALID_CATEGORIES.includes(category)) {
+      if (!category) {
+        await runInteractiveFlow(command, options)
+      }
+      else if (!framework) {
+        await runCategoryFlow(category, command, options)
+      }
+      else {
+        await runDirectExecution(category, framework, name, command, options)
+      }
+      return
     }
-    else if (!framework) {
-      await runCategoryFlow(category, command, options)
-    }
-    else {
-      await runDirectExecution(category, framework, name, command, options)
-    }
+
+    // Natural-language stack mode: first token is not a category.
+    const allTokens = [category, framework, name, ...(tokens ?? [])].filter(Boolean) as string[]
+    const { runStackMode } = await import('./commands/stack.js')
+    await runStackMode(allTokens, command, options)
   })
 
 // List command — shows all scaffolders grouped by category
@@ -206,6 +218,7 @@ Examples:
   $ ${programName} web                        Select from web frameworks
   $ ${programName} web next my-app            Create a Next.js project
   $ ${programName} web vite my-app --ts       Create with TypeScript
+  $ ${programName} my-app next ts tailwind    Natural-language stack tokens
   $ ${programName} monorepo my-repo           Create a Turborepo monorepo
   $ ${programName} list                       Show available scaffolders
   $ ${programName} list web                   Show web scaffolders with details
@@ -229,7 +242,6 @@ Examples:
 // Per-scaffolder help interception (before Commander processes --help)
 // Detects: tinkerise web <framework> --help | -h
 // Shows unified-only flags per locked decision, then exits.
-const VALID_CATEGORIES = ['web', 'backend', 'mobile']
 const userArgs = process.argv.slice(2)
 const helpIdx = userArgs.findIndex(a => a === '--help' || a === '-h')
 try {

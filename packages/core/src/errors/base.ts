@@ -263,3 +263,18 @@ export class UnknownShellError extends TinkeriseError {
     this.name = 'UnknownShellError'
   }
 }
+
+/**
+ * Thrown when natural-language stack tokens cannot be resolved (unknown token
+ * or no framework identified).
+ */
+export class InvalidStackTokensError extends TinkeriseError {
+  constructor(message: string, suggestion?: string) {
+    super({
+      message,
+      code: 'INVALID_STACK_TOKENS',
+      suggestion,
+    })
+    this.name = 'InvalidStackTokensError'
+  }
+}

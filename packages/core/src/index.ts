@@ -101,6 +101,7 @@ export {
   InteractivePromptBlockedError,
   InvalidCategoryError,
   InvalidConfigKeyError,
+  InvalidStackTokensError,
   JsonUnsupportedCommandError,
   PresetNotFoundError,
   TinkeriseError,
@@ -178,3 +179,9 @@ export type { ScaffolderMetadata } from './registry/metadata.js'
  */
 export { generateCliTool, generateLib, generateMcpServer, TEMPLATE_METADATA } from './templates/index.js'
 export type { TemplateOptions } from './templates/index.js'
+
+/**
+ * Tokens — natural-language stack token parser.
+ */
+export { parseStackTokens } from './tokens/index.js'
+export type { FrameworkVocab, ParsedStack, ParseRegistries } from './tokens/index.js'
