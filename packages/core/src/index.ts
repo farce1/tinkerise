@@ -121,7 +121,7 @@ export {
   tinkeriseLog,
   tinkeriseSummaryCard,
 } from './executor/index.js'
-export type { ExecuteOptions } from './executor/index.js'
+export type { ExecuteOptions, ScaffoldPlan } from './executor/index.js'
 
 /**
  * Flags — unified-to-native flag mapping and validation.
