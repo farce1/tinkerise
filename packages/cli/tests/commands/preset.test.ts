@@ -17,8 +17,9 @@
  * - preset delete nonexistent shows "not found" error
  */
 
-import { Command } from 'commander'
+import { join } from 'node:path'
 
+import { Command } from 'commander'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { registerPresetCommand } from '../../src/commands/preset.js'
 
@@ -771,7 +772,7 @@ describe('preset show <name> --json (CLI-14, D-06/D-07/D-08)', () => {
     expect(envelope.data.name).toBe('my-stack')
     expect(envelope.data.description).toBe('My stack preset')
     expect(envelope.data.source).toBe('local')
-    expect(envelope.data.filePath).toBe('/home/user/.config/tinkerise/presets/my-stack.json')
+    expect(envelope.data.filePath).toBe(join('/home/user/.config/tinkerise/presets', 'my-stack.json'))
     expect(envelope.data.scaffold).toEqual({ framework: 'next', category: 'web', flags: { typescript: true } })
     expect(envelope.data.enhancements).toEqual(['eslint', 'prettier'])
     expect(envelope.data.config).toEqual({ packageManager: 'pnpm' })
