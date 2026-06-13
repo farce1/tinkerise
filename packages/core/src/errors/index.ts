@@ -10,6 +10,7 @@ export {
   InteractivePromptBlockedError,
   InvalidCategoryError,
   InvalidConfigKeyError,
+  InvalidStackTokensError,
   JsonUnsupportedCommandError,
   PrerequisiteError,
   PresetNotFoundError,

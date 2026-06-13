@@ -17,12 +17,27 @@ describe('tokensToScaffold', () => {
     expect(r.enhancements).toEqual(['eslint'])
   })
 
-  it('throws a did-you-mean error on an unknown token', () => {
-    expect(() => tokensToScaffold(['my-app', 'nextt'])).toThrow(/did you mean/i)
+  it('throws InvalidStackTokensError with a suggestion on an unknown token', () => {
+    let err: any
+    try {
+      tokensToScaffold(['my-app', 'nextt'])
+    }
+    catch (e) {
+      err = e
+    }
+    expect(err?.code).toBe('INVALID_STACK_TOKENS')
+    expect(err?.suggestion).toMatch(/next/)
   })
 
-  it('throws when no framework is resolved', () => {
-    expect(() => tokensToScaffold(['my-app', 'ts'])).toThrow(/framework/i)
+  it('throws InvalidStackTokensError when no framework is resolved', () => {
+    let err: any
+    try {
+      tokensToScaffold(['my-app', 'ts'])
+    }
+    catch (e) {
+      err = e
+    }
+    expect(err?.code).toBe('INVALID_STACK_TOKENS')
   })
 })
 

@@ -1,6 +1,6 @@
 import type { Command } from 'commander'
 import type { ScaffoldOptions } from './scaffold.js'
-import { enhancementRegistry, findClosestMatch, getAllScaffolders, parseStackTokens } from '@tinkerise/core'
+import { enhancementRegistry, findClosestMatch, getAllScaffolders, InvalidStackTokensError, parseStackTokens } from '@tinkerise/core'
 import { runDirectExecution } from './scaffold.js'
 
 type BoolOption
@@ -38,11 +38,11 @@ export function tokensToScaffold(tokens: string[]): StackResolution {
   if (parsed.unknown.length > 0) {
     const bad = parsed.unknown[0]!
     const suggestion = findClosestMatch(bad, [...frameworks.map(f => f.name), ...enhancementIds, 'typescript', 'tailwind', 'biome'])
-    throw new Error(suggestion ? `Unknown token '${bad}'. Did you mean '${suggestion}'?` : `Unknown token '${bad}'.`)
+    throw new InvalidStackTokensError(`Unknown token '${bad}'.`, suggestion ? `Did you mean '${suggestion}'?` : undefined)
   }
 
   if (!parsed.framework)
-    throw new Error(`Could not identify a framework in: ${tokens.join(' ')}`)
+    throw new InvalidStackTokensError(`Could not identify a framework in: ${tokens.join(' ')}`)
 
   return {
     framework: parsed.framework,
