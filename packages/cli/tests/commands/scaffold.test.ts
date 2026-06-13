@@ -16,6 +16,7 @@ import {
   runDirectExecution,
   runInteractiveFlow,
 } from '../../src/commands/scaffold.js'
+import { __resetJsonModeForTests, detectJsonMode } from '../../src/utils/output-mode.js'
 
 // vi.hoisted for mock fns used in vi.mock factories
 const {
@@ -464,5 +465,33 @@ describe('defaultCategory config wiring', () => {
       expect.objectContaining({ filterCategory: undefined }),
     )
     expect(mockLogWarn).not.toHaveBeenCalled()
+  })
+})
+
+describe('--json dry-run non-interactivity', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockValidateProjectName.mockReturnValue(undefined)
+    mockIsCI.value = false
+    mockResolveConfig.mockResolvedValue({})
+    mockLoadPreset.mockResolvedValue(null)
+    mockBuildPreselectedOptions.mockReturnValue([])
+    mockMergePromptAndFlags.mockReturnValue({})
+    detectJsonMode(['node', 'tinkerise', '--json'])
+  })
+
+  afterEach(() => {
+    __resetJsonModeForTests()
+    mockIsCI.value = false
+  })
+
+  it('blocks instead of prompting for PM when output would be JSON', async () => {
+    mockDetectPackageManager.mockResolvedValue({ pm: 'npm', source: 'default' })
+    const cmd = createMockCommand()
+
+    await expect(
+      runDirectExecution('web', 'next', 'my-app', cmd, { dryRun: true }),
+    ).rejects.toMatchObject({ code: 'INTERACTIVE_PROMPT_BLOCKED' })
+    expect(mockPromptPackageManager).not.toHaveBeenCalled()
   })
 })

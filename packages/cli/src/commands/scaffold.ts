@@ -36,6 +36,16 @@ import { isJsonMode } from '../utils/output-mode.js'
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
 
+function isDryRun(options: ScaffoldOptions): boolean {
+  return Boolean(options.dryRun || options.explain)
+}
+
+// --json output is non-interactive: any prompt would corrupt the envelope (D-14).
+function assertJsonNonInteractive(dryRun: boolean): void {
+  if (dryRun && isJsonMode())
+    throw new InteractivePromptBlockedError('scaffold')
+}
+
 export interface ScaffoldOptions {
   typescript?: boolean
   tailwind?: boolean
@@ -87,10 +97,12 @@ async function resolvePackageManager(
   flagValue?: string,
   config?: Partial<TinkeriseUserConfig>,
   verbose?: boolean,
+  dryRun = false,
 ): Promise<PackageManager> {
   const pmResult = await detectPackageManager(cwd, flagValue)
 
   if (pmResult.source === 'binary-missing') {
+    assertJsonNonInteractive(dryRun)
     // Detected PM binary is not installed — warn and prompt
     p.log.warn(
       pc.yellow(`${pmResult.pm} was detected but is not installed. Choose a package manager:`),
@@ -105,6 +117,7 @@ async function resolvePackageManager(
   }
 
   if (pmResult.source === 'default') {
+    assertJsonNonInteractive(dryRun)
     // No lockfile or packageManager field found — prompt user to choose
     return promptPackageManager()
   }
@@ -238,12 +251,11 @@ async function executePipeline(
   config?: Partial<TinkeriseUserConfig>,
 ): Promise<void> {
   const userFlags = buildUserFlags(options, cmd, cliOptions, pm, config)
-  const dryRun = Boolean(cliOptions.dryRun || cliOptions.explain)
+  const dryRun = isDryRun(cliOptions)
 
-  // --json cannot prompt: a vite/t3 dry-run needing a variant prompt would corrupt output (D-14)
-  if (dryRun && isJsonMode() && (framework === 't3' || (framework === 'vite' && !cliOptions.template))) {
-    throw new InteractivePromptBlockedError('scaffold')
-  }
+  // vite/t3 prompt for a variant; in --json dry-run that would corrupt output (D-14)
+  if (framework === 't3' || (framework === 'vite' && !cliOptions.template))
+    assertJsonNonInteractive(dryRun)
 
   let extraArgs: string[] = []
 
@@ -318,6 +330,7 @@ export async function runInteractiveFlow(
     // if somehow all args were provided (shouldn't happen in this code path)
   }
 
+  assertJsonNonInteractive(isDryRun(options))
   showBanner()
 
   const { config, preset } = await resolveConfigAndPreset(options)
@@ -348,7 +361,7 @@ export async function runInteractiveFlow(
     preselectedOptions: preselected,
     filterCategory,
   })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
@@ -375,6 +388,7 @@ export async function runCategoryFlow(
     ensureNonInteractive(cmd, category)
   }
 
+  assertJsonNonInteractive(isDryRun(options))
   showBanner()
 
   const { config, preset } = await resolveConfigAndPreset(options)
@@ -393,7 +407,7 @@ export async function runCategoryFlow(
     framework: presetFramework,
     preselectedOptions: preselected,
   })
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   await executePipeline(answers.framework, answers.name, answers.options, cmd, options, pm, config)
 }
@@ -419,12 +433,14 @@ export async function runDirectExecution(
 
   const { config, preset } = await resolveConfigAndPreset(options)
 
+  if (!name)
+    assertJsonNonInteractive(isDryRun(options))
   const projectName = name ?? await promptProjectName(framework)
   const projectNameError = validateProjectName(projectName)
   if (projectNameError) {
     throw new ConfigValidationError('projectName', projectName, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
   }
-  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose)
+  const pm = await resolvePackageManager(process.cwd(), options.packageManager, config, options.verbose, isDryRun(options))
 
   const preselected = mergePresetFlags(preset, buildPreselectedOptions(cmd))
 
