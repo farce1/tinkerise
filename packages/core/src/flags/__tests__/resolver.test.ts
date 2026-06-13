@@ -32,7 +32,7 @@ describe('resolveFlags breakdown', () => {
   })
 
   it('attributes prefix-style value flags while preserving flat arg order', () => {
-    const result = resolveFlags({ entry, userFlags: { typescript: true, 'package-manager': 'pnpm' } })
+    const result = resolveFlags({ entry, userFlags: { 'typescript': true, 'package-manager': 'pnpm' } })
 
     expect(result.args).toEqual(['--typescript', '--use-pnpm'])
     expect(result.breakdown).toEqual([
