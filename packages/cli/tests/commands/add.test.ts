@@ -298,6 +298,26 @@ describe('runAddCommand', () => {
     )
   })
 
+  it('shows a per-enhancement summary card for an external npm enhancement', async () => {
+    const extResult = { success: true, filesModified: ['biome.json'], packagesAdded: ['@biomejs/biome'], warnings: [] }
+    const extMod = { id: 'biome', name: 'Biome', description: 'd', dependsOn: [], detect: vi.fn(), install: vi.fn() }
+    mockEnsureSourceTrusted.mockResolvedValue(true)
+    mockLoadNpmEnhancement.mockResolvedValue(extMod)
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['biome'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map([['biome', extResult]]),
+    })
+
+    await runAddCommand(['npm:tinkerise-enhancement-biome'], {})
+
+    expect(mockShowPerEnhancementSummary).toHaveBeenCalledWith(
+      expect.objectContaining({ moduleId: 'biome', moduleName: 'Biome', result: extResult }),
+    )
+  })
+
   it('errors for an untrusted external source in CI (require pre-trust)', async () => {
     mockIsCI.value = true
     mockIsSourceTrusted.mockResolvedValue(false)
