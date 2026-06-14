@@ -181,7 +181,8 @@ Examples:
   $ ${programName} add eslint                 Add ESLint to your project
   $ ${programName} add eslint prettier husky  Add multiple enhancements
   $ ${programName} add                        Interactive enhancement picker
-  $ ${programName} add --from-lock            Re-apply enhancements from tinkerise.lock`)
+  $ ${programName} add --from-lock            Re-apply enhancements from tinkerise.lock
+  $ ${programName} add npm:tinkerise-enhancement-biome  Add a trusted external enhancement`)
 
 // Doctor command — check system for required tools and versions
 program

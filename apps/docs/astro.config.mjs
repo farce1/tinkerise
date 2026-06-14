@@ -26,6 +26,7 @@ export default defineConfig({
           items: [
             { label: 'Getting Started', slug: 'guides/getting-started' },
             { label: 'Reproducible Projects', slug: 'guides/reproducible-projects' },
+            { label: 'External Sources & Trust', slug: 'guides/external-sources' },
             { label: 'Scaffolder Guides', autogenerate: { directory: 'guides/scaffolders' } },
             { label: 'Enhancement Guides', autogenerate: { directory: 'guides/enhancements' } },
           ],
