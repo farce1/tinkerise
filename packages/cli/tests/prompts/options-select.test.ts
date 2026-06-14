@@ -101,6 +101,23 @@ describe('selectFrameworkOptions', () => {
     expect(result).toEqual(['typescript', 'eslint'])
   })
 
+  it('preserves preselected flags that are not offered as interactive options', async () => {
+    // clack multiselect only returns values present in its options, dropping 'app-router'
+    mockMultiselect.mockResolvedValue(['typescript'])
+
+    const result = await selectFrameworkOptions('next', ['app-router', 'typescript'])
+
+    expect(result).toContain('typescript')
+    expect(result).toContain('app-router')
+  })
+
+  it('returns preselected flags for a framework with no interactive options', async () => {
+    const result = await selectFrameworkOptions('django', ['typescript'])
+
+    expect(result).toEqual(['typescript'])
+    expect(mockMultiselect).not.toHaveBeenCalled()
+  })
+
   it('fRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint, Biome', () => {
     const nextOptions = FRAMEWORK_OPTIONS.next
     expect(nextOptions).toBeDefined()
