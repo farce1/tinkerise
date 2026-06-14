@@ -12,17 +12,20 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConfigValidationError } from '../../src/errors/base.js'
+import { ConfigValidationError, TargetDirectoryExistsError } from '../../src/errors/base.js'
 import { generateCliTool } from '../../src/templates/cli-tool.js'
 
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockWriteFile = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
+// Default: target directory does not exist (ENOENT) so generation proceeds.
+const mockReaddir = vi.hoisted(() => vi.fn().mockRejectedValue(Object.assign(new Error('ENOENT'), { code: 'ENOENT' })))
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 
 vi.mock('node:fs/promises', () => ({
   mkdir: mockMkdir,
   writeFile: mockWriteFile,
+  readdir: mockReaddir,
 }))
 
 vi.mock('execa', () => ({
@@ -54,6 +57,12 @@ describe('generateCliTool', () => {
   it('rejects an unknown package manager', async () => {
     await expect(generateCliTool('my-tool', { packageManager: 'bogus' })).rejects.toThrow(ConfigValidationError)
     expect(mockMkdir).not.toHaveBeenCalled()
+  })
+
+  it('refuses to overwrite a non-empty existing directory', async () => {
+    mockReaddir.mockResolvedValueOnce(['package.json'])
+    await expect(generateCliTool('my-tool')).rejects.toBeInstanceOf(TargetDirectoryExistsError)
+    expect(mockWriteFile).not.toHaveBeenCalled()
   })
 
   /** Helper: get all writeFile calls as { path, content } pairs */

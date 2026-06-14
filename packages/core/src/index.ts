@@ -106,6 +106,7 @@ export {
   JsonUnsupportedCommandError,
   MissingPackageJsonError,
   PresetNotFoundError,
+  TargetDirectoryExistsError,
   TinkeriseError,
   UnknownEnhancementError,
   UnknownShellError,

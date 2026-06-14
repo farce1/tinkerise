@@ -7,7 +7,7 @@
 
 import type { TemplateOptions } from './types.js'
 import { mkdir } from 'node:fs/promises'
-import { assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
+import { assertTargetDirAvailable, assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
 
 /**
  * Generate a publish-ready npm library project.
@@ -19,6 +19,7 @@ export async function generateLib(name: string, options: TemplateOptions = {}): 
   const pm = options.packageManager ?? 'npm'
   assertValidTemplateInput(name, pm)
   const projectDir = name
+  await assertTargetDirAvailable(projectDir)
 
   // 1. Create project directory
   await mkdir(projectDir, { recursive: true })

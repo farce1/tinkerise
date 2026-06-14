@@ -306,3 +306,18 @@ export class InvalidJsonConfigError extends TinkeriseError {
     this.name = 'InvalidJsonConfigError'
   }
 }
+
+/**
+ * Thrown when a generator's target directory already exists and is not empty,
+ * so generation would overwrite existing files.
+ */
+export class TargetDirectoryExistsError extends TinkeriseError {
+  constructor(dir: string) {
+    super({
+      message: `Directory '${dir}' already exists and is not empty.`,
+      code: 'TARGET_DIRECTORY_EXISTS',
+      suggestion: 'Choose a different name or remove the existing directory first.',
+    })
+    this.name = 'TargetDirectoryExistsError'
+  }
+}

@@ -18,6 +18,7 @@ export {
   PresetNotFoundError,
   ScaffolderExitError,
   ScaffolderNotFoundError,
+  TargetDirectoryExistsError,
   TinkeriseError,
   UnknownEnhancementError,
   UnknownShellError,
