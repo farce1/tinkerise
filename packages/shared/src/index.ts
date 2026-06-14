@@ -32,6 +32,20 @@ export type {
 } from './config/types.js'
 
 /**
+ * Lock — tinkerise.lock schema for reproducible projects (Tier B).
+ */
+export {
+  LOCK_SCHEMA_VERSION,
+  LockEnhancementSchema,
+  TinkeriseLockSchema,
+} from './lock/index.js'
+
+export type {
+  LockEnhancement,
+  TinkeriseLock,
+} from './lock/index.js'
+
+/**
  * JSON output — Zod 4 envelope and per-command schemas for `--json` mode (Phase 33).
  */
 export {
