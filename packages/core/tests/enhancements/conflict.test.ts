@@ -6,6 +6,7 @@ import {
   parseJsonConfig,
   showFileDiff,
 } from '../../src/enhancements/conflict.js'
+import { InvalidJsonConfigError } from '../../src/errors/base.js'
 
 describe('formatColoredDiff()', () => {
   it('preserves addition line content', () => {
@@ -149,16 +150,21 @@ describe('parseJsonConfig()', () => {
     expect(result).toEqual({ name: 'test', version: '1.0' })
   })
 
-  it('throws with helpful error for invalid JSON', () => {
-    expect(() => parseJsonConfig('{name: invalid}')).toThrow(
-      'Failed to parse JSON config',
-    )
+  it('throws a structured InvalidJsonConfigError for invalid JSON', () => {
+    expect(() => parseJsonConfig('{name: invalid}')).toThrow(InvalidJsonConfigError)
+    expect(() => parseJsonConfig('{name: invalid}')).toThrow('Failed to parse JSON config')
   })
 
-  it('mentions trailing commas in error context', () => {
-    expect(() => parseJsonConfig('{"a": 1,}')).toThrow(
-      'trailing commas',
-    )
+  it('surfaces the trailing-comma hint via the error suggestion', () => {
+    try {
+      parseJsonConfig('{"a": 1,}')
+      expect.unreachable('parseJsonConfig should throw on malformed JSON')
+    }
+    catch (err) {
+      expect(err).toBeInstanceOf(InvalidJsonConfigError)
+      expect((err as InvalidJsonConfigError).code).toBe('INVALID_JSON_CONFIG')
+      expect((err as InvalidJsonConfigError).suggestion).toContain('trailing commas')
+    }
   })
 })
 

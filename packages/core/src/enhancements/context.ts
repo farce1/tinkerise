@@ -13,7 +13,9 @@ import type { PackageManager } from '../pm/detect.js'
 import type { FrameworkId, ProjectContext } from './types.js'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { MissingPackageJsonError } from '../errors/base.js'
 import { detectPackageManager } from '../pm/detect.js'
+import { parseJsonConfig } from './conflict.js'
 import { detectFramework } from './framework-detect.js'
 
 /** Options for building project context */
@@ -58,14 +60,12 @@ export async function buildProjectContext(
   catch (err: unknown) {
     const code = (err as NodeJS.ErrnoException).code
     if (code === 'ENOENT') {
-      throw new Error(
-        `No package.json found in ${rootDir}. Run this command from a project directory.`,
-      )
+      throw new MissingPackageJsonError(rootDir)
     }
     throw err
   }
 
-  const packageJson = JSON.parse(raw) as Record<string, unknown>
+  const packageJson = parseJsonConfig(raw)
 
   // 2. Merge dependencies + devDependencies into installedDeps
   const deps = (packageJson.dependencies ?? {}) as Record<string, string>
