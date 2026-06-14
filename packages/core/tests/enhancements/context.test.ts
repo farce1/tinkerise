@@ -24,7 +24,7 @@ const { detectFramework } = await import(
 const { buildProjectContext } = await import(
   '../../src/enhancements/context.js',
 )
-const { MissingPackageJsonError } = await import('../../src/errors/base.js')
+const { InvalidJsonConfigError, MissingPackageJsonError } = await import('../../src/errors/base.js')
 
 const mockedReadFile = vi.mocked(readFile)
 const mockedDetectPM = vi.mocked(detectPackageManager)
@@ -131,6 +131,14 @@ describe('buildProjectContext()', () => {
     const promise = buildProjectContext({ rootDir })
     await expect(promise).rejects.toBeInstanceOf(MissingPackageJsonError)
     await expect(promise).rejects.toMatchObject({ code: 'MISSING_PACKAGE_JSON' })
+  })
+
+  it('throws a structured InvalidJsonConfigError when package.json is malformed', async () => {
+    mockedReadFile.mockResolvedValue('{ "name": "broken",, }')
+
+    const promise = buildProjectContext({ rootDir })
+    await expect(promise).rejects.toBeInstanceOf(InvalidJsonConfigError)
+    await expect(promise).rejects.toMatchObject({ code: 'INVALID_JSON_CONFIG' })
   })
 
   it('rethrows non-ENOENT errors from readFile', async () => {
