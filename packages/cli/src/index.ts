@@ -23,7 +23,7 @@ import { registerLibCommand } from './commands/lib.js'
 import { listScaffolders } from './commands/list.js'
 import { registerMcpCommand } from './commands/mcp.js'
 import { registerPresetCommand } from './commands/preset.js'
-import { runCategoryFlow, runDirectExecution, runInteractiveFlow } from './commands/scaffold.js'
+import { runCategoryFlow, runDirectExecution, runFromLock, runInteractiveFlow } from './commands/scaffold.js'
 import { registerUpdateCommand } from './commands/update.js'
 import { handleError } from './utils/error-handler.js'
 import { detectJsonMode, isJsonMode } from './utils/output-mode.js'
@@ -89,6 +89,7 @@ program
   .option('--json', 'Emit machine-readable JSON output (list, doctor, preset list/show, dry-run)')
   .option('--dry-run', 'Show the command that would run without executing')
   .option('--explain', 'Like --dry-run, plus flag and prerequisite details (implies --dry-run)')
+  .option('--from-lock', 'Reproduce a project from a tinkerise.lock (the first argument is the new project name)')
 
 const VALID_CATEGORIES = ['web', 'backend', 'mobile']
 
@@ -102,6 +103,12 @@ program
     // Merge --ts alias into --typescript
     if (options.ts) {
       options.typescript = true
+    }
+
+    // --from-lock: reproduce from tinkerise.lock; the first positional is the new name.
+    if (options.fromLock) {
+      await runFromLock(category, options)
+      return
     }
 
     // Existing positional contract: first arg is a known category.
@@ -221,6 +228,7 @@ Examples:
   $ ${programName} web next my-app            Create a Next.js project
   $ ${programName} web vite my-app --ts       Create with TypeScript
   $ ${programName} my-app next ts tailwind    Natural-language stack tokens
+  $ ${programName} my-app --from-lock         Reproduce a project from tinkerise.lock
   $ ${programName} monorepo my-repo           Create a Turborepo monorepo
   $ ${programName} list                       Show available scaffolders
   $ ${programName} list web                   Show web scaffolders with details

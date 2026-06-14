@@ -13,7 +13,7 @@
 import type { Command } from 'commander'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { runDirectExecution } from '../../src/commands/scaffold.js'
+import { runDirectExecution, runFromLock } from '../../src/commands/scaffold.js'
 
 // vi.hoisted for mock fns used in vi.mock factories
 const {
@@ -36,6 +36,7 @@ const {
   mockLoadPreset,
   mockBuildLock,
   mockWriteLockFile,
+  mockReadLockFile,
 } = vi.hoisted(() => ({
   mockShowBanner: vi.fn(),
   mockRunPromptFlow: vi.fn(),
@@ -56,11 +57,13 @@ const {
   mockLoadPreset: vi.fn(),
   mockBuildLock: vi.fn(),
   mockWriteLockFile: vi.fn(),
+  mockReadLockFile: vi.fn(),
 }))
 
 vi.mock('../../src/context/lock.js', () => ({
   buildLock: mockBuildLock,
   writeLockFile: mockWriteLockFile,
+  readLockFile: mockReadLockFile,
   LOCK_FILENAME: 'tinkerise.lock',
 }))
 
@@ -87,6 +90,11 @@ vi.mock('@tinkerise/core', () => ({
   tinkeriseSummaryCard: mockTinkeriseSummaryCard,
   resolveConfig: mockResolveConfig,
   loadPreset: mockLoadPreset,
+  TinkeriseError: class TinkeriseError extends Error {
+    constructor(opts: { message: string }) {
+      super(opts.message)
+    }
+  },
   get isCI() { return mockIsCI.value },
 }))
 
@@ -250,6 +258,52 @@ describe('variant prompt wiring', () => {
       await runDirectExecution('web', 'next', 'my-app', cmd, {})
 
       expect(mockTinkeriseSummaryCard).toHaveBeenCalled()
+    })
+  })
+
+  describe('from-lock reproduction', () => {
+    function lockFor(framework: string, flags: Record<string, string | boolean> = {}) {
+      return {
+        schemaVersion: 1,
+        framework,
+        category: 'web',
+        flags,
+        enhancements: [],
+        packageManager: 'npm',
+        createdWith: '0.0.0',
+      }
+    }
+
+    it('reproduces a project from the lock flags', async () => {
+      mockReadLockFile.mockResolvedValue(lockFor('next', { typescript: true, tailwind: true }))
+
+      await runFromLock('reproduced-app', {})
+
+      expect(mockExecuteScaffolder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          scaffolderName: 'next',
+          projectName: 'reproduced-app',
+          userFlags: { typescript: true, tailwind: true },
+        }),
+      )
+    })
+
+    it('throws when no lock is present', async () => {
+      mockReadLockFile.mockResolvedValue(null)
+
+      await expect(runFromLock('app', {})).rejects.toThrow(/tinkerise\.lock/i)
+      expect(mockExecuteScaffolder).not.toHaveBeenCalled()
+    })
+
+    it('throws for frameworks whose variants the lock cannot capture', async () => {
+      mockReadLockFile.mockResolvedValue(lockFor('vite'))
+
+      await expect(runFromLock('app', {})).rejects.toThrow(/vite/i)
+      expect(mockExecuteScaffolder).not.toHaveBeenCalled()
+    })
+
+    it('throws when no project name is provided', async () => {
+      await expect(runFromLock(undefined, {})).rejects.toThrow(/name/i)
     })
   })
 })

@@ -17,9 +17,9 @@ import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinke
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InteractivePromptBlockedError, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
+import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InteractivePromptBlockedError, InvalidCategoryError, isCI, loadPreset, resolveConfig, TinkeriseError, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
-import { buildLock, LOCK_FILENAME, writeLockFile } from '../context/lock.js'
+import { buildLock, LOCK_FILENAME, readLockFile, writeLockFile } from '../context/lock.js'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
@@ -252,6 +252,21 @@ async function executePipeline(
   config?: Partial<TinkeriseUserConfig>,
 ): Promise<void> {
   const userFlags = buildUserFlags(options, cmd, cliOptions, pm, config)
+  await runResolvedScaffold(framework, name, userFlags, cliOptions, pm)
+}
+
+/**
+ * Execute a scaffold from fully-resolved userFlags: handle framework variants,
+ * spawn the upstream tool, then persist session + lock. Shared by the prompt
+ * pipeline and `--from-lock` reproduction.
+ */
+async function runResolvedScaffold(
+  framework: string,
+  name: string,
+  userFlags: Record<string, string | boolean>,
+  cliOptions: ScaffoldOptions,
+  pm: PackageManager,
+): Promise<void> {
   const dryRun = isDryRun(cliOptions)
 
   // vite/t3 prompt for a variant; in --json dry-run that would corrupt output (D-14)
@@ -457,4 +472,53 @@ export async function runDirectExecution(
   // If we have preselected options, use them directly; otherwise use empty array
   // (direct execution skips the options multiselect)
   await executePipeline(framework, projectName, preselected, cmd, options, pm, config)
+}
+
+/**
+ * Frameworks whose interactive variant selection (Vite template, T3 components)
+ * is not captured in the lock, so `--from-lock` cannot reproduce them yet.
+ */
+const FROM_LOCK_UNSUPPORTED = new Set(['vite', 't3'])
+
+/**
+ * Reproduce a project from a `tinkerise.lock` in the current directory.
+ *
+ * Non-interactive: the locked framework + flags drive the same execution path
+ * as a normal scaffold. The new project name is supplied by the caller.
+ */
+export async function runFromLock(
+  name: string | undefined,
+  options: ScaffoldOptions,
+): Promise<void> {
+  if (!name) {
+    throw new TinkeriseError({
+      message: 'A project name is required with --from-lock.',
+      code: 'MISSING_PROJECT_NAME',
+      suggestion: 'Example: tinkerise my-app --from-lock',
+    })
+  }
+
+  const lock = await readLockFile(process.cwd())
+  if (!lock) {
+    throw new TinkeriseError({
+      message: 'No tinkerise.lock found in this directory.',
+      code: 'LOCK_NOT_FOUND',
+      suggestion: 'Run --from-lock from a directory containing a tinkerise.lock.',
+    })
+  }
+
+  if (FROM_LOCK_UNSUPPORTED.has(lock.framework)) {
+    throw new TinkeriseError({
+      message: `--from-lock does not support ${lock.framework} yet (its variant selection is not captured in the lock).`,
+      code: 'LOCK_UNSUPPORTED_FRAMEWORK',
+      suggestion: `Scaffold it directly, e.g. tinkerise ${lock.category} ${lock.framework} ${name}`,
+    })
+  }
+
+  const projectNameError = validateProjectName(name)
+  if (projectNameError) {
+    throw new ConfigValidationError('projectName', name, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
+  }
+
+  await runResolvedScaffold(lock.framework, name, { ...lock.flags }, options, lock.packageManager as PackageManager)
 }
