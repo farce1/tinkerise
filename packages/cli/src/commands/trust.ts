@@ -35,7 +35,8 @@ Examples:
       const trusted = await listTrustedSources()
       const trustedIds = new Set(trusted.map(s => s.id))
       const untrusted = (await discoverNpmSources(process.cwd()))
-        .map(pkg => `npm:${pkg}`)
+        // Canonicalize like parseSource (lowercase) so dedup against trusted ids is exact.
+        .map(pkg => `npm:${pkg.toLowerCase()}`)
         .filter(id => !trustedIds.has(id))
 
       if (trusted.length === 0 && untrusted.length === 0) {
