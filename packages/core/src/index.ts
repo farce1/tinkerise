@@ -175,6 +175,19 @@ export { getScaffolderMetadata, SCAFFOLDER_METADATA } from './registry/metadata.
 export type { ScaffolderMetadata } from './registry/metadata.js'
 
 /**
+ * Sources — trust store and per-source consent gate for external sources (Tier C).
+ */
+export {
+  ensureSourceTrusted,
+  getTrustStorePath,
+  isSourceTrusted,
+  listTrustedSources,
+  TRUST_STORE_FILENAME,
+  trustSource,
+} from './sources/index.js'
+export type { OnSourceConsent, SourceConsentRequest } from './sources/index.js'
+
+/**
  * Templates — utility project generators (MCP server, CLI tool, npm library).
  */
 export { generateCliTool, generateLib, generateMcpServer, TEMPLATE_METADATA } from './templates/index.js'

@@ -107,3 +107,17 @@ export type {
   ScaffolderEntry,
   VersionedFlagMap,
 } from './registry/index.js'
+
+/**
+ * Sources — trust store schema for external scaffolder/enhancement sources (Tier C).
+ */
+export {
+  TRUST_STORE_VERSION,
+  TrustedSourceSchema,
+  TrustStoreSchema,
+} from './sources/index.js'
+
+export type {
+  TrustedSource,
+  TrustStore,
+} from './sources/index.js'
