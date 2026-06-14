@@ -1,0 +1,66 @@
+---
+title: External Sources & Trust
+description: Use community enhancements from npm, gated by explicit per-source consent.
+---
+
+Beyond its built-in scaffolders and enhancements, tinkerise can run **external**
+enhancements published to npm (`tinkerise-enhancement-*`). Because that means running
+third-party code on your machine, every external source must be **explicitly trusted** before
+it runs — once per source, remembered afterwards.
+
+## The trust model
+
+A source is identified canonically as `npm:<package>` (or `github:<owner>/<repo>`). tinkerise
+keeps a trust store of sources you have consented to; nothing external is loaded or executed
+until its source is trusted.
+
+```bash
+tinkerise trust list      # show trusted sources + installed-but-untrusted ones
+tinkerise trust add npm:tinkerise-enhancement-biome     # trust a source
+tinkerise trust remove npm:tinkerise-enhancement-biome  # revoke trust
+```
+
+`trust list` also surfaces installed `tinkerise-scaffolder-*` / `tinkerise-enhancement-*`
+packages found in the current project that you haven't trusted yet, so you can see what's
+available.
+
+## Using an external enhancement
+
+Add an npm enhancement the same way you add a built-in one — just use its `npm:` source id:
+
+```bash
+tinkerise add npm:tinkerise-enhancement-biome
+```
+
+The first time you reference an untrusted source interactively, tinkerise shows an explicit
+warning that it will run third-party code and asks you to confirm — defaulting to **No**.
+Granting consent records the source as trusted, so you won't be asked again. Once trusted, the
+enhancement runs through the normal `add` pipeline (the usual skip / replace / merge handling
+for existing config).
+
+## CI and non-interactive use
+
+In CI (or any non-interactive context) there is no prompt to answer, so tinkerise **requires
+pre-trust**: an untrusted source fails fast rather than silently executing third-party code.
+
+```bash
+# In CI, trust the source explicitly first, then use it:
+tinkerise trust add npm:tinkerise-enhancement-biome
+tinkerise add npm:tinkerise-enhancement-biome
+```
+
+Running `tinkerise add npm:…` against an untrusted source in CI errors with
+`SOURCE_NOT_TRUSTED` and tells you to run `tinkerise trust add` first.
+
+## Boundaries
+
+- **npm enhancements only, for now.** `github:` sources are recognized by the resolver but not
+  yet executable (`SOURCE_KIND_UNSUPPORTED`).
+- **Consent is per-source.** Trusting one package does not trust any other.
+- **Trust is revocable.** `tinkerise trust remove <source>` drops it from the store.
+
+## Where to go next
+
+- Add built-in tooling in [`/guides/enhancements/`](/tinkerise/guides/enhancements/)
+- Record and reproduce a stack with [Reproducible Projects](/tinkerise/guides/reproducible-projects/)
+- See every command and flag in [`/reference/commands/`](/tinkerise/reference/commands/)
