@@ -164,6 +164,7 @@ program
   .description('Add ESLint, Prettier, husky, GitHub Actions CI, Docker, env, commitlint, testing, Renovate, EditorConfig, and more to your project. Run without arguments for an interactive picker.')
   .argument('[enhancements...]', 'Enhancement names (eslint, prettier, husky, ci, docker, env, commitlint, testing, renovate, editorconfig)')
   .option('--verbose', 'Show detailed output from package installation')
+  .option('--from-lock', 'Re-apply the enhancements recorded in tinkerise.lock')
   .action(async (enhancements: string[], options) => {
     await runAddCommand(enhancements, options)
   })
@@ -171,7 +172,8 @@ program
 Examples:
   $ ${programName} add eslint                 Add ESLint to your project
   $ ${programName} add eslint prettier husky  Add multiple enhancements
-  $ ${programName} add                        Interactive enhancement picker`)
+  $ ${programName} add                        Interactive enhancement picker
+  $ ${programName} add --from-lock            Re-apply enhancements from tinkerise.lock`)
 
 // Doctor command — check system for required tools and versions
 program
