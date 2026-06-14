@@ -1,0 +1,101 @@
+---
+title: Reproduce a Stack from tinkerise.lock
+description: Capture a project's framework, flags, and enhancements in tinkerise.lock and recreate the same stack with one command.
+---
+
+## Goal
+
+Record a working stack once, then recreate it elsewhere — for a teammate, a fresh machine, or
+a second project — without remembering every flag.
+
+## Prerequisites
+
+- Node.js 20.11+
+- `tinkerise` installed
+
+## Step 1: Create and configure a project
+
+```bash
+tinkerise web next my-app --typescript --tailwind
+cd my-app
+tinkerise add eslint prettier
+```
+
+Expected result: `my-app` is scaffolded and a `tinkerise.lock` is written at its root. The
+`add` step records `eslint` and `prettier` into that lock.
+
+## Step 2: Inspect the lock
+
+```bash
+cat tinkerise.lock
+```
+
+Expected output (abbreviated):
+
+```json
+{
+  "schemaVersion": 1,
+  "framework": "next",
+  "category": "web",
+  "flags": { "typescript": true, "tailwind": true },
+  "enhancements": [
+    { "id": "eslint", "version": null },
+    { "id": "prettier", "version": null }
+  ],
+  "packageManager": "npm",
+  "createdWith": "1.0.0"
+}
+```
+
+Commit `tinkerise.lock` alongside your code — it is a reproducible record, not a cache.
+
+## Step 3: Preview a reproduction
+
+Share the `tinkerise.lock` (or hand someone the repo) and preview what reproducing it will run,
+without writing anything:
+
+```bash
+mkdir ../my-app-clone && cd ../my-app-clone
+cp ../my-app/tinkerise.lock .
+tinkerise my-app-clone --from-lock --dry-run
+```
+
+Expected result: the exact upstream command is printed and no files are created.
+
+## Step 4: Reproduce the whole stack
+
+```bash
+tinkerise my-app-clone --from-lock
+```
+
+Expected result: the framework is scaffolded with the recorded flags and variant, then the
+recorded enhancements (`eslint`, `prettier`) are re-applied — recreating the full stack in one
+command.
+
+## Step 5: Re-apply enhancements in an existing checkout
+
+If you cloned a repo that already contains a `tinkerise.lock` and just want its tooling:
+
+```bash
+tinkerise add --from-lock
+```
+
+Expected result: the lock's recorded enhancements run through the normal `add` flow, with the
+usual skip / replace / merge handling for any existing config.
+
+## Expected generated artifacts
+
+- `tinkerise.lock` at each project root
+- Framework output from the official scaffolder (e.g. `create-next-app`)
+- Enhancement-generated files (ESLint and Prettier configs)
+
+## Next steps
+
+1. Add the lock to version control so reproductions are deterministic.
+2. Layer more tooling with `tinkerise add` — each run keeps the lock current.
+
+## Related guides
+
+- [Reproducible Projects guide](/tinkerise/guides/reproducible-projects/)
+- [ESLint enhancement guide](/tinkerise/guides/enhancements/eslint/)
+- [Prettier enhancement guide](/tinkerise/guides/enhancements/prettier/)
