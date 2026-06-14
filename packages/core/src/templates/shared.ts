@@ -8,8 +8,27 @@
 
 import { mkdir, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
+import { ProjectNameSchema } from '@tinkerise/shared'
 import { execa } from 'execa'
 import pc from 'picocolors'
+import { ConfigValidationError } from '../errors/base.js'
+
+/** Package managers a template install can run (mirrors the PackageManager union). */
+const VALID_PACKAGE_MANAGERS = ['npm', 'pnpm', 'yarn', 'bun']
+
+/**
+ * Validate template generator input before any filesystem work. Mirrors the
+ * scaffold path: rejects unsafe/invalid project names (blocking path traversal
+ * and invalid npm names) and unknown package managers, with structured errors.
+ */
+export function assertValidTemplateInput(name: string, packageManager: string): void {
+  if (!ProjectNameSchema.safeParse(name).success) {
+    throw new ConfigValidationError('projectName', name, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
+  }
+  if (!VALID_PACKAGE_MANAGERS.includes(packageManager)) {
+    throw new ConfigValidationError('packageManager', packageManager, VALID_PACKAGE_MANAGERS.join(', '))
+  }
+}
 
 /**
  * Write a file into the project directory, creating intermediate directories as needed.

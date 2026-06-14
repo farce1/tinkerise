@@ -14,6 +14,7 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConfigValidationError } from '../../src/errors/base.js'
 import { generateMcpServer } from '../../src/templates/mcp.js'
 
 // Hoist mocks for vi.mock factories
@@ -44,6 +45,17 @@ describe('generateMcpServer', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+  })
+
+  it('rejects an invalid project name before touching the filesystem', async () => {
+    await expect(generateMcpServer('../escape')).rejects.toThrow(ConfigValidationError)
+    expect(mockMkdir).not.toHaveBeenCalled()
+    expect(mockWriteFile).not.toHaveBeenCalled()
+  })
+
+  it('rejects an unknown package manager', async () => {
+    await expect(generateMcpServer('my-server', { packageManager: 'bogus' })).rejects.toThrow(ConfigValidationError)
+    expect(mockMkdir).not.toHaveBeenCalled()
   })
 
   /** Helper: get all writeFile calls as { filename, content } pairs */

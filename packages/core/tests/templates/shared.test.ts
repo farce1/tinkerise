@@ -13,7 +13,8 @@
 import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { printTemplateSummary, runInstall, writeProjectFile } from '../../src/templates/shared.js'
+import { ConfigValidationError } from '../../src/errors/base.js'
+import { assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from '../../src/templates/shared.js'
 
 const PROJECT_ROOT = join('/', 'tmp', 'project')
 const projectPath = (relativePath: string) => join(PROJECT_ROOT, ...relativePath.split('/'))
@@ -159,6 +160,28 @@ describe('shared template utilities', () => {
 
       const output = consoleSpy.mock.calls.map(c => c[0]).join('\n')
       expect(output).toContain('cd cool-project')
+    })
+  })
+
+  describe('assertValidTemplateInput', () => {
+    it('accepts a valid name and package manager', () => {
+      expect(() => assertValidTemplateInput('my-tool', 'pnpm')).not.toThrow()
+    })
+
+    it('rejects path-traversal and otherwise invalid project names', () => {
+      for (const bad of ['../foo', '/tmp/x', 'Bad Name', '@scope/x', '.hidden']) {
+        expect(() => assertValidTemplateInput(bad, 'npm')).toThrow(ConfigValidationError)
+      }
+    })
+
+    it('rejects an unknown package manager', () => {
+      expect(() => assertValidTemplateInput('my-tool', 'bogus')).toThrow(ConfigValidationError)
+      try {
+        assertValidTemplateInput('my-tool', 'bogus')
+      }
+      catch (err) {
+        expect((err as ConfigValidationError).code).toBe('CONFIG_VALIDATION')
+      }
     })
   })
 })
