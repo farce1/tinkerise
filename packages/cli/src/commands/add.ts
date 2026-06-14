@@ -15,7 +15,11 @@ import {
   buildProjectContext,
   ENHANCEMENT_NEXT_STEPS,
   enhancementRegistry,
+  ensureSourceTrusted,
   isCI,
+  isSourceTrusted,
+  loadNpmEnhancement,
+  parseSource,
   runEnhancements,
   showEnhancementSummary,
   showPerEnhancementSummary,
@@ -30,6 +34,60 @@ export interface AddOptions {
   verbose?: boolean
   /** Re-apply the enhancements recorded in tinkerise.lock */
   fromLock?: boolean
+}
+
+/** Source specs (npm:/github:) are external; bare names are built-in enhancement ids. */
+const EXTERNAL_SOURCE_RE = /^(?:npm|github):/
+
+/** Interactive per-source consent: explicit warning, defaults to No. */
+async function promptSourceConsent({ id }: { id: string }): Promise<boolean> {
+  if (isCI)
+    return false // defense-in-depth: never auto-consent non-interactively
+  p.log.warn(`'${id}' is an external source. Trusting it runs third-party code on your machine.`)
+  const result = await p.confirm({ message: `Trust and run ${id}?`, initialValue: false })
+  if (p.isCancel(result)) {
+    p.cancel('Cancelled.')
+    process.exit(0)
+  }
+  return result === true
+}
+
+/**
+ * Resolve an external source spec to an EnhancementModule, gated by per-source
+ * consent. Returns null when consent is declined interactively. In CI an
+ * untrusted source errors (pre-trust required) — third-party code never runs
+ * non-interactively without a prior explicit trust decision.
+ */
+async function resolveExternalEnhancement(spec: string): Promise<EnhancementModule | null> {
+  const { kind, id } = parseSource(spec)
+  if (kind !== 'npm') {
+    throw new TinkeriseError({
+      message: `${kind} sources are not supported yet.`,
+      code: 'SOURCE_KIND_UNSUPPORTED',
+      suggestion: 'Use an npm enhancement: tinkerise add npm:tinkerise-enhancement-<name>',
+    })
+  }
+  if (isCI && !(await isSourceTrusted(id))) {
+    throw new TinkeriseError({
+      message: `External source '${id}' is not trusted.`,
+      code: 'SOURCE_NOT_TRUSTED',
+      suggestion: `Run: tinkerise trust add ${id}`,
+    })
+  }
+  if (!(await ensureSourceTrusted(id, promptSourceConsent))) {
+    p.log.info(`Skipped ${id} (not trusted).`)
+    return null
+  }
+  const packageName = id.slice('npm:'.length)
+  const mod = await loadNpmEnhancement(packageName)
+  if (!mod) {
+    throw new TinkeriseError({
+      message: `Could not load an enhancement from '${id}'.`,
+      code: 'SOURCE_LOAD_FAILED',
+      suggestion: `Ensure ${packageName} is installed and exports a tinkerise enhancement.`,
+    })
+  }
+  return mod
 }
 
 /**
@@ -102,14 +160,22 @@ export async function runAddCommand(
       return
   }
   else {
-    // Direct: resolve names to modules
-    modules = names.map((name) => {
-      const mod = enhancementRegistry.get(name)
-      if (!mod) {
-        throw new UnknownEnhancementError(name, allEnhancementModules.map(m => m.id))
+    // Direct: resolve names to modules (built-in ids + external npm sources)
+    modules = []
+    for (const name of names) {
+      if (EXTERNAL_SOURCE_RE.test(name)) {
+        const mod = await resolveExternalEnhancement(name)
+        if (mod)
+          modules.push(mod)
       }
-      return mod
-    })
+      else {
+        const mod = enhancementRegistry.get(name)
+        if (!mod) {
+          throw new UnknownEnhancementError(name, allEnhancementModules.map(m => m.id))
+        }
+        modules.push(mod)
+      }
+    }
   }
 
   // 3. Run enhancement pipeline
