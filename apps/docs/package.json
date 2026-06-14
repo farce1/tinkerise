@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
+    "@tinkerise/core": "workspace:*",
     "@tinkerise/shared": "workspace:*",
     "tsx": "^4.19.2"
   }

@@ -25,6 +25,14 @@ const SCAFFOLD_FLAG_ALIASES: Record<string, string> = {
   'react-compiler': 'react-compiler',
 }
 
+/**
+ * Canonical (de-duplicated) boolean scaffold flag names recognized by NL mode.
+ * Derived from the alias map so it never drifts; the stack builder filters
+ * registry flags against this set to exclude value flags (template, import-alias)
+ * and non-toggle flags (no-git).
+ */
+export const SCAFFOLD_FLAG_NAMES: readonly string[] = [...new Set(Object.values(SCAFFOLD_FLAG_ALIASES))]
+
 const NAME_RE = /^[a-z0-9._-]{1,64}$/
 
 export interface FrameworkVocab {

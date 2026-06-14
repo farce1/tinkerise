@@ -1,0 +1,26 @@
+---
+title: Stack Builder
+description: Pick a framework, flags, and enhancements visually and copy the exact tinkerise command.
+---
+
+import StackBuilder from '../../../components/stack-builder.astro'
+
+Pick a framework, toggle the scaffold flags and enhancements you want, and copy the exact
+`tinkerise` command to run. Nothing is sent anywhere — the command is built entirely in your
+browser from the same registry the CLI uses.
+
+<StackBuilder />
+
+## How it works
+
+The builder emits up to two commands:
+
+- A **scaffold command** (`tinkerise <category> <framework> <name> [flags]`) that delegates to the
+  official upstream tool.
+- An optional **`tinkerise add`** command when you select enhancements, because enhancements are
+  applied after the framework is scaffolded.
+
+The framework, flag, and enhancement options come straight from tinkerise's built-in registry, so
+they always match the version of the CLI these docs were built against. Run
+[`tinkerise list`](/tinkerise/reference/commands/) to see the same catalog from your terminal, or
+add `--dry-run` to any command to preview it before running.
