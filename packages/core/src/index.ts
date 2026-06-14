@@ -198,7 +198,9 @@ export { generateCliTool, generateLib, generateMcpServer, TEMPLATE_METADATA } fr
 export type { TemplateOptions } from './templates/index.js'
 
 /**
- * Tokens — natural-language stack token parser.
+ * Tokens — natural-language stack token parser and command serializer.
  */
 export { parseStackTokens } from './tokens/index.js'
+export { buildStackCommand } from '@tinkerise/shared'
 export type { FrameworkVocab, ParsedStack, ParseRegistries } from './tokens/index.js'
+export type { StackCommand, StackSelection } from '@tinkerise/shared'
