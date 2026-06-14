@@ -61,6 +61,16 @@ export async function trustSource(id: string): Promise<void> {
   await writeTrustStore(store)
 }
 
+/** Revoke trust for a source. Returns true if it was present and removed. */
+export async function untrustSource(id: string): Promise<boolean> {
+  const store = await readTrustStore()
+  const remaining = store.sources.filter(s => s.id !== id)
+  if (remaining.length === store.sources.length)
+    return false
+  await writeTrustStore({ ...store, sources: remaining })
+  return true
+}
+
 /**
  * Gate any use of an external source on explicit per-source consent. Returns true
  * if the source is already trusted, or if the consent callback grants it (which
