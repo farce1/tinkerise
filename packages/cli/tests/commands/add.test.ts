@@ -28,6 +28,8 @@ const mockGetSessionContext = vi.hoisted(() => vi.fn())
 const mockProcessExit = vi.hoisted(() => vi.fn())
 const mockPLogError = vi.hoisted(() => vi.fn())
 const mockPLogInfo = vi.hoisted(() => vi.fn())
+const mockPLogWarn = vi.hoisted(() => vi.fn())
+const mockRecordEnhancements = vi.hoisted(() => vi.fn())
 
 vi.mock('@tinkerise/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tinkerise/core')>()
@@ -45,7 +47,7 @@ vi.mock('@tinkerise/core', async (importOriginal) => {
 })
 
 vi.mock('@clack/prompts', () => ({
-  log: { error: mockPLogError, info: mockPLogInfo },
+  log: { error: mockPLogError, info: mockPLogInfo, warn: mockPLogWarn },
   select: vi.fn(),
   confirm: vi.fn(),
   cancel: vi.fn(),
@@ -54,6 +56,10 @@ vi.mock('@clack/prompts', () => ({
 
 vi.mock('../../src/context/session.js', () => ({
   getSessionContext: mockGetSessionContext,
+}))
+
+vi.mock('../../src/context/lock.js', () => ({
+  recordEnhancements: mockRecordEnhancements,
 }))
 
 vi.mock('../../src/prompts/enhancement-select.js', () => ({
@@ -199,6 +205,33 @@ describe('runAddCommand', () => {
     await expect(
       runAddCommand([], {}),
     ).rejects.toThrow('No enhancements specified')
+  })
+
+  it('records installed enhancements in the lock', async () => {
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint', 'prettier'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
+    })
+
+    await runAddCommand(['eslint', 'prettier'], {})
+
+    expect(mockRecordEnhancements).toHaveBeenCalledWith(expect.any(String), ['eslint', 'prettier'])
+  })
+
+  it('does not fail the command when recording the lock throws', async () => {
+    mockRecordEnhancements.mockRejectedValueOnce(new Error('disk full'))
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
+    })
+
+    await expect(runAddCommand(['eslint'], {})).resolves.toBeUndefined()
   })
 
   it('passes verbose option to buildProjectContext', async () => {
