@@ -36,12 +36,14 @@ tinkerise is a unified CLI that wraps official framework scaffolders instead of 
 - **11 enhancement modules** for linting, CI, formatting, testing, Docker, and repo hygiene
 - **3 utility templates** (`mcp-server`, `cli-tool`, `npm-lib`) for greenfield tooling work
 - **Presets + layered config** so teams can standardize scaffolds without custom wrappers
+- **Reproducible projects** via a committed `tinkerise.lock` and `--from-lock` to recreate any stack in one command
 
 ## Deep dive in docs
 
 - Getting started: [https://farce1.github.io/tinkerise/guides/getting-started/](https://farce1.github.io/tinkerise/guides/getting-started/)
 - Scaffolder guides: [https://farce1.github.io/tinkerise/guides/scaffolders/](https://farce1.github.io/tinkerise/guides/scaffolders/)
 - Enhancement guides: [https://farce1.github.io/tinkerise/guides/enhancements/](https://farce1.github.io/tinkerise/guides/enhancements/)
+- Reproducible projects: [https://farce1.github.io/tinkerise/guides/reproducible-projects/](https://farce1.github.io/tinkerise/guides/reproducible-projects/)
 - Command reference: [https://farce1.github.io/tinkerise/reference/commands/](https://farce1.github.io/tinkerise/reference/commands/)
 
 For the full guide catalog and recipes, visit [https://farce1.github.io/tinkerise/](https://farce1.github.io/tinkerise/).
