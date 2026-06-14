@@ -5,7 +5,7 @@
  * for `scaffold --from-lock` and `tinkerise update`), so it is never gitignored.
  */
 
-import type { LockEnhancement, TinkeriseLock } from '@tinkerise/shared'
+import type { TinkeriseLock } from '@tinkerise/shared'
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getScaffolder } from '@tinkerise/core'
@@ -18,7 +18,6 @@ export interface BuildLockInput {
   framework: string
   flags: Record<string, string | boolean>
   packageManager: string
-  enhancements?: LockEnhancement[]
 }
 
 /**
@@ -35,7 +34,7 @@ export function buildLock(input: BuildLockInput): TinkeriseLock {
     framework: input.framework,
     category: entry.category,
     flags: input.flags,
-    enhancements: input.enhancements ?? [],
+    enhancements: [],
     packageManager: input.packageManager,
     createdWith: VERSION,
   })
