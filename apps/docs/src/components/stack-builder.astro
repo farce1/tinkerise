@@ -1,0 +1,207 @@
+---
+// Build-time: read the framework/flag/enhancement vocabulary straight from the
+// frozen registry so the builder never drifts from the CLI.
+import { enhancementRegistry, getAllScaffolders, SCAFFOLD_FLAG_NAMES } from '@tinkerise/core'
+
+interface FrameworkVocab {
+  name: string
+  category: string
+  flags: string[]
+}
+
+// Only canonical boolean toggle flags belong on checkboxes — value flags
+// (template, import-alias) and non-toggles (no-git) would emit invalid commands.
+const toggleFlags = new Set(SCAFFOLD_FLAG_NAMES)
+
+const frameworks: FrameworkVocab[] = getAllScaffolders()
+  .map(s => ({
+    name: s.name,
+    category: s.category,
+    flags: (s.flags ?? []).map(f => f.unified).filter(u => toggleFlags.has(u)),
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name))
+
+const enhancements: string[] = [...enhancementRegistry.keys()].sort()
+
+// Match the CLI's conventional category order so the default lands on a web framework.
+const CATEGORY_ORDER = ['web', 'backend', 'mobile', 'utility']
+const categories = [...new Set(frameworks.map(f => f.category))]
+  .sort((a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b))
+const vocab = { frameworks, enhancements }
+---
+
+<div class="stack-builder" data-vocab={JSON.stringify(vocab)}>
+  <div class="sb-field">
+    <label for="sb-name">Project name</label>
+    <input id="sb-name" type="text" placeholder="my-app" autocomplete="off" spellcheck="false" />
+  </div>
+
+  <div class="sb-field">
+    <label for="sb-framework">Framework</label>
+    <select id="sb-framework">
+      {categories.map(category => (
+        <optgroup label={category}>
+          {frameworks.filter(f => f.category === category).map(f => (
+            <option value={f.name}>{f.name}</option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+  </div>
+
+  <div class="sb-field">
+    <span class="sb-legend">Scaffold flags</span>
+    <div id="sb-flags" class="sb-options"></div>
+  </div>
+
+  <div class="sb-field">
+    <span class="sb-legend">Enhancements</span>
+    <div id="sb-enhancements" class="sb-options">
+      {enhancements.map(id => (
+        <label class="sb-check">
+          <input type="checkbox" data-enhancement={id} />
+          {id}
+        </label>
+      ))}
+    </div>
+  </div>
+
+  <div class="sb-field">
+    <span class="sb-legend">Command</span>
+    <pre class="sb-output"><code id="sb-output"></code></pre>
+    <button id="sb-copy" type="button">Copy</button>
+  </div>
+</div>
+
+<script>
+  import { buildStackCommand } from '@tinkerise/shared/stack'
+
+  interface FrameworkVocab { name: string, category: string, flags: string[] }
+
+  const root = document.querySelector<HTMLDivElement>('.stack-builder')
+  if (root) {
+    const vocab = JSON.parse(root.dataset.vocab ?? '{"frameworks":[],"enhancements":[]}') as {
+      frameworks: FrameworkVocab[]
+      enhancements: string[]
+    }
+
+    const nameInput = root.querySelector<HTMLInputElement>('#sb-name')!
+    const frameworkSelect = root.querySelector<HTMLSelectElement>('#sb-framework')!
+    const flagsContainer = root.querySelector<HTMLDivElement>('#sb-flags')!
+    const enhancementsContainer = root.querySelector<HTMLDivElement>('#sb-enhancements')!
+    const output = root.querySelector<HTMLElement>('#sb-output')!
+    const copyButton = root.querySelector<HTMLButtonElement>('#sb-copy')!
+
+    function selectedFramework(): FrameworkVocab | undefined {
+      return vocab.frameworks.find(f => f.name === frameworkSelect.value)
+    }
+
+    function renderFlags() {
+      const framework = selectedFramework()
+      const flags = framework?.flags ?? []
+      flagsContainer.innerHTML = flags.length === 0
+        ? '<span class="sb-empty">No scaffold flags for this framework.</span>'
+        : flags.map(flag =>
+            `<label class="sb-check"><input type="checkbox" data-flag="${flag}" /> ${flag}</label>`,
+          ).join('')
+      flagsContainer.querySelectorAll('input').forEach(el => el.addEventListener('change', render))
+    }
+
+    function checkedValues(container: HTMLElement, attr: string): string[] {
+      return [...container.querySelectorAll<HTMLInputElement>(`input[${attr}]:checked`)]
+        .map(el => el.getAttribute(attr)!)
+    }
+
+    function render() {
+      const framework = selectedFramework()
+      if (!framework) {
+        output.textContent = ''
+        return
+      }
+      const command = buildStackCommand({
+        framework: framework.name,
+        category: framework.category as any,
+        name: nameInput.value.trim() || undefined,
+        flags: checkedValues(flagsContainer, 'data-flag'),
+        enhancements: checkedValues(enhancementsContainer, 'data-enhancement'),
+      })
+      output.textContent = command.add ? `${command.scaffold}\n${command.add}` : command.scaffold
+    }
+
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(output.textContent ?? '')
+        copyButton.textContent = 'Copied!'
+      }
+      catch {
+        copyButton.textContent = 'Copy failed'
+      }
+      setTimeout(() => { copyButton.textContent = 'Copy' }, 1500)
+    })
+
+    nameInput.addEventListener('input', render)
+    frameworkSelect.addEventListener('change', () => { renderFlags(); render() })
+    enhancementsContainer.querySelectorAll('input').forEach(el => el.addEventListener('change', render))
+
+    renderFlags()
+    render()
+  }
+</script>
+
+<style>
+  .stack-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .sb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sb-field > label,
+  .sb-legend {
+    font-weight: 600;
+  }
+  .stack-builder input[type='text'],
+  .stack-builder select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-black);
+    color: var(--sl-color-white);
+    font: inherit;
+  }
+  .sb-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .sb-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 400;
+  }
+  .sb-empty {
+    color: var(--sl-color-gray-3);
+    font-style: italic;
+  }
+  .sb-output {
+    margin: 0;
+  }
+  #sb-copy {
+    align-self: flex-start;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 0.5rem;
+    background: var(--sl-color-accent-low);
+    color: var(--sl-color-white);
+    cursor: pointer;
+    font: inherit;
+  }
+  #sb-copy:hover {
+    background: var(--sl-color-accent);
+  }
+</style>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseStackTokens } from '../parser.js'
+import { parseStackTokens, SCAFFOLD_FLAG_NAMES } from '../parser.js'
 
 const reg = {
   frameworks: [
@@ -35,5 +35,23 @@ describe('parseStackTokens', () => {
   it('collects unknown tokens', () => {
     const r = parseStackTokens(['my-app', 'next', 'flutterr'], reg)
     expect(r.unknown).toEqual(['flutterr'])
+  })
+})
+
+describe('sCAFFOLD_FLAG_NAMES', () => {
+  it('lists canonical boolean toggle flags without aliases or duplicates', () => {
+    expect(SCAFFOLD_FLAG_NAMES).toContain('typescript')
+    expect(SCAFFOLD_FLAG_NAMES).toContain('tailwind')
+    expect(SCAFFOLD_FLAG_NAMES).toContain('src-dir')
+    // aliases collapse to their canonical name
+    expect(SCAFFOLD_FLAG_NAMES).not.toContain('ts')
+    expect(SCAFFOLD_FLAG_NAMES).not.toContain('tw')
+    expect(new Set(SCAFFOLD_FLAG_NAMES).size).toBe(SCAFFOLD_FLAG_NAMES.length)
+  })
+
+  it('excludes value flags and non-toggle flags', () => {
+    expect(SCAFFOLD_FLAG_NAMES).not.toContain('template')
+    expect(SCAFFOLD_FLAG_NAMES).not.toContain('import-alias')
+    expect(SCAFFOLD_FLAG_NAMES).not.toContain('no-git')
   })
 })

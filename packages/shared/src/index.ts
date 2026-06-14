@@ -121,3 +121,9 @@ export type {
   TrustedSource,
   TrustStore,
 } from './sources/index.js'
+
+/**
+ * Stack — serialize a stack selection into copy-paste tinkerise command(s) (Tier D).
+ */
+export { buildStackCommand } from './stack/index.js'
+export type { StackCommand, StackSelection } from './stack/index.js'
