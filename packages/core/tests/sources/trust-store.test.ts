@@ -8,6 +8,7 @@ import {
   isSourceTrusted,
   listTrustedSources,
   trustSource,
+  untrustSource,
 } from '../../src/sources/trust-store'
 
 let tmpDir: string
@@ -48,6 +49,14 @@ describe('trust store', () => {
     await trustSource('npm:foo')
 
     expect((await listTrustedSources()).filter(s => s.id === 'npm:foo')).toHaveLength(1)
+  })
+
+  it('untrusts a source and reports whether it was removed', async () => {
+    await trustSource('npm:foo')
+
+    expect(await untrustSource('npm:foo')).toBe(true)
+    expect(await isSourceTrusted('npm:foo')).toBe(false)
+    expect(await untrustSource('npm:foo')).toBe(false)
   })
 })
 

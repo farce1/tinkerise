@@ -24,6 +24,7 @@ import { listScaffolders } from './commands/list.js'
 import { registerMcpCommand } from './commands/mcp.js'
 import { registerPresetCommand } from './commands/preset.js'
 import { runCategoryFlow, runDirectExecution, runFromLock, runInteractiveFlow } from './commands/scaffold.js'
+import { registerTrustCommand } from './commands/trust.js'
 import { registerUpdateCommand } from './commands/update.js'
 import { handleError } from './utils/error-handler.js'
 import { detectJsonMode, isJsonMode } from './utils/output-mode.js'
@@ -201,6 +202,9 @@ registerConfigCommand(program)
 // Preset command — manage configuration presets
 registerPresetCommand(program)
 
+// Trust command — manage trusted external sources (Tier C)
+registerTrustCommand(program)
+
 // MCP command — scaffold MCP server projects
 registerMcpCommand(program)
 
@@ -241,6 +245,8 @@ Examples:
   $ ${programName} preset use my-stack        Apply a saved preset
   $ ${programName} preset list                Show available presets
   $ ${programName} preset delete my-stack     Remove a preset
+  $ ${programName} trust list                 Show trusted external sources
+  $ ${programName} trust add github:acme/widgets  Trust an external source
   $ ${programName} web next my-app --preset my-stack  Apply preset to scaffold
   $ ${programName} mcp my-server              Scaffold an MCP server
   $ ${programName} cli my-tool                Scaffold a CLI tool
