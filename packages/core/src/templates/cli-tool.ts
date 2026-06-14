@@ -7,7 +7,7 @@
 
 import type { TemplateOptions } from './types.js'
 import { mkdir } from 'node:fs/promises'
-import { printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
+import { assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
 
 /**
  * Generate a complete CLI tool project.
@@ -17,6 +17,7 @@ import { printTemplateSummary, runInstall, writeProjectFile } from './shared.js'
  */
 export async function generateCliTool(name: string, options: TemplateOptions = {}): Promise<void> {
   const pm = options.packageManager ?? 'npm'
+  assertValidTemplateInput(name, pm)
   const projectDir = name
 
   // 1. Create project directory
