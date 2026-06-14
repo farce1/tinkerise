@@ -37,8 +37,11 @@ async function readTrustStore(): Promise<TrustStore> {
 }
 
 async function writeTrustStore(store: TrustStore): Promise<void> {
+  // Validate before persisting so a logic regression can never write a malformed
+  // trust store (mirrors saveGlobalConfig; this file gates external-source trust).
+  const validated = TrustStoreSchema.parse(store)
   await mkdir(getConfigDir(), { recursive: true })
-  await writeFile(getTrustStorePath(), `${JSON.stringify(store, null, 2)}\n`, 'utf-8')
+  await writeFile(getTrustStorePath(), `${JSON.stringify(validated, null, 2)}\n`, 'utf-8')
 }
 
 export async function listTrustedSources(): Promise<TrustedSource[]> {
