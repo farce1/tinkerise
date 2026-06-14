@@ -1,0 +1,93 @@
+---
+title: Reproducible Projects
+description: Record a project's stack in tinkerise.lock and recreate it with one command.
+---
+
+Every time `tinkerise` scaffolds a project it writes a `tinkerise.lock` file at the project
+root. The lock records exactly what was generated so the project becomes **reproducible** —
+you can recreate the same stack later, on another machine, or for a teammate, with a single
+command.
+
+## What is `tinkerise.lock`?
+
+`tinkerise.lock` is a small JSON file that captures the inputs to your scaffold:
+
+```json
+{
+  "schemaVersion": 1,
+  "framework": "next",
+  "category": "web",
+  "flags": { "typescript": true, "tailwind": true },
+  "enhancements": [
+    { "id": "eslint", "version": null },
+    { "id": "prettier", "version": null }
+  ],
+  "packageManager": "pnpm",
+  "createdWith": "1.0.0"
+}
+```
+
+It is a **committed artifact** — check it in alongside your code (like `package-lock.json`).
+Unlike the transient session file, it is never added to `.gitignore`.
+
+For frameworks with interactive variant selection, the lock also records a `variant` block —
+the Vite template (and TypeScript choice) or the selected T3 components — so those choices can
+be reproduced too.
+
+## How the lock stays accurate
+
+- **Scaffolding** writes the initial lock (framework, flags, package manager, variant).
+- **`tinkerise add`** records each enhancement it applies into the lock's `enhancements` list,
+  so the file always reflects the tooling actually present.
+
+```bash
+tinkerise web next my-app --typescript --tailwind   # writes tinkerise.lock
+cd my-app
+tinkerise add eslint prettier                        # records eslint + prettier in the lock
+```
+
+## Reproduce a whole project
+
+Run `tinkerise` with `--from-lock` and a new project name. tinkerise reads
+`tinkerise.lock` in the current directory and recreates the project non-interactively —
+framework, flags, variant, **and** the recorded enhancements:
+
+```bash
+tinkerise my-app-copy --from-lock
+```
+
+This is the fastest way to clone a known-good setup without remembering every flag. Pair it
+with `--dry-run` to preview the exact upstream command first (no files are written):
+
+```bash
+tinkerise my-app-copy --from-lock --dry-run
+```
+
+## Re-apply enhancements in place
+
+If you already have a project (for example, a freshly cloned repo that contains a
+`tinkerise.lock`), re-apply just its recorded enhancements without re-scaffolding:
+
+```bash
+tinkerise add --from-lock
+```
+
+This runs the recorded enhancements through the normal `add` pipeline, so existing config
+files are handled with the usual skip / replace / merge prompts.
+
+## Boundaries to know
+
+- **`update` means enhancements, not framework code.** tinkerise re-applies the tooling it
+  owns (the enhancement layer); it does not diff or re-emit the upstream framework output.
+- **Older locks and interactive frameworks.** A `tinkerise.lock` created before variant
+  capture was added does not include the Vite template or T3 components. Reproducing those two
+  frameworks from such a lock fails fast with a `LOCK_MISSING_VARIANT` error — scaffold them
+  directly instead (for example, `tinkerise web vite my-app`).
+- **No lock present.** Running `--from-lock` outside a directory containing a `tinkerise.lock`
+  fails with `LOCK_NOT_FOUND`.
+
+## Where to go next
+
+- Add tooling on demand in [`/guides/enhancements/`](/tinkerise/guides/enhancements/)
+- See every command and flag in [`/reference/commands/`](/tinkerise/reference/commands/)
+- Save reusable stacks as [presets](/tinkerise/guides/presets/)
