@@ -142,6 +142,29 @@ describe('runEnhancements()', () => {
     expect(mockWriteFile).toHaveBeenCalled()
   })
 
+  it('continues to the next module when restoring files fails after an install error', async () => {
+    // A restore write that throws must not abort the whole run.
+    mockWriteFile.mockReset().mockRejectedValue(new Error('EACCES: read-only'))
+
+    const failing = mockModule({
+      id: 'eslint',
+      detect: async () => ({
+        installed: true,
+        configFiles: [projectPath('.eslintrc.json')],
+        partial: false,
+      }),
+      install: async () => {
+        throw new Error('install boom')
+      },
+    })
+    const after = mockModule({ id: 'prettier' })
+
+    const result = await runEnhancements(makeOpts([failing, after]))
+
+    expect(result.failed.map(f => f.id)).toContain('eslint')
+    expect(result.installed).toContain('prettier')
+  })
+
   it('installs module when conflict detected and user chooses replace', async () => {
     // First read: existing content. Second read: new content after install.
     mockReadFile
