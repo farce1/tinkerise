@@ -30,6 +30,7 @@ const mockPLogError = vi.hoisted(() => vi.fn())
 const mockPLogInfo = vi.hoisted(() => vi.fn())
 const mockPLogWarn = vi.hoisted(() => vi.fn())
 const mockRecordEnhancements = vi.hoisted(() => vi.fn())
+const mockReadLockFile = vi.hoisted(() => vi.fn())
 
 vi.mock('@tinkerise/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tinkerise/core')>()
@@ -60,6 +61,7 @@ vi.mock('../../src/context/session.js', () => ({
 
 vi.mock('../../src/context/lock.js', () => ({
   recordEnhancements: mockRecordEnhancements,
+  readLockFile: mockReadLockFile,
 }))
 
 vi.mock('../../src/prompts/enhancement-select.js', () => ({
@@ -232,6 +234,47 @@ describe('runAddCommand', () => {
     })
 
     await expect(runAddCommand(['eslint'], {})).resolves.toBeUndefined()
+  })
+
+  it('re-applies enhancements recorded in the lock with --from-lock', async () => {
+    mockReadLockFile.mockResolvedValue({
+      enhancements: [{ id: 'eslint', version: null }, { id: 'prettier', version: null }],
+    })
+    mockRunEnhancements.mockResolvedValue({
+      installed: ['eslint', 'prettier'],
+      skipped: [],
+      failed: [],
+      notRun: [],
+      results: new Map(),
+    })
+
+    await runAddCommand([], { fromLock: true })
+
+    expect(mockShowEnhancementPicker).not.toHaveBeenCalled()
+    expect(mockRunEnhancements).toHaveBeenCalledWith(
+      expect.objectContaining({
+        modules: expect.arrayContaining([
+          expect.objectContaining({ id: 'eslint' }),
+          expect.objectContaining({ id: 'prettier' }),
+        ]),
+      }),
+    )
+  })
+
+  it('reports nothing to re-apply when the lock has no enhancements', async () => {
+    mockReadLockFile.mockResolvedValue({ enhancements: [] })
+
+    await runAddCommand([], { fromLock: true })
+
+    expect(mockRunEnhancements).not.toHaveBeenCalled()
+    expect(mockPLogInfo).toHaveBeenCalled()
+  })
+
+  it('throws when --from-lock is used without a lock file', async () => {
+    mockReadLockFile.mockResolvedValue(null)
+
+    await expect(runAddCommand([], { fromLock: true })).rejects.toThrow(/tinkerise\.lock/i)
+    expect(mockRunEnhancements).not.toHaveBeenCalled()
   })
 
   it('passes verbose option to buildProjectContext', async () => {

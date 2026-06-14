@@ -22,12 +22,14 @@ import {
   TinkeriseError,
   UnknownEnhancementError,
 } from '@tinkerise/core'
-import { recordEnhancements } from '../context/lock.js'
+import { readLockFile, recordEnhancements } from '../context/lock.js'
 import { getSessionContext } from '../context/session.js'
 import { showEnhancementPicker } from '../prompts/enhancement-select.js'
 
 export interface AddOptions {
   verbose?: boolean
+  /** Re-apply the enhancements recorded in tinkerise.lock */
+  fromLock?: boolean
 }
 
 /**
@@ -42,6 +44,24 @@ export async function runAddCommand(
 ): Promise<void> {
   const session = await getSessionContext()
   const rootDir = session.projectDir ?? process.cwd()
+
+  // 0. --from-lock: source enhancement ids from tinkerise.lock (re-apply).
+  let names = enhancementNames
+  if (options.fromLock) {
+    const lock = await readLockFile(rootDir)
+    if (!lock) {
+      throw new TinkeriseError({
+        message: 'No tinkerise.lock found in this directory.',
+        code: 'LOCK_NOT_FOUND',
+        suggestion: 'Run tinkerise add <enhancements> to set up tooling first.',
+      })
+    }
+    names = [...new Set([...lock.enhancements.map(e => e.id), ...enhancementNames])]
+    if (names.length === 0) {
+      p.log.info('No enhancements recorded in tinkerise.lock — nothing to re-apply.')
+      return
+    }
+  }
 
   // 1. Build project context
   const ctx = await buildProjectContext({
@@ -68,7 +88,7 @@ export async function runAddCommand(
   // 2. Determine which enhancements to run
   let modules: EnhancementModule[]
 
-  if (enhancementNames.length === 0) {
+  if (names.length === 0) {
     // Interactive: show multi-select picker
     if (isCI) {
       throw new TinkeriseError({
@@ -83,7 +103,7 @@ export async function runAddCommand(
   }
   else {
     // Direct: resolve names to modules
-    modules = enhancementNames.map((name) => {
+    modules = names.map((name) => {
       const mod = enhancementRegistry.get(name)
       if (!mod) {
         throw new UnknownEnhancementError(name, allEnhancementModules.map(m => m.id))
