@@ -41,6 +41,7 @@ tinkerise is a unified CLI that wraps official framework scaffolders instead of 
 ## Deep dive in docs
 
 - Getting started: [https://farce1.github.io/tinkerise/guides/getting-started/](https://farce1.github.io/tinkerise/guides/getting-started/)
+- Stack builder (pick a stack, copy the command): [https://farce1.github.io/tinkerise/guides/stack-builder/](https://farce1.github.io/tinkerise/guides/stack-builder/)
 - Scaffolder guides: [https://farce1.github.io/tinkerise/guides/scaffolders/](https://farce1.github.io/tinkerise/guides/scaffolders/)
 - Enhancement guides: [https://farce1.github.io/tinkerise/guides/enhancements/](https://farce1.github.io/tinkerise/guides/enhancements/)
 - Reproducible projects: [https://farce1.github.io/tinkerise/guides/reproducible-projects/](https://farce1.github.io/tinkerise/guides/reproducible-projects/)
