@@ -215,9 +215,11 @@ export async function runAddCommand(
     },
   })
 
-  // 4. Show per-enhancement summary cards
+  // 4. Show per-enhancement summary cards. Look up from the executed module list
+  // (not the registry) so external npm enhancements get a card too.
+  const moduleById = new Map(modules.map(m => [m.id, m]))
   for (const installedId of summary.installed) {
-    const mod = enhancementRegistry.get(installedId)
+    const mod = moduleById.get(installedId)
     if (!mod)
       continue
     const result = summary.results.get(installedId) ?? {
