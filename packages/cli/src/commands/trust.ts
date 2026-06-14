@@ -11,7 +11,7 @@
  */
 
 import type { Command } from 'commander'
-import { listTrustedSources, parseSource, trustSource, untrustSource } from '@tinkerise/core'
+import { discoverNpmSources, listTrustedSources, parseSource, trustSource, untrustSource } from '@tinkerise/core'
 import pc from 'picocolors'
 import { log } from '../utils/clack-output.js'
 
@@ -30,15 +30,31 @@ Examples:
 
   trust
     .command('list')
-    .description('Show trusted external sources')
+    .description('Show trusted external sources and installed-but-untrusted ones')
     .action(async () => {
-      const sources = await listTrustedSources()
-      if (sources.length === 0) {
+      const trusted = await listTrustedSources()
+      const trustedIds = new Set(trusted.map(s => s.id))
+      const untrusted = (await discoverNpmSources(process.cwd()))
+        .map(pkg => `npm:${pkg}`)
+        .filter(id => !trustedIds.has(id))
+
+      if (trusted.length === 0 && untrusted.length === 0) {
         log.info('No trusted sources.')
         return
       }
-      for (const s of sources) {
-        log.info(`  ${s.id} ${pc.dim(`(trusted ${s.trustedAt})`)}`)
+
+      if (trusted.length > 0) {
+        log.info(pc.bold('Trusted sources:'))
+        for (const s of trusted) {
+          log.info(`  ${s.id} ${pc.dim(`(trusted ${s.trustedAt})`)}`)
+        }
+      }
+
+      if (untrusted.length > 0) {
+        log.info(pc.bold('Installed, not trusted:'))
+        for (const id of untrusted) {
+          log.info(`  ${id} ${pc.dim('(run trust add to use)')}`)
+        }
       }
     })
 
