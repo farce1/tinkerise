@@ -10,12 +10,12 @@
  */
 
 import { existsSync } from 'node:fs'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { LOCK_SCHEMA_VERSION, TinkeriseLockSchema, VERSION } from '@tinkerise/shared'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { buildLock, LOCK_FILENAME, writeLockFile } from '../../src/context/lock.js'
+import { buildLock, LOCK_FILENAME, readLockFile, recordEnhancements, writeLockFile } from '../../src/context/lock.js'
 
 describe('buildLock', () => {
   it('derives the category from the registry per framework', () => {
@@ -70,5 +70,77 @@ describe('writeLockFile', () => {
     await writeLockFile(tempDir, lock)
 
     expect(existsSync(join(tempDir, '.gitignore'))).toBe(false)
+  })
+})
+
+describe('readLockFile', () => {
+  let tempDir: string
+
+  beforeEach(async () => {
+    tempDir = await mkdtemp(join(tmpdir(), 'tinkerise-lock-read-'))
+  })
+
+  afterEach(async () => {
+    await rm(tempDir, { recursive: true, force: true })
+  })
+
+  it('returns the parsed lock when present and valid', async () => {
+    const lock = buildLock({ framework: 'next', flags: { typescript: true }, packageManager: 'pnpm' })
+    await writeLockFile(tempDir, lock)
+
+    expect(await readLockFile(tempDir)).toEqual(lock)
+  })
+
+  it('returns null when the file is missing', async () => {
+    expect(await readLockFile(tempDir)).toBeNull()
+  })
+
+  it('returns null for invalid JSON', async () => {
+    await writeFile(join(tempDir, LOCK_FILENAME), 'not json', 'utf-8')
+    expect(await readLockFile(tempDir)).toBeNull()
+  })
+
+  it('returns null when content fails schema validation', async () => {
+    await writeFile(join(tempDir, LOCK_FILENAME), JSON.stringify({ schemaVersion: 1 }), 'utf-8')
+    expect(await readLockFile(tempDir)).toBeNull()
+  })
+})
+
+describe('recordEnhancements', () => {
+  let tempDir: string
+
+  beforeEach(async () => {
+    tempDir = await mkdtemp(join(tmpdir(), 'tinkerise-lock-enh-'))
+  })
+
+  afterEach(async () => {
+    await rm(tempDir, { recursive: true, force: true })
+  })
+
+  it('appends new enhancements with a null version', async () => {
+    await writeLockFile(tempDir, buildLock({ framework: 'next', flags: {}, packageManager: 'npm' }))
+
+    await recordEnhancements(tempDir, ['eslint', 'prettier'])
+
+    const lock = await readLockFile(tempDir)
+    expect(lock?.enhancements).toEqual([
+      { id: 'eslint', version: null },
+      { id: 'prettier', version: null },
+    ])
+  })
+
+  it('does not duplicate enhancements already recorded', async () => {
+    await writeLockFile(tempDir, buildLock({ framework: 'next', flags: {}, packageManager: 'npm' }))
+
+    await recordEnhancements(tempDir, ['eslint'])
+    await recordEnhancements(tempDir, ['eslint', 'husky'])
+
+    const lock = await readLockFile(tempDir)
+    expect(lock?.enhancements.map(e => e.id)).toEqual(['eslint', 'husky'])
+  })
+
+  it('is a no-op when no lock file exists', async () => {
+    await recordEnhancements(tempDir, ['eslint'])
+    expect(existsSync(join(tempDir, LOCK_FILENAME))).toBe(false)
   })
 })
