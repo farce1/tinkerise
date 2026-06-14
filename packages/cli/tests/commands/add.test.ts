@@ -31,6 +31,9 @@ const mockPLogInfo = vi.hoisted(() => vi.fn())
 const mockPLogWarn = vi.hoisted(() => vi.fn())
 const mockRecordEnhancements = vi.hoisted(() => vi.fn())
 const mockReadLockFile = vi.hoisted(() => vi.fn())
+const mockIsSourceTrusted = vi.hoisted(() => vi.fn())
+const mockEnsureSourceTrusted = vi.hoisted(() => vi.fn())
+const mockLoadNpmEnhancement = vi.hoisted(() => vi.fn())
 
 vi.mock('@tinkerise/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tinkerise/core')>()
@@ -44,6 +47,9 @@ vi.mock('@tinkerise/core', async (importOriginal) => {
     allEnhancementModules: mockAllEnhancementModules,
     get isCI() { return mockIsCI.value },
     ENHANCEMENT_NEXT_STEPS: mockEnhancementNextSteps,
+    isSourceTrusted: mockIsSourceTrusted,
+    ensureSourceTrusted: mockEnsureSourceTrusted,
+    loadNpmEnhancement: mockLoadNpmEnhancement,
   }
 })
 
@@ -275,6 +281,43 @@ describe('runAddCommand', () => {
 
     await expect(runAddCommand([], { fromLock: true })).rejects.toThrow(/tinkerise\.lock/i)
     expect(mockRunEnhancements).not.toHaveBeenCalled()
+  })
+
+  it('loads and runs a trusted external npm enhancement', async () => {
+    const extMod = { id: 'biome', name: 'Biome', description: 'd', dependsOn: [], detect: vi.fn(), install: vi.fn() }
+    mockEnsureSourceTrusted.mockResolvedValue(true)
+    mockLoadNpmEnhancement.mockResolvedValue(extMod)
+    mockRunEnhancements.mockResolvedValue({ installed: ['biome'], skipped: [], failed: [], notRun: [], results: new Map() })
+
+    await runAddCommand(['npm:tinkerise-enhancement-biome'], {})
+
+    expect(mockEnsureSourceTrusted).toHaveBeenCalledWith('npm:tinkerise-enhancement-biome', expect.any(Function))
+    expect(mockLoadNpmEnhancement).toHaveBeenCalledWith('tinkerise-enhancement-biome')
+    expect(mockRunEnhancements).toHaveBeenCalledWith(
+      expect.objectContaining({ modules: expect.arrayContaining([extMod]) }),
+    )
+  })
+
+  it('errors for an untrusted external source in CI (require pre-trust)', async () => {
+    mockIsCI.value = true
+    mockIsSourceTrusted.mockResolvedValue(false)
+
+    await expect(runAddCommand(['npm:tinkerise-enhancement-biome'], {})).rejects.toThrow(/not trusted/i)
+    expect(mockLoadNpmEnhancement).not.toHaveBeenCalled()
+  })
+
+  it('skips an external source when consent is declined', async () => {
+    mockEnsureSourceTrusted.mockResolvedValue(false)
+    mockRunEnhancements.mockResolvedValue({ installed: [], skipped: [], failed: [], notRun: [], results: new Map() })
+
+    await runAddCommand(['npm:tinkerise-enhancement-biome'], {})
+
+    expect(mockLoadNpmEnhancement).not.toHaveBeenCalled()
+    expect(mockRunEnhancements).toHaveBeenCalledWith(expect.objectContaining({ modules: [] }))
+  })
+
+  it('rejects github sources (npm enhancements only for now)', async () => {
+    await expect(runAddCommand(['github:acme/widgets'], {})).rejects.toThrow(/not supported|not yet/i)
   })
 
   it('passes verbose option to buildProjectContext', async () => {

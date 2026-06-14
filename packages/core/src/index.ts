@@ -183,12 +183,13 @@ export {
   getTrustStorePath,
   isSourceTrusted,
   listTrustedSources,
+  loadNpmEnhancement,
   parseSource,
   TRUST_STORE_FILENAME,
   trustSource,
   untrustSource,
 } from './sources/index.js'
-export type { OnSourceConsent, ResolvedSource, SourceConsentRequest, SourceKind } from './sources/index.js'
+export type { ModuleImporter, OnSourceConsent, ResolvedSource, SourceConsentRequest, SourceKind } from './sources/index.js'
 
 /**
  * Templates — utility project generators (MCP server, CLI tool, npm library).
