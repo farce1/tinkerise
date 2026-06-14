@@ -37,6 +37,7 @@ const {
   mockBuildLock,
   mockWriteLockFile,
   mockReadLockFile,
+  mockRunAddCommand,
 } = vi.hoisted(() => ({
   mockShowBanner: vi.fn(),
   mockRunPromptFlow: vi.fn(),
@@ -58,6 +59,11 @@ const {
   mockBuildLock: vi.fn(),
   mockWriteLockFile: vi.fn(),
   mockReadLockFile: vi.fn(),
+  mockRunAddCommand: vi.fn(),
+}))
+
+vi.mock('../../src/commands/add.js', () => ({
+  runAddCommand: mockRunAddCommand,
 }))
 
 vi.mock('../../src/context/lock.js', () => ({
@@ -126,6 +132,7 @@ vi.mock('picocolors', () => ({
     dim: (s: string) => s,
     red: (s: string) => s,
     yellow: (s: string) => s,
+    cyan: (s: string) => s,
   },
 }))
 
@@ -328,6 +335,38 @@ describe('variant prompt wiring', () => {
 
     it('throws when no project name is provided', async () => {
       await expect(runFromLock(undefined, {})).rejects.toThrow(/name/i)
+    })
+
+    it('re-applies the recorded enhancements after reproducing', async () => {
+      mockReadLockFile.mockResolvedValue({
+        ...lockFor('next'),
+        enhancements: [{ id: 'eslint', version: null }, { id: 'prettier', version: null }],
+      })
+
+      await runFromLock('repro', {})
+
+      expect(mockExecuteScaffolder).toHaveBeenCalled()
+      expect(mockRunAddCommand).toHaveBeenCalledWith(['eslint', 'prettier'], expect.anything())
+    })
+
+    it('does not re-apply enhancements on dry-run', async () => {
+      mockExecuteScaffolder.mockResolvedValue({
+        scaffolderName: 'next',
+        command: 'npx',
+        args: [],
+        prerequisites: [],
+        resolvedFlags: [],
+        versionUsed: null,
+        upstreamVersion: null,
+      })
+      mockReadLockFile.mockResolvedValue({
+        ...lockFor('next'),
+        enhancements: [{ id: 'eslint', version: null }],
+      })
+
+      await runFromLock('repro', { dryRun: true })
+
+      expect(mockRunAddCommand).not.toHaveBeenCalled()
     })
   })
 
