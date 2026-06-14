@@ -40,20 +40,27 @@ export async function selectFrameworkOptions(
   framework: string,
   preselected?: string[],
 ): Promise<string[]> {
+  const pre = preselected ?? []
   const available = FRAMEWORK_OPTIONS[framework]
+  // No interactive options for this framework — keep any preselected flags
+  // (e.g. from a preset or CLI) rather than dropping them.
   if (!available || available.length === 0)
-    return []
+    return [...new Set(pre)]
 
   const result = await p.multiselect({
     message: 'Select options:',
     options: available,
     required: false,
-    initialValues: preselected ?? [],
+    initialValues: pre,
   })
 
   if (p.isCancel(result)) {
     process.exit(0)
   }
 
-  return result as string[]
+  // multiselect only returns values present in `available`, so re-add any
+  // preselected flags not offered as checkboxes (e.g. app-router for next).
+  const selected = result as string[]
+  const offList = pre.filter(v => !available.some(o => o.value === v))
+  return [...new Set([...selected, ...offList])]
 }
