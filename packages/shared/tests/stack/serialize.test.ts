@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildStackCommand } from '../../src/stack/serialize.js'
+import { TinkeriseLockSchema } from '../../src/lock/schema.js'
+import { buildStackCommand, buildStackLock } from '../../src/stack/serialize.js'
 
 describe('buildStackCommand', () => {
   it('builds a positional scaffold command with flags', () => {
@@ -38,5 +39,33 @@ describe('buildStackCommand', () => {
     )
     expect(cmd.scaffold).toBe('tk web next app')
     expect(cmd.add).toBe('tk add eslint')
+  })
+})
+
+describe('buildStackLock', () => {
+  const opts = { version: '1.2.3', packageManager: 'pnpm' }
+
+  it('builds a schema-valid lock with mapped flags and enhancements', () => {
+    const lock = buildStackLock(
+      { framework: 'next', category: 'web', flags: ['typescript', 'tailwind'], enhancements: ['eslint', 'prettier'] },
+      opts,
+    )
+    expect(TinkeriseLockSchema.safeParse(lock).success).toBe(true)
+    expect(lock.framework).toBe('next')
+    expect(lock.category).toBe('web')
+    expect(lock.flags).toEqual({ typescript: true, tailwind: true })
+    expect(lock.enhancements).toEqual([
+      { id: 'eslint', version: null },
+      { id: 'prettier', version: null },
+    ])
+    expect(lock.packageManager).toBe('pnpm')
+    expect(lock.createdWith).toBe('1.2.3')
+  })
+
+  it('produces empty flags and enhancements when none are selected', () => {
+    const lock = buildStackLock({ framework: 'go', category: 'backend' }, opts)
+    expect(TinkeriseLockSchema.safeParse(lock).success).toBe(true)
+    expect(lock.flags).toEqual({})
+    expect(lock.enhancements).toEqual([])
   })
 })

@@ -4,6 +4,7 @@
  * client-side in the docs-site stack builder.
  */
 import type { ScaffolderCategory } from '../index.js'
+import type { TinkeriseLock } from '../lock/index.js'
 
 export interface StackSelection {
   framework: string
@@ -41,4 +42,31 @@ export function buildStackCommand(selection: StackSelection, programName = 'tink
     result.add = `${programName} add ${enhancements.join(' ')}`
 
   return result
+}
+
+export interface StackLockOptions {
+  /** tinkerise version recorded as createdWith */
+  version: string
+  packageManager: string
+}
+
+/**
+ * Build a reproducible tinkerise.lock from a stack selection. schemaVersion is
+ * pinned to 1 — the TinkeriseLock literal type makes any LOCK_SCHEMA_VERSION bump
+ * a compile error here, so it cannot silently drift.
+ */
+export function buildStackLock(selection: StackSelection, opts: StackLockOptions): TinkeriseLock {
+  const flags: Record<string, boolean> = {}
+  for (const flag of selection.flags ?? [])
+    flags[flag] = true
+
+  return {
+    schemaVersion: 1,
+    framework: selection.framework,
+    category: selection.category,
+    flags,
+    enhancements: (selection.enhancements ?? []).map(id => ({ id, version: null })),
+    packageManager: opts.packageManager,
+    createdWith: opts.version,
+  }
 }
