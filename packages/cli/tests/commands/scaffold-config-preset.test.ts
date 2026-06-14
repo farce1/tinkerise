@@ -90,6 +90,12 @@ vi.mock('@tinkerise/core', () => ({
   get isCI() { return mockIsCI.value },
 }))
 
+vi.mock('../../src/context/lock.js', () => ({
+  buildLock: vi.fn(() => ({})),
+  writeLockFile: vi.fn(),
+  LOCK_FILENAME: 'tinkerise.lock',
+}))
+
 vi.mock('../../src/prompts/variant-select.js', () => ({
   selectViteTemplate: mockSelectViteTemplate,
   resolveViteTemplate: mockResolveViteTemplate,

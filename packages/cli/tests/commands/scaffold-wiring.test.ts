@@ -34,6 +34,8 @@ const {
   mockSelectT3Components,
   mockResolveConfig,
   mockLoadPreset,
+  mockBuildLock,
+  mockWriteLockFile,
 } = vi.hoisted(() => ({
   mockShowBanner: vi.fn(),
   mockRunPromptFlow: vi.fn(),
@@ -52,6 +54,14 @@ const {
   mockSelectT3Components: vi.fn(),
   mockResolveConfig: vi.fn(),
   mockLoadPreset: vi.fn(),
+  mockBuildLock: vi.fn(),
+  mockWriteLockFile: vi.fn(),
+}))
+
+vi.mock('../../src/context/lock.js', () => ({
+  buildLock: mockBuildLock,
+  writeLockFile: mockWriteLockFile,
+  LOCK_FILENAME: 'tinkerise.lock',
 }))
 
 vi.mock('../../src/utils/banner.js', () => ({
@@ -131,6 +141,8 @@ describe('variant prompt wiring', () => {
     mockExecuteScaffolder.mockResolvedValue(undefined)
     mockBuildPreselectedOptions.mockReturnValue([])
     mockMergePromptAndFlags.mockReturnValue({})
+    mockBuildLock.mockReturnValue({ framework: 'next' })
+    mockWriteLockFile.mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -217,6 +229,27 @@ describe('variant prompt wiring', () => {
       await runDirectExecution('web', 'next', 'my-app', cmd, {})
 
       expect(mockTinkeriseSummaryCard).toHaveBeenCalledWith('next', 'my-app', expect.any(Array))
+    })
+  })
+
+  describe('lock file', () => {
+    it('writes tinkerise.lock after a successful scaffold', async () => {
+      const cmd = createMockCommand()
+      await runDirectExecution('web', 'next', 'my-app', cmd, {})
+
+      expect(mockBuildLock).toHaveBeenCalledWith(
+        expect.objectContaining({ framework: 'next', packageManager: 'npm' }),
+      )
+      expect(mockWriteLockFile).toHaveBeenCalled()
+    })
+
+    it('completes the scaffold even if the lock write fails', async () => {
+      mockWriteLockFile.mockRejectedValueOnce(new Error('disk full'))
+
+      const cmd = createMockCommand()
+      await runDirectExecution('web', 'next', 'my-app', cmd, {})
+
+      expect(mockTinkeriseSummaryCard).toHaveBeenCalled()
     })
   })
 })

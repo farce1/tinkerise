@@ -73,6 +73,20 @@ export type {
 } from './json-output/index.js'
 
 /**
+ * Lock — tinkerise.lock schema for reproducible projects (Tier B).
+ */
+export {
+  LOCK_SCHEMA_VERSION,
+  LockEnhancementSchema,
+  TinkeriseLockSchema,
+} from './lock/index.js'
+
+export type {
+  LockEnhancement,
+  TinkeriseLock,
+} from './lock/index.js'
+
+/**
  * Registry — schemas, types, and helpers for the scaffolder registry.
  */
 export {

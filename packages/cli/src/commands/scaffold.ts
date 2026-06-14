@@ -19,6 +19,7 @@ import { join } from 'node:path'
 import * as p from '@clack/prompts'
 import { ConfigValidationError, detectPackageManager, executeScaffolder, findClosestMatch, InteractivePromptBlockedError, InvalidCategoryError, isCI, loadPreset, resolveConfig, tinkeriseSummaryCard } from '@tinkerise/core'
 import pc from 'picocolors'
+import { buildLock, LOCK_FILENAME, writeLockFile } from '../context/lock.js'
 import { setSessionContext, writeSessionFile } from '../context/session.js'
 import { runPromptFlow } from '../prompts/flow.js'
 import { promptPackageManager } from '../prompts/pm-select.js'
@@ -306,6 +307,15 @@ async function executePipeline(
   const absProjectPath = join(process.cwd(), name)
   setSessionContext({ framework, packageManager: pm, projectDir: absProjectPath })
   await writeSessionFile(absProjectPath, { framework, packageManager: pm })
+
+  // Persist the reproducible lock (committed artifact). Best-effort: a write
+  // failure must not fail an already-successful scaffold.
+  try {
+    await writeLockFile(absProjectPath, buildLock({ framework, flags: userFlags, packageManager: pm }))
+  }
+  catch {
+    p.log.warn(pc.yellow(`Could not write ${LOCK_FILENAME} (project created successfully)`))
+  }
 
   const activeFlags = Object.entries(userFlags)
     .filter(([, v]) => v === true)
