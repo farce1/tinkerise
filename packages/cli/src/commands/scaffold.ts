@@ -33,6 +33,7 @@ import {
   mergePromptAndFlags,
 } from '../utils/interactive.js'
 import { isJsonMode } from '../utils/output-mode.js'
+import { runAddCommand } from './add.js'
 
 /** Valid scaffolder categories */
 const VALID_CATEGORIES: ScaffolderCategory[] = ['web', 'backend', 'mobile']
@@ -526,4 +527,10 @@ export async function runFromLock(
   }
 
   await runResolvedScaffold(lock.framework, name, { ...lock.flags }, options, lock.packageManager as PackageManager, lock.variant)
+
+  // Reproduce the recorded enhancements too (skipped in dry-run, which is
+  // side-effect-free and never sets the session the add flow relies on).
+  if (!isDryRun(options) && lock.enhancements.length > 0) {
+    await runAddCommand(lock.enhancements.map(e => e.id), { verbose: options.verbose })
+  }
 }
