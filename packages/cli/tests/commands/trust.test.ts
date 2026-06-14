@@ -12,10 +12,12 @@ import { Command } from 'commander'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { registerTrustCommand } from '../../src/commands/trust.js'
 
-const { mockListTrustedSources, mockTrustSource, mockUntrustSource } = vi.hoisted(() => ({
+const { mockListTrustedSources, mockTrustSource, mockUntrustSource, mockDiscoverNpmSources, mockLogInfo } = vi.hoisted(() => ({
   mockListTrustedSources: vi.fn(),
   mockTrustSource: vi.fn(),
   mockUntrustSource: vi.fn(),
+  mockDiscoverNpmSources: vi.fn(),
+  mockLogInfo: vi.fn(),
 }))
 
 vi.mock('@tinkerise/core', async (importOriginal) => {
@@ -25,15 +27,16 @@ vi.mock('@tinkerise/core', async (importOriginal) => {
     listTrustedSources: mockListTrustedSources,
     trustSource: mockTrustSource,
     untrustSource: mockUntrustSource,
+    discoverNpmSources: mockDiscoverNpmSources,
   }
 })
 
 vi.mock('@clack/prompts', () => ({
-  log: { info: vi.fn(), success: vi.fn(), warn: vi.fn(), error: vi.fn() },
+  log: { info: mockLogInfo, success: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }))
 
 vi.mock('picocolors', () => ({
-  default: { dim: (s: string) => s },
+  default: { dim: (s: string) => s, bold: (s: string) => s },
 }))
 
 async function runTrust(args: string[]): Promise<void> {
@@ -49,6 +52,7 @@ describe('trust command', () => {
     mockListTrustedSources.mockResolvedValue([])
     mockTrustSource.mockResolvedValue(undefined)
     mockUntrustSource.mockResolvedValue(true)
+    mockDiscoverNpmSources.mockResolvedValue([])
   })
 
   afterEach(() => {
@@ -69,6 +73,18 @@ describe('trust command', () => {
     mockListTrustedSources.mockResolvedValue([{ id: 'npm:foo', trustedAt: '2026-06-14T00:00:00.000Z' }])
     await runTrust(['list'])
     expect(mockListTrustedSources).toHaveBeenCalled()
+  })
+
+  it('shows installed-but-untrusted sources', async () => {
+    mockListTrustedSources.mockResolvedValue([{ id: 'npm:tinkerise-enhancement-trusted', trustedAt: '2026-06-14T00:00:00.000Z' }])
+    mockDiscoverNpmSources.mockResolvedValue(['tinkerise-enhancement-trusted', 'tinkerise-scaffolder-new'])
+
+    await runTrust(['list'])
+
+    const output = mockLogInfo.mock.calls.map(c => String(c[0])).join('\n')
+    expect(output).toContain('npm:tinkerise-scaffolder-new')
+    // already-trusted discovered packages are not duplicated into the untrusted list
+    expect(output).not.toMatch(/not trusted[\s\S]*tinkerise-enhancement-trusted/)
   })
 
   it('rejects an invalid source spec', async () => {

@@ -178,6 +178,7 @@ export type { ScaffolderMetadata } from './registry/metadata.js'
  * Sources — trust store and per-source consent gate for external sources (Tier C).
  */
 export {
+  discoverNpmSources,
   ensureSourceTrusted,
   getTrustStorePath,
   isSourceTrusted,
