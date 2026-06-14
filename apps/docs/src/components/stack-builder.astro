@@ -2,6 +2,7 @@
 // Build-time: read the framework/flag/enhancement vocabulary straight from the
 // frozen registry so the builder never drifts from the CLI.
 import { enhancementRegistry, getAllScaffolders, SCAFFOLD_FLAG_NAMES } from '@tinkerise/core'
+import { SAFE_NAME_REGEX, SAFE_NAME_RULES } from '@tinkerise/shared'
 
 interface FrameworkVocab {
   name: string
@@ -27,13 +28,26 @@ const enhancements: string[] = [...enhancementRegistry.keys()].sort()
 const CATEGORY_ORDER = ['web', 'backend', 'mobile', 'utility']
 const categories = [...new Set(frameworks.map(f => f.category))]
   .sort((a, b) => CATEGORY_ORDER.indexOf(a) - CATEGORY_ORDER.indexOf(b))
-const vocab = { frameworks, enhancements }
+
+// Single-source the project-name pattern from the CLI's validator (zod stays at
+// build time; the regex source travels to the client for live validation).
+const namePattern = SAFE_NAME_REGEX.source
+const vocab = { frameworks, enhancements, namePattern }
 ---
 
 <div class="stack-builder" data-vocab={JSON.stringify(vocab)}>
   <div class="sb-field">
     <label for="sb-name">Project name</label>
-    <input id="sb-name" type="text" placeholder="my-app" autocomplete="off" spellcheck="false" />
+    <input
+      id="sb-name"
+      type="text"
+      placeholder="my-app"
+      autocomplete="off"
+      spellcheck="false"
+      title={SAFE_NAME_RULES}
+      aria-describedby="sb-name-error"
+    />
+    <span id="sb-name-error" class="sb-error" hidden>{SAFE_NAME_RULES}</span>
   </div>
 
   <div class="sb-field">
@@ -80,12 +94,15 @@ const vocab = { frameworks, enhancements }
 
   const root = document.querySelector<HTMLDivElement>('.stack-builder')
   if (root) {
-    const vocab = JSON.parse(root.dataset.vocab ?? '{"frameworks":[],"enhancements":[]}') as {
+    const vocab = JSON.parse(root.dataset.vocab ?? '{"frameworks":[],"enhancements":[],"namePattern":".*"}') as {
       frameworks: FrameworkVocab[]
       enhancements: string[]
+      namePattern: string
     }
+    const nameRegex = new RegExp(vocab.namePattern)
 
     const nameInput = root.querySelector<HTMLInputElement>('#sb-name')!
+    const nameError = root.querySelector<HTMLElement>('#sb-name-error')!
     const frameworkSelect = root.querySelector<HTMLSelectElement>('#sb-framework')!
     const flagsContainer = root.querySelector<HTMLDivElement>('#sb-flags')!
     const enhancementsContainer = root.querySelector<HTMLDivElement>('#sb-enhancements')!
@@ -118,10 +135,18 @@ const vocab = { frameworks, enhancements }
         output.textContent = ''
         return
       }
+      const name = nameInput.value.trim()
+      const nameInvalid = name !== '' && !nameRegex.test(name)
+      nameError.hidden = !nameInvalid
+      nameInput.setAttribute('aria-invalid', String(nameInvalid))
+      if (nameInvalid) {
+        output.textContent = ''
+        return
+      }
       const command = buildStackCommand({
         framework: framework.name,
         category: framework.category as any,
-        name: nameInput.value.trim() || undefined,
+        name: name || undefined,
         flags: checkedValues(flagsContainer, 'data-flag'),
         enhancements: checkedValues(enhancementsContainer, 'data-enhancement'),
       })
@@ -172,6 +197,13 @@ const vocab = { frameworks, enhancements }
     background: var(--sl-color-black);
     color: var(--sl-color-white);
     font: inherit;
+  }
+  .stack-builder input[type='text'][aria-invalid='true'] {
+    border-color: var(--sl-color-red);
+  }
+  .sb-error {
+    color: var(--sl-color-red);
+    font-size: 0.85em;
   }
   .sb-options {
     display: flex;
