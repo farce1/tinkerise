@@ -51,11 +51,12 @@ Commit `tinkerise.lock` alongside your code — it is a reproducible record, not
 
 ## Step 3: Preview a reproduction
 
-Share the `tinkerise.lock` (or hand someone the repo) and preview what reproducing it will run,
-without writing anything:
+Put the shared `tinkerise.lock` in an empty working directory, then preview what reproducing it
+will run — without writing anything. `--from-lock` reads `tinkerise.lock` from the current
+directory and creates the new project as a subfolder named by the first argument:
 
 ```bash
-mkdir ../my-app-clone && cd ../my-app-clone
+mkdir ../reproduce && cd ../reproduce
 cp ../my-app/tinkerise.lock .
 tinkerise my-app-clone --from-lock --dry-run
 ```
@@ -68,7 +69,7 @@ Expected result: the exact upstream command is printed and no files are created.
 tinkerise my-app-clone --from-lock
 ```
 
-Expected result: the framework is scaffolded with the recorded flags and variant, then the
+Expected result: `./my-app-clone` is scaffolded with the recorded flags and variant, then the
 recorded enhancements (`eslint`, `prettier`) are re-applied — recreating the full stack in one
 command.
 
