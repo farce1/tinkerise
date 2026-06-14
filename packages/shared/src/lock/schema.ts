@@ -15,6 +15,16 @@ export const LockEnhancementSchema = z.object({
   version: z.string().nullable(),
 })
 
+/**
+ * Framework-specific variant selections that aren't plain flags — e.g. the Vite
+ * template or the T3 components. Captured so `--from-lock` can reproduce them.
+ */
+export const LockVariantSchema = z.object({
+  template: z.string().optional(),
+  typescript: z.boolean().optional(),
+  components: z.array(z.string()).optional(),
+})
+
 export const TinkeriseLockSchema = z.object({
   schemaVersion: z.literal(LOCK_SCHEMA_VERSION),
   framework: z.string(),
@@ -24,7 +34,10 @@ export const TinkeriseLockSchema = z.object({
   packageManager: z.string(),
   /** tinkerise version that produced this lock */
   createdWith: z.string(),
+  /** Framework-specific variant selections (Vite template, T3 components) */
+  variant: LockVariantSchema.optional(),
 })
 
 export type LockEnhancement = z.infer<typeof LockEnhancementSchema>
+export type LockVariant = z.infer<typeof LockVariantSchema>
 export type TinkeriseLock = z.infer<typeof TinkeriseLockSchema>

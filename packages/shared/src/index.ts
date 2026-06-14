@@ -78,11 +78,13 @@ export type {
 export {
   LOCK_SCHEMA_VERSION,
   LockEnhancementSchema,
+  LockVariantSchema,
   TinkeriseLockSchema,
 } from './lock/index.js'
 
 export type {
   LockEnhancement,
+  LockVariant,
   TinkeriseLock,
 } from './lock/index.js'
 
