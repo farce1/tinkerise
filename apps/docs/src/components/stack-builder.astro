@@ -2,7 +2,11 @@
 // Build-time: read the framework/flag/enhancement vocabulary straight from the
 // frozen registry so the builder never drifts from the CLI.
 import { enhancementRegistry, getAllScaffolders, SCAFFOLD_FLAG_NAMES } from '@tinkerise/core'
-import { SAFE_NAME_REGEX, SAFE_NAME_RULES } from '@tinkerise/shared'
+import { SAFE_NAME_REGEX, SAFE_NAME_RULES, VERSION } from '@tinkerise/shared'
+
+// Package managers the lock can record (PackageManager is a type, so the runtime
+// list is mirrored here — a stable, rarely-changing set).
+const PACKAGE_MANAGERS = ['npm', 'pnpm', 'yarn', 'bun']
 
 interface FrameworkVocab {
   name: string
@@ -32,7 +36,7 @@ const categories = [...new Set(frameworks.map(f => f.category))]
 // Single-source the project-name pattern from the CLI's validator (zod stays at
 // build time; the regex source travels to the client for live validation).
 const namePattern = SAFE_NAME_REGEX.source
-const vocab = { frameworks, enhancements, namePattern }
+const vocab = { frameworks, enhancements, namePattern, version: VERSION }
 ---
 
 <div class="stack-builder" data-vocab={JSON.stringify(vocab)}>
@@ -83,21 +87,41 @@ const vocab = { frameworks, enhancements, namePattern }
   <div class="sb-field">
     <span class="sb-legend">Command</span>
     <pre class="sb-output"><code id="sb-output"></code></pre>
-    <button id="sb-copy" type="button">Copy</button>
+    <button id="sb-copy" class="sb-copy" type="button">Copy</button>
+  </div>
+
+  <div class="sb-field">
+    <span class="sb-legend">Reproducible lock</span>
+    <label class="sb-pm">
+      Package manager
+      <select id="sb-pm">
+        {PACKAGE_MANAGERS.map(pm => <option value={pm}>{pm}</option>)}
+      </select>
+    </label>
+    <details>
+      <summary>Preview tinkerise.lock</summary>
+      <pre class="sb-output"><code id="sb-lock-output"></code></pre>
+    </details>
+    <button id="sb-lock-copy" class="sb-copy" type="button">Copy tinkerise.lock</button>
+    <p class="sb-hint">
+      Save as <code>tinkerise.lock</code>, then run <code>tinkerise &lt;name&gt; --from-lock</code>.
+      Vite and T3 also need an interactive variant, so scaffold those directly.
+    </p>
   </div>
 </div>
 
 <script>
-  import { buildStackCommand } from '@tinkerise/shared/stack'
+  import { buildStackCommand, buildStackLock } from '@tinkerise/shared/stack'
 
   interface FrameworkVocab { name: string, category: string, flags: string[] }
 
   const root = document.querySelector<HTMLDivElement>('.stack-builder')
   if (root) {
-    const vocab = JSON.parse(root.dataset.vocab ?? '{"frameworks":[],"enhancements":[],"namePattern":".*"}') as {
+    const vocab = JSON.parse(root.dataset.vocab ?? '{"frameworks":[],"enhancements":[],"namePattern":".*","version":"0.0.0"}') as {
       frameworks: FrameworkVocab[]
       enhancements: string[]
       namePattern: string
+      version: string
     }
     const nameRegex = new RegExp(vocab.namePattern)
 
@@ -106,11 +130,28 @@ const vocab = { frameworks, enhancements, namePattern }
     const frameworkSelect = root.querySelector<HTMLSelectElement>('#sb-framework')!
     const flagsContainer = root.querySelector<HTMLDivElement>('#sb-flags')!
     const enhancementsContainer = root.querySelector<HTMLDivElement>('#sb-enhancements')!
+    const pmSelect = root.querySelector<HTMLSelectElement>('#sb-pm')!
     const output = root.querySelector<HTMLElement>('#sb-output')!
-    const copyButton = root.querySelector<HTMLButtonElement>('#sb-copy')!
+    const lockOutput = root.querySelector<HTMLElement>('#sb-lock-output')!
 
     function selectedFramework(): FrameworkVocab | undefined {
       return vocab.frameworks.find(f => f.name === frameworkSelect.value)
+    }
+
+    /** Copy getText()'s value on click, with transient button feedback. */
+    function wireCopy(id: string, getText: () => string) {
+      const button = root!.querySelector<HTMLButtonElement>(id)!
+      const label = button.textContent
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(getText())
+          button.textContent = 'Copied!'
+        }
+        catch {
+          button.textContent = 'Copy failed'
+        }
+        setTimeout(() => { button.textContent = label }, 1500)
+      })
     }
 
     function renderFlags() {
@@ -133,39 +174,40 @@ const vocab = { frameworks, enhancements, namePattern }
       const framework = selectedFramework()
       if (!framework) {
         output.textContent = ''
+        lockOutput.textContent = ''
         return
       }
+      const flags = checkedValues(flagsContainer, 'data-flag')
+      const enhancements = checkedValues(enhancementsContainer, 'data-enhancement')
+      const category = framework.category as any
+
+      // Command (name-dependent): clear it and flag the input when the name is invalid.
       const name = nameInput.value.trim()
       const nameInvalid = name !== '' && !nameRegex.test(name)
       nameError.hidden = !nameInvalid
       nameInput.setAttribute('aria-invalid', String(nameInvalid))
       if (nameInvalid) {
         output.textContent = ''
-        return
       }
-      const command = buildStackCommand({
-        framework: framework.name,
-        category: framework.category as any,
-        name: name || undefined,
-        flags: checkedValues(flagsContainer, 'data-flag'),
-        enhancements: checkedValues(enhancementsContainer, 'data-enhancement'),
-      })
-      output.textContent = command.add ? `${command.scaffold}\n${command.add}` : command.scaffold
+      else {
+        const command = buildStackCommand({ framework: framework.name, category, name: name || undefined, flags, enhancements })
+        output.textContent = command.add ? `${command.scaffold}\n${command.add}` : command.scaffold
+      }
+
+      // Lock (name-independent): a tinkerise.lock records no project name.
+      const lock = buildStackLock(
+        { framework: framework.name, category, flags, enhancements },
+        { version: vocab.version, packageManager: pmSelect.value },
+      )
+      lockOutput.textContent = JSON.stringify(lock, null, 2)
     }
 
-    copyButton.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(output.textContent ?? '')
-        copyButton.textContent = 'Copied!'
-      }
-      catch {
-        copyButton.textContent = 'Copy failed'
-      }
-      setTimeout(() => { copyButton.textContent = 'Copy' }, 1500)
-    })
+    wireCopy('#sb-copy', () => output.textContent ?? '')
+    wireCopy('#sb-lock-copy', () => lockOutput.textContent ?? '')
 
     nameInput.addEventListener('input', render)
     frameworkSelect.addEventListener('change', () => { renderFlags(); render() })
+    pmSelect.addEventListener('change', render)
     enhancementsContainer.querySelectorAll('input').forEach(el => el.addEventListener('change', render))
 
     renderFlags()
@@ -223,7 +265,18 @@ const vocab = { frameworks, enhancements, namePattern }
   .sb-output {
     margin: 0;
   }
-  #sb-copy {
+  .sb-pm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 400;
+  }
+  .sb-hint {
+    margin: 0;
+    font-size: 0.85em;
+    color: var(--sl-color-gray-3);
+  }
+  .sb-copy {
     align-self: flex-start;
     padding: 0.4rem 0.9rem;
     border: 1px solid var(--sl-color-accent);
@@ -233,7 +286,7 @@ const vocab = { frameworks, enhancements, namePattern }
     cursor: pointer;
     font: inherit;
   }
-  #sb-copy:hover {
+  .sb-copy:hover {
     background: var(--sl-color-accent);
   }
 </style>
