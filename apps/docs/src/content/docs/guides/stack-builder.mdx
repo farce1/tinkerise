@@ -24,3 +24,10 @@ The framework, flag, and enhancement options come straight from tinkerise's buil
 they always match the version of the CLI these docs were built against. Run
 [`tinkerise list`](/tinkerise/reference/commands/) to see the same catalog from your terminal, or
 add `--dry-run` to any command to preview it before running.
+
+## Export a reproducible lock
+
+The **Reproducible lock** section builds a [`tinkerise.lock`](/tinkerise/guides/reproducible-projects/)
+for your selection. Pick a package manager, copy the lock into a `tinkerise.lock` file, then run
+`tinkerise <name> --from-lock` to recreate the same stack anywhere. Vite and T3 need an interactive
+variant the builder can't capture, so scaffold those directly.
