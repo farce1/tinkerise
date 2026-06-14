@@ -108,6 +108,8 @@ const vocab = { frameworks, enhancements, namePattern, version: VERSION }
       Vite and T3 also need an interactive variant, so scaffold those directly.
     </p>
   </div>
+
+  <p id="sb-status" class="sb-sr-only" role="status" aria-live="polite"></p>
 </div>
 
 <script>
@@ -133,23 +135,37 @@ const vocab = { frameworks, enhancements, namePattern, version: VERSION }
     const pmSelect = root.querySelector<HTMLSelectElement>('#sb-pm')!
     const output = root.querySelector<HTMLElement>('#sb-output')!
     const lockOutput = root.querySelector<HTMLElement>('#sb-lock-output')!
+    const status = root.querySelector<HTMLElement>('#sb-status')!
 
     function selectedFramework(): FrameworkVocab | undefined {
       return vocab.frameworks.find(f => f.name === frameworkSelect.value)
     }
 
-    /** Copy getText()'s value on click, with transient button feedback. */
+    /**
+     * Copy getText()'s value on click, with transient button feedback mirrored
+     * to an aria-live region. Reports "Nothing to copy" instead of a false
+     * "Copied!" when there is no command/lock yet (e.g. invalid project name).
+     */
     function wireCopy(id: string, getText: () => string) {
       const button = root!.querySelector<HTMLButtonElement>(id)!
       const label = button.textContent
       button.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(getText())
-          button.textContent = 'Copied!'
+        const text = getText()
+        let message: string
+        if (!text) {
+          message = 'Nothing to copy'
         }
-        catch {
-          button.textContent = 'Copy failed'
+        else {
+          try {
+            await navigator.clipboard.writeText(text)
+            message = 'Copied!'
+          }
+          catch {
+            message = 'Copy failed'
+          }
         }
+        button.textContent = message
+        status.textContent = message
         setTimeout(() => { button.textContent = label }, 1500)
       })
     }
@@ -221,6 +237,17 @@ const vocab = { frameworks, enhancements, namePattern, version: VERSION }
     flex-direction: column;
     gap: 1.25rem;
     margin: 1.5rem 0;
+  }
+  .sb-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
   .sb-field {
     display: flex;
