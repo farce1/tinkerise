@@ -45,4 +45,33 @@ describe('tinkeriseLockSchema', () => {
     })
     expect(parsed.success).toBe(false)
   })
+
+  it('accepts a Vite template variant', () => {
+    const parsed = TinkeriseLockSchema.safeParse({
+      ...validLock,
+      variant: { template: 'react', typescript: true },
+    })
+    expect(parsed.success).toBe(true)
+  })
+
+  it('accepts a T3 components variant', () => {
+    const parsed = TinkeriseLockSchema.safeParse({
+      ...validLock,
+      variant: { components: ['trpc', 'prisma'] },
+    })
+    expect(parsed.success).toBe(true)
+  })
+
+  it('accepts a lock without a variant (backward compatible)', () => {
+    const { variant: _v, ...withoutVariant } = { ...validLock, variant: undefined }
+    expect(TinkeriseLockSchema.safeParse(withoutVariant).success).toBe(true)
+  })
+
+  it('rejects a malformed variant', () => {
+    const parsed = TinkeriseLockSchema.safeParse({
+      ...validLock,
+      variant: { components: 'trpc' },
+    })
+    expect(parsed.success).toBe(false)
+  })
 })

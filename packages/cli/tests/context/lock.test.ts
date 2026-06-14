@@ -41,6 +41,21 @@ describe('buildLock', () => {
   it('throws on an unknown framework', () => {
     expect(() => buildLock({ framework: 'nope', flags: {}, packageManager: 'npm' })).toThrow(/nope/)
   })
+
+  it('includes a variant when provided', () => {
+    const lock = buildLock({
+      framework: 'vite',
+      flags: {},
+      packageManager: 'npm',
+      variant: { template: 'react', typescript: true },
+    })
+    expect(lock.variant).toEqual({ template: 'react', typescript: true })
+  })
+
+  it('omits the variant when not provided', () => {
+    const lock = buildLock({ framework: 'next', flags: {}, packageManager: 'npm' })
+    expect(lock.variant).toBeUndefined()
+  })
 })
 
 describe('writeLockFile', () => {

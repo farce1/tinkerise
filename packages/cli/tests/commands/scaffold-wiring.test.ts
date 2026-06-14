@@ -295,15 +295,62 @@ describe('variant prompt wiring', () => {
       expect(mockExecuteScaffolder).not.toHaveBeenCalled()
     })
 
-    it('throws for frameworks whose variants the lock cannot capture', async () => {
+    it('throws for a lock that predates variant capture', async () => {
       mockReadLockFile.mockResolvedValue(lockFor('vite'))
 
       await expect(runFromLock('app', {})).rejects.toThrow(/vite/i)
       expect(mockExecuteScaffolder).not.toHaveBeenCalled()
     })
 
+    it('reproduces a vite project from a captured variant without prompting', async () => {
+      mockResolveViteTemplate.mockReturnValue('react-ts')
+      mockReadLockFile.mockResolvedValue({ ...lockFor('vite'), variant: { template: 'react', typescript: true } })
+
+      await runFromLock('repro', {})
+
+      expect(mockSelectViteTemplate).not.toHaveBeenCalled()
+      expect(mockResolveViteTemplate).toHaveBeenCalledWith('react', true)
+      expect(mockExecuteScaffolder).toHaveBeenCalledWith(
+        expect.objectContaining({ scaffolderName: 'vite', extraArgs: expect.arrayContaining(['--template', 'react-ts']) }),
+      )
+    })
+
+    it('reproduces a t3 project from captured components without prompting', async () => {
+      mockReadLockFile.mockResolvedValue({ ...lockFor('t3'), variant: { components: ['trpc'] } })
+
+      await runFromLock('repro', {})
+
+      expect(mockSelectT3Components).not.toHaveBeenCalled()
+      expect(mockExecuteScaffolder).toHaveBeenCalledWith(
+        expect.objectContaining({ scaffolderName: 't3', extraArgs: expect.arrayContaining(['--trpc', '--CI']) }),
+      )
+    })
+
     it('throws when no project name is provided', async () => {
       await expect(runFromLock(undefined, {})).rejects.toThrow(/name/i)
+    })
+  })
+
+  describe('lock variant capture', () => {
+    it('captures the vite template variant', async () => {
+      mockSelectViteTemplate.mockResolvedValue('react')
+      mockResolveViteTemplate.mockReturnValue('react-ts')
+
+      await runDirectExecution('web', 'vite', 'my-app', createMockCommand(), { typescript: true })
+
+      expect(mockBuildLock).toHaveBeenCalledWith(
+        expect.objectContaining({ framework: 'vite', variant: { template: 'react', typescript: true } }),
+      )
+    })
+
+    it('captures the selected t3 components', async () => {
+      mockSelectT3Components.mockResolvedValue(['trpc', 'prisma'])
+
+      await runDirectExecution('web', 't3', 'my-app', createMockCommand(), {})
+
+      expect(mockBuildLock).toHaveBeenCalledWith(
+        expect.objectContaining({ framework: 't3', variant: { components: ['trpc', 'prisma'] } }),
+      )
     })
   })
 })

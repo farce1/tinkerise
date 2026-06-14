@@ -13,7 +13,7 @@
  */
 
 import type { PackageManager } from '@tinkerise/core'
-import type { PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinkerise/shared'
+import type { LockVariant, PresetData, ScaffolderCategory, TinkeriseUserConfig } from '@tinkerise/shared'
 import type { Command } from 'commander'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -266,23 +266,30 @@ async function runResolvedScaffold(
   userFlags: Record<string, string | boolean>,
   cliOptions: ScaffoldOptions,
   pm: PackageManager,
+  replayVariant?: LockVariant,
 ): Promise<void> {
   const dryRun = isDryRun(cliOptions)
 
-  // vite/t3 prompt for a variant; in --json dry-run that would corrupt output (D-14)
-  if (framework === 't3' || (framework === 'vite' && !cliOptions.template))
+  // A variant prompt only fires when there is no replay variant to reuse; in
+  // --json dry-run that prompt would corrupt output (D-14).
+  const willPromptVariant = !replayVariant && (framework === 't3' || (framework === 'vite' && !cliOptions.template))
+  if (willPromptVariant)
     assertJsonNonInteractive(dryRun)
 
   let extraArgs: string[] = []
+  // Variant selections captured for the lock so --from-lock can reproduce them.
+  let variant: LockVariant | undefined
 
   if (framework === 'vite') {
     // Vite: template selection + TypeScript merging
-    const base = await selectViteTemplate(cliOptions.template)
-    const resolved = resolveViteTemplate(base, !!cliOptions.typescript)
+    const base = replayVariant?.template ?? await selectViteTemplate(cliOptions.template)
+    const typescript = replayVariant?.typescript ?? Boolean(cliOptions.typescript)
+    const resolved = resolveViteTemplate(base, typescript)
     extraArgs = ['--template', resolved]
     // Remove typescript and template from userFlags -- handled via template suffix / extraArgs
     delete userFlags.typescript
     delete userFlags.template
+    variant = { template: base, typescript }
   }
 
   // Suppress interactive prompts for frameworks that support it
@@ -295,7 +302,7 @@ async function runResolvedScaffold(
 
   if (framework === 't3') {
     // T3: component selection -> pass as individual flags
-    const components = await selectT3Components()
+    const components = replayVariant?.components ?? await selectT3Components()
     for (const comp of components) {
       extraArgs.push(`--${comp}`)
     }
@@ -303,6 +310,7 @@ async function runResolvedScaffold(
     if (extraArgs.length > 0 || Object.keys(userFlags).length > 0) {
       extraArgs.push('--CI')
     }
+    variant = { components }
   }
 
   const plan = await executeScaffolder({
@@ -326,7 +334,7 @@ async function runResolvedScaffold(
   // Persist the reproducible lock (committed artifact). Best-effort: a write
   // failure must not fail an already-successful scaffold.
   try {
-    await writeLockFile(absProjectPath, buildLock({ framework, flags: userFlags, packageManager: pm }))
+    await writeLockFile(absProjectPath, buildLock({ framework, flags: userFlags, packageManager: pm, variant }))
   }
   catch {
     p.log.warn(pc.yellow(`Could not write ${LOCK_FILENAME} (project created successfully)`))
@@ -474,11 +482,8 @@ export async function runDirectExecution(
   await executePipeline(framework, projectName, preselected, cmd, options, pm, config)
 }
 
-/**
- * Frameworks whose interactive variant selection (Vite template, T3 components)
- * is not captured in the lock, so `--from-lock` cannot reproduce them yet.
- */
-const FROM_LOCK_UNSUPPORTED = new Set(['vite', 't3'])
+/** Frameworks whose reproduction needs a captured variant (Vite template, T3 components). */
+const FROM_LOCK_VARIANT_REQUIRED = new Set(['vite', 't3'])
 
 /**
  * Reproduce a project from a `tinkerise.lock` in the current directory.
@@ -507,10 +512,10 @@ export async function runFromLock(
     })
   }
 
-  if (FROM_LOCK_UNSUPPORTED.has(lock.framework)) {
+  if (FROM_LOCK_VARIANT_REQUIRED.has(lock.framework) && !lock.variant) {
     throw new TinkeriseError({
-      message: `--from-lock does not support ${lock.framework} yet (its variant selection is not captured in the lock).`,
-      code: 'LOCK_UNSUPPORTED_FRAMEWORK',
+      message: `This lock predates ${lock.framework} variant capture, so --from-lock cannot reproduce it.`,
+      code: 'LOCK_MISSING_VARIANT',
       suggestion: `Scaffold it directly, e.g. tinkerise ${lock.category} ${lock.framework} ${name}`,
     })
   }
@@ -520,5 +525,5 @@ export async function runFromLock(
     throw new ConfigValidationError('projectName', name, 'lowercase letters, numbers, hyphens, dots, underscores; max 64 chars')
   }
 
-  await runResolvedScaffold(lock.framework, name, { ...lock.flags }, options, lock.packageManager as PackageManager)
+  await runResolvedScaffold(lock.framework, name, { ...lock.flags }, options, lock.packageManager as PackageManager, lock.variant)
 }
