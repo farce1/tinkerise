@@ -8,6 +8,7 @@
 import { deepmergeCustom } from 'deepmerge-ts'
 import { createPatch } from 'diff'
 import pc from 'picocolors'
+import { InvalidJsonConfigError } from '../errors/base.js'
 
 /** Action a user can take when a config conflict is detected */
 export type ConflictAction = 'skip' | 'merge' | 'replace'
@@ -101,9 +102,6 @@ export function parseJsonConfig(content: string): Record<string, unknown> {
   catch (err) {
     const message
       = err instanceof Error ? err.message : String(err)
-    throw new Error(
-      `Failed to parse JSON config: ${message}. `
-      + 'Check for trailing commas or syntax errors.',
-    )
+    throw new InvalidJsonConfigError(message)
   }
 }

@@ -13,6 +13,7 @@ import type { PackageManager } from '../pm/detect.js'
 import type { FrameworkId, ProjectContext } from './types.js'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { MissingPackageJsonError } from '../errors/base.js'
 import { detectPackageManager } from '../pm/detect.js'
 import { detectFramework } from './framework-detect.js'
 
@@ -58,9 +59,7 @@ export async function buildProjectContext(
   catch (err: unknown) {
     const code = (err as NodeJS.ErrnoException).code
     if (code === 'ENOENT') {
-      throw new Error(
-        `No package.json found in ${rootDir}. Run this command from a project directory.`,
-      )
+      throw new MissingPackageJsonError(rootDir)
     }
     throw err
   }

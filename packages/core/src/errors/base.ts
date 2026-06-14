@@ -278,3 +278,31 @@ export class InvalidStackTokensError extends TinkeriseError {
     this.name = 'InvalidStackTokensError'
   }
 }
+
+/**
+ * Thrown when a command needs a project but no package.json is present.
+ */
+export class MissingPackageJsonError extends TinkeriseError {
+  constructor(rootDir: string) {
+    super({
+      message: `No package.json found in ${rootDir}.`,
+      code: 'MISSING_PACKAGE_JSON',
+      suggestion: 'Run this command from a project directory (one containing package.json).',
+    })
+    this.name = 'MissingPackageJsonError'
+  }
+}
+
+/**
+ * Thrown when a JSON config file in the user's project cannot be parsed.
+ */
+export class InvalidJsonConfigError extends TinkeriseError {
+  constructor(detail: string) {
+    super({
+      message: `Failed to parse JSON config: ${detail}`,
+      code: 'INVALID_JSON_CONFIG',
+      suggestion: 'Check the file for trailing commas or other JSON syntax errors.',
+    })
+    this.name = 'InvalidJsonConfigError'
+  }
+}

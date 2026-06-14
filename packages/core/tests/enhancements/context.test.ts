@@ -24,6 +24,7 @@ const { detectFramework } = await import(
 const { buildProjectContext } = await import(
   '../../src/enhancements/context.js',
 )
+const { MissingPackageJsonError } = await import('../../src/errors/base.js')
 
 const mockedReadFile = vi.mocked(readFile)
 const mockedDetectPM = vi.mocked(detectPackageManager)
@@ -122,14 +123,14 @@ describe('buildProjectContext()', () => {
     expect(ctx.verbose).toBe(true)
   })
 
-  it('throws error when package.json is missing (ENOENT)', async () => {
+  it('throws a structured MissingPackageJsonError when package.json is missing (ENOENT)', async () => {
     const err = new Error('ENOENT: no such file or directory') as NodeJS.ErrnoException
     err.code = 'ENOENT'
     mockedReadFile.mockRejectedValue(err)
 
-    await expect(buildProjectContext({ rootDir })).rejects.toThrow(
-      /No package\.json found/,
-    )
+    const promise = buildProjectContext({ rootDir })
+    await expect(promise).rejects.toBeInstanceOf(MissingPackageJsonError)
+    await expect(promise).rejects.toMatchObject({ code: 'MISSING_PACKAGE_JSON' })
   })
 
   it('rethrows non-ENOENT errors from readFile', async () => {
