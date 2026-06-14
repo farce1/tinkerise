@@ -118,6 +118,16 @@ describe('selectFrameworkOptions', () => {
     expect(mockMultiselect).not.toHaveBeenCalled()
   })
 
+  it('still lets the user deselect a preselected on-list flag (only off-list flags are forced to stay)', async () => {
+    // preselected typescript (on the checklist) + app-router (off it); user unchecks everything visible
+    mockMultiselect.mockResolvedValue([])
+
+    const result = await selectFrameworkOptions('next', ['typescript', 'app-router'])
+
+    expect(result).not.toContain('typescript')
+    expect(result).toContain('app-router')
+  })
+
   it('fRAMEWORK_OPTIONS has entries for next with TypeScript, Tailwind, ESLint, Biome', () => {
     const nextOptions = FRAMEWORK_OPTIONS.next
     expect(nextOptions).toBeDefined()
