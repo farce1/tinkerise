@@ -6,12 +6,12 @@
  * printTemplateSummary — display a styled summary card after generation.
  */
 
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 import { ProjectNameSchema } from '@tinkerise/shared'
 import { execa } from 'execa'
 import pc from 'picocolors'
-import { ConfigValidationError } from '../errors/base.js'
+import { ConfigValidationError, TargetDirectoryExistsError } from '../errors/base.js'
 
 /** Package managers a template install can run (mirrors the PackageManager union). */
 const VALID_PACKAGE_MANAGERS = ['npm', 'pnpm', 'yarn', 'bun']
@@ -27,6 +27,26 @@ export function assertValidTemplateInput(name: string, packageManager: string): 
   }
   if (!VALID_PACKAGE_MANAGERS.includes(packageManager)) {
     throw new ConfigValidationError('packageManager', packageManager, VALID_PACKAGE_MANAGERS.join(', '))
+  }
+}
+
+/**
+ * Refuse to generate into a directory that already exists and is non-empty, so
+ * a generator never silently overwrites an existing project. A missing directory
+ * (ENOENT) or an existing empty one is fine.
+ */
+export async function assertTargetDirAvailable(projectDir: string): Promise<void> {
+  let entries: string[]
+  try {
+    entries = await readdir(projectDir)
+  }
+  catch (err) {
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT')
+      return
+    throw err
+  }
+  if (entries.length > 0) {
+    throw new TargetDirectoryExistsError(projectDir)
   }
 }
 

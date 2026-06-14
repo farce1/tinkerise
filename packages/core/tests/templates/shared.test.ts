@@ -13,20 +13,24 @@
 import { join } from 'node:path'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ConfigValidationError } from '../../src/errors/base.js'
-import { assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from '../../src/templates/shared.js'
+import { ConfigValidationError, TargetDirectoryExistsError } from '../../src/errors/base.js'
+import { assertTargetDirAvailable, assertValidTemplateInput, printTemplateSummary, runInstall, writeProjectFile } from '../../src/templates/shared.js'
 
 const PROJECT_ROOT = join('/', 'tmp', 'project')
 const projectPath = (relativePath: string) => join(PROJECT_ROOT, ...relativePath.split('/'))
 
+const enoent = (): NodeJS.ErrnoException => Object.assign(new Error('ENOENT'), { code: 'ENOENT' })
+
 // Hoist mocks for vi.mock factories
 const mockMkdir = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockWriteFile = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
+const mockReaddir = vi.hoisted(() => vi.fn())
 const mockExeca = vi.hoisted(() => vi.fn().mockResolvedValue({ stdout: '', stderr: '' }))
 
 vi.mock('node:fs/promises', () => ({
   mkdir: mockMkdir,
   writeFile: mockWriteFile,
+  readdir: mockReaddir,
 }))
 
 vi.mock('execa', () => ({
@@ -182,6 +186,30 @@ describe('shared template utilities', () => {
       catch (err) {
         expect((err as ConfigValidationError).code).toBe('CONFIG_VALIDATION')
       }
+    })
+  })
+
+  describe('assertTargetDirAvailable', () => {
+    it('resolves when the directory does not exist (ENOENT)', async () => {
+      mockReaddir.mockRejectedValueOnce(enoent())
+      await expect(assertTargetDirAvailable('new-app')).resolves.toBeUndefined()
+    })
+
+    it('resolves when the directory exists but is empty', async () => {
+      mockReaddir.mockResolvedValueOnce([])
+      await expect(assertTargetDirAvailable('empty-app')).resolves.toBeUndefined()
+    })
+
+    it('throws TargetDirectoryExistsError when the directory is non-empty', async () => {
+      mockReaddir.mockResolvedValueOnce(['package.json'])
+      const promise = assertTargetDirAvailable('existing-app')
+      await expect(promise).rejects.toBeInstanceOf(TargetDirectoryExistsError)
+      await expect(promise).rejects.toMatchObject({ code: 'TARGET_DIRECTORY_EXISTS' })
+    })
+
+    it('rethrows unexpected filesystem errors', async () => {
+      mockReaddir.mockRejectedValueOnce(Object.assign(new Error('EACCES'), { code: 'EACCES' }))
+      await expect(assertTargetDirAvailable('locked-app')).rejects.toThrow('EACCES')
     })
   })
 })
