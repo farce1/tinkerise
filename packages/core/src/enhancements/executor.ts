@@ -67,6 +67,21 @@ function _markRemainingAsNotRun(
 }
 
 /**
+ * Restore previously-saved file contents, tolerating per-file write failures so
+ * a failed restore never aborts the rest of the run (continue-on-failure contract).
+ */
+async function restoreFiles(files: Iterable<readonly [string, string]>): Promise<void> {
+  for (const [filePath, content] of files) {
+    try {
+      await writeFile(filePath, content, 'utf-8')
+    }
+    catch (err) {
+      tinkeriseLog(`Warning: could not restore ${filePath}: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+}
+
+/**
  * Run the enhancement pipeline: sort -> detect -> resolve conflicts -> install.
  *
  * Modules are executed in topological (dependency-first) order.
@@ -158,9 +173,7 @@ export async function runEnhancements(
           error: err instanceof Error ? err.message : String(err),
         })
         // Restore original files
-        for (const [fp, content] of existingContents) {
-          await writeFile(fp, content, 'utf-8')
-        }
+        await restoreFiles(existingContents)
         tinkeriseLog(`Failed: ${mod.name} \u2718`)
         continue
       }
@@ -188,7 +201,7 @@ export async function runEnhancements(
 
         if (action === 'skip') {
           // Restore original content for this file
-          await writeFile(filePath, existingContent, 'utf-8')
+          await restoreFiles([[filePath, existingContent]])
           skipModule = true
           break
         }
@@ -197,9 +210,7 @@ export async function runEnhancements(
 
       if (skipModule) {
         // Restore ALL original files for this module
-        for (const [fp, content] of existingContents) {
-          await writeFile(fp, content, 'utf-8')
-        }
+        await restoreFiles(existingContents)
         summary.skipped.push(mod.id)
         tinkeriseLog(`Skipped ${mod.name}`)
         continue
