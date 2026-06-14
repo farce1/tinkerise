@@ -22,6 +22,7 @@ import {
   TinkeriseError,
   UnknownEnhancementError,
 } from '@tinkerise/core'
+import { recordEnhancements } from '../context/lock.js'
 import { getSessionContext } from '../context/session.js'
 import { showEnhancementPicker } from '../prompts/enhancement-select.js'
 
@@ -40,10 +41,11 @@ export async function runAddCommand(
   options: AddOptions,
 ): Promise<void> {
   const session = await getSessionContext()
+  const rootDir = session.projectDir ?? process.cwd()
 
   // 1. Build project context
   const ctx = await buildProjectContext({
-    rootDir: session.projectDir ?? process.cwd(),
+    rootDir,
     packageManager: session.packageManager,
     framework: session.framework,
     freshScaffold: !!session.projectDir,
@@ -149,4 +151,13 @@ export async function runAddCommand(
 
   // 5. Show overall summary
   showEnhancementSummary(summary)
+
+  // 6. Keep the lock's enhancement list in sync (best-effort, provenance only).
+  try {
+    await recordEnhancements(rootDir, summary.installed)
+  }
+  catch {
+    // A stale lock must not fail an otherwise-successful add.
+    p.log.warn('Could not update tinkerise.lock with the new enhancements')
+  }
 }

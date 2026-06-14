@@ -6,7 +6,7 @@
  */
 
 import type { TinkeriseLock } from '@tinkerise/shared'
-import { writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getScaffolder } from '@tinkerise/core'
 import { LOCK_SCHEMA_VERSION, TinkeriseLockSchema, VERSION } from '@tinkerise/shared'
@@ -47,4 +47,36 @@ export async function writeLockFile(projectDir: string, lock: TinkeriseLock): Pr
     `${JSON.stringify(lock, null, 2)}\n`,
     'utf-8',
   )
+}
+
+/** Read and validate the lock from a project directory; null if missing or invalid. */
+export async function readLockFile(projectDir: string): Promise<TinkeriseLock | null> {
+  try {
+    const raw = await readFile(join(projectDir, LOCK_FILENAME), 'utf-8')
+    const parsed = TinkeriseLockSchema.safeParse(JSON.parse(raw))
+    return parsed.success ? parsed.data : null
+  }
+  catch {
+    return null
+  }
+}
+
+/**
+ * Record applied enhancements in the existing lock (deduped, version unknown).
+ * No-op when the project has no lock — there is nothing to keep reproducible.
+ */
+export async function recordEnhancements(projectDir: string, ids: string[]): Promise<void> {
+  if (ids.length === 0)
+    return
+
+  const lock = await readLockFile(projectDir)
+  if (!lock)
+    return
+
+  const known = new Set(lock.enhancements.map(e => e.id))
+  const added = ids.filter(id => !known.has(id)).map(id => ({ id, version: null }))
+  if (added.length === 0)
+    return
+
+  await writeLockFile(projectDir, { ...lock, enhancements: [...lock.enhancements, ...added] })
 }
