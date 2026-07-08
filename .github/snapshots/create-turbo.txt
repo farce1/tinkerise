@@ -1,10 +1,9 @@
-npm warn exec The following package was not found and will be installed: create-turbo@2.8.9
 Usage: create-turbo <project-directory> [options]
 
 Create a new Turborepo
 
 Options:
-  -m, --package-manager <package-manager>  Specify the package manager to use (choices: "npm", "yarn", "pnpm", "bun")
+  -m, --package-manager <package-manager>  Specify the package manager to use (choices: "npm", "yarn", "pnpm", "bun", "nub", "aube")
   --skip-install                           Do not run a package manager install after creating the project (default: false)
   --skip-transforms                        Do not run any code transformation after creating the project (default: false)
   --turbo-version <version>                Use a specific version of turbo (default: latest)
