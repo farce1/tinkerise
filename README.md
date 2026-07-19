@@ -59,10 +59,10 @@ For the full guide catalog and recipes, visit [https://farce1.github.io/tinkeris
 
 ## Agent Skill
 
-tinkerise is available as an [agent skill](https://skills.sh) for AI coding agents (Claude Code, Cursor, GitHub Copilot, Gemini, and others):
+tinkerise is available as an [agent skill on skills.sh](https://www.skills.sh/farce1/tinkerise/tinkerise) for AI coding agents (Claude Code, Cursor, GitHub Copilot, Gemini, and others):
 
 ```bash
-npx skills add farce1/tinkerise
+npx skills add https://github.com/farce1/tinkerise --skill tinkerise
 ```
 
 This gives your AI agent procedural knowledge of all 14 scaffolders, 11 enhancements, unified flags, presets, and configuration — so it can scaffold projects on your behalf.
